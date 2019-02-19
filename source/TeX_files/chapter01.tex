@@ -9,19 +9,24 @@ Il suo impiego principale consisteva nel calcolare traiettorie dei proiettili di
 \paragraph{Apollo Guidance Computer}
 Prodotto da IBM nel 1969, disponeva di 2800 circuiti integrati, un processore da 0.043MHz e 152 KByte complessivi di memoria ROM/RAM. Presentava un'interfaccia display\&keyboard: i comandi utilizzano una sintassi del tipo "verbo + nome".
 
-\paragraph{Programma 101} Nel 1964 l'Olivetti rilascia il primo \textit{personal computer} della storia.
+\paragraph{Programma 101} Nel 1964 l'Olivetti rilascia il primo \textit{personal computer} della storia, sfortunatamente non avrà successo. 
 
 \subsection{Differenziazione dei calcolatori}
 Seppur i calcolatori di oggi condividano la stessa idea base, le soluzioni per ciascuna tipologia di applicazione sono piuttosto diverse. A seguire alcuni esempi di diverso tipo di calcolatori:
 \begin{table}[h!]
-	\begin{tabular}{l|l|l|l}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
 		\rowcolor[HTML]{EFEFEF} 
-		Tipologia di calcolatore & Applicazioni & Prestazioni & Costo \\ \hline
-		Personali & Software di terze parti & Buone & Ridotto \\
-		Server & Poche ma complesse (calcolo scientifico) \\
-		& o tante ma semplici (web server) & Eccellenti  & Elevato \\
-		Embedded & Dedicate e lavorano con l'hardware; \\
-		& un vasto spettro di utilizzi & Modeste & Minimo 
+		Tipologia di calcolatore & Costo   & Prestazioni                     & Applicazioni                     \\ \hline
+		&         &                                 & Software prodotti da             \\
+		Personale                & Ridotto & \multicolumn{1}{c|}{Buone}      & terze parti                      \\
+		&         &                                 &                                  \\ \hline
+		&         &                                 & Poche ma complesse (calcolo      \\
+		Server                   & Elevato & \multicolumn{1}{c|}{Eccellenti} & scientifico) o tante ma semplici \\
+		&         &                                 & (web server)                     \\ \hline
+		&         & \multicolumn{1}{c|}{Minime}     & Dedicate e molto specifiche;     \\
+		Embedded                 & Minimo  & \multicolumn{1}{c|}{necessarie} & esiste un vasto spettro di scopi \\
+		&         &                                 & possibili                        \\ \hline
 	\end{tabular}
 \end{table}
 Per ovvi motivi, ogni tipologia di calcolatore è meglio adatta per differenti scopi. Ottenere delle buone prestazioni senza eccedere in prezzo e potenza è ciò che decreta il successo commerciale di un prodotto.
@@ -29,11 +34,12 @@ Per ovvi motivi, ogni tipologia di calcolatore è meglio adatta per differenti s
 \section{Le prestazioni dei calcolatori}
 Un buon programmatore, oltre a saper utilizzare degli efficienti paradgmi, deve comprendere la gerarchia di memoria e il concetto di parallelismo: conoscere a fondo il calcolatore è fondamentale.\\
 Fino a qualche tempo fa le prestazioni di qualsiasi calcolatore erano in balia della disponibilità di memoria. Al giorno d'oggi invece risulta un problema risolto, tranne per qualche criticità per le applicazioni embedded.\\
+Ecco una lista degli elementi che influenzano le prestazioni del calcolatore e il loro ruolo:
 \begin{itemize}[noitemsep, nolistsep]
-	\item \textit{Algoritmi}: determina il numero di istruzioni di alto livello e di operazioni di IO.
-	\item \textit{Linguaggi di programmazione, compilatori e architetture}: determina il numero di istruzioni macchina per ogni istruzione di basso livello.
-	\item \textit{Processore e sistema di memoria}: quanto velocemente è possibile eseguire ciascuna istruzione.
-	\item \textit{Sistema di I/O (Hardware e sistema operativo)}: quanto velocemente possono essere eseguite le istruzioni.
+	\item \textit{Algoritmi}: determinano il numero di istruzioni di alto livello e di operazioni di IO.
+	\item \textit{Linguaggi di programmazione, compilatori e architetture}: determinano il numero di istruzioni macchina per ogni istruzione di basso livello.
+	\item \textit{Processore e sistema di memoria}: determina quanto velocemente è possibile eseguire ciascuna istruzione.
+	\item \textit{Sistema di I/O (Hardware e sistema operativo)}: determina quanto velocemente possono essere eseguite le istruzioni.
 \end{itemize}
 
 \subsection{La memoria e il processore}
@@ -79,13 +85,13 @@ L'utilità del compilatore consiste nel facilitare il lavoro del programmatore: 
 Spesso fanno eccezione alcuni compilatori che trasformano direttamente il linguaggio ad alto livello in codice macchina.
 
 \subsection{Periferiche di IO}
-Il \textbf{mouse} è stato inventato nel 1967 da \textit{Doug Engelbart} nei laboratori della \textit{Xeron}. Attualmente sfrutta la tecnologia ottica: attraverso le variazioni di luce provocate da alcuni led che illuminano il piano, il mouse è in grado di rilevare gli spostamenti.
+Il \textbf{mouse} è stato inventato nel 1967 da \textit{Doug Engelbart} nei laboratori della \textit{Xerox}. Attualmente sfrutta la tecnologia ottica: attraverso le variazioni di luce provocate da alcuni led che illuminano il piano, il mouse è in grado di rilevare gli spostamenti.
 
-Gli schermi \textbf{LCD} (\textit{Liquid Crystal Display}) sono costituiti da alcuni cristalli che galleggiano in un fluido: ciascun cristallo corrisponde ad un pixel. Attraverso un campo elettrico (applicato a ciascun cristallo) è possibile ruotare di 90 gradi il cristallo, che impedisce o meno il passaggio della luce secondo il fenomeno fisico della \textit{luce polarizzata}.\\
+Gli schermi \textbf{LCD} (\textit{Liquid Crystal Display}) sono costituiti da alcuni cristalli che galleggiano in un fluido: ciascuno di essi corrisponde ad un pixel. Attraverso un campo elettrico è possibile ruotare di 90 gradi ogni singolo cristallo, che di conseguenza può impedire o meno il passaggio della luce secondo il fenomeno fisico della \textit{luce polarizzata}.\\
 L'immagine dunque viene rappresentata da una matrice di pixel: ciascuno di essi ha associata una componente rosso, verde, blu (sistema RGB). Questa immagine viene memorizzata in un \textit{frame buffer}, una RAM che viene aggiornata  fino a 100 volte al secondo.
 
 \subsection{Misurazione delle prestazioni}
-I moderni processori sono costruiti usando un segnale periodico che ne sincronizza le operazioni. Il \textit{ciclo di clock} è l’intervallo di tempo che intercorre tra due colpi di clockLa frequenza è definita come $\frac{1}{\text{ciclo clock}}$. Il ciclo di clock è misurato in secondi, la frequenza in Hertz.\\
+I moderni processori sono costruiti usando un segnale periodico che ne sincronizza le operazioni. Il \textit{ciclo di clock} è l’intervallo di tempo che intercorre tra due colpi di clock. La frequenza è definita come $\frac{1}{\text{ciclo clock}}$. Il ciclo di clock è misurato in secondi, la frequenza in Hertz.\\
 
 Il tempo necessario per l'esecuzione di un programma dipende da tre fattori:
 \begin{itemize}[nolistsep]
@@ -99,7 +105,7 @@ Il tempo necessario per l'esecuzione di un programma dipende da tre fattori:
 \begin{center}
 	\includegraphics[width=0.9\textwidth]{images/tempo_risposta.png}
 \end{center}
-Un algoritmo è efficiente se viene strutturato in modo da risparmiare istruzioni e, per una particolare architettura, se utilizza le istruzioni più efficienti (quelle con un basso CPI).\\
+Un algoritmo è efficiente se viene strutturato in modo da risparmiare istruzioni e, per una particolare architettura, se utilizza le istruzioni più efficienti (quelle con un basso CPI, poichè il CPI dei diversi tipi di istruzione varia in base all'architettura che deve svolgere le istruzioni).\\
 Il linguaggio di programmazione influenza il numero di istruzioni e il CPI: più di alto livello sono i costrutti, più lunghe sono le sequenze di istruzioni macchina ottenute traducendo il codice di partenza.\\
 Il compilatore sicuramente influenza sia il numero di istruzioni che il CPI in base alla propria efficienza e ottimizzazione.\\
 Anche l'\textit{ISA} ha impatto sul numero di istruzioni, sul CPI, e sulla frequenza di clock attraverso la sua progettazione: essa può fornire istruzioni di basso o alto livello (più o meno istruzioni per eseguire un'operazione).
@@ -118,7 +124,7 @@ Incrementare la frequenza senza eccedere in consumi è stato permesso grazie un 
 C’è inoltre un limite alla capacità di estrarre la potenza prodotta dai processori (e il conseguente calore) tramite ventole o radiatori. Il processo di refrigerazione diventa molto
 costoso e difficilmente attuabile in dispositivi desktop e laptop.\\
 
-La soluzione principale che è stata adottata consiste nelle \textit{architetture multicore} sfruttando il concetto di \textit{parallelismo}. Ciò comporta una maggiore difficoltà e responsabilità nella scrittura di code da parte del programmatore (debugging complicato, bilanciare il carico di lavoro fra le CPU).
+La soluzione principale che è stata adottata consiste nelle \textit{architetture multicore} sfruttando il concetto di \textit{parallelismo}. Ciò comporta una maggiore difficoltà e responsabilità nella scrittura di codice da parte del programmatore (debugging complicato, bilanciare il carico di lavoro fra le CPU).
 
 
 
