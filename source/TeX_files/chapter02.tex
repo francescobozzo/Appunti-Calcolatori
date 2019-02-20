@@ -1,6 +1,7 @@
 \chapter{Aritmetica dei calcolatori}
 
 \section{Informazione nei computer}
+
 \paragraph*{I transistor} Tutti i computer moderni sono composti da \textit{transistor} (detti anche triodi) che sono strutture bistabili, ovvero che possono assumere due stati come un interruttore: 0=spento e 1=acceso. Molti \textit{transistor} collegati tra loro in una sorta di matrice possono rappresentare delle serie di porte logiche, ed è questa la struttura che sta alla base dell'architettura dei moderni calcolatori.\\ 
 Un computer memorizza (e manipola) solo sequenze di 0 e 1 (sequenze di bit); anche l’ENIAC funzionava allo stesso modo, solo che al posto dei \textit{transistor} era composto da \textit{valvole termoioniche}, che in ultima analisi non erano differenti nel funzionamento (assumono sempre i due stati descritti in precedenza, solo più lentamente).
 \paragraph*{Interpretazione delle informazioni} In seguito le sequenze di bit che i computer elaborano/memorizzano possono essere interpretate in tantissimi modi diversi, tra cui numeri, caratteri, suoni, immagini, istruzioni e molti altri.\\
@@ -9,33 +10,54 @@ Nel l’ambito dell’IT le codifiche sono fortemente caratterizzate dalla lungh
 Si osservi che essendo i \textit{transistor} sistemi bistabili la base 2 (con cifre 0 e 1) è perfetta per rappresentare la codifica dei dati memorizzati/elaborati da essi.
 \subsection{I numeri}
 Limitiamoci al caso dei numeri per spiegare il concetto di \textbf{codifica}:\\
-Ricordiamo che i  metodi di rappresentazione numerica che studiamo sono posizionali, ovvero il peso di ogni cifra varia in base alla posizione della cifra stessa.
+Ricordiamo che i  metodi di rappresentazione numerica che studiamo sono posizionali, ovvero il peso di ogni cifra varia in base alla posizione che essa  occupa.\\
 In generale se una base è composta da B elementi essa ha B cifre (da 0 a B-1) utilizzate per scrivere ogni numero.
 Questa formula ci restituisce il valore di ogni numero scritto in una qualsiasi base B:\\
 \[c_{i} c_{i-1} c_{i-2}... c_{0}=c_{i}*B^{i}+...+c_{0}*B^{0}\]\\
+dove $c_{i}$ è la cifra in posizione \textit{i}.
 
+\subparagraph{Regole di conversione tra basi}
 % SI DECIDE DI SALTARE CONVERSIONE TRA BASI E ALTRE BASI UTILI DELIBERATAMENTE %
 
-\paragraph*{I naturali} Nella codifica binaria un numero naturale è rappresentato su \textit{k} cifre binarie, dove con \textit{k} cifre si possono rappresentare i numeri tra 0 e \[2^{k}-1\].
+\paragraph*{I naturali} Nella codifica binaria un numero naturale è rappresentato su \textit{k} cifre binarie, dove con \textit{k} cifre si possono rappresentare i numeri tra 0 e $2^{k}-1$.\\
+La codifica più comune per gli interi spesso usa i byte, sequenze di 8 bit, che tuttavia richiedono molte cifre per rappresentare un numero e quindi spesso, per semplificare la lettura, si usa scrivere i numeri in esadecimale (quindi scrivendo un quarto delle cifre rispetto alla binaria).
 
+\subparagraph*{Somma e sottrazione} Le operazioni somma e sottrazione funzionano allo stesso modo del sistema utilizzato nella numerazione decimale con il riporto. Si guardino gli esempi qui sotto riportati, già di per sè esplicativi del processo:\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth,keepaspectratio]{images/Somma-Bin.png}
+	\caption{Esempio di somma}
+\end{figure}
 
-La codifica più utilizzata per gli interi implica i byte, sequenze di 8 bit, che tuttavia richiedono molte cifre per rappresentare un numero e quindi spesso, per semplificare la lettura, si usa scrivere i numeri in esadecimale (quindi scrivendo un quarto delle cifre rispetto alla binaria).
-Regole di conversione tra basi…. Davvero? Ancora?
-\subparagraph*{Somma e sottrazione} Le operazioni somma e sottrazione funzionano allo stesso modo del sistema utilizzato nella numerazione decimale con il riporto. ?Esempi?
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth,keepaspectratio]{images/Sottrazione-Bin.png}
+	\caption{Esempio di differenza}
+\end{figure}
 
-\subparagraph*{Moltiplicazione} La moltiplicazione in base binaria si può semplificare con il metodo dello shifting, che è più facile far vedere che non dimostrare:  \\----IMMAGINE QUI---- \\
+\subparagraph*{Moltiplicazione} La moltiplicazione in base binaria si può semplificare con il metodo dello shifting, che è più facile illustrare con un esempio:  \begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth,keepaspectratio]{images/Moltiplicazione-Bin.png}
+	\caption{Esempio di prodotto}
+\end{figure}
 Si nota che quando è presente un 1 si riscrive il numero (nella posizione corrispondente) mentre  quando è presente uno 0 semplicemente non si scrive nulla (e si va solo avanti con le posizioni).
 
-\paragraph*{Gli interi} Fin ora abbiamo visto come si codificano solo i numeri naturali ma esistono metodi di codifica che permettono di rappresentare anche i numeri negativi (quindi l’insieme degli interi); le tecniche più comuni sono : modulo e segno, complemento a 1 (CA1) e complemento a 2 (CA2).
+\paragraph*{Gli interi} Fin ora abbiamo visto come si codificano solo i numeri naturali ma esistono metodi di codifica che permettono di rappresentare anche i numeri negativi (quindi l’insieme degli interi); le tecniche più comuni sono: modulo e segno, complemento a 1 (\textit{CA1}) e complemento a 2 (\textit{CA2}).
 
-\subparagraph*{Codifica con Modulo e Segno:} Idea semplice: si usano k - 1 bit per rappresentare il valore assoluto (modulo) del numero  ed un bit per codificare il segno (0=positivo, 1=negativo). In questo modo con k bit si possono codificare valori tra -2 k - 1 + 1 e +2k - 1 - 1. [N.B.: esistono due codifiche per lo 0, -0  e +0, e questo è un spreco].
+\subparagraph*{Codifica con Modulo e Segno:} Idea semplice: si usano $k-1$ bit per rappresentare il valore assoluto (modulo) del numero  ed un bit per codificare il segno (0=positivo, 1=negativo). In questo modo con k bit si possono codificare valori tra $-2k^{-1}+1 \text{ e} +2k^{-1}-1$.\\\\
+\textbf{N.B.:} esistono due codifiche per lo $0$, $-0$  e $+0$, e questo è un spreco.
 
-\subparagraph*{Codifica in Complemento a 1:} L’idea alla base è semplice, il primo bit indica sempre il segno e per ottenere l’opposto di un numero positivo si cambiano tutti gli 0 in 1 e gli 1 in 0 (e lo stesso si fa per ottenere l’opposto di un numero negativo). Si hanno ancora due rappresentazioni per +0 e -0. È più facile da sommare rispetto al modulo e segno ma solo se il bit significativo non da riporto.
-Quando si sommano due numeri in CA1
-\\ ----IMMAGINE QUI----\\
--Si deve verificare che i riporti delle prime due cifre significative siano uguali, altrimenti il numero che si ottiene non è rappresentabile in CA1 su k bit.
--Alla fine si deve sommare il riporto della prima cifra al risultato ottenuto (ultima riga).
-
-\subparagraph*{Codifica in Complemento a 2:} Per tradurre un numero da intero con segno a complemento a 2 (CA2) basta invertire tutti i bit tranne quello di sego e poi aggiungere 1. Viceversa per convertire da CA2 a binario con segno si sottrae 1 e poi si invertono tutti i bit tranne quello di segno. 
-Ancora una volta il bit più significativo indica il segno, ma in questo caso la codifica dello 0 è unica, quindi con k bit si possono rappresentare i numeri da 2k  1 a 2k  1  1. Anche la somma è più semplice ma questo lo vedremo in futuro.
+\subparagraph*{Codifica in Complemento a 1:} L’idea alla base è semplice, il primo bit indica sempre il segno e per ottenere l’opposto di un numero positivo si invertono tutti gli 0 in 1 e gli 1 in 0 (e lo stesso si fa per ottenere l’opposto di un numero negativo). Si hanno ancora due rappresentazioni per +0 e -0. È più facile da sommare rispetto al modulo e segno ma solo se il bit significativo non da riporto.
+Quando si sommano due numeri in \textit{CA1}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth,keepaspectratio]{images/Somma-CA1.png}
+	\caption{Esempio di somma in CA1}
+\end{figure}
+\begin{itemize}[noitemsep]
+\item Si deve verificare che i riporti delle prime due cifre significative siano uguali, altrimenti il numero che si ottiene non è rappresentabile in CA1 su k bit.
+\item Alla fine si deve sommare il riporto della prima cifra al risultato ottenuto (ultima riga).
+\end{itemize}
+\subparagraph*{Codifica in Complemento a 2:} Per tradurre un numero da intero con segno a complemento a 2 (\textit{CA2}) basta invertire tutti i bit tranne quello di sego e poi aggiungere 1. Viceversa per convertire da \textit{CA2} a binario con segno si sottrae 1 e poi si invertono tutti i bit tranne quello di segno. \\
+Ancora una volta il bit più significativo indica il segno, ma in questo caso la codifica dello 0 è unica, quindi con \textit{k} bit si possono rappresentare i numeri da $2k^{-1}$ a $2k^{-1}-1$. Anche la somma è più semplice ma questo lo vedremo in futuro.
 
