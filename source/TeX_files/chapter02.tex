@@ -23,7 +23,25 @@ Questa formula ci restituisce il valore di ogni numero scritto in una qualsiasi 
 dove $c_{i}$ è la cifra in posizione \textit{i}.
 
 \subsection{Regole di conversione tra basi}
-% SI DECIDE DI SALTARE CONVERSIONE TRA BASI E ALTRE BASI UTILI DELIBERATAMENTE %
+\textit{(un elenco delle principali basi è troppo mainstream?)}\\\\
+Vediamo ora come operare la conversione tra le principali basi:
+\begin{itemize}[noitemsep,nolistsep]
+	\item \textbf{da base 2 a base 16}: partendo da destra, si dividono le cifre binarie in gruppi da 4 cifre ciascuno, e ognuno di questi corrisponderà a una cifra esadecimale;
+	\item \textbf{da una qualsiasi base $B$ a base 10}: come visto sopra, si moltiplica ogni cifra $c_{i}$ per l'indice $B^{i}$, dipendentemente dalla sua posizione;
+	\item \textbf{da base 10 a una qualsiasi base B}:
+	\begin{enumerate}[noitemsep,nolistsep]
+		\item si consideri un numero $x_{10}$ e una base $B$;
+		\item si divida $x$ per $B$;
+		\item il resto della divisione è la cifra da inserire a sinistra nel numero convertito;
+		\item si assegni a $x$ il quoziente della divisione;
+		\item si torni al punto 2 e si ripeta finché $x>B$.
+	\end{enumerate}
+\end{itemize}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{images/esempi_conversioni.png}
+	\caption{Alcuni esempi di conversione}
+\end{figure}
 
 \subsection{I naturali} Nella codifica binaria un numero naturale è rappresentato su \textit{k} cifre binarie, dove con \textit{k} cifre si possono rappresentare i numeri tra 0 e $2^{k}-1$.\\
 La codifica più comune per gli interi spesso usa i byte, sequenze di 8 bit, che tuttavia richiedono molte cifre per rappresentare un numero e quindi spesso, per semplificare la lettura, si usa scrivere i numeri in esadecimale (quindi scrivendo un quarto delle cifre rispetto alla binaria).
