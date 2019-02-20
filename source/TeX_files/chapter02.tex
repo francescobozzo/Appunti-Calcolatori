@@ -49,7 +49,7 @@ Le operazioni somma e sottrazione funzionano allo stesso modo del sistema utiliz
 \end{figure}
 Si noti che quando è presente un 1 si riscrive il numero (nella posizione corrispondente) mentre  quando è presente uno 0 semplicemente non si scrive nulla (e si va solo avanti con le posizioni).
 
-\subsection{Gli interi} Fin ora abbiamo visto come si codificano solo i numeri naturali ma esistono metodi di codifica che permettono di rappresentare anche i numeri negativi (quindi l’insieme degli interi); le tecniche più comuni sono: modulo e segno, complemento a 1 (\textit{CA1}) e complemento a 2 (\textit{CA2}).
+\subsection{Gli interi} Finora abbiamo visto come si codificano solo i numeri naturali, ma esistono metodi di codifica che permettono di rappresentare anche i numeri negativi (quindi l’insieme degli interi). Le tecniche più comuni sono: modulo e segno, complemento a 1 (\textit{CA1}) e complemento a 2 (\textit{CA2}).
 
 \paragraph*{Codifica con Modulo e Segno:} Idea semplice: si usano $k-1$ bit per rappresentare il valore assoluto (modulo) del numero  ed un bit per codificare il segno (0=positivo, 1=negativo). In questo modo con k bit si possono codificare valori tra $-2^{k-1}+1 \text{ e} +2^{k-1}-1$.\\
 \underline{N.B.}: esistono due codifiche per lo $0$, $-0$  e $+0$, e questo è un spreco.
