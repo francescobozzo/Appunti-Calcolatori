@@ -47,11 +47,11 @@ Le operazioni somma e sottrazione funzionano allo stesso modo del sistema utiliz
 	\includegraphics[width=0.6\textwidth,keepaspectratio]{images/Moltiplicazione-Bin.png}
 	\caption{Esempio di prodotto}
 \end{figure}
-Si nota che quando è presente un 1 si riscrive il numero (nella posizione corrispondente) mentre  quando è presente uno 0 semplicemente non si scrive nulla (e si va solo avanti con le posizioni).
+Si noti che quando è presente un 1 si riscrive il numero (nella posizione corrispondente) mentre  quando è presente uno 0 semplicemente non si scrive nulla (e si va solo avanti con le posizioni).
 
 \subsection{Gli interi} Fin ora abbiamo visto come si codificano solo i numeri naturali ma esistono metodi di codifica che permettono di rappresentare anche i numeri negativi (quindi l’insieme degli interi); le tecniche più comuni sono: modulo e segno, complemento a 1 (\textit{CA1}) e complemento a 2 (\textit{CA2}).
 
-\paragraph*{Codifica con Modulo e Segno:} Idea semplice: si usano $k-1$ bit per rappresentare il valore assoluto (modulo) del numero  ed un bit per codificare il segno (0=positivo, 1=negativo). In questo modo con k bit si possono codificare valori tra $-2k^{-1}+1 \text{ e} +2k^{-1}-1$.\\
+\paragraph*{Codifica con Modulo e Segno:} Idea semplice: si usano $k-1$ bit per rappresentare il valore assoluto (modulo) del numero  ed un bit per codificare il segno (0=positivo, 1=negativo). In questo modo con k bit si possono codificare valori tra $-2^{k-1}+1 \text{ e} +2^{k-1}-1$.\\
 \underline{N.B.}: esistono due codifiche per lo $0$, $-0$  e $+0$, e questo è un spreco.
 
 \paragraph*{Codifica in Complemento a 1:} L’idea alla base è semplice, il primo bit indica sempre il segno e per ottenere l’opposto di un numero positivo si invertono tutti gli 0 in 1 e gli 1 in 0 (e lo stesso si fa per ottenere l’opposto di un numero negativo). Si hanno ancora due rappresentazioni per +0 e -0. È più facile da sommare rispetto al modulo e segno ma solo se il bit significativo non da riporto.
@@ -66,5 +66,5 @@ Quando si sommano due numeri in \textit{CA1}:
 \item Alla fine si deve sommare il riporto della prima cifra al risultato ottenuto (ultima riga).
 \end{itemize}
 \paragraph*{Codifica in Complemento a 2:} Per tradurre un numero da intero con segno a complemento a 2 (\textit{CA2}) basta invertire tutti i bit tranne quello di sego e poi aggiungere 1. Viceversa per convertire da \textit{CA2} a binario con segno si sottrae 1 e poi si invertono tutti i bit tranne quello di segno. \\
-Ancora una volta il bit più significativo indica il segno, ma in questo caso la codifica dello 0 è unica, quindi con \textit{k} bit si possono rappresentare i numeri da $2k^{-1}$ a $2k^{-1}-1$. Anche la somma è più semplice ma questo lo vedremo in futuro.
+Ancora una volta il bit più significativo indica il segno, ma in questo caso la codifica dello 0 è unica, quindi con \textit{k} bit si possono rappresentare i numeri da $-2^{k-1}$ a $2^{k-1}-1$. Anche la somma è più semplice ma questo lo vedremo in futuro.
 
