@@ -26,7 +26,7 @@ dove $c_{i}$ è la cifra in posizione \textit{i}.
 \textit{(un elenco delle principali basi è troppo mainstream?)}\\\\
 Vediamo ora come operare la conversione tra le principali basi:
 \begin{itemize}[noitemsep,nolistsep]
-	\item \textbf{da base 2 a base 16}: partendo da destra, si dividono le cifre binarie in gruppi da 4 cifre ciascuno, e ognuno di questi corrisponderà a una cifra esadecimale;
+	\item \textbf{da base 2 a base 16}: partendo da destra, si dividono le cifre binarie in gruppi da 4 cifre ciascuno, e ognuno di questi corrisponderà a una cifra esadecimale; qualora il numero di cifre binarie non sia divisibile per 4, si completi con degli 0 in modo da ottenere gruppi da 4\\ (\textit{esempio: $(11011)_{2}$ diventerà $(0001\text{ }1011)_{2}$, ovvero $(1B)_{16}$});
 	\item \textbf{da base 2 a base 8}: analogamente, si dividano le cifre binarie in gruppi da 3 cifre ciascuno, e ognuno di questi corrisponderà a una cifra ottale;
 	\item \textbf{da una qualsiasi base $B$ a base 10}: come visto sopra, si moltiplica ogni cifra $c_{i}$ per $B^{i}$, dipendentemente dalla sua posizione;
 	\item \textbf{da base 10 a una qualsiasi base B}:
@@ -35,7 +35,7 @@ Vediamo ora come operare la conversione tra le principali basi:
 		\item si divida $x$ per $B$;
 		\item il resto della divisione è la cifra da inserire a sinistra nel numero convertito;
 		\item si assegni a $x$ il quoziente della divisione;
-		\item si torni al punto 2 e si ripeta finché $x>B$.
+		\item si torni al punto 2 e si ripeta finché $x\neq0$.
 	\end{enumerate}
 \end{itemize}
 \begin{figure}[H]
