@@ -86,4 +86,41 @@ Quando si sommano due numeri in \textit{CA1}:
 \end{itemize}
 \paragraph*{Codifica in Complemento a 2:} Per tradurre un numero da intero con segno a complemento a 2 (\textit{CA2}) basta invertire tutti i bit e poi sommare 1. Viceversa, per convertire da \textit{CA2} a binario, si sottrae 1 e poi si invertono tutti i bit. \\
 Ancora una volta il bit più significativo indica il segno, ma in questo caso la codifica dello 0 è unica, quindi con \textit{k} bit si possono rappresentare i numeri da $-2^{k-1}$ a $2^{k-1}-1$. Anche la somma è più semplice ma questo lo vedremo in futuro.
+\subsubsection{Somma algebrica in Complemento a 2} L'utilizzo della codifica \textit{CA2} permette di eseguire somme algebriche senza alcuna differenza operativa, ma rende necessario prestare attenzione agli \textit{overflows}.\\
+Con il termine \textit{overflow} si intende la situazione in cui, date in input delle informazioni codificate in un numero $k$ di bit arbitrariamente scelto, lo stesso numero $k$ di bit non è sufficiente a codificare le informazioni in output. \\
+Diamo subito un esempio: supponiamo di voler eseguire $-64-8$ utilizzando il \textit{CA2} e $k=7$ bit. Ricordiamo che:\\\\
+$64=1000000_{2}=\overline{1000000}+1=0111111+1=1000000 \text{ in \textit{CA2;}}$\\
+$8=0001000_{2}=\overline{0001000}+1=1110111+1=1111000 \text{ in \textit{CA2}}.$\\\\
+A questo punto eseguiamo la somma algebrica
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth,keepaspectratio]{images/overflow.png}
+	\caption{(Il numero fra parentesi indica l'ultimo riporto, che chiaramente non possiamo inserire poiché sforerebbe i 7 bit)}
+\end{figure}
+Osserviamo così che, per $k=7$ bit, $-64-8=0111000_{2}=56_{10}$, che ovviamente non ci piace; concludiamo quindi che la somma algebrica $-64-8=-72$ \textit{non} è rappresentabile con soli $k=7$ bit.\\
+
+Possiamo dire che, in generale, dati due numeri $a, b$ aventi lo stesso segno, avremo probelmi di \textit{overflow} se 
+\begin{itemize}[noitemsep,nolistsep]
+	\item $a+b>2^{k-1}-1$
+	\item $a+b<-2^{k-1}$
+\end{itemize}
+ricordando che $-2^{k-1}\le a,b\le 2^{k-1}-1$.
+
+\subsubsection{Aritmetica modulare} Incosapevolmente noi utilizziamo l'\textit{aritmetica modulare} quasi continuamente, nella nostra quotidianità; l'esempio più comune è quando sommiamo le ore, che sono organizzate in modulo 24 (da cui la denominazione ufficiosa di "Matematica dell'orologio"), ma anche minuti e secondi (modulo 60) e gli angoli (modulo 360).\\
+Diamone una descrizione intuitiva: fissato un numero $n$ finito di valori, arrivato al numero più grande ($n-1$), al successivo avrò che $(n-1)+1=0$.\\
+Per completezza, forniamo ora la relazione di equivalenza di due numeri in modulo $n$:\\
+\begin{equation*}
+\centering
+a\equiv b \longleftrightarrow a\%n=b\%n
+\end{equation*}
+
+Quando noi eseguiamo delle operazioni sui numeri in base 2 su $k$ bit, stiamo lavorando in un ambiente in modulo $2^{k}$, e calcolando $a+b$ stiamo in realtà trovando $(a+b)\%2^{k}$, e i due valori saranno uguali se e solo se $a+b<2^{k}$, perché altrimenti ogni valore successivo ricomincerebbe da 0: questo è l'\textit{overflow}.\\
+In particolare quando lavoriamo su numeri interi in \textit{CA2} dobbiamo ricordare che, se $-2^{k-1}\le a+b\le 2^{k-1}-1$ non avremo \textit{overflow}, altrimenti
+\begin{itemize}[noitemsep,nolistsep]
+	\item se $a+b<2^{k-1}-1$, otterremo $a+b+2^{k}$ $\longrightarrow$ \textit{OVERFLOW!}
+	\item se $a+b>-2^{k-1}$, otterremo $a+b-2^{k}$ $\longrightarrow$ \textit{OVERFLOW!}
+\end{itemize}
+
+\subsection{I Reali}
+
 
