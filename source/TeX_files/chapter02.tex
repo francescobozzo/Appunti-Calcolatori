@@ -19,7 +19,7 @@ Limitiamoci al caso dei numeri per spiegare il concetto di \textbf{codifica}:\\
 Ricordiamo che i  metodi di rappresentazione numerica che studiamo sono posizionali, ovvero il peso di ogni cifra varia in base alla posizione che essa  occupa.\\
 In generale se una base è composta da B elementi essa ha B cifre (da 0 a B-1) utilizzate per scrivere ogni numero.
 Questa formula ci restituisce il valore di ogni numero scritto in una qualsiasi base B:\\
-\[c_{i} c_{i-1} c_{i-2}... c_{0}=c_{i}*B^{i}+...+c_{0}*B^{0}\]\\
+\[c_{i} c_{i-1} c_{i-2}... c_{0}=c_{i}\cdot B^{i}+...+c_{0}\cdot B^{0}\]\\
 dove $c_{i}$ è la cifra in posizione \textit{i}.
 
 \subsection{Regole di conversione tra basi}
@@ -89,8 +89,8 @@ Ancora una volta il bit più significativo indica il segno, ma in questo caso la
 \subsubsection{Somma algebrica in Complemento a 2} L'utilizzo della codifica \textit{CA2} permette di eseguire somme algebriche senza alcuna differenza operativa, ma rende necessario prestare attenzione agli \textit{overflows}.\\
 Con il termine \textit{overflow} si intende la situazione in cui, date in input delle informazioni codificate in un numero $k$ di bit arbitrariamente scelto, lo stesso numero $k$ di bit non è sufficiente a codificare le informazioni in output. \\
 Diamo subito un esempio: supponiamo di voler eseguire $-64-8$ utilizzando il \textit{CA2} e $k=7$ bit. Ricordiamo che:\\\\
-$64=1000000_{2}=\overline{1000000}+1=0111111+1=1000000 \text{ in \textit{CA2;}}$\\
-$8=0001000_{2}=\overline{0001000}+1=1110111+1=1111000 \text{ in \textit{CA2}}.$\\\\
+$-64=1000000_{2}=\overline{1000000}+1=0111111+1=1000000 \text{ in \textit{CA2;}}$\\
+$-8=0001000_{2}=\overline{0001000}+1=1110111+1=1111000 \text{ in \textit{CA2}}.$\\\\
 A questo punto eseguiamo la somma algebrica
 \begin{figure}[H]
 	\centering
@@ -117,10 +117,39 @@ a\equiv b \longleftrightarrow a\%n=b\%n
 Quando noi eseguiamo delle operazioni sui numeri in base 2 su $k$ bit, stiamo lavorando in un ambiente in modulo $2^{k}$, e calcolando $a+b$ stiamo in realtà trovando $(a+b)\%2^{k}$, e i due valori saranno uguali se e solo se $a+b<2^{k}$, perché altrimenti ogni valore successivo ricomincerebbe da 0: questo è l'\textit{overflow}.\\
 In particolare quando lavoriamo su numeri interi in \textit{CA2} dobbiamo ricordare che, se $-2^{k-1}\le a+b\le 2^{k-1}-1$ non avremo \textit{overflow}, altrimenti
 \begin{itemize}[noitemsep,nolistsep]
-	\item se $a+b<2^{k-1}-1$, otterremo $a+b+2^{k}$ $\longrightarrow$ \textit{OVERFLOW!}
-	\item se $a+b>-2^{k-1}$, otterremo $a+b-2^{k}$ $\longrightarrow$ \textit{OVERFLOW!}
+	\item se $a+b<2^{k-1}-1$, otterremo $a+b+2^{k}$ $\longrightarrow$ \textit{OVERFLO(W)!}
+	\item se $a+b>-2^{k-1}$, otterremo $a+b-2^{k}$ $\longrightarrow$ \textit{OVERFLO(W)!}
 \end{itemize}
 
-\subsection{I Reali}
+\subsection{I Reali} Non è sempre semplice codificare un numero reale $\alpha \in \mathbb{R}$, poiché di questo insieme fanno parte i numeri cosiddetti \textit{irrazionali}, che presentano infinite cifre non periodiche dopo la virgola (si pensi ad esempio a $\pi=3,14159...$, o $e=2.71828...$, o ancora $\sqrt{2}=1.41421...$).\\
+Alcuni numeri non possono quindi essere rappresentati con un numero finito di bit, per cui ne rappresenteremo solo un'approssimazione, e per farlo abbiamo sviluppato due metodi: la rappresentazione a \textbf{virgola fissa} (o \textit{fixed point}) e quella a \textbf{virgola mobile} (o \textit{floating point}).
 
+\subsubsection{Codifica in virgola fissa} Questo sistema di cofidica prevede che, posto un numero $k$ di bit per la rappresentazione del numero, si impieghino $k-f$ bit per rappresentare la parte intera, e i restanti $f$ bit per rappresentare la parte razioneale:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth,keepaspectratio]{images/fixed_point.png}
+\end{figure}
+ Possiamo scrivere una formula generale più compatta. Supponiamo di voler convertire un numero $x_{10}$:
+ \begin{equation*}
+ x_{10}=\sum_{i=0}^{k-1} c_{i}B^{i-f}=\sum_{i=0}^{k-1} c_{i}B^{i}\cdot B^{-f}=(\sum_{i=0}^{k-1} c_{i}B^{i})\cdot B^{-f}
+ \end{equation*}
 
+\subsubsection{Codifica in virgola mobile}
+Un qualsiasi numero reale può essere scritto anche nella forma $x=M*B^{E}$ dove M si dice \textit{mantissa}, E \textit{esponente} e B è la base della rappresentazione (che nel nostro caso è la leggendaria base 2).\\
+Questo metodo di rappresentazione è implementato anche nell'informatica in più modi diversi ma alla base di tutti si riconosce lo stesso schema: \\
+Un numero $x$ può essere rappresentato su \textit{k} bit utilizzando \textit{m} bit per il campo mantissa M ed $e=k-m$ bit per il campo esponente E; quest'ultimo permette in un certo senso di "spostare" la virgola; con esponenti negativi si avranno x "piccoli" e viceversa con esponenti positivi si avranno x "grandi".\\
+Lo standard più comunemente utilizzato è l'IEEE 754 che ha questa struttura:
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|l|l|l|}
+		\hline
+		\multicolumn{1}{|c|}{1 bit} & \multicolumn{1}{c|}{8 bit} & \multicolumn{1}{c|}{23 bit} \\ \hline
+		Bit di segno                & Esponente                  & Mantissa                    \\ \hline
+	\end{tabular}
+\end{table}
+
+Le caratteristiche della rappresentazione sono:
+\begin{itemize}
+	\item Limiti dell'esponente: $-2^{e-1}+1 < E \le 2^{e-1}-1$
+	\item 
+\end{itemize}
