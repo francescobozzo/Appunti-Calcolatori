@@ -133,7 +133,16 @@ Alcuni numeri non possono quindi essere rappresentati con un numero finito di bi
  \begin{equation*}
  x_{10}=\sum_{i=0}^{k-1} c_{i}B^{i-f}=\sum_{i=0}^{k-1} c_{i}B^{i}\cdot B^{-f}=(\sum_{i=0}^{k-1} c_{i}B^{i})\cdot B^{-f}
  \end{equation*}
-
+ Detta in altri termini, convertiamo il numero da base 10 come se non avesse la virgola e poi moltiplichiamo per $B^{-f}$.\\
+ Presentiamo vantaggi e svantaggi di questo tipo di codifica:
+  \begin{itemize}[noitemsep,nolistsep]
+  	\item le operazioni si possono svolgere senza alcuna differenza, se non l'accortezza di scalare il risultato;
+  	\item il peso per la CPU è ridotto;
+  	\item non ci sono errori di approssimazione, \textit{se il valore è rappresentabile};
+  	\item iniziamo ad avere problemi quando lavoriamo con numeri che hanno ordini di grandezza molto diversi fra loro.
+  \end{itemize}
+ 
+\textit{(esempio di conversione?)}
 \subsubsection{Codifica in virgola mobile}
 Un qualsiasi numero reale può essere scritto anche nella forma $x=M*B^{E}$ dove M si dice \textit{mantissa}, E \textit{esponente} e B è la base della rappresentazione (che nel nostro caso è la leggendaria base 2).\\
 Questo metodo di rappresentazione è implementato anche nell'informatica in più modi diversi ma alla base di tutti si riconosce lo stesso schema: \\
