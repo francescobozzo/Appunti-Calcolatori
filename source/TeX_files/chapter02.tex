@@ -144,10 +144,10 @@ Alcuni numeri non possono quindi essere rappresentati con un numero finito di bi
  
 \textit{(esempio di conversione?)}
 \subsubsection{Codifica in virgola mobile}
-Un qualsiasi numero reale può essere scritto anche nella forma $x=M*B^{E}$ dove M si dice \textit{mantissa}, E \textit{esponente} e B è la base della rappresentazione (che nel nostro caso è la leggendaria base 2).\\
-Questo metodo di rappresentazione è implementato anche nell'informatica in più modi diversi ma alla base di tutti si riconosce lo stesso schema: \\
-Un numero $x$ può essere rappresentato su \textit{k} bit utilizzando \textit{m} bit per il campo mantissa M ed $e=k-m$ bit per il campo esponente E; quest'ultimo permette in un certo senso di "spostare" la virgola; con esponenti negativi si avranno x "piccoli" e viceversa con esponenti positivi si avranno x "grandi".\\
-Lo standard più comunemente utilizzato è l'IEEE 754 che ha questa struttura:
+Un qualsiasi numero reale può essere scritto anche nella forma $x=M\cdot B^{E}$ dove M si dice \textit{mantissa}, E \textit{esponente} e B è la base della rappresentazione (che nel nostro caso è la leggendaria base 2).\\
+Questo metodo di rappresentazione, del tutto analogo notazione scientifica standard, è implementato anche nell'informatica in più modi diversi ma alla base di tutti si riconosce lo stesso schema: \\
+Un numero $x$ può essere rappresentato su \textit{k} bit utilizzando \textit{m} bit per il campo mantissa M ed $e=k-m$ bit per il campo esponente E; quest'ultimo permette in un certo senso di "spostare" la virgola; con esponenti negativi si avranno $x$ "piccoli" e viceversa con esponenti positivi si avranno $x$ "grandi".\\
+Lo standard più comunemente utilizzato è l'IEEE 754 che, nei numeri \textit{float} a precisione singola (che impiega 32 bit), ha questa struttura:
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{|l|l|l|}
@@ -157,8 +157,15 @@ Lo standard più comunemente utilizzato è l'IEEE 754 che ha questa struttura:
 	\end{tabular}
 \end{table}
 
-Le caratteristiche della rappresentazione sono:
-\begin{itemize}
-	\item Limiti dell'esponente: $-2^{e-1}+1 < E \le 2^{e-1}-1$
-	\item 
+
+Il bit di segno ha la funzione che già conosciamo, mentre il campo $E$ può contenere valori compresi tra 0 e 255% ($-2^{e-1}+1 < E \le 2^{e-1}-1$)
+; questi ultimi due valori vengono utilizzati per funzioni speciali, mentre i valori da 1 a 254 compresi codificano l'esponente effettivo dei calcoli, che diremo $exp$,	 in questo modo: 
+\begin{equation*}
+exp=E-2^{e-1}-1
+\end{equation*}
+Nel nostro caso, $exp=E-127$. L'ultimo campo, la \textit{mantissa}, codifica un numero intero. 
+\paragraph{Come calcolare il valore di un \textit{float}} Il primo bit è utilizzato per indicare il segno, i successivi 8 per $E$ e i restanti 23 per la mantissa. La codifica assume due forme in base al valore di $E$:
+\begin{itemize}[noitemsep,nolistsep]
+	\item se $E=0$, allora il numero è $x_{10}=0.M \cdot 2^{0}$;
+	\item se $E>0$, allora il numero è $x_{10}=1.M \cdot 2^{exp}$, dove $exp$ è definito come prima.
 \end{itemize}
