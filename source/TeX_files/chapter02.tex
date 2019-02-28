@@ -146,8 +146,8 @@ Alcuni numeri non possono quindi essere rappresentati con un numero finito di bi
 \subsubsection{Codifica in virgola mobile}
 Un qualsiasi numero reale può essere scritto anche nella forma $x=M\cdot B^{E}$ dove M si dice \textit{mantissa}, E \textit{esponente} e B è la base della rappresentazione (che nel nostro caso è la leggendaria base 2).\\
 Questo metodo di rappresentazione, del tutto analogo notazione scientifica standard, è implementato anche nell'informatica in più modi diversi ma alla base di tutti si riconosce lo stesso schema: \\
-Un numero $x$ può essere rappresentato su \textit{k} bit utilizzando \textit{m} bit per il campo mantissa M ed $e=k-m$ bit per il campo esponente E; quest'ultimo permette in un certo senso di "spostare" la virgola; con esponenti negativi si avranno $x$ "piccoli" e viceversa con esponenti positivi si avranno $x$ "grandi".\\
-Lo standard più comunemente utilizzato è l'IEEE 754 che, nei numeri \textit{float} a precisione singola (che impiega 32 bit), ha questa struttura:
+$x$ può essere rappresentato su \textit{k} bit utilizzando \textit{m} bit per il campo mantissa M ed $e=k-m$ bit per il campo esponente E; quest'ultimo permette in un certo senso di "spostare" la virgola; con esponenti negativi si avranno $x$ "piccoli" e viceversa con esponenti positivi si avranno $x$ "grandi".\\
+Lo standard più comunemente utilizzato è l'IEEE 754 che, nei numeri \textit{float} a precisione singola (dove si usano 32 bit), ha questa struttura:
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{|l|l|l|}
@@ -166,6 +166,15 @@ exp=E-2^{e-1}-1
 Nel nostro caso, $exp=E-127$. L'ultimo campo, la \textit{mantissa}, codifica un numero intero. 
 \paragraph{Come calcolare il valore di un \textit{float}} Il primo bit è utilizzato per indicare il segno, i successivi 8 per $E$ e i restanti 23 per la mantissa. La codifica assume due forme in base al valore di $E$:
 \begin{itemize}[noitemsep,nolistsep]
-	\item se $E=0$, allora il numero è $x_{10}=0.M \cdot 2^{0}$;
-	\item se $E>0$, allora il numero è $x_{10}=1.M \cdot 2^{exp}$, dove $exp$ è definito come prima.
+	\item se $E=0$, allora il numero in base 10 è $x_{10}=0.M \cdot 2^{0}$;
+	\item se $E>0$, allora il numero in base 10 è $x_{10}=1.M \cdot 2^{exp}$, dove $exp$ è definito come qui sopra descritto.
 \end{itemize}
+Nel primo di questi due casi i numeri si dicono \textit{denormalizzati}, essi rappresentano tutti i numeri compresi tra 0 e 1, (0 escluso poichè è un carattere speciale); nel secondo caso i numeri si dicono \textit{normalizzati}.\\
+Per tradurre in decimale un numero in virgola mobile si deve quindi per prima cosa determinare il segno, poi si calcola l'esponente effettivo dei calcoli ($exp=E-127$) e da qui si procede in due modi: se $exp\neq-127$ si parla di numero \textit{normalizzato} e quindi si aggiunge un bit 1 alla mantissa in modo da ottenere il numero 1,M e si sposta la virgola di $exp$ posizioni e per completare il tutto si traduce il numero binario così ottenuto in decimale.
+
+
+se $exp=-127$ si parla di numero denormalizzato e quindi 
+
+Una volta stabilito quale delle precedenti due opzioni riguarda il nostro caso passiamo a calcolare la mantissa M, decodificandola come un semplice numero intero.
+\\/ 
+in fondo si parla dei numeri speciali
