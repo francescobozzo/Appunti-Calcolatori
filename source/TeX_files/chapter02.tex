@@ -125,10 +125,9 @@ In particolare quando lavoriamo su numeri interi in \textit{CA2} dobbiamo ricord
 Alcuni numeri non possono quindi essere rappresentati con un numero finito di bit, per cui ne rappresenteremo solo un'approssimazione, e per farlo abbiamo sviluppato due metodi: la rappresentazione a \textbf{virgola fissa} (o \textit{fixed point}) e quella a \textbf{virgola mobile} (o \textit{floating point}).
 
 \subsubsection{Codifica in virgola fissa} Questo sistema di cofidica prevede che, posto un numero $k$ di bit per la rappresentazione del numero, si impieghino $k-f$ bit per rappresentare la parte intera, e i restanti $f$ bit per rappresentare la parte razioneale:
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.5\textwidth,keepaspectratio]{images/fixed_point.png}
-\end{figure}
+\begin{equation*}
+\overbrace{\underbrace{c_{k-1}c_{k-2}\cdots c_{f}}_\text{$k-f$}\underbrace{\cdot c_{f-1}\cdots c_{0}}_\text{$f$}}^\text{$k$}
+\end{equation*}
  Possiamo scrivere una formula generale più compatta. Supponiamo di voler convertire un numero $x_{10}$:
  \begin{equation*}
  x_{10}=\sum_{i=0}^{k-1} c_{i}B^{i-f}=\sum_{i=0}^{k-1} c_{i}B^{i}\cdot B^{-f}=(\sum_{i=0}^{k-1} c_{i}B^{i})\cdot B^{-f}
