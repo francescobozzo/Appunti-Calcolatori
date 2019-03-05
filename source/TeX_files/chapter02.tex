@@ -176,7 +176,7 @@ Per tradurre in decimale un numero in virgola mobile si deve quindi per prima co
 \end{itemize}
 
 Una volta stabilito quale delle precedenti due opzioni riguarda il nostro caso spostiamo la virgola di \textit{exp} posizioni nel numero $1.M$ oppure $0.M$ (verso destra se $exp>0$ e viceversa), decodifichiamo il numero ottenuto come se fosse un binario in virola fissa.\\
-\subsection{Tabella riassuntiva}
+\subsubsection{Tabella riassuntiva}
 Ecco una breve tabella riassuntiva dell'interpretazione delle stringhe nella rappresentazione IEEE 754:
 \begin{table}[h!]
 	\centering
@@ -191,3 +191,10 @@ Ecco una breve tabella riassuntiva dell'interpretazione delle stringhe nella rap
 		Nan (not a number)               & 255                              & non zero                        \\ \hline
 	\end{tabular}
 \end{table}
+
+\subsubsection{Esempio di decodifica di un float}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.2\textwidth,keepaspectratio]{images/traduzione-float-to-decimal.png}
+	\caption{Decodifica da IEEE 754 a decimale}
+\end{figure}
