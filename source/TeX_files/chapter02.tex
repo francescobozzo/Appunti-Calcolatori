@@ -158,23 +158,36 @@ Lo standard più comunemente utilizzato è l'IEEE 754 che, nei numeri \textit{fl
 
 
 Il bit di segno ha la funzione che già conosciamo, mentre il campo $E$ può contenere valori compresi tra 0 e 255% ($-2^{e-1}+1 < E \le 2^{e-1}-1$)
-; questi ultimi due valori vengono utilizzati per funzioni speciali, mentre i valori da 1 a 254 compresi codificano l'esponente effettivo dei calcoli, che diremo $exp$,	 in questo modo: 
+; questi ultimi due valori vengono utilizzati per funzioni speciali, mentre i valori da 1 a 254 compresi codificano l'esponente effettivo dei calcoli, che diremo $exp$\footnote{La notazione $exp$ è stata introdotta da noi autori della dispensa perchè ci è sembrata più chiara ed agile di quella utilizzata dal prof., chiediamo venia se questo genererà confusione}, in questo modo: 
 \begin{equation*}
 exp=E-2^{e-1}-1
 \end{equation*}
 Nel nostro caso, $exp=E-127$. L'ultimo campo, la \textit{mantissa}, codifica un numero intero. 
-\paragraph{Come calcolare il valore di un \textit{float}} Il primo bit è utilizzato per indicare il segno, i successivi 8 per $E$ e i restanti 23 per la mantissa. La codifica assume due forme in base al valore di $E$:
+\paragraph{Come calcolare il valore di un \textit{float}} Il primo bit è utilizzato per indicare il segno, i successivi 8 per $E$ e i restanti 23 per la mantissa. La decodifica in decimale assume due forme in base al valore di $E$:
 \begin{itemize}[noitemsep,nolistsep]
 	\item se $E=0$, allora il numero in base 10 è $x_{10}=0.M \cdot 2^{0}$;
 	\item se $E>0$, allora il numero in base 10 è $x_{10}=1.M \cdot 2^{exp}$, dove $exp$ è definito come qui sopra descritto.
 \end{itemize}
-Nel primo di questi due casi i numeri si dicono \textit{denormalizzati}, essi rappresentano tutti i numeri compresi tra 0 e 1; nel secondo caso i numeri si dicono \textit{normalizzati}.\\
-Per tradurre in decimale un numero in virgola mobile si deve quindi per prima cosa determinare il segno, poi si calcola l'esponente effettivo dei calcoli ($exp=E-127$) e da qui si procede in due modi: \\
-se $exp\neq-127$ si parla di numero \textit{normalizzato} e quindi si aggiunge un bit 1 alla mantissa in modo da ottenere il numero 1,M e si sposta la virgola di $exp$ posizioni e per completare il tutto si traduce il numero binario così ottenuto in decimale.
+Nel primo di questi due casi i numeri si dicono \textit{denormalizzati}, essi rappresentano tutti i numeri compresi tra 0 e 1; nel secondo caso i numeri si dicono \textit{normalizzati} [questa distinzione è stata aggiunta per migliorare la precisione della notazione con numeri molto vicini allo 0].\\
+Per tradurre in decimale un numero in virgola mobile si deve quindi per prima cosa determinare il segno, poi si calcola l'esponente effettivo dei calcoli ($exp=E-127$) e da qui, simmetricamente a prima, si procede in due modi: \\
+\begin{itemize}[noitemsep,nolistsep]
+	\item se $exp\neq-127$ si parla di numero \textit{normalizzato} e quindi si aggiunge un bit 1 alla mantissa in modo da ottenere il numero $1.M$ e si sposta la virgola di $exp$ posizioni e per completare il tutto si traduce il numero binario così ottenuto in decimale;
+	\item se $exp=-127$ si parla di numero \textit{denormalizzato} e quindi si aggiunge un bit 0 alla mantissa in modo da ottenere $0.M$ e come prima si sposta la virgola di ($127$) posizioni e poi si decifra il numero (binario) così ottenuto;
+\end{itemize}
 
-se $exp=-127$ si parla di numero \textit{denormalizzato} e quindi si aggiunge un bit 0 alla mantissa in modo da ottenere 0,M e come prima si sposta la virgola di ($127$) posizioni e poi si decifra il numero (binario) così ottenuto.
-
-
-Una volta stabilito quale delle precedenti due opzioni riguarda il nostro caso passiamo a calcolare la mantissa M, decodificandola come un semplice numero intero.
-\\/ 
-in fondo si parla dei numeri speciali
+Una volta stabilito quale delle precedenti due opzioni riguarda il nostro caso spostiamo la virgola di \textit{exp} posizioni nel numero $1.M$ oppure $0.M$ (verso destra se $exp>0$ e viceversa), decodifichiamo il numero ottenuto come se fosse un binario in virola fissa.\\
+\subsection{Tabella riassuntiva}
+Ecco una breve tabella riassuntiva dell'interpretazione delle stringhe nella rappresentazione IEEE 754:
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		\rowcolor[HTML]{EFEFEF} 
+		{\color[HTML]{000000} Categoria} & {\color[HTML]{000000} Esponente} & {\color[HTML]{000000} Mantissa} \\ \hline
+		Zeri                             & 0                                & 0                               \\ \hline
+		Num. denormalizzati              & 0                                & non zero                        \\ \hline
+		Num. normalizzati                & 1-254                            & qualunque                       \\ \hline
+		Infiniti                         & 255                              & 0                               \\ \hline
+		Nan (not a number)               & 255                              & non zero                        \\ \hline
+	\end{tabular}
+\end{table}
