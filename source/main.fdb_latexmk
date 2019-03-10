@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1552231150 "main.tex" "main.pdf" "main" 1552231153
+["pdflatex"] 1552231775 "main.tex" "main.pdf" "main" 1552231778
   "c:/texlive/2017/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1516124024 2971 def0b6c1f0b107b3b936def894055589 ""
   "c:/texlive/2017/texmf-dist/fonts/map/fontname/texfonts.map" 1516124424 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "c:/texlive/2017/texmf-dist/fonts/tfm/jknappen/ec/ecbi1200.tfm" 1516124295 3072 ccae1a240ab272417e4399fe942df546 ""
@@ -146,11 +146,12 @@
   "chapters/04/assets/images/porte_logiche.png" 1551739702 46962 49c64a600bb0436384ee3a8152ef1b9e ""
   "chapters/04/chapter04.tex" 1552231061 10653 750f47b05d95111d54aff582c8bbf199 ""
   "chapters/05/chapter05.tex" 1552231129 12362 c9e1ea2358e649308f77139a576486f2 ""
-  "main.aux" 1552231152 8324 ed3ff539925f97c677b8a90f6d7ac1cc ""
-  "main.tex" 1552231116 1118 0444817d815f5eece0205c195ebd1339 ""
-  "main.toc" 1552231152 4081 213681208434b092e542c129b5a42d31 ""
+  "main.aux" 1552231777 8324 ed3ff539925f97c677b8a90f6d7ac1cc ""
+  "main.tex" 1552231771 671 00a463843f5ee80d264a4318f17f4490 ""
+  "main.toc" 1552231777 4081 213681208434b092e542c129b5a42d31 ""
+  "style.sty" 1552231655 297 a2f80c67b0af131e2373f972d5543319 ""
   (generated)
-  "main.log"
   "main.aux"
+  "main.log"
   "main.pdf"
   "main.toc"
