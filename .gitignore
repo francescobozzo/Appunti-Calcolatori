@@ -6,4 +6,4 @@
 *.out
 *.dvi
 *.fls
-.fdb_latexmk
+*.fdb_latexmk
