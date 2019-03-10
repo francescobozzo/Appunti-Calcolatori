@@ -5,3 +5,5 @@
 *.lof
 *.out
 *.dvi
+*.fls
+.fdb_latexmk
