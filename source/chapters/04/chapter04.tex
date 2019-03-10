@@ -1,3 +1,6 @@
+\documentclass[../../main.tex]{subfiles}
+
+\begin{document}
 \chapter{Le reti logiche}
 \section{Introduzione}
 Come ben sappiamo, a differenza di \emph{ENIAC}, i computer moderni sono realizzati da un'enorme quantità di circuiti elettronici. Trattandosi di eletronica digitale, a livello hardware è possibile lavorare con due livelli fondamentali:
@@ -39,9 +42,9 @@ Proprio grazie alla regola di De Morgan, si può affermare che la porta \textbf{
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|}
 		\hline
-		\rowcolor[HTML]{EFEFEF} 
+		\rowcolor[HTML]{EFEFEF}
 		\multicolumn{3}{|c|}{\cellcolor[HTML]{EFEFEF}Input} & \multicolumn{3}{c|}{\cellcolor[HTML]{EFEFEF}Output} \\ \hline
-		\rowcolor[HTML]{EFEFEF} 
+		\rowcolor[HTML]{EFEFEF}
 		A & B & C & D & E & F \\ \hline
 		0 & 0 & 0 & 0 & 0 & 0 \\ \hline
 		0 & 0 & 1 & 1 & 0 & 0 \\ \hline
@@ -67,14 +70,14 @@ In particolare, l'ultima espressione è stata ottenuta come somme di prodotti at
 A seguire vengono rappresentate, attraverso i corrispettivi simboli, le porte logiche implementate attraverso gli operatori booleani fondamentali:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.8\textwidth,keepaspectratio]{images/porte_logiche.png}
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{porte_logiche.png}
 	\caption{Rappresentazione di AND, OR e NOT}
 \end{figure}
 
 Si ricorda inoltre che è possibile combinare fra loro diverse porte logiche:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.8\textwidth,keepaspectratio]{images/combinazione_porte.png}
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{combinazione_porte.png}
 	\caption{Combinazione di porte logiche}
 \end{figure}
 
@@ -83,16 +86,16 @@ Si ricorda inoltre che è possibile combinare fra loro diverse porte logiche:
 L'ingresso del \emph{decoder} svolge il ruolo di selettore: ricevendo in input il valore \(n\), si accenderà l'\(n\)-esima uscita. A seguire l'implementazione di un decoder a 3 bit:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.4\textwidth,keepaspectratio]{images/3bit_decoder.png}
+	\includegraphics[width=0.4\textwidth,keepaspectratio]{3bit_decoder.png}
 	\caption{Decoder a 3 bit}
 \end{figure}
 \begin{table}[!h]
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
 		\hline
-		\rowcolor[HTML]{EFEFEF} 
+		\rowcolor[HTML]{EFEFEF}
 		\multicolumn{3}{|c|}{\cellcolor[HTML]{EFEFEF}Input} & \multicolumn{8}{c|}{\cellcolor[HTML]{EFEFEF}Output} \\ \hline
-		\rowcolor[HTML]{EFEFEF} 
+		\rowcolor[HTML]{EFEFEF}
 		In2 & In1 & In0 & Out7 & Out6 & Out5 & Out4 & Out3 & Out2 & Out1 & Out0 \\ \hline
 		0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\ \hline
 		0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\ \hline
@@ -111,19 +114,19 @@ L'ingresso del \emph{decoder} svolge il ruolo di selettore: ricevendo in input i
 Prevede un input con valore \(S\) utilizzato come selettore. L'output del \emph{multiplexer} è il valore dell'input \(S\)-esimo.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.3\textwidth,keepaspectratio]{images/multi.png}
+	\includegraphics[width=0.3\textwidth,keepaspectratio]{multi.png}
 	\caption{Multiplexer a 1 bit}
 \end{figure}
 \`{E} possibile costruire un multiplexer attraverso un decoder:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth,keepaspectratio]{images/multi_n_vie.png}
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{multi_n_vie.png}
 	\caption{Multiplexer a n vie}
 \end{figure}
 Molto spesso, per operare con dati complessi, si compongono degli array di elementi elementari. Segue un esempio di come sia possibile costruire un multiplexer con \emph{bus} a 32 bit utilizzando un array di multiplexer a 1 bit.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth,keepaspectratio]{images/mux_32bit.png}
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{mux_32bit.png}
 	\caption{Multiplexer a 32 bit}
 \end{figure}
 
@@ -133,12 +136,12 @@ Inoltre, il PLA implementa porte logiche solamente per le configurazioni che pro
 Successivamente seguono due diverse implementazioni della rete logica descritta nel paragrafo~\ref{subsec:mintermini}.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth,keepaspectratio]{images/es_rete_logica.png}
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{es_rete_logica.png}
 	\caption{Esempio di rete logica}
 \end{figure}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth,keepaspectratio]{images/es_pla.png}
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{es_pla.png}
 	\caption{Esempio di rete logica implementata attraverso PLA}
 \end{figure}
 
@@ -158,18 +161,18 @@ Seppur questo meccanismo offra delle potenzialità enormi, l'analisi e la sintes
 A seguire un'implementazione di una rete sequenziale \emph{latch S-R} (\emph{set-reset}) costruita attraverso due porte NOR:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.8\textwidth,keepaspectratio]{images/es_latch.png}
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{es_latch.png}
 	\caption{Esempio di latch a porte NOR}
 \end{figure}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\textwidth,keepaspectratio]{images/operazioni_latch.png}
+	\includegraphics[width=\textwidth,keepaspectratio]{operazioni_latch.png}
 	\caption{Operazioni di un latch a porte NOR}
 \end{figure}
 Ma, considerando che i segnali non si propagano in tempo nullo, ciò potrebbe causare dei problemi circa la correttezza del segnale stesso. La soluzione è quella di aggiungere un ulteriore segnale, in grado di temporizzare il circuito: il \emph{clock}. Un latch dotato di temporizzazione viene chiamato \emph{gated latch}.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\textwidth,keepaspectratio]{images/gated_latch.png}
+	\includegraphics[width=\textwidth,keepaspectratio]{gated_latch.png}
 	\caption{Esempio di gated latch}
 \end{figure}
 Il difetto principale di un latch R-S è quello di avere uno stato indecidibile: l'uscita non può essere nota con certezza quando entrambi gli ingressi sono a 1.
@@ -177,4 +180,4 @@ Il difetto principale di un latch R-S è quello di avere uno stato indecidibile:
 Una soluzione è implementata attraverso \emph{latch} tipo \emph{D}: gli ingressi al circuito sono ottenuti da un'unica variabile (di cui se ne fa il negato). Altrimenti, attraverso circuiti \emph{flip-flop master-slave} è possibile ottenere che l’uscita del circuito commuti esattamente al termine dell’impulso di clock.\\
 In particolare, i latch di tipo D vengono utilizzati per implementare i registri della CPU.
 
-
+\end{document}

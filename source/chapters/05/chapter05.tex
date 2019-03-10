@@ -2,7 +2,7 @@
 
 \section{Perchè esiste Assembly}
 
-Le CPU capiscono esclusivamente le istruzioni che sono scritte nel loro specifico linguaggio macchina, che corrisponde ad una sequenza di bit 0 e 1. 
+Le CPU capiscono esclusivamente le istruzioni che sono scritte nel loro specifico linguaggio macchina, che corrisponde ad una sequenza di bit 0 e 1.
 Al giorno d’oggi programmiamo praticamente solo ad alto livello,  poiché programmare in linguaggio macchina sarebbe molto più complesso e dispendioso; il mezzo che ci permette di intermediare  tra l'alto livello a cui programmiamo e la macchina è l’Assembly.\\
 Il vantaggio di Assembly è l’utilizzo di codici mnemonici  (le keyword del linguaggio) che al programmatore risultano più semplici delle stringhe di 0 e 1.\\
 Si deve però notare che Assembly, essendo di così basso livello, è un linguaggio molto specifico, che si adatta solo ad una certa struttura (anche se esistono architetture che possono essere gestite da più versioni di Assembly), ad esempio un linguaggio Assembly per ARM non può essere usato su architetture Intel.
@@ -10,9 +10,9 @@ Si deve però notare che Assembly, essendo di così basso livello, è un linguag
 \section{Come funziona Assembly}
 
 \subsection{L'Assembler}
-Una volta che il programmatore ha scritto il suo algoritmo e questo è stato codificato in Assembly dal calcolatore, chi si occupa della traduzione dell’Assembly?\\ 
+Una volta che il programmatore ha scritto il suo algoritmo e questo è stato codificato in Assembly dal calcolatore, chi si occupa della traduzione dell’Assembly?\\
 L’Assembler, che è appunto il compilatore dell’Assembly (es.: Se ho un’istruzione del tipo ADD A B l’Assembler la trasforma in codice binario).\\
-L’insieme di tutte le istruzioni specifiche conosciute da un’architettura è detto \textbf{ISA} (Instruction Set Architecture); 
+L’insieme di tutte le istruzioni specifiche conosciute da un’architettura è detto \textbf{ISA} (Instruction Set Architecture);
 
 \subsection{Instruction Set Architecture}
 l’ISA è un insieme di regole e procedure che specifica come ogni istruzione deve essere strutturata, codificata ed anche eseguita; in pratica esso specifica sia la semantica che la sintassi, che cosa si deve fare per compiere delle istruzioni e come si fa.\\
@@ -38,11 +38,11 @@ Queste operazioni vengono scandite dal clock, lo svolgimento delle istruzioni è
 
 \subsection{Ritornando ad Assembly}
 Nell’Assembly di fatto non esistono istruzioni come i cicli, però queste vengono implementate attraverso istruzioni che modificano il Program Counter.
-Complessivamente un programma in Assembly può essere descritto come una lista di istruzioni di tre tipi: 
+Complessivamente un programma in Assembly può essere descritto come una lista di istruzioni di tre tipi:
 \begin{itemize}[noitemsep]
 	\item Operazioni aritmetiche/logiche (o anche algebriche e booleane)
 	\item Operazioni di gestione dati (istruzioni di indirizzamento)
-	\item Operazioni di controllo del flusso del programma (operazioni sul Program Counter) 
+	\item Operazioni di controllo del flusso del programma (operazioni sul Program Counter)
 \end{itemize}
 Generalmente possiamo utilizzare le istruzioni in due modi diversi, o inserendo direttamente i dati nel corpo dell'istruzione, ma questa è una grande limitazione poiché le istruzioni hanno dimensioni preimpostate (o comunque limitate), o inserendo nelle istruzioni gli indirizzi di alcuni registri (dove posso stoccare i dati che necessito); esiste un'ultima possibilità, che ci permette di memorizzare nelle istruzioni gli indirizzi dei dati che stocchiamo in memoria (così da poter sfruttare le quantità enormi di memoria di un calcolatore) e poi prelevare i dati necessari dalla memoria e caricarli nei registri (così da avere la velocità di accesso dei registri).\\
 Si deve tenere in conto che però i registri sono limitati (in alcune architetture ARM sono addirittura solo 4) e devono anche essere ripuliti dopo ogni utilizzo (a questo pensa la CPU).

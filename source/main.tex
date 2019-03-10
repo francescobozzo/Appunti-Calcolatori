@@ -15,6 +15,16 @@
 \usepackage{amsmath,amssymb,amsthm}	% Pacchetti per la matematica
 \usepackage{units}
 
+\usepackage{subfiles}
+
+\graphicspath{
+{./assets/images/}
+{./chapters/01/assets/images/}
+{./chapters/02/assets/images/}
+{./chapters/03/assets/images/}
+{./chapters/04/assets/images/}
+{./chapters/05/assets/images/}
+}
 
 \begin{document}
 
@@ -27,14 +37,11 @@
 \tableofcontents
 
 \mainmatter
-\include{./TeX_files/chapter01}
-\include{./TeX_files/chapter02}
-\include{./TeX_files/chapter03}
-\include{./TeX_files/chapter04}
-\include{./TeX_files/chapter05}
-
+\subfile{./chapters/01/chapter01}
+\subfile{./chapters/02/chapter02}
+\subfile{./chapters/03/chapter03}
+\subfile{./chapters/04/chapter04}
+\subfile{./chapters/05/chapter05}
 
 \backmatter
-% bibliography, glossary and index would go here.
-
 \end{document}
