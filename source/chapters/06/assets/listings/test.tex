@@ -1,0 +1,19 @@
+\documentclass[varwidth]{standalone}
+\usepackage{minted}
+\usepackage{enumitem}
+
+\begin{document}
+% linenos sembra non funzionare... problema di standalone?
+\begin{minted}[linenos,breaklines]{asm}
+# somma di due registri
+add $t0, $s1, $s2;
+add $t1, $s3, $s4;
+
+# lettura e scrittura in memoria
+lw $t0, 4($s3);
+sw $to, 48($s3);
+
+# somma di una costante ad un registro
+\end{minted}
+
+\end{document}
