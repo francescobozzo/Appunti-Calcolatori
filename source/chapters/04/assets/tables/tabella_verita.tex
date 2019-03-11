@@ -1,0 +1,28 @@
+\documentclass{standalone}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+
+\setlength\lightrulewidth{0.1pt}
+\newcommand\lightrule{%
+	\arrayrulecolor{black!30}%
+	\midrule[\lightrulewidth]%
+	\arrayrulecolor{black}}
+
+\begin{document}
+\begin{tabular}{*{6}{c}}
+	\toprule
+		\multicolumn{3}{c}{Input} & \multicolumn{3}{c}{Output}\\
+		\cmidrule(lr){1-3} \cmidrule(lr){4-6}
+		\textsc{a} & \textsc{b} & \textsc{c} & \textsc{d} & \textsc{e} & \textsc{f} \\
+	\midrule
+		0 & 0 & 0 & 0 & 0 & 0 \\\lightrule
+		0 & 0 & 1 & 1 & 0 & 0 \\\lightrule
+		0 & 1 & 0 & 1 & 0 & 0 \\\lightrule
+		0 & 1 & 1 & 1 & 1 & 0 \\\lightrule
+		1 & 0 & 0 & 1 & 0 & 0 \\\lightrule
+		1 & 0 & 1 & 1 & 1 & 0 \\\lightrule
+		1 & 1 & 0 & 1 & 1 & 0 \\\lightrule
+		1 & 1 & 1 & 1 & 0 & 1 \\
+		\bottomrule
+\end{tabular}
+\end{document}
