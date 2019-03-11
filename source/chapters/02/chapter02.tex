@@ -15,25 +15,25 @@
 	\label{fig:transistor}
 	\centering
 \end{wrapfigure}
-Tutti i computer moderni sono composti da \textit{transistor} (detti anche triodi) che sono strutture bistabili, ovvero che possono assumere due stati come un interruttore: 0=spento e 1=acceso. Molti \textit{transistor} collegati tra loro in una sorta di matrice possono rappresentare delle serie di porte logiche, ed è questa la struttura che sta alla base dell'architettura dei moderni calcolatori.\\
-Un computer memorizza (e manipola) solo sequenze di 0 e 1 (sequenze di bit); anche l’ENIAC funzionava allo stesso modo, solo che al posto dei \textit{transistor} era composto da \textit{valvole termoioniche}, che in ultima analisi non erano differenti nel funzionamento (assumono sempre i due stati descritti in precedenza, solo più lentamente).
+Tutti i computer moderni sono composti da \emph{transistor} (detti anche triodi) che sono strutture bistabili, ovvero che possono assumere due stati come un interruttore: 0=spento e 1=acceso. Molti \emph{transistor} collegati tra loro in una sorta di matrice possono rappresentare delle serie di porte logiche, ed è questa la struttura che sta alla base dell'architettura dei moderni calcolatori.\\
+Un computer memorizza (e manipola) solo sequenze di 0 e 1 (sequenze di bit); anche l’ENIAC funzionava allo stesso modo, solo che al posto dei \emph{transistor} era composto da \emph{valvole termoioniche}, che in ultima analisi non erano differenti nel funzionamento (assumono sempre i due stati descritti in precedenza, solo più lentamente).
 \subsection{Interpretazione delle informazioni} In seguito le sequenze di bit che i computer elaborano/memorizzano possono essere interpretate in tantissimi modi diversi, tra cui numeri, caratteri, suoni, immagini, istruzioni e molti altri.\\
-Alla base di tutte le interpretazioni che si possono dare alle stringhe di simboli (che nel caso del computer sono proprio i due stati del bit) sta il concetto di \textbf{codifica}. La \textbf{codifica} è appunto uno schema, una legge, un \textit{mapping} che permette di tradurre prima ed interpretare poi stringhe di simboli.
+Alla base di tutte le interpretazioni che si possono dare alle stringhe di simboli (che nel caso del computer sono proprio i due stati del bit) sta il concetto di \textbf{codifica}. La \textbf{codifica} è appunto uno schema, una legge, un \emph{mapping} che permette di tradurre prima ed interpretare poi stringhe di simboli.
 Nell’ambito dell’IT le codifiche sono fortemente caratterizzate dalla lunghezza (dal numero di bit) delle “parole” elementari della codifica. Ad esempio per rappresentare tutti i caratteri (tabella ASCII) utilizziamo  8 bit [256 caratteri].
-Si osservi che essendo i \textit{transistor} sistemi bistabili la base 2 (con cifre 0 e 1) è perfetta per rappresentare la codifica dei dati memorizzati/elaborati da essi.
+Si osservi che essendo i \emph{transistor} sistemi bistabili la base 2 (con cifre 0 e 1) è perfetta per rappresentare la codifica dei dati memorizzati/elaborati da essi.
 \section{I numeri}
 Limitiamoci al caso dei numeri per spiegare il concetto di \textbf{codifica}:\\
 Ricordiamo che i  metodi di rappresentazione numerica che studiamo sono posizionali, ovvero il peso di ogni cifra varia in base alla posizione che essa  occupa.\\
 In generale se una base è composta da B elementi essa ha B cifre (da 0 a B-1) utilizzate per scrivere ogni numero.
 Questa formula ci restituisce il valore di ogni numero scritto in una qualsiasi base B:\\
 \[c_{i} c_{i-1} c_{i-2}... c_{0}=c_{i}\cdot B^{i}+...+c_{0}\cdot B^{0}\]\\
-dove $c_{i}$ è la cifra in posizione \textit{i}.
+dove $c_{i}$ è la cifra in posizione \emph{i}.
 
 \subsection{Regole di conversione tra basi}
-\textit{(un elenco delle principali basi è troppo mainstream?)}\\\\
+\emph{(un elenco delle principali basi è troppo mainstream?)}\\\\
 Vediamo ora come operare la conversione tra le principali basi:
 \begin{itemize}[noitemsep,nolistsep]
-	\item \textbf{da base 2 a base 16}: partendo da destra, si dividono le cifre binarie in gruppi da 4 cifre ciascuno, e ognuno di questi corrisponderà a una cifra esadecimale; qualora il numero di cifre binarie non sia divisibile per 4, si completi con degli 0 in modo da ottenere gruppi da 4\\ (\textit{esempio: $(11011)_{2}$ diventerà $(0001\text{ }1011)_{2}$, ovvero $(1B)_{16}$});
+	\item \textbf{da base 2 a base 16}: partendo da destra, si dividono le cifre binarie in gruppi da 4 cifre ciascuno, e ognuno di questi corrisponderà a una cifra esadecimale; qualora il numero di cifre binarie non sia divisibile per 4, si completi con degli 0 in modo da ottenere gruppi da 4\\ (\emph{esempio: $(11011)_{2}$ diventerà $(0001\text{ }1011)_{2}$, ovvero $(1B)_{16}$});
 	\item \textbf{da base 2 a base 8}: analogamente, si dividano le cifre binarie in gruppi da 3 cifre ciascuno, e ognuno di questi corrisponderà a una cifra ottale;
 	\item \textbf{da una qualsiasi base $B$ a base 10}: come visto sopra, si moltiplica ogni cifra $c_{i}$ per $B^{i}$, dipendentemente dalla sua posizione;
 	\item \textbf{da base 10 a una qualsiasi base B}:
@@ -51,7 +51,7 @@ Vediamo ora come operare la conversione tra le principali basi:
 	\caption{Alcuni esempi di conversione}
 \end{figure}
 
-\subsection{I naturali} Nella codifica binaria un numero naturale è rappresentato su \textit{k} cifre binarie, dove con \textit{k} cifre si possono rappresentare i numeri tra 0 e $2^{k}-1$.\\
+\subsection{I naturali} Nella codifica binaria un numero naturale è rappresentato su \emph{k} cifre binarie, dove con \emph{k} cifre si possono rappresentare i numeri tra 0 e $2^{k}-1$.\\
 La codifica più comune per gli interi spesso usa i byte, sequenze di 8 bit, che tuttavia richiedono molte cifre per rappresentare un numero e quindi spesso, per semplificare la lettura, si usa scrivere i numeri in esadecimale (quindi scrivendo un quarto delle cifre rispetto alla binaria).
 
 \paragraph*{Somma e sottrazione}
@@ -76,13 +76,13 @@ Le operazioni somma e sottrazione funzionano allo stesso modo del sistema utiliz
 \end{figure}
 Si noti che quando è presente un 1 si riscrive il numero (nella posizione corrispondente) mentre  quando è presente uno 0 semplicemente non si scrive nulla (e si va solo avanti con le posizioni).
 
-\subsection{Gli interi} Finora abbiamo visto come si codificano solo i numeri naturali, ma esistono metodi di codifica che permettono di rappresentare anche i numeri negativi (quindi l’insieme degli interi). Le tecniche più comuni sono: modulo e segno, complemento a 1 (\textit{CA1}) e complemento a 2 (\textit{CA2}).
+\subsection{Gli interi} Finora abbiamo visto come si codificano solo i numeri naturali, ma esistono metodi di codifica che permettono di rappresentare anche i numeri negativi (quindi l’insieme degli interi). Le tecniche più comuni sono: modulo e segno, complemento a 1 (\emph{CA1}) e complemento a 2 (\emph{CA2}).
 
 \paragraph*{Codifica con Modulo e Segno:} Idea semplice: si usano $k-1$ bit per rappresentare il valore assoluto (modulo) del numero  ed un bit per codificare il segno (0=positivo, 1=negativo). In questo modo con k bit si possono codificare valori tra $-2^{k-1}+1 \text{ e} +2^{k-1}-1$.\\
 \underline{N.B.}: esistono due codifiche per lo $0$, $-0$  e $+0$, e questo è un spreco.
 
 \paragraph*{Codifica in Complemento a 1:} L’idea alla base è semplice, il primo bit indica sempre il segno e per ottenere l’opposto di un numero positivo si invertono tutti gli 0 in 1 e gli 1 in 0 (e lo stesso si fa per ottenere l’opposto di un numero negativo). Si hanno ancora due rappresentazioni per +0 e -0 (rispettivamente, utilizzando 4 bit, 0000 e 1111). È più facile da sommare rispetto al modulo e segno ma solo se il bit significativo non da riporto.
-Quando si sommano due numeri in \textit{CA1}:
+Quando si sommano due numeri in \emph{CA1}:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{Somma-CA1.png}
@@ -92,29 +92,29 @@ Quando si sommano due numeri in \textit{CA1}:
 \item Si deve verificare che i riporti delle prime due cifre significative siano uguali, altrimenti il numero che si ottiene non è rappresentabile in CA1 su k bit.
 \item Alla fine si deve sommare il riporto della prima cifra al risultato ottenuto (ultima riga).
 \end{itemize}
-\paragraph*{Codifica in Complemento a 2:} Per tradurre un numero da intero con segno a complemento a 2 (\textit{CA2}) basta invertire tutti i bit e poi sommare 1. Viceversa, per convertire da \textit{CA2} a binario, si sottrae 1 e poi si invertono tutti i bit. \\
-Ancora una volta il bit più significativo indica il segno, ma in questo caso la codifica dello 0 è unica, quindi con \textit{k} bit si possono rappresentare i numeri da $-2^{k-1}$ a $2^{k-1}-1$. Anche la somma è più semplice ma questo lo vedremo in futuro.
-\subsubsection{Somma algebrica in Complemento a 2} L'utilizzo della codifica \textit{CA2} permette di eseguire somme algebriche senza alcuna differenza operativa, ma rende necessario prestare attenzione agli \textit{overflows}.\\
-Con il termine \textit{overflow} si intende la situazione in cui, date in input delle informazioni codificate in un numero $k$ di bit arbitrariamente scelto, lo stesso numero $k$ di bit non è sufficiente a codificare le informazioni in output. \\
-Diamo subito un esempio: supponiamo di voler eseguire $-64-8$ utilizzando il \textit{CA2} e $k=7$ bit. Ricordiamo che:\\\\
-$-64=1000000_{2}=\overline{1000000}+1=0111111+1=1000000 \text{ in \textit{CA2;}}$\\
-$-8=0001000_{2}=\overline{0001000}+1=1110111+1=1111000 \text{ in \textit{CA2}}.$\\\\
+\paragraph*{Codifica in Complemento a 2:} Per tradurre un numero da intero con segno a complemento a 2 (\emph{CA2}) basta invertire tutti i bit e poi sommare 1. Viceversa, per convertire da \emph{CA2} a binario, si sottrae 1 e poi si invertono tutti i bit. \\
+Ancora una volta il bit più significativo indica il segno, ma in questo caso la codifica dello 0 è unica, quindi con \emph{k} bit si possono rappresentare i numeri da $-2^{k-1}$ a $2^{k-1}-1$. Anche la somma è più semplice ma questo lo vedremo in futuro.
+\subsubsection{Somma algebrica in Complemento a 2} L'utilizzo della codifica \emph{CA2} permette di eseguire somme algebriche senza alcuna differenza operativa, ma rende necessario prestare attenzione agli \emph{overflows}.\\
+Con il termine \emph{overflow} si intende la situazione in cui, date in input delle informazioni codificate in un numero $k$ di bit arbitrariamente scelto, lo stesso numero $k$ di bit non è sufficiente a codificare le informazioni in output. \\
+Diamo subito un esempio: supponiamo di voler eseguire $-64-8$ utilizzando il \emph{CA2} e $k=7$ bit. Ricordiamo che:\\\\
+$-64=1000000_{2}=\overline{1000000}+1=0111111+1=1000000 \text{ in \emph{CA2;}}$\\
+$-8=0001000_{2}=\overline{0001000}+1=1110111+1=1111000 \text{ in \emph{CA2}}.$\\\\
 A questo punto eseguiamo la somma algebrica
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.5\textwidth,keepaspectratio]{overflow.png}
 	\caption{(Il numero fra parentesi indica l'ultimo riporto, che chiaramente non possiamo inserire poiché sforerebbe i 7 bit)}
 \end{figure}
-Osserviamo così che, per $k=7$ bit, $-64-8=0111000_{2}=56_{10}$, che ovviamente non ci piace; concludiamo quindi che la somma algebrica $-64-8=-72$ \textit{non} è rappresentabile con soli $k=7$ bit.\\
+Osserviamo così che, per $k=7$ bit, $-64-8=0111000_{2}=56_{10}$, che ovviamente non ci piace; concludiamo quindi che la somma algebrica $-64-8=-72$ \emph{non} è rappresentabile con soli $k=7$ bit.\\
 
-Possiamo dire che, in generale, dati due numeri $a, b$ aventi lo stesso segno, avremo problemi di \textit{overflow} se
+Possiamo dire che, in generale, dati due numeri $a, b$ aventi lo stesso segno, avremo problemi di \emph{overflow} se
 \begin{itemize}[noitemsep,nolistsep]
 	\item $a+b>2^{k-1}-1$
 	\item $a+b<-2^{k-1}$
 \end{itemize}
 ricordando che $-2^{k-1}\le a,b\le 2^{k-1}-1$.
 
-\subsubsection{Aritmetica modulare} Incosapevolmente noi utilizziamo l'\textit{aritmetica modulare} quasi continuamente, nella nostra quotidianità; l'esempio più comune è quando sommiamo le ore, che sono organizzate in modulo 24 (da cui la denominazione ufficiosa di "Matematica dell'orologio"), ma anche minuti e secondi (modulo 60) e gli angoli (modulo 360).\\
+\subsubsection{Aritmetica modulare} Incosapevolmente noi utilizziamo l'\emph{aritmetica modulare} quasi continuamente, nella nostra quotidianità; l'esempio più comune è quando sommiamo le ore, che sono organizzate in modulo 24 (da cui la denominazione ufficiosa di "Matematica dell'orologio"), ma anche minuti e secondi (modulo 60) e gli angoli (modulo 360).\\
 Diamone una descrizione intuitiva: fissato un numero $n$ finito di valori, arrivato al numero più grande ($n-1$), al successivo avrò che $(n-1)+1=0$.\\
 Per completezza, forniamo ora la relazione di equivalenza di due numeri in modulo $n$:\\
 \begin{equation*}
@@ -122,15 +122,15 @@ Per completezza, forniamo ora la relazione di equivalenza di due numeri in modul
 a\equiv b \longleftrightarrow a\%n=b\%n
 \end{equation*}
 
-Quando noi eseguiamo delle operazioni sui numeri in base 2 su $k$ bit, stiamo lavorando in un ambiente in modulo $2^{k}$, e calcolando $a+b$ stiamo in realtà trovando $(a+b)\%2^{k}$, e i due valori saranno uguali se e solo se $a+b<2^{k}$, perché altrimenti ogni valore successivo ricomincerebbe da 0: questo è l'\textit{overflow}.\\
-In particolare quando lavoriamo su numeri interi in \textit{CA2} dobbiamo ricordare che, se $-2^{k-1}\le a+b\le 2^{k-1}-1$ non avremo \textit{overflow}, altrimenti
+Quando noi eseguiamo delle operazioni sui numeri in base 2 su $k$ bit, stiamo lavorando in un ambiente in modulo $2^{k}$, e calcolando $a+b$ stiamo in realtà trovando $(a+b)\%2^{k}$, e i due valori saranno uguali se e solo se $a+b<2^{k}$, perché altrimenti ogni valore successivo ricomincerebbe da 0: questo è l'\emph{overflow}.\\
+In particolare quando lavoriamo su numeri interi in \emph{CA2} dobbiamo ricordare che, se $-2^{k-1}\le a+b\le 2^{k-1}-1$ non avremo \emph{overflow}, altrimenti
 \begin{itemize}[noitemsep,nolistsep]
-	\item se $a+b<2^{k-1}-1$, otterremo $a+b+2^{k}$ $\longrightarrow$ \textit{OVERFLO(W)!}
-	\item se $a+b>-2^{k-1}$, otterremo $a+b-2^{k}$ $\longrightarrow$ \textit{OVERFLO(W)!}
+	\item se $a+b<2^{k-1}-1$, otterremo $a+b+2^{k}$ $\longrightarrow$ \emph{OVERFLO(W)!}
+	\item se $a+b>-2^{k-1}$, otterremo $a+b-2^{k}$ $\longrightarrow$ \emph{OVERFLO(W)!}
 \end{itemize}
 
-\subsection{I Reali} Non è sempre semplice codificare un numero reale $\alpha \in \mathbb{R}$, poiché di questo insieme fanno parte i numeri cosiddetti \textit{irrazionali}, che presentano infinite cifre non periodiche dopo la virgola (si pensi ad esempio a $\pi=3,14159...$, o $e=2.71828...$, o ancora $\sqrt{2}=1.41421...$).\\
-Alcuni numeri non possono quindi essere rappresentati con un numero finito di bit, per cui ne rappresenteremo solo un'approssimazione, e per farlo abbiamo sviluppato due metodi: la rappresentazione a \textbf{virgola fissa} (o \textit{fixed point}) e quella a \textbf{virgola mobile} (o \textit{floating point}).
+\subsection{I Reali} Non è sempre semplice codificare un numero reale $\alpha \in \mathbb{R}$, poiché di questo insieme fanno parte i numeri cosiddetti \emph{irrazionali}, che presentano infinite cifre non periodiche dopo la virgola (si pensi ad esempio a $\pi=3,14159...$, o $e=2.71828...$, o ancora $\sqrt{2}=1.41421...$).\\
+Alcuni numeri non possono quindi essere rappresentati con un numero finito di bit, per cui ne rappresenteremo solo un'approssimazione, e per farlo abbiamo sviluppato due metodi: la rappresentazione a \textbf{virgola fissa} (o \emph{fixed point}) e quella a \textbf{virgola mobile} (o \emph{floating point}).
 
 \subsubsection{Codifica in virgola fissa} Questo sistema di cofidica prevede che, posto un numero $k$ di bit per la rappresentazione del numero, si impieghino $k-f$ bit per rappresentare la parte intera, e i restanti $f$ bit per rappresentare la parte razioneale:
 \begin{equation*}
@@ -145,16 +145,16 @@ Alcuni numeri non possono quindi essere rappresentati con un numero finito di bi
   \begin{itemize}[noitemsep,nolistsep]
   	\item le operazioni si possono svolgere senza alcuna differenza, se non l'accortezza di scalare il risultato;
   	\item il peso per la CPU è ridotto;
-  	\item non ci sono errori di approssimazione, \textit{se il valore è rappresentabile};
+  	\item non ci sono errori di approssimazione, \emph{se il valore è rappresentabile};
   	\item iniziamo ad avere problemi quando lavoriamo con un ampio spettro di ordini di grandezza.
   \end{itemize}
 
-\textit{(esempio di conversione?)}
+\emph{(esempio di conversione?)}
 \subsubsection{Codifica in virgola mobile}
-Un qualsiasi numero reale può essere scritto anche nella forma $x=M\cdot B^{E}$ dove M si dice \textit{mantissa}, E \textit{esponente} e B è la base della rappresentazione (che nel nostro caso è la leggendaria base 2).\\
+Un qualsiasi numero reale può essere scritto anche nella forma $x=M\cdot B^{E}$ dove M si dice \emph{mantissa}, E \emph{esponente} e B è la base della rappresentazione (che nel nostro caso è la leggendaria base 2).\\
 Questo metodo di rappresentazione, del tutto analogo notazione scientifica standard, è implementato anche nell'informatica in più modi diversi ma alla base di tutti si riconosce lo stesso schema: \\
-$x$ può essere rappresentato su \textit{k} bit utilizzando \textit{m} bit per il campo mantissa M ed $e=k-m$ bit per il campo esponente E; quest'ultimo permette in un certo senso di "spostare" la virgola; con esponenti negativi si avranno $x$ "piccoli" e viceversa con esponenti positivi si avranno $x$ "grandi".\\
-Lo standard più comunemente utilizzato è l'IEEE 754 che, nei numeri \textit{float} a precisione singola (dove si usano 32 bit), ha questa struttura:
+$x$ può essere rappresentato su \emph{k} bit utilizzando \emph{m} bit per il campo mantissa M ed $e=k-m$ bit per il campo esponente E; quest'ultimo permette in un certo senso di "spostare" la virgola; con esponenti negativi si avranno $x$ "piccoli" e viceversa con esponenti positivi si avranno $x$ "grandi".\\
+Lo standard più comunemente utilizzato è l'IEEE 754 che, nei numeri \emph{float} a precisione singola (dove si usano 32 bit), ha questa struttura:
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{|l|l|l|}
@@ -170,20 +170,20 @@ Il bit di segno ha la funzione che già conosciamo, mentre il campo $E$ può con
 \begin{equation*}
 exp=E-2^{e-1}-1
 \end{equation*}
-Nel nostro caso, $exp=E-127$. L'ultimo campo, la \textit{mantissa}, codifica un numero intero.
-\paragraph{Come calcolare il valore di un \textit{float}} Il primo bit è utilizzato per indicare il segno, i successivi 8 per $E$ e i restanti 23 per la mantissa. La decodifica in decimale assume due forme in base al valore di $E$:
+Nel nostro caso, $exp=E-127$. L'ultimo campo, la \emph{mantissa}, codifica un numero intero.
+\paragraph{Come calcolare il valore di un \emph{float}} Il primo bit è utilizzato per indicare il segno, i successivi 8 per $E$ e i restanti 23 per la mantissa. La decodifica in decimale assume due forme in base al valore di $E$:
 \begin{itemize}[noitemsep,nolistsep]
 	\item se $E=0$, allora il numero in base 10 è $x_{10}=0.M \cdot 2^{0}$;
 	\item se $E>0$, allora il numero in base 10 è $x_{10}=1.M \cdot 2^{exp}$, dove $exp$ è definito come qui sopra descritto.
 \end{itemize}
-Nel primo di questi due casi i numeri si dicono \textit{denormalizzati}, essi rappresentano tutti i numeri compresi tra 0 e 1; nel secondo caso i numeri si dicono \textit{normalizzati} [questa distinzione è stata aggiunta per migliorare la precisione della notazione con numeri molto vicini allo 0].\\
+Nel primo di questi due casi i numeri si dicono \emph{denormalizzati}, essi rappresentano tutti i numeri compresi tra 0 e 1; nel secondo caso i numeri si dicono \emph{normalizzati} [questa distinzione è stata aggiunta per migliorare la precisione della notazione con numeri molto vicini allo 0].\\
 Per tradurre in decimale un numero in virgola mobile si deve quindi per prima cosa determinare il segno, poi si calcola l'esponente effettivo dei calcoli ($exp=E-127$) e da qui, simmetricamente a prima, si procede in due modi: \\
 \begin{itemize}[noitemsep,nolistsep]
-	\item se $exp\neq-127$ si parla di numero \textit{normalizzato} e quindi si aggiunge un bit 1 alla mantissa in modo da ottenere il numero $1.M$ e si sposta la virgola di $exp$ posizioni e per completare il tutto si traduce il numero binario così ottenuto in decimale;
-	\item se $exp=-127$ si parla di numero \textit{denormalizzato} e quindi si aggiunge un bit 0 alla mantissa in modo da ottenere $0.M$ e come prima si sposta la virgola di ($127$) posizioni e poi si decifra il numero (binario) così ottenuto;
+	\item se $exp\neq-127$ si parla di numero \emph{normalizzato} e quindi si aggiunge un bit 1 alla mantissa in modo da ottenere il numero $1.M$ e si sposta la virgola di $exp$ posizioni e per completare il tutto si traduce il numero binario così ottenuto in decimale;
+	\item se $exp=-127$ si parla di numero \emph{denormalizzato} e quindi si aggiunge un bit 0 alla mantissa in modo da ottenere $0.M$ e come prima si sposta la virgola di ($127$) posizioni e poi si decifra il numero (binario) così ottenuto;
 \end{itemize}
 
-Una volta stabilito quale delle precedenti due opzioni riguarda il nostro caso spostiamo la virgola di \textit{exp} posizioni nel numero $1.M$ oppure $0.M$ (verso destra se $exp>0$ e viceversa), decodifichiamo il numero ottenuto come se fosse un binario in virola fissa.\\
+Una volta stabilito quale delle precedenti due opzioni riguarda il nostro caso spostiamo la virgola di \emph{exp} posizioni nel numero $1.M$ oppure $0.M$ (verso destra se $exp>0$ e viceversa), decodifichiamo il numero ottenuto come se fosse un binario in virola fissa.\\
 \subsubsection{Tabella riassuntiva}
 Ecco una breve tabella riassuntiva dell'interpretazione delle stringhe nella rappresentazione IEEE 754:
 \begin{table}[h!]
