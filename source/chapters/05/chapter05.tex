@@ -1,3 +1,11 @@
+\documentclass[class=book, crop=false]{standalone}
+\usepackage[subpreambles=true]{standalone}
+
+\usepackage{../../style}
+
+\graphicspath{{./assets/images/}}
+
+\begin{document}
 \chapter{Introduzione al linguaggio Assembly}
 
 \section{Perchè esiste Assembly}
@@ -92,3 +100,5 @@ Per questo c’è il bisogno dell'\textit{Application Binary Interface} (ABI), c
 Un programma è composto da tanti metodi e funzioni, e questi vengono mappati in \textit{subroutine} (un pezzo monolitico di istruzioni) dal linguaggio Assembly.
 Per esempio, quando lancio l’istruzione $r=funz(arg1, arg2, arg3, …);$ $funz$ questa è una \textit{subroutine} e devo decidere quali registri posso utilizzare per immagazzinare gli input della funzione, dove posso salvare il suo output, quali registri essa può modificare liberamente. Le risposte a queste questioni vengono risolte dall’ABI che definisce a livello software le \textbf{convenzioni di chiamata} che specificano come utilizzare i registri all’invocazione di una \textit{subroutine}.\\
 Nota tecnica: dato un ISA questo può essere servito da ABI diversi, poiché l’ABI influenza solo la gestione dei servizi.
+
+\end{document}
