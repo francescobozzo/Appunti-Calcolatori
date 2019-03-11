@@ -188,16 +188,7 @@ Una volta stabilito quale delle precedenti due opzioni riguarda il nostro caso s
 Ecco una breve tabella riassuntiva dell'interpretazione delle stringhe nella rappresentazione IEEE 754:
 \begin{table}[h!]
 	\centering
-	\begin{tabular}{|c|c|c|}
-		\hline
-		\rowcolor[HTML]{EFEFEF}
-		{\color[HTML]{000000} Categoria} & {\color[HTML]{000000} Esponente} & {\color[HTML]{000000} Mantissa} \\ \hline
-		Zeri                             & 0                                & 0                               \\ \hline
-		Num. denormalizzati              & 0                                & non zero                        \\ \hline
-		Num. normalizzati                & 1-254                            & qualunque                       \\ \hline
-		Infiniti                         & 255                              & 0                               \\ \hline
-		Nan (not a number)               & 255                              & non zero                        \\ \hline
-	\end{tabular}
+	\import{assets/tables/}{floating_point.tex}
 \end{table}
 
 \subsubsection{Esempio di decodifica di un float}
