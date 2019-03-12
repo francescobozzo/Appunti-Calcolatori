@@ -8,5 +8,66 @@
 \begin{document}
 \chapter{L'architettura \emph{MIPS}}
 
+\section{Istruzioni aritmetico-logiche}
+\subsection{Operazioni di shift}
+\paragraph{Shift logico a sinistra}
+Consideriamo lo \emph{shift logico a sinistra}: l'idea consiste nell'inserire degli zeri nella posizione meno significicativa e traslare tutto a sinistra perdendo (nle caso di overflow) i bit più significativi.\\
+\emph{ssl \$t2, \$s0, 4}\\
+Lo shift massimo che è possibile eseguire è di 32 bit (infatti vengono allocati 5 bit per la costante di shift).\\
+L'effetto dello shift a sinistra di \(k\) bit, allora si moltiplica il numero per \(2^k\). Fa eccezione alcuni casi in cui si lavora con numeri interi codificati in complemento a 2.\\
+
+\paragraph{Shift logico a destra}
+Lo \emph{shift logico a destra} di \(k\) bit significa implementare la divisione intera per \(2^k\). Ma non è utilizzabile per CA2.
+\emph{srl \$t2, \$s0, 1}
+
+\paragraph{Shift aritmetico a destra}
+Invece che inserire 0 come bit più significativo, si ricopia il bit di segno. Dunque risolve i problemi con CA2.
+
+% TODO - tabella riassunta operazioni logiche (shitf sx, shift dx, bitwise and, bitwise or, bitwise not)
+
+\subsection{Operazione di bitwise}
+\paragraph{Bitwise AND}
+L'AND è utilizzato come maschera.\\
+\emph{and \$t0, \$t1, \$t2}
+
+\paragraph{Bitwise OR}
+\emph{or \$t0, \$t1, \$t2}
+
+\paragraph{Bitwise NOR}
+Operazione di NOT OR bit a bit\\
+\emph{nor \$t0, \$t1, \$t2}\\
+Il not non è implementato in mips, altrimenti romperebbe la regolarità delle istruzioni a tre operandi. Un modo per ottenere il not, grazie alle leggi di De Morgan:\\
+\emph{nor \$t0, \$t1, \$zer}
+
+\paragraph{OR esclusivo XOR}
+Produce 1 se i due bit di ingresso sono uguali, altrimenti zero se sono uguali. Faro uno xor di un numero per se stesso: annulla il registro, resettandolo tutto a 0.
+\emph{xor \$t0, \$t1, \$t2}
+
+\section{Salti}
+In inglese c'è differenza fra \emph{jump} (non condizionato) e \emph{branch} (condizionato). Il branch modifica il valore del registro \emph{PC}.\\
+\emph{beq reg1, reg2, L1}: Branch on EQual.\\
+\emph{bne reg1, reg2, L1}: Branch on Non Equal.\\
+\emph{j LABEL}: salta all'indirizzo di label\\
+\emph{jr \$t0}: salta all'indirizzo contenuto nel registro
+Le label vengono alla fine tradotte in indirizzi da parte del compilatore.
+Il check del branch viene fatto con la condizione opposta, per aver maggiore efficienza.
+
+\subsection{Altri confronti}
+\emph{slt \$t0, \$s3, \$s4}: t0=1 se s3<s4.\\
+\emph{slti \$t0, \$s3, 10}: t0=1 se s3<10.\\
+
+% TODO - Riguarda la parte relativa al segno
+
+\subsection{Implementazione del costrutto \emph{if}}
+
+\subsection{Implementazione del costrutto \emph{while}}
+Il ciclo non viene direttamente implementato dal mips.\\
+% TODO - Codice C - Codice MIPS (magari affiancati con minipage)
+
+\subsection{Implementazione del costrutto \emph{switch/case}}
+\begin{itemize}
+	\item Possibilità di creare una sequenza di if-else
+	\item
+\end{itemize}
 
 \end{document}
