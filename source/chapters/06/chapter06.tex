@@ -11,13 +11,14 @@
 \section{Istruzioni aritmetico-logiche}
 \subsection{Operazioni di shift}
 \paragraph{Shift logico a sinistra}
-Consideriamo lo \emph{shift logico a sinistra}: l'idea consiste nell'inserire degli zeri nella posizione meno significicativa e traslare tutto a sinistra perdendo (nle caso di overflow) i bit più significativi.\\
-\emph{ssl \$t2, \$s0, 4}\\
-Lo shift massimo che è possibile eseguire è di 32 bit (infatti vengono allocati 5 bit per la costante di shift).\\
-L'effetto dello shift a sinistra di \(k\) bit, allora si moltiplica il numero per \(2^k\). Fa eccezione alcuni casi in cui si lavora con numeri interi codificati in complemento a 2.\\
+Consideriamo lo \emph{shift logico a sinistra}: l'idea consiste nell'inserire degli zeri nella posizione meno significativa e traslare tutto a sinistra perdendo, nel caso di overflow, i bit più significativi.\\
+\emph{ssl \$t2, \$s0, 4}: Memorizza in t2 il contenuto del registro s0 shiftato a sinistra di 4.\\
+Lo shift massimo che è possibile eseguire è di 32 bit (infatti vengono allocati 5 bit per il campo di \emph{shift amount}). Ciò non risulta un problema in quanto le istruzioni \emph{MIPS} che affronteremo sono codificare in 32 bit.\\
+Eseguire uno shift a sinistra di \(k\) bit di un numero \(n\) positivo, consiste nel moltiplicare \(n\) per \(2^k\). Fanno eccezione solo alcuni casi in cui si lavora con numeri interi codificati in complemento a 2: in questo caso si esce dal \emph{range di rappresentazione} del CA2.
 
 \paragraph{Shift logico a destra}
-Lo \emph{shift logico a destra} di \(k\) bit significa implementare la divisione intera per \(2^k\). Ma non è utilizzabile per CA2.
+In maniera analoga, lo \emph{shift logico a destra} consiste nell'inserire degli zeri nella posizione più significativa, traslando tutto a destra. Come per lo shift logico a sinistra, anche qui è possibile effettuare uno shift di al massimo 32 bit.\\
+Lo \emph{shift logico a destra} di \(k\) bit significa implementare la divisione intera per \(2^k\) per numeri positivi. In questo caso, non è utilizzabile con nessun numero negativo codificato in CA2 (proprio per questo è stato introdotto lo shift aritmetico a destra).\\
 \emph{srl \$t2, \$s0, 1}
 
 \paragraph{Shift aritmetico a destra}
@@ -69,5 +70,6 @@ Il ciclo non viene direttamente implementato dal mips.\\
 	\item Possibilità di creare una sequenza di if-else
 	\item
 \end{itemize}
+
 
 \end{document}
