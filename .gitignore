@@ -10,6 +10,7 @@
 *.sta
 *.pdf
 
+source/_minted-main
 source/chapters/01/_minted-chapter01
 source/chapters/02/_minted-chapter02
 source/chapters/03/_minted-chapter03
