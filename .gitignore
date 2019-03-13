@@ -9,3 +9,10 @@
 *.fdb_latexmk
 *.sta
 *.pdf
+
+source\chapters\01\_minted-chapter01
+source\chapters\02\_minted-chapter02
+source\chapters\03\_minted-chapter03
+source\chapters\04\_minted-chapter04
+source\chapters\05\_minted-chapter05
+source\chapters\06\_minted-chapter06
