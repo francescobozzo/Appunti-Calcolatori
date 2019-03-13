@@ -6,10 +6,12 @@
 \graphicspath{{./assets/images/}}
 
 \begin{document}
-\chapter{L'architettura \emph{MIPS}}
+\chapter{L'architettura MIPS}
 
 \section{Istruzioni aritmetico-logiche}
+
 \subsection{Operazioni di shift}
+
 \paragraph{Shift logico a sinistra}
 Consideriamo lo \emph{shift logico a sinistra}: l'idea consiste nell'inserire degli zeri nella posizione meno significativa e traslare tutto a sinistra perdendo, nel caso di overflow, i bit più significativi.\\
 \emph{ssl \$t2, \$s0, 4}: Memorizza in t2 il contenuto del registro s0 shiftato a sinistra di 4.\\
@@ -71,5 +73,28 @@ Il ciclo non viene direttamente implementato dal mips.\\
 	\item
 \end{itemize}
 
+% \subimport{./assets/listings/}{test.tex}
+\begin{minted}[linenos,breaklines]{asm}
+# somma di due registri
+add $t0, $s1, $s2;
+add $t1, $s3, $s4;
+
+# lettura e scrittura in memoria
+lw $t0, 4($s3);
+sw $to, 48($s3);
+
+# somma di una costante ad un registro
+\end{minted}
+\begin{minted}[linenos,breaklines]{asm}
+# somma di due registri
+add $t0, $s1, $s2;
+add $t1, $s3, $s4;
+
+# lettura e scrittura in memoria
+lw $t0, 4($s3);
+sw $to, 48($s3);
+
+# somma di una costante ad un registro
+\end{minted}
 
 \end{document}

@@ -1,4 +1,6 @@
-\documentclass{standalone}
+\documentclass[varwidth=6in]{standalone}
+
+\usepackage{tabularx}
 \usepackage{booktabs}
 \usepackage[table]{xcolor}
 
@@ -9,13 +11,15 @@
 	\arrayrulecolor{black}}
 
 \begin{document}
-\begin{tabular}{ p{3.5cm}p{1.5cm}p{2cm}p{4cm} }
+\begin{tabularx}{\textwidth}{ >{\hsize=.25\hsize}X >{\hsize=.25\hsize}X >{\hsize=.25\hsize}X X }
 	\toprule
-		Tipo di calcolatore & Costo & Prestazioni & Applicazioni\\
+		Calcolatore & Costo & Prestazioni & Applicazioni\\
 	\midrule
-		Personale & Ridotto & Buone & Software prodotti da terze parti\\\hline
-		Server & Elevato & Eccellenti & Poche ma complesse (calcolo scientifico) o tante ma semplici (web server)\\\hline
-		Embedded & Minimo & Minime necessarie & Dedicate e molto specifiche; esiste un vasto spettro di scopi possibili\\
+		Personale & Ridotto & Buone & Software prodotti da terze parti\\
+	\lightrule
+		Server & Elevato & Ottimali & Poche ma complesse (calcolo scientifico) o tante ma semplici (web server)\\
+	\lightrule
+		Embedded & Minimo & Minimi & Dedicate e molto specifiche; esiste un vasto spettro di scopi possibili\\
 	\bottomrule
-\end{tabular}
+\end{tabularx}
 \end{document}
