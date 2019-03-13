@@ -31,33 +31,48 @@ Invece che inserire 0 come bit più significativo, si ricopia il bit di segno. D
 \subsection{Operazione di bitwise}
 \paragraph{Bitwise AND}
 L'AND è utilizzato come maschera.\\
-\emph{and \$t0, \$t1, \$t2}
+\begin{minted}{asm}
+	add $t0, $t1, $t2
+\end{minted}
 
 \paragraph{Bitwise OR}
-\emph{or \$t0, \$t1, \$t2}
+\begin{minted}{asm}
+	add $t0, $t1, $t2
+\end{minted}
 
 \paragraph{Bitwise NOR}
 Operazione di NOT OR bit a bit\\
-\emph{nor \$t0, \$t1, \$t2}\\
+\begin{minted}{asm}
+	nor $t0, $t1, $t2
+\end{minted}
 Il not non è implementato in mips, altrimenti romperebbe la regolarità delle istruzioni a tre operandi. Un modo per ottenere il not, grazie alle leggi di De Morgan:\\
-\emph{nor \$t0, \$t1, \$zer}
+\begin{minted}{asm}
+	nor $t0, $t1, $zero
+\end{minted}
 
 \paragraph{OR esclusivo XOR}
 Produce 1 se i due bit di ingresso sono uguali, altrimenti zero se sono uguali. Faro uno xor di un numero per se stesso: annulla il registro, resettandolo tutto a 0.
-\emph{xor \$t0, \$t1, \$t2}
+\begin{minted}{asm}
+	xor $t0, $t1, $t2
+\end{minted}
 
 \section{Salti}
 In inglese c'è differenza fra \emph{jump} (non condizionato) e \emph{branch} (condizionato). Il branch modifica il valore del registro \emph{PC}.\\
-\emph{beq reg1, reg2, L1}: Branch on EQual.\\
-\emph{bne reg1, reg2, L1}: Branch on Non Equal.\\
-\emph{j LABEL}: salta all'indirizzo di label\\
-\emph{jr \$t0}: salta all'indirizzo contenuto nel registro
+\begin{minted}{asm}
+	beq reg1, reg2, L1; # Branch on EQual
+	bne reg1, reg2, L1; # Branch on Non Equal
+	j LABEL; salta all'indirizzo di label
+	jr $t0; salta all'indirizzo contenuto nel registro
+\end{minted}
+
 Le label vengono alla fine tradotte in indirizzi da parte del compilatore.
 Il check del branch viene fatto con la condizione opposta, per aver maggiore efficienza.
 
 \subsection{Altri confronti}
-\emph{slt \$t0, \$s3, \$s4}: t0=1 se s3<s4.\\
-\emph{slti \$t0, \$s3, 10}: t0=1 se s3<10.\\
+\begin{minted}{asm}
+	slt $t0, $s3, $s4; # t0=1 se s3<s4
+	slti $t0, $s3, 10; # t0=1 se s3<10
+\end{minted}
 
 % TODO - Riguarda la parte relativa al segno
 
@@ -73,28 +88,5 @@ Il ciclo non viene direttamente implementato dal mips.\\
 	\item
 \end{itemize}
 
-% \subimport{./assets/listings/}{test.tex}
-\begin{minted}[linenos,breaklines]{asm}
-# somma di due registri
-add $t0, $s1, $s2;
-add $t1, $s3, $s4;
-
-# lettura e scrittura in memoria
-lw $t0, 4($s3);
-sw $to, 48($s3);
-
-# somma di una costante ad un registro
-\end{minted}
-\begin{minted}[linenos,breaklines]{asm}
-# somma di due registri
-add $t0, $s1, $s2;
-add $t1, $s3, $s4;
-
-# lettura e scrittura in memoria
-lw $t0, 4($s3);
-sw $to, 48($s3);
-
-# somma di una costante ad un registro
-\end{minted}
 
 \end{document}
