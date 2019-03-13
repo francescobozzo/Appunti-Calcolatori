@@ -8,6 +8,85 @@
 \begin{document}
 \chapter{L'architettura MIPS}
 
+Dopo la breve introduzione del precedente capitolo, affronteremo ora lo studio dell'architettura \textit{MIPS}; iniziamo con questa perché è molto simile ad altre architetture che vedremo in seguito (soprattutto ARM), ed è quindi prodepeutica.
+
+\section{Breve riepilogo su ISA}
+Come sappiamo già, ogni processore possiede un proprio linguaggio macchina, che non è altro che una sorta di "vocabolario di istruzioni" detto \emph{Instruction Set Architecture} (o \emph{ISA} per gli amici); queste istruzioni sono solitamente le operazioni aritmetiche fondamentali (a parte quelle he lavorano su floating point) e quelle logiche. \\
+Nonostante ogni processore possieda un proprio ISA, le differenze non sono poi così grandi (motivo per cui conoscere MIPS ci agevolerà molto nell'appren-dimento di altre ISA); una similitudine adeguata può essere fatta con i dialetti di una lingua maggiore (per esempio, veneziano, trevigiano e veronese sono tutte varianti locali mutualmente intelligibili della Grande Lingua Veneta).\\
+Lo scopo di avere questi sistemi di istruzioni è poter controllare e sfruttare la potenza di calcolo fornita dai nostri calcolatori; inoltre, come già fatto notare da Von Neumann nel 1947, la progettazione di un'architettura influisce enormemente sull'efficienza dell'hardware, ed è fondamentale che si ricerchino istruzioni \textit{semplici, chiare e veloci}.\\
+Un organico di istruzioni andrà a costruire un \textit{programma memorizzato} che, come approfondiremo, altro non è che un insieme di istruzioni che, come numeri e qualsiasi altro dato, andrà mappato sotto formadi numero binario.
+
+\subsubsection{Cos'è MIPS}
+Come già detto, nonostante non sia diffusissima, inizieremo a studiare l'architettura MIPS in quanto propedeutica.È una cosiddetta architettura RISC "pragmatica", ossia un'architettura ibrida che, pur essendo basata su RISC e quindi con un numero limitato di istruzioni disponibili, possiede anche alcune operazioni complesse tipiche delle ISA CISC.\\
+Fin dai tempi di Von Neumann era chiaro che, per quanto semplice e vicino al linguaggio macchina un linguaggio potesse essere, non dovevano mancare le operazioni aritmetiche e logiche fondamentali; oltre a quelle, MIPS possiede alcuni comandi per il controllo di flusso.
+
+\section{Operazioni aritmetiche}
+Per dare una chiave di lettura al percorso che faremo su MIPS useremo alcuni principi di progettazione software e hardware che ogni informatico segue fin dagli albori della storia dell'informatica, e naturalmente, iniziando a parlare delle operazioni aritmetiche,  inizieremo così:\\\\
+% TODO - Il principio di progettazione va in grassetto
+(Princpio di Progettazione N. 1:\\ \textit{La semplicità favorisce la regolarità})\\\\
+In linea con questo principio, MIPS consente di effettuare operazioni aritmetiche solo nella loro forma più semplice, ossia con tre operandi:\\\\
+(CODE) a=b+c\\\\
+Quest'istruzione, comune in C, Java, Python o altri linguaggi, in MIPS sarà scritta così:\\\\\
+(CODE) add a, b, c\\\\
+Notiamo subito che l'operando "di destinazione" viene messo come primo elemento (in altre ISA non è sempre così, tuttavia).\\
+Naturalmente, mentre nei linguaggi ad alto livello possiamo agevolmente scrivere espressioni matematiche complesse, in MIPS verranno tutte mappate in espressioni semplici, sicché una linea di codice può essere srotolata in molte righe assembly.\\\\
+fucking example\\\\
+Notiamo inoltre che i commenti si scrivono con \#, e questo agisce solo sulla riga (anche se, come detto prima, non sempr è così; ad esempio GCC, l'assembler di Unix, usa i commenti come il C e l'operando di destinazione va in fondo).
+
+\section{I registri}
+\subsection{Cosa sono}
+
+Fino ad ora abbiamo considerato gli operandi come fossero normali variabili, ma in realtà questi altro non sono che dei \emph{registri}, ossia delle particolari locazioni di memoria interne al processore e che possono essere reperite celerissimamente, con un solo colpo di clock.\\
+MIPS possiede 32 registri, ciascuno di 32 bit, per cui ogniqualvolta si debba eseguire delle operazioni è necessario caricare i dati dalla RAM con un'operazione di \emph{load}. Questo processo può apparire dispendioso ed è lecito domandarsi come mai non ci si possa dotare di più registri più capienti, e la risposta è espressa nel\\\\
+% TODO - Il principio di progettazione va in grassetto
+PRINCIPIO DI PROGETTAZIONE N.2:\\\textit{Minori dimensioni portano a maggiore velocità}\\\\
+Di fatto, se avessimo  più registri, aumenterebbe notevolmente il tempo di accesso a questi, in quanto aumenterebe fisicamente gli impulsi elettrici impiegherebbero più tempo per passare da un registro all'altro, e la velocità di clock sarebbe visibilmente compromessa.\\
+\subsection{Gestione dei registri}
+\paragraph{Notazione}
+A questo punto, tornando all'esempio di prima, illustriamo la sintassi per richiamare un registro:\\\\
+freaking example\\\\
+Come si evince, è sufficente anteporre un \$ al nome del registro.\\
+\subsubsection{Movimenti}Naturalmente, i registri non sono minimamente sufficienti per contenere tutte i dati di un programma complesso (soprattutto perché alcuni vengono usati dal kernel e dal sistemaoeprativo), ma le operazioni possono essere eseguite solo fra registri. Diventa quindi necessaria l'implementazione delle funzioni \emph{load} che, come anticipato, carica i dati dalla RAM a un registro, e \emph{store}, che passa il dato dal registro alla RAM.\\
+La memoria è solitamente organizzata in gruppi da 8 bit, ma il prelievo e il salvataggio dei dati segue un cosiddetto \textbf{vincolo di allineamento}: viene fissato un \textit{offset (spiazzamento)} di 4 byte (quindi della stessa dimensione dei registri), dimodoché ogni informazione che passa abbia la medesima dimensione di un registro (anche il program counter viene incrementato di 4 byte ogni fetch); in questo contesto, ogni informazione di 4 byte che viene spostata tra RAM e registri viene detta \emph{parola}.\\
+L'indirizzo di ogni parola viene quindi espresso con una \textit{base}, specifica per registro, e con lo \textit{spiazzamento} costante di cui abbiamo parlato prima.
+\paragraph{\textit{Load e Store}}
+Ecco un esempio di istruzione di load (analogamente per la store):\\\\
+BIG IMAGE\\\\
+Ora vediamo un esempio un po' più complesso, si raccomanda una lettura accorta per comprendere ogni azione:\\\\
+CODEEEEEEE SLIDE 21
+\paragraph{Register Spiling}
+Come già anticipato, i 32 registri non sono assolutamente sufficienti per contenere tutte le variabili usate da un programma complesso, quindi quello che succede a livello assembly è un continuo susseguirsi di load e store, e questa operazione si chiama \emph{Register Spiling} ed è eseguita dal compilatore (si dice che  prepara il \textit{working set} e stima le load e store appropriate).
+\subsection{Le costanti}
+Molto spesso ci si trova a lavorare con le costanti. Nonostante ogni costante possa essere salvata su un registro, questa soluzione è parecchio inefficiente, perché le costante e le operazioni relative sono molto comuni e, come apprendiamo,\\\\
+% TODO - Il principio di progettazione va in grassetto
+PRINCIPIO DI PROGRAMMAZIONE N.3\\\textit{Rendi veloci le operazioni comuni}\\\\
+Quindi ci conviene assolutamente costruire una sintassi dedicata all'esecuzione di operazioni con costanti. Esempio:\\
+\emph{f = f + 4 $\rightarrow$ addi \$s3, \$s3, 4} (La i sta per \textit{immediate})\\
+Per dare un altro esempio, è molto conveniente implementare un registro zero (\emph{\$zero}), perché rende molto più semplici le operazioni di copia, che di fatto possono essere ridotte a una somma di un qualsiasi registro con il registro zero.
+\section{La rappresentazione delle istruzioni}
+\subsubsection{Convenzioni sulla scrittura esadecimale}
+Prima di indicare come vengono codificate le istruzioni, ricordiamo che 1 byte è agevolmente rappresentabile con due cifre esadecimali (essendo composto da 8 bit e sapendo che ogni cifra esadecimale corrisponde a 4 bit). Ad esempio, $1001 1101_{2}$ diventa $9D_{16}$. Inoltre, quando scriviamo in esadecimale, si usa di solito precedere la scrittura con \emph{0x}. Esempio: \textit{0xEA01BD1C}.\\
+Quando si devono codificare parole di 4 byte è importante decidere dove va il byte più significativo.
+\begin{itemize}
+	\item Se il byte più significativo è posto per primo, la notazione è detta \emph{Little Endian}(usata nei processori Motorola e protocolli internet);
+	\item Se il byte più significativo è posto per primo, la notazione è detta \emph{Big Endian}(usata nei processori Intel);
+\end{itemize}
+\subsection{Le istruzioni in MIPS}
+Come anticipato, le istruzioni vengono mappate come numeri binari. In particolare, ogni istruzione dovrà essere mappata utilizzando parole di soli 32 bit, ma come viene impostato questo processo?\\
+Prendiamo come esempio l'istruzione di somma \emph{add \$t0, \$s1, \$s2}: avremo bisogno di un codice per l'istruzione di somma e uno per ogni registro; l'operazione sarà scritta nei primi 6 bit e negli ultimi 6, mentre i 20 in bit in mezzosaranno divisi in gruppi da 5 bit ciascuno, e i primi tre gruppi ospiteranno i registri, e l'ultimo sarà usato per comandi speciali (come lo shift, che vedremo in seguito). Si osservi l'esempio per chiarezza:\\
+figura schema\\
+In gerale questo sistema, detto R (da Registro), ogni campo dell'istruzione ha un nome:\\
+figura schema\\
+A questo punto è lecito domandarsi come mai si usino solo 32 bit per rappresentare le istruzioni, e la risposta sta nel\\\\
+% TODO - Il principio di progettazione va in grassetto
+PRINCPIO DI PROGETTAZIONE N.4:\\\textit{Buoni progetti richiedono buoni compromessi}\\\\
+Uilizzare una quantità limitata di registri e istruzioni e limitandone le dimensioni possiamo guadagnare moltissimo in efficienza!
+
+\subsection{Istruzioni immediate}
+Nei casi di indirizzamento immediato e di operazioni con costanti MIPS mette a disposizione una diversa mappatura, detta appunto I. Forniamo qui un esempio e invitiamo il lettore a confrontare la seguente mappatura con l'equivalente R.\\
+Immagine fika.
+
+
 \section{Istruzioni aritmetico-logiche}
 
 \subsection{Operazioni di shift}
