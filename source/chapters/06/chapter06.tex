@@ -13,8 +13,8 @@ Dopo la breve introduzione del precedente capitolo, affronteremo ora lo studio d
 \section{Breve riepilogo su ISA}
 Come sappiamo già, ogni processore possiede un proprio linguaggio macchina, che non è altro che una sorta di "vocabolario di istruzioni" detto \emph{Instruction Set Architecture} (o \emph{ISA} per gli amici); queste istruzioni sono solitamente le operazioni aritmetiche fondamentali (a parte quelle che lavorano su floating point) e quelle logiche. \\
 Nonostante ogni processore possieda un proprio ISA, le differenze non sono poi così grandi (motivo per cui conoscere MIPS ci agevolerà molto nell'appren-dimento di altre ISA); una similitudine adeguata può essere fatta con i dialetti di una lingua maggiore (per esempio, veneziano, trevigiano e veronese sono tutte varianti locali mutualmente intelligibili della Grande Lingua Veneta).\\
-Lo scopo di avere questi sistemi di istruzioni è poter controllare e sfruttare la potenza di calcolo fornita dai nostri calcolatori; inoltre, come già fatto notare da Von Neumann nel 1947, la progettazione di un'architettura influisce enormemente sull'efficienza dell'hardware, ed è fondamentale che si ricerchino istruzioni \textit{semplici, chiare e veloci}.\\
-Un organico di istruzioni andrà a costruire un \textit{programma memorizzato} che, come approfondiremo, altro non è che un insieme di istruzioni che, come numeri e qualsiasi altro dato, andrà mappato sotto formadi numero binario.
+Lo scopo di avere questi sistemi di istruzioni è poter controllare e sfruttare la potenza di calcolo fornita dai nostri calcolatori; inoltre, come già fatto notare da Von Neumann nel 1947, la progettazione di un'architettura influisce enormemente sull'efficienza dell'hardware, ed è fondamentale che si ricerchino istruzioni \emph{semplici, chiare e veloci}.\\
+Un organico di istruzioni andrà a costruire un \emph{programma memorizzato} che, come approfondiremo, altro non è che un insieme di istruzioni che, come numeri e qualsiasi altro dato, andrà mappato sotto formadi numero binario.
 
 \subsubsection{Cos'è MIPS}
 Come già detto, nonostante non sia diffusissima, inizieremo a studiare l'architettura MIPS in quanto propedeutica. È una cosiddetta architettura RISC "pragmatica", ossia un'architettura ibrida che, pur essendo basata su RISC e quindi con un numero limitato di istruzioni disponibili, possiede anche alcune operazioni complesse tipiche delle ISA CISC.\\
@@ -38,9 +38,9 @@ Naturalmente, mentre nei linguaggi ad alto livello possiamo agevolmente scrivere
 \end{minted}
 può essere srotolata in molte righe assembly.
 \begin{minted}[linenos]{asm}
-	add t0, g, h;	# t0 (variabile temp) = g + h
-	add t1, i, j;	# t1 (variabile temp) = i + j
-	sub f, t0, t1;       # f = t0 - t1
+	add t0, g, h;  # t0 (variabile temp) = g + h
+	add t1, i, j;  # t1 (variabile temp) = i + j
+	sub f, t0, t1;  # f = t0 - t1
 \end{minted}
 Notiamo inoltre che i commenti si scrivono con \#, e questo agisce solo sulla riga (anche se, come detto prima, non sempr è così; ad esempio GCC, l'assembler di Unix, usa i commenti come il C e l'operando di destinazione va in fondo).
 
@@ -60,19 +60,17 @@ Di fatto, se avessimo  più registri, aumenterebbe notevolmente il tempo di acce
 
 \paragraph{Notazione}
 A questo punto, tornando all'esempio di prima, illustriamo la sintassi per richiamare un registro:
-\begin{minted}[linenos]{asm}
-	add $t0, $s1, $s2;	# al registro temporaneo t0
-				  # viene assegnato il valore
-				  # come somma di s1 + s2
-	add $t1, $s3, $s4;	# same as before
-	sub $s0, $t0, $t1;	# f = t0 - t1
+\begin{minted}[linenos, breaklines]{asm}
+	add $t0, $s1, $s2;  # al registro temporaneo t0 viene assegnato il valore come somma di s1 + s2
+	add $t1, $s3, $s4;  # same as before
+	sub $s0, $t0, $t1;  # f = t0 - t1
 \end{minted}
 Come si evince, è sufficente anteporre un \$ al nome del registro.
 \subsubsection{Movimenti}Naturalmente, i registri non sono minimamente sufficienti per contenere tutte i dati di un programma complesso (soprattutto perché alcuni vengono usati dal kernel e dal sistema operativo), ma le operazioni possono essere eseguite solo fra registri. Diventa quindi necessaria l'implementazione delle funzioni \emph{load} che, come anticipato, carica i dati dalla RAM a un registro, e \emph{store}, che passa il dato dal registro alla RAM.\\
-La memoria è solitamente organizzata in gruppi da 8 bit, ma il prelievo e il salvataggio dei dati segue un cosiddetto \textbf{vincolo di allineamento}: viene fissato un \textit{offset (spiazzamento)} di 4 byte (quindi della stessa dimensione dei registri), dimodoché ogni informazione che passa abbia la medesima dimensione di un registro (anche il program counter viene incrementato di 4 byte ogni fetch); in questo contesto, ogni informazione di 4 byte che viene spostata tra RAM e registri viene detta \emph{parola}.\\
-L'indirizzo di ogni parola viene quindi espresso con una \textit{base}, specifica per registro, e con lo \textit{spiazzamento} costante di cui abbiamo parlato prima.
+La memoria è solitamente organizzata in gruppi da 8 bit, ma il prelievo e il salvataggio dei dati segue un cosiddetto \textbf{vincolo di allineamento}: viene fissato un \emph{offset (spiazzamento)} di 4 byte (quindi della stessa dimensione dei registri), dimodoché ogni informazione che passa abbia la medesima dimensione di un registro (anche il program counter viene incrementato di 4 byte ogni fetch); in questo contesto, ogni informazione di 4 byte che viene spostata tra RAM e registri viene detta \emph{parola}.\\
+L'indirizzo di ogni parola viene quindi espresso con una \emph{base}, specifica per registro, e con lo \emph{spiazzamento} costante di cui abbiamo parlato prima.
 
-\paragraph{\textit{Load e Store}}
+\paragraph{Load and store}
 Ecco un esempio di istruzione di load (analogamente per la store):
 \begin{figure}[H]
 	\centering
@@ -84,16 +82,15 @@ Adesso prendiamo invece una semplice riga di codice:
 	A[12] = h + A[8];
 \end{minted}
 E vediamone ora la traduzione fatta dal compilatore:
-\begin{minted}[linenos]{asm}
-	lw $t0, 32($s3);   # la parola 8 comincia all'indirizzo 32
-			   # e il puntatore A è in $s3
+\begin{minted}[linenos, breaklines]{asm}
+	lw $t0, 32($s3);   # la parola 8 comincia all'indirizzo 32 e il puntatore A è in $s3
 	add $t0, $s2, $t0; # h è in $s2
 	sw $t0, 48($s3);   # memorizzo il contenuto di $t0 in A[12]
 \end{minted}
 Questo è un esempio un po' più complesso, si raccomanda una lettura accorta per comprendere ogni azione.
 
 \paragraph{Register Spiling}
-Come già anticipato, i 32 registri non sono assolutamente sufficienti per contenere tutte le variabili usate da un programma complesso, quindi quello che succede a livello assembly è un continuo susseguirsi di load e store, e questa operazione si chiama \emph{register spilling} ed è eseguita dal compilatore (si dice che  prepara il \textit{working set} e stima le load e store appropriate).
+Come già anticipato, i 32 registri non sono assolutamente sufficienti per contenere tutte le variabili usate da un programma complesso, quindi quello che succede a livello assembly è un continuo susseguirsi di load e store, e questa operazione si chiama \emph{register spilling} ed è eseguita dal compilatore (si dice che  prepara il \emph{working set} e stima le load e store appropriate).
 
 \subsection{Le costanti}
 Molto spesso ci si trova a lavorare con le costanti. Nonostante ogni costante possa essere salvata su un registro, questa soluzione è parecchio inefficiente, perché le costante e le operazioni relative sono molto comuni.
@@ -123,7 +120,7 @@ Quando si devono codificare parole di 4 byte è importante decidere dove va il b
 \subsection{Le istruzioni in MIPS}
 Come anticipato, le istruzioni vengono mappate come numeri binari. In particolare, ogni istruzione dovrà essere mappata utilizzando parole di soli 32 bit, ma come viene impostato questo processo?\\
 % TODO - capire per quale motivo non funzioni \mintinline{asm}{...}
-Prendiamo come esempio l'istruzione di somma \emph{add \$t0, \$s1, \$s2}: avremo bisogno di un codice per l'istruzione di somma e uno per ogni registro; l'operazione sarà scritta nei primi 6 bit e negli ultimi 6, mentre i 20 in bit in mezzosaranno divisi in gruppi da 5 bit ciascuno, e i primi tre gruppi ospiteranno i registri, e l'ultimo sarà usato per comandi speciali (come lo shift, che vedremo in seguito).
+Prendiamo come esempio l'istruzione di somma \mintinline{asm}{add \$t0, \$s1, \$s2}: avremo bisogno di un codice per l'istruzione di somma e uno per ogni registro; l'operazione sarà scritta nei primi 6 bit e negli ultimi 6, mentre i 20 in bit in mezzosaranno divisi in gruppi da 5 bit ciascuno, e i primi tre gruppi ospiteranno i registri, e l'ultimo sarà usato per comandi speciali (come lo shift, che vedremo in seguito).
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{istruzioni.png}
@@ -157,51 +154,101 @@ esempio immediate?
 \subsection{Operazioni di shift}
 
 \paragraph{Shift logico a sinistra}
-Consideriamo lo \emph{shift logico a sinistra}: l'idea consiste nell'inserire degli zeri nella posizione meno significativa e traslare tutto a sinistra perdendo, nel caso di overflow, i bit più significativi.\\
-\emph{ssl \$t2, \$s0, 4}: Memorizza in t2 il contenuto del registro s0 shiftato a sinistra di 4.\\
-Lo shift massimo che è possibile eseguire è di 32 bit (infatti vengono allocati 5 bit per il campo di \emph{shift amount}). Ciò non risulta un problema in quanto le istruzioni \emph{MIPS} che affronteremo sono codificare in 32 bit.\\
-Eseguire uno shift a sinistra di \(k\) bit di un numero \(n\) positivo, consiste nel moltiplicare \(n\) per \(2^k\). Fanno eccezione solo alcuni casi in cui si lavora con numeri interi codificati in complemento a 2: in questo caso si esce dal \emph{range di rappresentazione} del CA2.
+Consideriamo lo \emph{shift logico a sinistra}: l'idea consiste nell'inserire degli zeri nella posizione meno significativa e traslare tutto a sinistra perdendo, nel caso di overflow, i bit più significativi.
 
-\paragraph{Shift logico a destra}
-In maniera analoga, lo \emph{shift logico a destra} consiste nell'inserire degli zeri nella posizione più significativa, traslando tutto a destra. Come per lo shift logico a sinistra, anche qui è possibile effettuare uno shift di al massimo 32 bit.\\
-Lo \emph{shift logico a destra} di \(k\) bit significa implementare la divisione intera per \(2^k\) per numeri positivi. In questo caso, non è utilizzabile con nessun numero negativo codificato in CA2 (proprio per questo è stato introdotto lo shift aritmetico a destra).\\
-\emph{srl \$t2, \$s0, 1}
-
-\paragraph{Shift aritmetico a destra}
-Invece che inserire 0 come bit più significativo, si ricopia il bit di segno. Dunque risolve i problemi con CA2.
-
-% TODO - tabella riassunta operazioni logiche (shitf sx, shift dx, bitwise and, bitwise or, bitwise not)
-
-\subsection{Operazione di bitwise}
-\paragraph{Bitwise AND}
-L'AND è utilizzato come maschera.\\
-\begin{minted}{asm}
-	add $t0, $t1, $t2
+\begin{minted}[breaklines]{asm}
+ssl $t2, $s0, 4  # memorizza in t2 il contenuto del registro s0 shiftato a sinistra di 4
 \end{minted}
 
+Lo shift massimo che è possibile eseguire è di 32 bit (infatti, come precedentemente visto, vengono allocati 5 bit per il campo di \emph{shift amount}). Ciò non risulta un problema in quanto il vincolo di allineamento definito dall'implementazione \emph{MIPS} che affronteremo è costituito da 32 bit.\\
+Eseguire uno shift a sinistra di \(k\) bit di un numero \(n\) positivo, consiste nel moltiplicare \(n\) per \(2^k\). Fanno eccezione solo alcuni casi in cui si lavora con numeri interi codificati in complemento a 2: in questo frangente, si potrebbe uscire dal \emph{range di rappresentazione} del CA2.
+
+\paragraph{Shift logico a destra}
+In maniera analoga, lo \emph{shift logico a destra} consiste nell'inserire degli zeri nella posizione più significativa, traslando tutto a destra. Come per lo shift logico a sinistra, anche qui è possibile effettuare uno shift di al massimo 32 bit.
+
+\begin{minted}[breaklines]{asm}
+srl $t2, $s0, 1  # memorizza in t2 il contenuto del registro s0 shiftato logicamente a destra di 1
+\end{minted}
+
+Applicare uno shift logico a destra di \(k\) bit ad un numero \(n\) positivo è equivalente a dividere (divisione intera) \(n\) per \(2^k\). Lo shift logico a destra non è utilizzabile in nessun caso con un numero negativo codificato in CA2 (proprio per questo è stato introdotto lo shift aritmetico a destra).
+
+\paragraph{Shift aritmetico a destra}
+Dunque, per trovare una soluzione all'implementazione della divisione intera anche per i numeri negativi codificati in CA2, è stato introdotto lo \emph{shift aritmetico a destra}.
+
+\begin{minted}[breaklines]{asm}
+sra $t2, $s0, 1  # memorizza in t2 il contenuto del registro s0 shiftato aritmeticamente a destra di 1
+\end{minted}
+
+Piuttosto che inserire 0 come bit più significativo, come avviene nello shift logico, lo shift aritmetico a destra inserisce bit uguali al bit di segno. Dunque risolve i problemi con CA2.\\
+Si noti come non abbia senso parlare di shift aritmetico a sinistra, in quanto o il risultato è rappresentabile (attraverso lo shift logico) o non lo è.
+
+\subsection{Operazione di bitwise}
+Vengono definite di \emph{Bitwise} quelle operazioni logiche che operano su ciascun bit.
+\paragraph{Bitwise AND}
+L'operazione di \emph{bitwise AND} viene applicata principlamente per forzare alcuni bit a 0 usando come operando una maschera (i cui bit corrispondenti a quelli che si vogliono annulare sono settati a 0).
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{bitwise_and}
+	\caption{Funzione "maschera" del bitwise AND}
+\end{figure}
+
 \paragraph{Bitwise OR}
-\begin{minted}{asm}
-	add $t0, $t1, $t2
+In maniera analoga, è possibile settare a \(1\) alcuni bit applicando l'operazione di \emph{bitwise OR} con un operando che abbia \(1\) nella posizione corrispondente (funzione di maschera). Ad esempio, per impostare ad \(1\) i \(4\) bit più significativi di \$s0:
+\begin{minted}[linenos, breaklines]{asm}
+	addi $t0, $zero, 0x000F
+	sll $t0, $t0, 28
+	or $s0, $s0, $t0
+\end{minted}
+
+Un ulteriore esempio riguarda quello della \emph{rotazione} dei \(4\)bit più significativi di una world sui suoi bit meno significativi:
+\begin{minted}[linenos, breaklines]{asm}
+	# si ottengono i 4 bit più significativi, spostandoli nei 4 meno significativi di $t0
+	srl $t0, $s0, 28
+
+	# si azzerano i 4 bit più significativi di $s0
+	sll $s0, $s0, 4
+	srl $s0, $s0, 4
+
+	# operazione di maschera
+	or $s0, $s0, $t0
 \end{minted}
 
 \paragraph{Bitwise NOR}
-Operazione di NOT OR bit a bit\\
-\begin{minted}{asm}
+L'operazione di \emph{NOR} viene definita come segue:
+\begin{table}[H]
+	\centering
+	\subimport{assets/tables/}{nor.tex}
+	\caption{Tabella di verità NOR}
+\end{table}
+
+A seguire la sintassi MIPS dell'istruzione di \emph{bitwise NOR}:
+\begin{minted}[linenos]{asm}
 	nor $t0, $t1, $t2
 \end{minted}
-Il not non è implementato in mips, altrimenti romperebbe la regolarità delle istruzioni a tre operandi. Un modo per ottenere il not, grazie alle leggi di De Morgan:\\
+
+\paragraph{Bitwise NOT}
+Dato il fatto che l'operatore di \emph{NOT} è unario, esso non è implementato in MIPS, per non interrompere la regolarità delle istruzioni a tre operandi. Un modo per ottenere il NOT, grazie alle leggi di De Morgan, è il seguente:
 \begin{minted}{asm}
-	nor $t0, $t1, $zero
+	nor $t0, $t1, $zero  # equivale a: not $s0
 \end{minted}
 
-\paragraph{OR esclusivo XOR}
-Produce 1 se i due bit di ingresso sono uguali, altrimenti zero se sono uguali. Faro uno xor di un numero per se stesso: annulla il registro, resettandolo tutto a 0.
+\paragraph{OR esclusivo (XOR)}
+L'\emph{OR esclusivo} produce \(1\) se i due bit di ingresso sono uguali, altrimenti \(0\) se sono uguali. Segue la tabella di verità:
+\begin{table}[H]
+	\centering
+	\subimport{assets/tables/}{xor.tex}
+	\caption{Tabella di verità XOR}
+\end{table}
+
+A seguire la sintassi MIPS dell'operazione di XOR:
 \begin{minted}{asm}
-	xor $t0, $t1, $t2
+	xor $t0, $t1, $t2  # $t0 = $t1 xor $t2
 \end{minted}
+
+Curiosità: se si esegue lo XOR di un numero con se stesso, il risultato è pari a \(0\) per ciascun bit.
 
 \section{Salti}
-In inglese c'è differenza fra \emph{jump} (non condizionato) e \emph{branch} (condizionato). Il branch modifica il valore del registro \emph{PC}.\\
+Nella lingua inglese è presente una sostanziale differenza fra \emph{jump} (salto non condizionato) e \emph{branch} (salto condizionato). Il branch modifica il valore del registro \emph{PC}.\\
 \begin{minted}{asm}
 	beq reg1, reg2, L1; # Branch on EQual
 	bne reg1, reg2, L1; # Branch on Non Equal
