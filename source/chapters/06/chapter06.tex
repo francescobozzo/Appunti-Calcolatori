@@ -21,8 +21,9 @@ Come già detto, nonostante non sia diffusissima, inizieremo a studiare l'archit
 Fin dai tempi di Von Neumann era chiaro che, per quanto semplice e vicino al linguaggio macchina un linguaggio potesse essere, non dovevano mancare le operazioni aritmetiche e logiche fondamentali; oltre a quelle, MIPS possiede inoltre alcuni comandi per il controllo di flusso.
 
 \section{Operazioni aritmetiche}
-Per dare una chiave di lettura al percorso che faremo su MIPS useremo alcuni principi di progettazione software e hardware che ogni informatico segue fin dagli albori della storia dell'informatica, e naturalmente, iniziando a parlare delle operazioni aritmetiche,  inizieremo così:
-\paragraph{PRINCIPIO DI PROGETTAZIONE N. 1}
+Per dare una chiave di lettura al percorso che faremo su MIPS useremo alcuni principi di progettazione software e hardware che ogni informatico segue fin dagli albori della storia dell'informatica, e naturalmente, iniziando a parlare delle operazioni aritmetiche,  inizieremo così:\\
+
+\textbf{PRINCIPIO DI PROGETTAZIONE N. 1:}\\
 \emph{La semplicità favorisce la regolarità}.\\
 
 In linea con questo principio, MIPS consente di effettuare operazioni aritmetiche solo nella loro forma più semplice, ossia con tre operandi: \(a = b + c\).
@@ -49,10 +50,10 @@ Notiamo inoltre che i commenti si scrivono con \#, e questo agisce solo sulla ri
 \subsection{Cosa sono}
 
 Fino ad ora abbiamo considerato gli operandi come fossero normali variabili, ma in realtà questi altro non sono che dei \emph{registri}, ossia delle particolari locazioni di memoria interne al processore e che possono essere reperite celerissimamente, con un solo colpo di clock.\\
-MIPS possiede 32 registri, ciascuno di 32 bit, per cui ogniqualvolta si debba eseguire delle operazioni è necessario caricare i dati dalla RAM con un'operazione di \emph{load}. Questo processo può apparire dispendioso ed è lecito domandarsi come mai non ci si possa dotare di più registri più capienti, e la risposta è espressa dal
+MIPS possiede 32 registri, ciascuno di 32 bit, per cui ogniqualvolta si debba eseguire delle operazioni è necessario caricare i dati dalla RAM con un'operazione di \emph{load}. Questo processo può apparire dispendioso ed è lecito domandarsi come mai non ci si possa dotare di più registri più capienti, e la risposta è espressa dal\\
 
-\paragraph{PRINCIPIO DI PROGETTAZIONE N.2}
-\emph{Minori dimensioni portano a maggiore velocità}.\\
+\textbf{PRINCIPIO DI PROGETTAZIONE N.2:}\\
+\emph{Minori dimensioni portano a maggiore velocità}\\
 
 Di fatto, se avessimo  più registri, aumenterebbe notevolmente il tempo di accesso a questi, in quanto gli impulsi elettrici impiegherebbero fisicamente più tempo per passare da un registro all'altro, e la velocità di clock sarebbe visibilmente compromessa.
 
@@ -65,7 +66,7 @@ A questo punto, tornando all'esempio di prima, illustriamo la sintassi per richi
 	add $t1, $s3, $s4;  # same as before
 	sub $s0, $t0, $t1;  # f = t0 - t1
 \end{minted}
-Come si evince, è sufficente anteporre un \$ al nome del registro.
+Come si evince, è sufficiente anteporre un \$ al nome del registro.
 \subsubsection{Movimenti}Naturalmente, i registri non sono minimamente sufficienti per contenere tutte i dati di un programma complesso (soprattutto perché alcuni vengono usati dal kernel e dal sistema operativo), ma le operazioni possono essere eseguite solo fra registri. Diventa quindi necessaria l'implementazione delle funzioni \emph{load} che, come anticipato, carica i dati dalla RAM a un registro, e \emph{store}, che passa il dato dal registro alla RAM.\\
 La memoria è solitamente organizzata in gruppi da 8 bit, ma il prelievo e il salvataggio dei dati segue un cosiddetto \textbf{vincolo di allineamento}: viene fissato un \emph{offset (spiazzamento)} di 4 byte (quindi della stessa dimensione dei registri), dimodoché ogni informazione che passa abbia la medesima dimensione di un registro (anche il program counter viene incrementato di 4 byte ogni fetch); in questo contesto, ogni informazione di 4 byte che viene spostata tra RAM e registri viene detta \emph{parola}.\\
 L'indirizzo di ogni parola viene quindi espresso con una \emph{base}, specifica per registro, e con lo \emph{spiazzamento} costante di cui abbiamo parlato prima.
@@ -93,9 +94,10 @@ Questo è un esempio un po' più complesso, si raccomanda una lettura accorta pe
 Come già anticipato, i 32 registri non sono assolutamente sufficienti per contenere tutte le variabili usate da un programma complesso, quindi quello che succede a livello assembly è un continuo susseguirsi di load e store, e questa operazione si chiama \emph{register spilling} ed è eseguita dal compilatore (si dice che  prepara il \emph{working set} e stima le load e store appropriate).
 
 \subsection{Le costanti}
-Molto spesso ci si trova a lavorare con le costanti. Nonostante ogni costante possa essere salvata su un registro, questa soluzione è parecchio inefficiente, perché le costante e le operazioni relative sono molto comuni.
+Molto spesso ci si trova a lavorare con le costanti. Nonostante ogni costante possa essere salvata su un registro, questa soluzione è parecchio inefficiente, perché le costante e le operazioni relative sono molto comuni.\\
 
-\paragraph{PRINCIPIO DI PROGETTAZIONE N.3}: \emph{Rendi veloci le operazioni comuni}.\\
+\textbf{PRINCIPIO DI PROGETTAZIONE N.3:}\\
+\emph{Rendi veloci le operazioni comuni}.\\
 
 Quindi ci conviene assolutamente costruire una sintassi dedicata all'esecuzione di operazioni con costanti, dove la \emph{i} sta per \emph{immediate}. Ad esempio:
 \begin{minted}{c}
@@ -112,7 +114,7 @@ Per dare un altro esempio, è molto conveniente implementare un registro zero (\
 \subsubsection{Convenzioni sulla scrittura esadecimale}
 Prima di indicare come vengono codificate le istruzioni, ricordiamo che 1 byte è agevolmente rappresentabile con due cifre esadecimali (essendo composto da 8 bit e sapendo che ogni cifra esadecimale corrisponde a 4 bit). Ad esempio, \(1001 1101_{2}\) diventa \(9D_{16}\). Inoltre, quando scriviamo in esadecimale, si usa di solito precedere la scrittura con \emph{0x}. Esempio: \emph{0xEA01BD1C}.\\
 Quando si devono codificare parole di 4 byte è importante decidere dove va il byte più significativo.
-\begin{itemize}
+\begin{itemize}[nolistsep]
 	\item Se il byte più significativo è posto per primo, la notazione è detta \emph{little endian} (usata nei processori Motorola e protocolli internet).
 	\item Se il byte più significativo è posto per primo, la notazione è detta \emph{big endian} (usata nei processori Intel).
 \end{itemize}
@@ -120,7 +122,7 @@ Quando si devono codificare parole di 4 byte è importante decidere dove va il b
 \subsection{Le istruzioni in MIPS}
 Come anticipato, le istruzioni vengono mappate come numeri binari. In particolare, ogni istruzione dovrà essere mappata utilizzando parole di soli 32 bit, ma come viene impostato questo processo?\\
 % TODO - capire per quale motivo non funzioni \mintinline{asm}{...}
-Prendiamo come esempio l'istruzione di somma \mintinline{asm}{add \$t0, \$s1, \$s2}: avremo bisogno di un codice per l'istruzione di somma e uno per ogni registro; l'operazione sarà scritta nei primi 6 bit e negli ultimi 6, mentre i 20 in bit in mezzosaranno divisi in gruppi da 5 bit ciascuno, e i primi tre gruppi ospiteranno i registri, e l'ultimo sarà usato per comandi speciali (come lo shift, che vedremo in seguito).
+Prendiamo come esempio l'istruzione di somma \mintinline{asm}{add \$t0, $s1, $s2}: avremo bisogno di un codice per l'istruzione di somma e uno per ogni registro; l'operazione sarà scritta nei primi 6 bit e negli ultimi 6, mentre i 20 in bit in mezzosaranno divisi in gruppi da 5 bit ciascuno, e i primi tre gruppi ospiteranno i registri, e l'ultimo sarà usato per comandi speciali (come lo shift, che vedremo in seguito).
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{istruzioni.png}
@@ -132,9 +134,9 @@ In gerale questo sistema, detto R (da Registro), ogni campo dell'istruzione ha u
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{mappatura.png}
 	\caption{Mappatura di un'istruzione di tipo R}
 \end{figure}
-A questo punto è lecito domandarsi come mai si usino solo 32 bit per rappresentare le istruzioni, e la risposta sta nel:
+A questo punto è lecito domandarsi come mai si usino solo 32 bit per rappresentare le istruzioni, e la risposta sta nel:\\
 
-\paragraph{PRINCIPIO DI PROGETTAZIONE N.4}
+\textbf{PRINCIPIO DI PROGETTAZIONE N.4:}\\
 \emph{Buoni progetti richiedono buoni compromessi}\\
 
 Uilizzare una quantità limitata di registri e istruzioni e limitandone le dimensioni possiamo guadagnare moltissimo in efficienza!
@@ -185,7 +187,7 @@ Si noti come non abbia senso parlare di shift aritmetico a sinistra, in quanto o
 \subsection{Operazione di bitwise}
 Vengono definite di \emph{Bitwise} quelle operazioni logiche che operano su ciascun bit.
 \paragraph{Bitwise AND}
-L'operazione di \emph{bitwise AND} viene applicata principlamente per forzare alcuni bit a 0 usando come operando una maschera (i cui bit corrispondenti a quelli che si vogliono annulare sono settati a 0).
+L'operazione di \emph{bitwise AND} viene applicata principlamente per forzare alcuni bit a 0 usando come operando una maschera (i cui bit corrispondenti a quelli che si vogliono annullare sono settati a 0).
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{bitwise_and}
