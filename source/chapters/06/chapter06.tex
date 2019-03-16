@@ -107,6 +107,7 @@ diventerà
 \end{minted}
 
 Per dare un altro esempio, è molto conveniente implementare un registro zero (\emph{\$zero}), perché rende molto più semplici le operazioni di copia, che di fatto possono essere ridotte a una somma di un qualsiasi registro con il registro zero.
+
 \section{La rappresentazione delle istruzioni}
 
 \subsubsection{Convenzioni sulla scrittura esadecimale}
@@ -184,6 +185,7 @@ Si noti come non abbia senso parlare di shift aritmetico a sinistra, in quanto o
 
 \subsection{Operazione di bitwise}
 Vengono definite di \emph{Bitwise} quelle operazioni logiche che operano su ciascun bit.
+
 \paragraph{Bitwise AND}
 L'operazione di \emph{bitwise AND} viene applicata principlamente per forzare alcuni bit a 0 usando come operando una maschera (i cui bit corrispondenti a quelli che si vogliono annulare sono settati a 0).
 \begin{figure}[H]
@@ -194,7 +196,7 @@ L'operazione di \emph{bitwise AND} viene applicata principlamente per forzare al
 
 \paragraph{Bitwise OR}
 In maniera analoga, è possibile settare a \(1\) alcuni bit applicando l'operazione di \emph{bitwise OR} con un operando che abbia \(1\) nella posizione corrispondente (funzione di maschera). Ad esempio, per impostare ad \(1\) i \(4\) bit più significativi di \$s0:
-\begin{minted}[linenos, breaklines]{asm}
+\begin{minted}[]{asm}
 	addi $t0, $zero, 0x000F
 	sll $t0, $t0, 28
 	or $s0, $s0, $t0
@@ -248,18 +250,32 @@ A seguire la sintassi MIPS dell'operazione di XOR:
 Curiosità: se si esegue lo XOR di un numero con se stesso, il risultato è pari a \(0\) per ciascun bit.
 
 \section{Salti}
-Nella lingua inglese è presente una sostanziale differenza fra \emph{jump} (salto non condizionato) e \emph{branch} (salto condizionato). Il branch modifica il valore del registro \emph{PC}.\\
-\begin{minted}{asm}
-	beq reg1, reg2, L1; # Branch on EQual
-	bne reg1, reg2, L1; # Branch on Non Equal
-	j LABEL; salta all'indirizzo di label
-	jr $t0; salta all'indirizzo contenuto nel registro
-\end{minted}
+Oltre alle istruzioni aritmetico-logiche e di lettura e scrittura in memoria, il linguaggio MIPS offre anche alcune istruzioni per effettuare dei "salti" all'interno del codice. In particolare, si dicono \emph{istruzioni di salto} quei comandi che possono modificare il valore del registro \emph{PC}.\\
+Esistono sostanzialmente due differenti tipi di salto:
+\begin{itemize}
+	\item \emph{jump}: salti non condizionati.
+	\item \emph{branch}: salti condizionati.
+\end{itemize}
+A differenza delle istruzioni di jump, i branch vengono eseguiti solo se una determinata condizione è verificata: uguaglianza di due registri (nel caso di \emph{beq}) e disuguaglianza di due registri (nel caso di \emph{bne}).
 
-Le label vengono alla fine tradotte in indirizzi da parte del compilatore.
-Il check del branch viene fatto con la condizione opposta, per aver maggiore efficienza.
+A seguire la sintassi delle istruzioni di salto offerte da MIPS:
+\begin{minted}[linenos, breaklines]{asm}
+	# Branch on EQual
+	beq reg1, reg2, L1;  # vai a L1 se reg1 == reg2
+
+	# Branch on Non Equal
+	bne reg1, reg2, L1;  # vai a L1 se reg1 != reg2
+
+	# Jump
+	j LABEL; salta incondizionatamente a LABEL
+
+	# Jump Register
+	jr $t0; salta incondizionatemente all'indirizzo contenuto nel registro t0
+\end{minted}
+Come si può osservare, in fase di scrittura del codice si utilizzano delle \emph{label} (ossia etichette) piuttosto che veri e propri indirizzi di memoria. L'arduo compito di tradurre queste etichette in veri e propri indirizzi di memoria spetta al compilatore.
 
 \subsection{Altri confronti}
+Il check del branch viene fatto con la condizione opposta, per aver maggiore efficienza.
 \begin{minted}{asm}
 	slt $t0, $s3, $s4; # t0=1 se s3<s4
 	slti $t0, $s3, 10; # t0=1 se s3<10
