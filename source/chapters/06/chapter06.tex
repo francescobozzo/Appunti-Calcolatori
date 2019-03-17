@@ -21,9 +21,9 @@ Come già detto, nonostante non sia diffusissima, inizieremo a studiare l'archit
 Fin dai tempi di Von Neumann era chiaro che, per quanto semplice e vicino al linguaggio macchina un linguaggio potesse essere, non dovevano mancare le operazioni aritmetiche e logiche fondamentali; oltre a quelle, MIPS possiede inoltre alcuni comandi per il controllo di flusso.
 
 \section{Operazioni aritmetiche}
-Per dare una chiave di lettura al percorso che faremo su MIPS useremo alcuni principi di progettazione software e hardware che ogni informatico segue fin dagli albori della storia dell'informatica, e naturalmente, iniziando a parlare delle operazioni aritmetiche,  inizieremo così:\\
+Per dare una chiave di lettura al percorso che faremo su MIPS useremo alcuni principi di progettazione software e hardware che ogni informatico segue fin dagli albori della storia dell'informatica, e naturalmente, iniziando a parlare delle operazioni aritmetiche,  inizieremo così:
 
-\textbf{PRINCIPIO DI PROGETTAZIONE N. 1:}\\
+\paragraph{PRINCIPIO DI PROGETTAZIONE N. 1:}
 \emph{La semplicità favorisce la regolarità}.\\
 
 In linea con questo principio, MIPS consente di effettuare operazioni aritmetiche solo nella loro forma più semplice, ossia con tre operandi: \(a = b + c\).
@@ -50,9 +50,9 @@ Notiamo inoltre che i commenti si scrivono con \#, e questo agisce solo sulla ri
 \subsection{Cosa sono}
 
 Fino ad ora abbiamo considerato gli operandi come fossero normali variabili, ma in realtà questi altro non sono che dei \emph{registri}, ossia delle particolari locazioni di memoria interne al processore e che possono essere reperite celerissimamente, con un solo colpo di clock.\\
-MIPS possiede 32 registri, ciascuno di 32 bit, per cui ogniqualvolta si debba eseguire delle operazioni è necessario caricare i dati dalla RAM con un'operazione di \emph{load}. Questo processo può apparire dispendioso ed è lecito domandarsi come mai non ci si possa dotare di più registri più capienti, e la risposta è espressa dal\\
+MIPS possiede 32 registri, ciascuno di 32 bit, per cui ogniqualvolta si debba eseguire delle operazioni è necessario caricare i dati dalla RAM con un'operazione di \emph{load}. Questo processo può apparire dispendioso ed è lecito domandarsi come mai non ci si possa dotare di più registri più capienti, e la risposta è espressa dal
 
-\textbf{PRINCIPIO DI PROGETTAZIONE N.2:}\\
+\paragraph{PRINCIPIO DI PROGETTAZIONE N.2:}
 \emph{Minori dimensioni portano a maggiore velocità}\\
 
 Di fatto, se avessimo  più registri, aumenterebbe notevolmente il tempo di accesso a questi, in quanto gli impulsi elettrici impiegherebbero fisicamente più tempo per passare da un registro all'altro, e la velocità di clock sarebbe visibilmente compromessa.
@@ -94,9 +94,9 @@ Questo è un esempio un po' più complesso, si raccomanda una lettura accorta pe
 Come già anticipato, i 32 registri non sono assolutamente sufficienti per contenere tutte le variabili usate da un programma complesso, quindi quello che succede a livello assembly è un continuo susseguirsi di load e store, e questa operazione si chiama \emph{register spilling} ed è eseguita dal compilatore (si dice che  prepara il \emph{working set} e stima le load e store appropriate).
 
 \subsection{Le costanti}
-Molto spesso ci si trova a lavorare con le costanti. Nonostante ogni costante possa essere salvata su un registro, questa soluzione è parecchio inefficiente, perché le costante e le operazioni relative sono molto comuni.\\
+Molto spesso ci si trova a lavorare con le costanti. Nonostante ogni costante possa essere salvata su un registro, questa soluzione è parecchio inefficiente, perché le costante e le operazioni relative sono molto comuni.
 
-\textbf{PRINCIPIO DI PROGETTAZIONE N.3:}\\
+\paragraph{PRINCIPIO DI PROGETTAZIONE N.3:}
 \emph{Rendi veloci le operazioni comuni}.\\
 
 Quindi ci conviene assolutamente costruire una sintassi dedicata all'esecuzione di operazioni con costanti, dove la \emph{i} sta per \emph{immediate}. Ad esempio:
@@ -135,9 +135,9 @@ In gerale questo sistema, detto R (da Registro), ogni campo dell'istruzione ha u
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{mappatura.png}
 	\caption{Mappatura di un'istruzione di tipo R}
 \end{figure}
-A questo punto è lecito domandarsi come mai si usino solo 32 bit per rappresentare le istruzioni, e la risposta sta nel:\\
+A questo punto è lecito domandarsi come mai si usino solo 32 bit per rappresentare le istruzioni, e la risposta sta nel:
 
-\textbf{PRINCIPIO DI PROGETTAZIONE N.4:}\\
+\paragraph{PRINCIPIO DI PROGETTAZIONE N.4:}
 \emph{Buoni progetti richiedono buoni compromessi}\\
 
 Uilizzare una quantità limitata di registri e istruzioni e limitandone le dimensioni possiamo guadagnare moltissimo in efficienza!
