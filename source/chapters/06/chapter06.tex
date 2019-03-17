@@ -252,13 +252,13 @@ A seguire la sintassi MIPS dell'operazione di XOR:
 Curiosità: se si esegue lo XOR di un numero con se stesso, il risultato è pari a \(0\) per ciascun bit.
 
 \section{Salti}
-Oltre alle istruzioni aritmetico-logiche e di lettura e scrittura in memoria, il linguaggio MIPS offre anche alcune istruzioni per effettuare dei "salti" all'interno del codice. In particolare, si dicono \emph{istruzioni di salto} quei comandi che possono modificare il valore del registro \emph{PC}.\\
+Oltre alle istruzioni aritmetico-logiche e di lettura e scrittura in memoria, il linguaggio MIPS offre anche alcune istruzioni per effettuare dei "salti" all'interno del codice. In particolare, si dicono \emph{istruzioni di salto} quei comandi che possono modificare il valore del registro PC.\\
 Esistono sostanzialmente due differenti tipi di salto:
 \begin{itemize}
 	\item \emph{jump}: salti non condizionati.
 	\item \emph{branch}: salti condizionati.
 \end{itemize}
-A differenza delle istruzioni di jump, i branch vengono eseguiti solo se una determinata condizione è verificata: uguaglianza di due registri (nel caso di \emph{beq}) e disuguaglianza di due registri (nel caso di \emph{bne}).
+A differenza delle istruzioni di jump, i branch vengono eseguiti solo se una determinata condizione è verificata: uguaglianza di due registri (nel caso di \emph{beq}) e disuguaglianza di due registri (nel caso di \emph{bne}). Si definiscono perciò come operazioni che hanno la capacità di modificare il flusso del programma.
 
 A seguire la sintassi delle istruzioni di salto offerte da MIPS:
 \begin{minted}[linenos, breaklines]{asm}
@@ -276,26 +276,96 @@ A seguire la sintassi delle istruzioni di salto offerte da MIPS:
 \end{minted}
 Come si può osservare, in fase di scrittura del codice si utilizzano delle \emph{label} (ossia etichette) piuttosto che veri e propri indirizzi di memoria. L'arduo compito di tradurre queste etichette in veri e propri indirizzi di memoria spetta al compilatore.
 
-\subsection{Altri confronti}
-Il check del branch viene fatto con la condizione opposta, per aver maggiore efficienza.
+Viene data la seguente definizione di \emph{blocco di base}: sequenza di istruzioni che non contiene né istruzioni di salto (con l’eccezione dell’ultima) né etichette di destinazione (con l’eccezione della prima). In fase di compilazione ricoprono un ruolo non indifferente, in quanto una delle prime analisi eseguite sul codice consiste nel cercare proprio queste porzioni di codice. Inoltre, tutti i cicli dei linguaggi di programmazione ad alto livello vengono implementati con l'ausilio di blocchi base.
+
+\subsection{Confronti per minorazioni}
+Esistono inoltre delle istruzioni che permettono di settare dei bit in determinati registri di \emph{flag} sulla base di una determinata condizione. In modo particolare osserviamo l'istruzione \emph{slt} e la sua controparte immediata, sia in versione signed che unsigned:
 \begin{minted}{asm}
-	slt $t0, $s3, $s4; # t0=1 se s3<s4
-	slti $t0, $s3, 10; # t0=1 se s3<10
+	slt $t0, $s3, $s4  # setta t0=1 se s3<s4
+	slti $t0, $s3, 10  # setta t0=1 se s3<10
+	sltu $t0, $s3, $s4  # unsigned: setta t0=1 se s3<s4
+	sltui $t0, $s3, 10  # unsigned: setta t0=1 se s3<10
+\end{minted}
+Queste istruzioni vengono molto utilizzate dai compilatori MIPS per ottenere salti su condizioni di minore o maggiore uguale, con l'ausilio di \emph{beq} e \emph{bne}. A seguire viene presentato un esempio di traduzione da codice C ad assembly MIPS.
+\begin{minted}[linenos, breaklines]{c}
+	if (i < j){
+		f = g + h;
+	} else {
+		f = g – h;
+	}
+\end{minted}
+\begin{minted}[linenos, breaklines]{asm}
+	slt $t0, $s3, $s4  # setta $t0 se i < j
+	beq $t0, $zero, ELSE  # salta a ELSE se $t0 = $zero
+	add $s0, $s1, $s2  # f = g + h
+	j ESCI  # salto incondizionato a ESCI
+ELSE:
+	sub $s0, $s1, $s2  # f = g - h
+ESCI:
+\end{minted}
+Un'ulteriore utilità di queste istruzioni può essere espressa utilizzando i vettori: supponiamo di volere controllare se un indice (\$s1) è fuori dal limite di un array ([0, \$t2]).
+\begin{minted}[linenos, breaklines]{asm}
+	sltu $t0, $s1, $t2
+	beq $t0, $zero, FuoriLimite
+\end{minted}
+Infatti, se \$s1 è maggiore di \$t2, ovviamente avremo 0 in \$t0. D'altra parte, se \$s1 è negativo, interpretato come unsigned, sarà maggiore di \$t2 (che ha il bit più significativo a 0, essendo \$t2 necessariamente un numero positivo).
+
+\subsection{Implementazione del costrutto if}
+Supponiamo di voler tradurre il seguente listato di codice in assembly MIPS:
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+	if (i == j){
+		f = g + h;
+	} else {
+		f = g - h;
+	}
 \end{minted}
 
-% TODO - Riguarda la parte relativa al segno
+A seguire viene presentata una possibile soluzione:
+\begin{minted}[linenos, breaklines]{asm}
+IF:
+	bne $s3, $s4, ELSE  # salta a ELSE se $s3 != $s4
+	add $s0, $s1, $s2  # f = g + h
+	j ESCI  # Salto incondizionato a ESCI
+ELSE:
+	sub $s0, $s1, $s2  # f = g - h
+ESCI:
+\end{minted}
+Si noti che l'espressione di controllo effettua consiste nel verificare il negato della condizione voluta: tale stratagemma risulta infatti essere più efficiente.
 
-\subsection{Implementazione del costrutto \emph{if}}
+\subsection{Implementazione del costrutto while}
+Supponiamo di voler tradurre il seguente listato di codice in assembly MIPS:
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+	while (salva[i] == k){
+		i += 1;
+	}
+\end{minted}
 
-\subsection{Implementazione del costrutto \emph{while}}
-Il ciclo non viene direttamente implementato dal mips.\\
-% TODO - Codice C - Codice MIPS (magari affiancati con minipage)
+A seguire viene presentata una possibile soluzione:
+\begin{minted}[linenos, breaklines]{asm}
+CICLO:
+	sll $t1, $s2, 2  # registro temp. $t1 = 4*i
+	add $t1, $t1, $s6  # ind. di salva[i] in $t1
+	lw $t0, 0($t1)  # carica salva[i] in $t0
+	bne $t0, $s5, ESCI  # esci se raggiunto limite
+	addi $s2, $s2, 1  # i = i+1
+	j CICLO
+ESCI:
+\end{minted}
+Si noti come il registro \$s2 venga utilizzato come contatore; \$s6 sia l'offset di base del vettore salva[].
 
-\subsection{Implementazione del costrutto \emph{switch/case}}
-\begin{itemize}
-	\item Possibilità di creare una sequenza di if-else
-	\item
-\end{itemize}
-
+\subsection{Implementazione del costrutto switch/case}
+Piuttosto che eseguire una cascata di if-else, esiste una tecnica per implementare un costrutto \emph{switch/case}: memorizzare i vari indirizzi del codice da eseguire in una tabella, caricando l'indirizzo a cui saltare in un registro, per poi utilizzare un \emph{jr}.\\
+A seguire un esempio di switch in codice C trasformato in assembly MIPS:
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+switch(a) {
+	case 1: <code 1>
+	case 2: <code 2>
+}
+\end{minted}
+\begin{minted}[linenos, breaklines]{asm}
+	sll $t0, $a0, 2 # moltiplica per 4
+	lw $t0, TABLE($t0)
+	jr $t0
+\end{minted}
 
 \end{document}
