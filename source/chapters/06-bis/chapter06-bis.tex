@@ -3,7 +3,34 @@
 
 \usepackage{../../style}
 
-\graphicspath{{./assets/images/}}
+%\graphicspath{{./assets/images/}}%
 
 \begin{document}
 \chapter{L'architettura MIPS}
+\section{Gestione delle procedure}
+L'utilità dei calcolatori sarebbe molto limitata se questi non avessero la possibilità di svolgere delle procedure, che possono essere immaginate a tutti gli effetti come delle funzioni che dato un certo input eseguono un determinato task a cui sono dedicate.\\
+L'aspetto fondamentale che si deve curare per dare la possibilità ai calcolatori di svolgere procedure è la definizione di un protocollo di chiamata delle procedure che deve stabilire con precisione questi aspetti:
+\begin{itemize}[noitemsep]
+	\item Come caricare i parametri di input della procedura in posti noti
+	\item Come trasferire il controllo alla procedura, che deve:
+		\begin{itemize}[nolistsep, noitemsep]
+			\item Acquisire le risorse necessarie
+			\item Eseguire il task affidatole
+			\item Caricare gli output in posti noti
+			\item Restituire il controllo al chiamante
+		\end{itemize}
+	\item Come salvare il valore di ritorno della procedura e "fare pulizia" del tutto
+\end{itemize}
+I protocolli per la gestione delle procedure sono diversi in base all'architettura che si utilizza ed alle convenzioni di chiamata del compilatore, noi per ora studiamo il caso del MIPS.
+
+\section{Protocollo di chiamata MIPS}
+L'idea fondante del protocollo del MIPS è di utilizzare gniqualvolta possibile i registri, dato che essi sono il meccanismo più veloce a disposizione per la gestione dei parametri delle procedure. Ecco una tabella riassuntiva delle convensioni sui registri definite nel MIPS:
+%\begin{table}[H]
+%	\centering
+%	\caption{didascalia}
+%	\subimport{assets/tables/}{convenzioni-registri-MIPS.tex}
+%\end{table}
+
+
+
+\end{document}
