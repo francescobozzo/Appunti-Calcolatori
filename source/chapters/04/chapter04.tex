@@ -11,7 +11,7 @@
 Come ben sappiamo, a differenza di \emph{ENIAC}, i computer moderni sono realizzati da un'enorme quantità di circuiti elettronici. Trattandosi di elettronica digitale, a livello hardware è possibile lavorare con due livelli fondamentali:
 \begin{itemize}[noitemsep, nolistsep]
 	\item 1: alto, asserito; associato alla tensione di alimentazione \emph{Vdd}.
-	\item 0: basso, negati; associato alla massa (tensione vicina a 0).
+	\item 0: basso, negato; associato alla massa (tensione vicina a 0).
 \end{itemize}
 Nel passaggio da un livello all'altro si presenta lo stato \emph{transitorio}, in cui la tensione assume valori intermedi fra zero e Vdd.\\
 In particolare, i \textbf{circuiti logici} (formati dalle \textbf{porte logiche}) vengono utilizzati per trasformare alcuni valori logici in ingresso in altri valori logici in uscita. I circuiti logici si differenziano principalmente in:
@@ -22,7 +22,7 @@ In particolare, i \textbf{circuiti logici} (formati dalle \textbf{porte logiche}
 \`{E} possibile riassumere il comportamento di una rete logica attraverso una \emph{tabella di verità}, che descrive i diversi output al variare dei diversi input.
 
 \section{L'algebra di Boole}
-Esisotno principalmente tre operazioni di base:
+Esistono principalmente tre operazioni di base:
 \begin{itemize}[noitemsep, nolistsep]
 	\item \textbf{AND}: \(A\cdot B\); produce 1 se entrambi gli operandi sono 1, 0 altrimenti.
 	\item \textbf{OR}: \(A+B\); produce 0 se entrambi gli operandi sono 0, 1 altrimenti.
@@ -55,7 +55,7 @@ D = A+B+C\\
 F = A\cdot B\cdot C\\
 E = (A\cdot B\cdot\overline{C}) + (A\cdot C\cdot\overline{B}) + (B\cdot C\cdot\overline{A})
 \end{gather*}
-In particolare, l'ultima espressione è stata ottenuta come somme di prodotti attraverso i cosiddetti \emph{mintermini}. Per ciscun 1 presente nella colonna E, si scrive il prodotto degli input (asseriti se pari a 1, negati se pari a 0); il risultato dell'espressione è pari alla somma di tali prodotti.
+In particolare, l'ultima espressione è stata ottenuta come somme di prodotti attraverso i cosiddetti \emph{mintermini}. Per ciascun 1 presente nella colonna E, si scrive il prodotto degli input (asseriti se pari a 1, negati se pari a 0); il risultato dell'espressione è pari alla somma di tali prodotti.
 
 \section{Le porte logiche}
 A seguire vengono rappresentate, attraverso i corrispettivi simboli, le porte logiche implementate attraverso gli operatori booleani fondamentali:
