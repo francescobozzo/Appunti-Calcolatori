@@ -9,7 +9,7 @@
 \chapter{Introduzione ai calcolatori}
 \section{Un po' di storia dell'informatica}
 \paragraph{ENIAC, il primo computer della storia}
-Commissionato nel 1946 dal Dipartimento di Difesa degli Stati Uniti, \textbf{ENIAC} (\emph{Electonic Numerical Integrator and Computer}) diventa il primo calcolatore della storia.
+Commissionato nel 1946 dal Dipartimento di Difesa degli Stati Uniti, \emph{ENIAC} (\emph{Electonic Numerical Integrator and Computer}) diventa il primo calcolatore della storia.
 Dotato di $18000$ valvole termoioniche, esso occupava una stanza di 9x30 metri, consumando un ammontare spropositato di energia.\\
 Il suo impiego principale consisteva nel calcolare traiettorie dei proiettili di artiglieria. Infatti, è doveroso specificare come i primi calcolatori della storia siano stati concepiti per essere sfruttati in applicazioni belliche.
 
@@ -23,7 +23,6 @@ Seppur i calcolatori di oggi condividano la stessa idea base, le soluzioni per c
 
 \begin{table}[H]
 	\centering
-	\caption{didascalia}
 	\subimport{assets/tables/}{table_diff_calcolatori.tex}
 \end{table}
 
@@ -60,15 +59,15 @@ Diversamente dai dischi rigidi elettromeccanici, la memorizzazione su una memori
 I dischi ottici funzionano sul principio di riflessione della luce: viene emesso un raggio laser che viene riflesso dai rilievi, nel caso bit 1, e assorbito dalle buche, nel caso bit 0. Nei dischi riscrivibili è inoltre presente un particolare substrato che se riscaldato torna alla condizione di partenza, eliminando tutti i dati memorizzati.
 
 \paragraph*{Il processore}
-La \textbf{CPU} è l'unità centrale di ogni calcolatore. Si compone di:
+La \emph{CPU} è l'unità centrale di ogni calcolatore. Si compone di:
 \begin{itemize}[noitemsep]
 	\item \emph{Datapath}: esegue operazioni aritmetiche sui dati.
 	\item \emph{Control Unit}: impartisce ordini al datapath, alla memoria e alle componenti IO, sulla base di quanto stabilito dal programma.
 \end{itemize}
-Il processore offre l'\textbf{ISA} (\emph{Instruction Set Architecture}), un'interfaccia che permette di utilizzarlo senza conoscerne i dettagli. In aggiunta all'ulteriore interfaccia del sistema operativo, insieme formano l'interfaccia binaria delle applicazioni \textbf{ABI} (\emph{Application Binary Interface}). Ciò permette allo sviluppatore di svincolarsi dal livello hardware sottostante, secondo il principio di \emph{astrazione}.\\ Esistono due diversi tipi di architetture ISA:
+Il processore offre l'\emph{ISA} (\emph{Instruction Set Architecture}), un'interfaccia che permette di utilizzarlo senza conoscerne i dettagli. In aggiunta all'ulteriore interfaccia del sistema operativo, insieme formano l'interfaccia binaria delle applicazioni \emph{ABI} (\emph{Application Binary Interface}). Ciò permette allo sviluppatore di svincolarsi dal livello hardware sottostante, secondo il principio di \emph{astrazione}.\\ Esistono due diversi tipi di architetture ISA:
 \begin{itemize}[noitemsep,nolistsep]
-	\item \textbf{RISC}: offre un numero ridotto di istruzioni, rivolta soprattutto a sistemi \emph{embedded};
-	\item \textbf{CISC}: offre Permette di usufruire di un maggior numero di istruzioni, rivolta prevalentemente ai PC.
+	\item \emph{RISC}: offre un numero ridotto di istruzioni, rivolta soprattutto a sistemi \emph{embedded};
+	\item \emph{CISC}: offre Permette di usufruire di un maggior numero di istruzioni, rivolta prevalentemente ai PC.
 \end{itemize}
 
 \subsection{Software di sistema}
@@ -88,9 +87,9 @@ L'utilità del compilatore consiste nel facilitare il lavoro del programmatore: 
 Spesso fanno eccezione alcuni compilatori che trasformano direttamente il linguaggio ad alto livello in codice macchina.
 
 \subsection{Periferiche di IO}
-Il \textbf{mouse} è stato inventato nel 1967 da \emph{Doug Engelbart} nei laboratori della \emph{Xerox}. Attualmente sfrutta la tecnologia ottica: attraverso le variazioni di luce provocate da alcuni led che illuminano il piano, il mouse è in grado di rilevare gli spostamenti.
+Il \emph{mouse} è stato inventato nel 1967 da \emph{Doug Engelbart} nei laboratori della \emph{Xerox}. Attualmente sfrutta la tecnologia ottica: attraverso le variazioni di luce provocate da alcuni led che illuminano il piano, il mouse è in grado di rilevare gli spostamenti.
 
-Gli schermi \textbf{LCD} (\emph{Liquid Crystal Display}) sono costituiti da alcuni cristalli che galleggiano in un fluido: ciascuno di essi corrisponde ad un pixel. Attraverso un campo elettrico è possibile ruotare di 90 gradi ogni singolo cristallo, che di conseguenza può impedire o meno il passaggio della luce secondo il fenomeno fisico della \emph{luce polarizzata}.\\
+Gli schermi \emph{LCD} (\emph{Liquid Crystal Display}) sono costituiti da alcuni cristalli che galleggiano in un fluido: ciascuno di essi corrisponde ad un pixel. Attraverso un campo elettrico è possibile ruotare di 90 gradi ogni singolo cristallo, che di conseguenza può impedire o meno il passaggio della luce secondo il fenomeno fisico della \emph{luce polarizzata}.\\
 L'immagine dunque viene rappresentata da una matrice di pixel: ciascuno di essi ha associata una componente rosso, verde, blu (sistema RGB). Questa immagine viene memorizzata in un \emph{frame buffer}, una RAM che viene aggiornata  fino a 100 volte al secondo.
 
 \subsection{Misurazione delle prestazioni}
@@ -108,9 +107,10 @@ Il tempo necessario per l'esecuzione di un programma dipende da tre fattori:
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth,keepaspectratio]{tempo_risposta.png}
-	\caption{Diagramma del tempo di risposta}
+	\subimport{assets/figures/}{tempo_risposta.tex}
+	\caption{Diagramma tempo di risposta}
 \end{figure}
+
 Un algoritmo è efficiente se viene strutturato in modo da risparmiare istruzioni e, per una particolare architettura, se utilizza le istruzioni più efficienti (quelle con un basso CPI, poichè il CPI dei diversi tipi di istruzione varia in base all'architettura che deve svolgere le istruzioni).\\
 Il linguaggio di programmazione influenza il numero di istruzioni e il CPI: più di alto livello sono i costrutti, più lunghe sono le sequenze di istruzioni macchina ottenute traducendo il codice di partenza.\\
 Il compilatore sicuramente influenza sia il numero di istruzioni che il CPI in base alla propria efficienza e ottimizzazione.\\
