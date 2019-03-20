@@ -26,11 +26,11 @@ I protocolli per la gestione delle procedure sono diversi in base all'architettu
 \section{Protocollo di chiamata MIPS}
 L'idea fondante del protocollo implementato da MIPS è di utilizzare ogniqualvolta possibile i registri, dato che essi sono il meccanismo più veloce a disposizione per la gestione dei parametri delle procedure. Ecco una tabella riassuntiva delle convenzioni sui registri definite nel MIPS:
 
-%\begin{table}[H]
-%	\centering
-%	\caption{didascalia}
-%	\subimport{assets/tables/}{convenzioni-registri-MIPS.tex}
-%\end{table}
+\begin{table}[H]
+	\centering
+	\caption{Convenzioni sui registri in MIPS}
+	\subimport{assets/tables/}{convenzioni-registri-MIPS.tex}
+\end{table}
 
 Oltre ai registri il MIPS mette a disposizione dell'utente l'istruzione \emph{jump and link (jal)} che effettua il salto ???(all'esecuzione di una data funzione)??? e contemporaneamente memorizza in \emph{\$ra} l'indirizzo di ritorno ???(una volta terminata la funzione)???. Questo significa che quano si chiama la \emph{jal} si salva automaticamente in \emph{\$ra} il PC incrementato di 4 (l'iztruzione successiva).\\
 Alla fine della procedura sarà così sufficiente compiere il salto \mintinline{asm}{js \$ra} per riprendere lo svolgimento del programma principale da dove lo si era interrotto.
