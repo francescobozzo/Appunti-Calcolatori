@@ -1,7 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-	\PYG{k+kt}{int} \PYG{n+nf}{esempio}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{g}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{h}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{i}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{j}\PYG{p}{)\PYGZob{}}
-		\PYG{k+kt}{int} \PYG{n}{f}\PYG{p}{;}
-		\PYG{n}{f} \PYG{o}{=} \PYG{p}{(}\PYG{n}{g}\PYG{o}{+}\PYG{n}{h}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{n}{j}\PYG{p}{);}
-		\PYG{k}{return} \PYG{n}{f}\PYG{p}{;}
-	\PYG{p}{\PYGZcb{}}
-\end{Verbatim}

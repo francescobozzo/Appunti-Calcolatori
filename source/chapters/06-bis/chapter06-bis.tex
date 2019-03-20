@@ -134,7 +134,47 @@ L1:	     addi $a0, $a0, -1 #decremento n
 		jr $ra
 \end{minted}
 
-arrivato a pag. 94
+\section{Gestione delle variabili in MIPS}
+Le variabili in C sono in genere associate a locazioni di memoria, si caratterizzano per:
+\begin{itemize}[noitemsep]
+	\item \textbf{Tipo} int, char, float, ecc.
+	\item \textbf{Storage class} \textit{Automatic}, variabili locali che hanno un ciclo di vita collegato alla funzione e \textit{Static}, variabili globali o definite come static che sopravvivono anche al termine della funzione
+\end{itemize}
+Le variabili statiche sono memorizzate in una zona di memoria specifica (nel MIPS accessibile attraverso il registro global pointer, \emph{\$gp}).\\
+Le variabili locali invece possono essere memorizzate nei registri, tuttavia quando questi non bastano, come già visto, le variabili bvengono salvate all'interno dello stack; il segmento di stack che le contiene viene chiamato record di attivazione (o stack frame) e di conseguenza le variabili locali vengono individate tramite un offset a partire da un puntatore allo stack.
+Contrariamente a come si penserebbe tuttavia non si utilizza \$sp come puntatore, poichè esso può variare all'interno dello svolgimento di una funzione, di conseguenza si utilizza il puntatore dedicato \emph{\$fp}.\\
+L'immagine qui sotto rappresenta l'evoluzione dei due puntatori \emph{\$sp} e \emph{\$fp} durante la chiamata di una funzione, per capire meglio i vantaggi dell'utilizo di \emph{\$fp}.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth,keepaspectratio]{sp-vs-fp}
+	\caption{Confronto tra puntatore \emph{\$sp} e \emph{\$fp}}
+\end{figure}
+
+Esiste inoltre un ultimo tipo di variabili (oltre alle globali ed alle locali), quelle dinamiche, che vengono allocate secondo lo schema di ficgura 1.3 dal MIPS; da notare il fatto che lo stack rocede "decrescendo" mentre i dati allocati dinamicamente "crescono"  partendo da dove terminano i dati statici (e quindi si spiega perchè negli esempi precedenti abbiamo decrementato \$sp per inserire word nello stack).
+\begin{figure}[H]
+	\centering
+	\caption{Schema allocazione dei dati in MIPS}
+	\includegraphics[width=0.4\textwidth,keepaspectratio]{Dove-finiscono-le-variabili}
+\end{figure}
+
+\section{Elaborazione delle procedure}
+Per spiegare come vengono elaborate le procedure da MIPS utilizziamo come esempio la seguente funzione:
+\begin{minted}{c}
+	int sum(int n){
+		if(n>0) { return sum(n-1)+n; }
+		else { return n; }
+	}
+\end{minted}
+
+Se si analizza la funzione si nota come il valore di ritorno viene costruito risalendo la catena di chiamate e quindi ogni frame di attivazione deve essere preservato per produrre il risultato corretto.\\
+Come possiamo immaginare il procedimento scritto così è  molto dispendioso in termini di memoria, ma possiamo, con un po' di esperienza e scaltrezza, riscrivere nel seguente modo il programma:
+\begin{minted}{c}
+	int sum(int n, int acc){
+		if(n>0) { return sum(n-1, acc+n) }
+		else { return acc; }
+	}
+\end{minted}
+In questo caso si applica il metodo di ricorsione in coda, che comporta un grande vantaggio dal punto di vista dell'utilizzo di memoria poichè una volta terminata una chiamata della funzione si può eliminare tutto il suo ambiente (che non risulterà più utile).
 
 
 
