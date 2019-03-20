@@ -1,0 +1,22 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nl}{esempio:} \PYG{c}{\PYGZsh{}decremento \PYGZdl{}sp di 12 creando lo spazio per 3 words}
+		\PYG{n+nf}{addi} \PYG{n+no}{\PYGZdl{}sp}\PYG{p}{,} \PYG{n+no}{\PYGZdl{}sp}\PYG{p}{,} \PYG{p}{\PYGZhy{}}\PYG{l+m+mi}{12}\PYG{c}{;}
+	\PYG{c}{\PYGZsh{}salvo i registri nello stack prima che la funzione li sovrascriva}
+		\PYG{n+nf}{sw} \PYG{n+no}{\PYGZdl{}t1}\PYG{p}{,} \PYG{l+m+mi}{8}\PYG{p}{(}\PYG{n+no}{\PYGZdl{}sp}\PYG{p}{)}
+		\PYG{n+nf}{sw} \PYG{n+no}{\PYGZdl{}t0}\PYG{p}{,} \PYG{l+m+mi}{4}\PYG{p}{(}\PYG{n+no}{\PYGZdl{}sp}\PYG{p}{)}
+		\PYG{n+nf}{sw} \PYG{n+no}{\PYGZdl{}s0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{(}\PYG{n+no}{\PYGZdl{}sp}\PYG{p}{)}
+	\PYG{c}{\PYGZsh{}fine del prologo, inizio della procedura effettiva}
+		\PYG{n+nf}{add} \PYG{n+no}{\PYGZdl{}t0}\PYG{p}{,} \PYG{n+no}{\PYGZdl{}a0}\PYG{p}{,} \PYG{n+no}{\PYGZdl{}a1}	\PYG{c}{\PYGZsh{}\PYGZdl{}t0=\PYGZdq{}g\PYGZdq{}+\PYGZdq{}h\PYGZdq{}}
+		\PYG{n+nf}{add} \PYG{n+no}{\PYGZdl{}t1}\PYG{p}{,} \PYG{n+no}{\PYGZdl{}a2}\PYG{p}{,} \PYG{n+no}{\PYGZdl{}a3}	\PYG{c}{\PYGZsh{}\PYGZdl{}t1=\PYGZdq{}i\PYGZdq{}+\PYGZdq{}j\PYGZdq{}}
+		\PYG{n+nf}{sub} \PYG{n+no}{\PYGZdl{}s0}\PYG{p}{,} \PYG{n+no}{\PYGZdl{}t0}\PYG{p}{,} \PYG{n+no}{\PYGZdl{}t1}	\PYG{c}{\PYGZsh{}\PYGZdl{}s0=(g+h)\PYGZhy{}(i+j)}
+	\PYG{c}{\PYGZsh{}imposto il valore di ritorno}
+		\PYG{n+nf}{add} \PYG{n+no}{\PYGZdl{}v0}\PYG{p}{,} \PYG{n+no}{\PYGZdl{}s0}\PYG{p}{,} \PYG{n+no}{\PYGZdl{}zero} \PYG{c}{\PYGZsh{}\PYGZdl{}v0=\PYGZdl{}s0}
+	\PYG{c}{\PYGZsh{}dopo le operazioni resetto i registri}
+		\PYG{n+nf}{lw} \PYG{n+no}{\PYGZdl{}s0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{(}\PYG{n+no}{\PYGZdl{}sp}\PYG{p}{)}
+		\PYG{n+nf}{lw} \PYG{n+no}{\PYGZdl{}t0}\PYG{p}{,} \PYG{l+m+mi}{4}\PYG{p}{(}\PYG{n+no}{\PYGZdl{}sp}\PYG{p}{)}
+		\PYG{n+nf}{lw} \PYG{n+no}{\PYGZdl{}t1}\PYG{p}{,} \PYG{l+m+mi}{8}\PYG{p}{(}\PYG{n+no}{\PYGZdl{}sp}\PYG{p}{)}
+	\PYG{c}{\PYGZsh{}ora posso liberare lo spazio dello stack dove stavano i registri}
+		\PYG{n+nf}{addi} \PYG{n+no}{\PYGZdl{}sp}\PYG{p}{,} \PYG{n+no}{\PYGZdl{}sp}\PYG{p}{,} \PYG{l+m+mi}{12}
+	\PYG{c}{\PYGZsh{}infine \PYGZdq{}salto\PYGZdq{} all\PYGZsq{}istruzione successiva alla chiamata di esempio}
+		\PYG{n+nf}{jr} \PYG{n+no}{\PYGZdl{}ra}
+\end{Verbatim}
