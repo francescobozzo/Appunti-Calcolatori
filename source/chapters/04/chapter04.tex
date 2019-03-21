@@ -82,20 +82,17 @@ L'ingresso del \emph{decoder} svolge il ruolo di selettore: ricevendo in input i
 \end{figure}
 \begin{table}[!h]
 	\centering
-	\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
-		\hline
-		\rowcolor[HTML]{EFEFEF}
-		\multicolumn{3}{|c|}{\cellcolor[HTML]{EFEFEF}Input} & \multicolumn{8}{c|}{\cellcolor[HTML]{EFEFEF}Output} \\ \hline
-		\rowcolor[HTML]{EFEFEF}
-		In0 & In1 & In2 & Out0 & Out1 & Out2 & Out3 & Out4 & Out5 & Out6 & Out7 \\ \hline
-		0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
-		1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
-		0 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\ \hline
-		1 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\ \hline
-		0 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\ \hline
-		1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\ \hline
-		0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\ \hline
-		1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\ \hline
+	\begin{tabular}{ccc|cccccccc}
+		\multicolumn{3}{c|}{Input} & \multicolumn{8}{c}{Output} \\
+		In2 & In1 & In0 & Out0 & Out1 & Out2 & Out3 & Out4 & Out5 & Out6 & Out7 \\ \hline
+		0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+		0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+		0 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+		0 & 1 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+		1 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+		1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+		1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+		1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
 	\end{tabular}
 	\caption{Tabella di verità per un decoder a 3 bit}
 	\label{decoder-3bit}
