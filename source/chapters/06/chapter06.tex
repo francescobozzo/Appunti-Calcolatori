@@ -43,7 +43,7 @@ può essere srotolata in molte righe assembly.
 	add t1, i, j;  # t1 (variabile temp) = i + j
 	sub f, t0, t1;  # f = t0 - t1
 \end{minted}
-Notiamo inoltre che i commenti si scrivono con \#, e questo agisce solo sulla riga (anche se, come detto prima, non sempr è così; ad esempio GCC, l'assembler di Unix, usa i commenti come il C e l'operando di destinazione va in fondo).
+Notiamo inoltre che i commenti si scrivono con \#, e questo agisce solo sulla riga (anche se, come detto prima, non sempre è così; ad esempio GCC, l'assembler di Unix, usa i commenti come il C e l'operando di destinazione va in fondo).
 
 \section{I registri}
 
@@ -237,7 +237,7 @@ Dato il fatto che l'operatore di \emph{NOT} è unario, esso non è implementato 
 \end{minted}
 
 \paragraph{OR esclusivo (XOR)}
-L'\emph{OR esclusivo} produce \(1\) se i due bit di ingresso sono uguali, altrimenti \(0\) se sono uguali. Segue la tabella di verità:
+L'\emph{OR esclusivo} produce \(1\) se i due bit di ingresso sono diversi, altrimenti \(0\) se sono uguali. Segue la tabella di verità:
 \begin{table}[H]
 	\centering
 	\subimport{assets/tables/}{xor.tex}
