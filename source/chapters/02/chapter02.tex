@@ -194,10 +194,32 @@ Ecco una breve tabella riassuntiva dell'interpretazione delle stringhe nella rap
 \end{table}
 
 \subsubsection{Esempio di decodifica di un float}
-\begin{figure}[H]
+Traduciamo in float (IEEE 754) il seguente numero: 0 10000101 00110111000000000000000.
+Spacchettiamolo nei vari campi:
+\begin{table}[h!]
 	\centering
-	\includegraphics[width=1.2\textwidth,keepaspectratio]{traduzione-float-to-decimal.png}
-	\caption{Decodifica da IEEE 754 a decimale}
-\end{figure}
+	\begin{tabular}{|l|l|l|}
+		\hline
+		\multicolumn{1}{|c|}{MSB} & \multicolumn{1}{c|}{Esponente} & \multicolumn{1}{c|}{Mantissa} \\ \hline
+		0                & 10000101                  & 00110111000000000000000                    \\ \hline
+	\end{tabular}
+\end{table}
+Procediamo ora alla traduzione.
+\begin{enumerate}
+	\item Osserviamo che il numero è positivo, poiché il bit di segno è 0.
+	\item L'esponente effettivo dei calcoli \emph{exp} è
+	\begin{equation*}
+		E - 127 = 10000101 - 01111111 = 133 - 127 = 6
+	\end{equation*}
+	L'esponente è diverso da zero, perciò si tratta di un numero normalizzato.
+	\item La mantissa va moltiplicata per $2^{exp} = 2^{6}$ e, poiché il numero è normalizzato, devo considerare $1.M$:
+	\begin{equation*}
+		1.M \cdot 2^{6} = 1.00110111000000000000000 \cdot 2^{6} = 1.00110111 \cdot 100000000 = 1001101.11
+	\end{equation*}
+	\item A questo punto convertiamo il risultato ottenuto come fosse in virgola fissa:
+	\begin{equation*}
+		2^{6} + 2^{3} + 2^{2} + 2^{0} + 2^{-1} + 2^{-2} = 77.75
+	\end{equation*}
+\end{enumerate}
 
 \end{document}
