@@ -132,7 +132,11 @@ Prendiamo come esempio l'istruzione di somma \mintinline{asm}{add \$t0, $s1, $s2
 In gerale questo sistema, detto R (da Registro), ogni campo dell'istruzione ha un nome:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth,keepaspectratio]{mappatura.png}
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{mappatura.png}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth,keepaspectratio]{desc_map.png}
 	\caption{Mappatura di un'istruzione di tipo R}
 \end{figure}
 A questo punto è lecito domandarsi come mai si usino solo 32 bit per rappresentare le istruzioni, e la risposta sta nel:
@@ -150,7 +154,16 @@ Nei casi di indirizzamento immediato e di operazioni con costanti MIPS mette a d
 	\caption{Mappatura di un'istruzione I}
 \end{figure}
 
-esempio immediate?
+Prendiamo come esempio il seguente codice:
+\begin{minted}{c}
+	A[300] = h + A[300];
+\end{minted}
+Questa verrà tradotta in MIPS come:
+\begin{minted}{asm}
+	lw $t0, 1200($t1)
+	add $t0, $s2, $t0
+	sw $t0, 1200($t1)
+\end{minted}
 
 \section{Istruzioni aritmetico-logiche}
 
