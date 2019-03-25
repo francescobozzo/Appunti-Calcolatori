@@ -1,0 +1,1 @@
+ssl $t2, $s0, 4  # memorizza in t2 il contenuto del regis
