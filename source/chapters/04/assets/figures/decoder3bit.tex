@@ -1,0 +1,24 @@
+\documentclass[convert = false]{standalone}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,calc,arrows.meta}
+\usepackage{circuitikz}
+\usetikzlibrary{circuits.logic.IEC,calc}
+
+\begin{document}
+	\begin{circuitikz}[circuit logic IEC]
+		\node[and gate,inputs={nnn},and gate IEC symbol={Decoder},text height=4cm,text width=3cm,
+		] (A) {};
+
+		\foreach \V/\X in {1/A,2/B,3/C}
+		{
+			\draw  ([xshift=-10pt]A.input \V) node[left] {$\X$} -- (A.input  \V);
+		}
+
+		\foreach \C/\B in {0.111/000,.222/001,.333/010,.444/011,.555/100,.666/101,.777/110,.888/111}
+		{
+			\draw ( $ (A.south east)!\C!(A.north east) $ ) -- ++(10pt,0) node[left,xshift=-10] {$\B$};
+		}
+	\end{circuitikz}
+
+\end{document}

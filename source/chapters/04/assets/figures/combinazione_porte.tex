@@ -1,0 +1,17 @@
+\documentclass[convert = false]{standalone}
+
+\usepackage{tikz}
+\usepackage{circuitikz}
+
+\begin{document}
+	\begin{circuitikz}[node distance=5cm] \draw
+		(0,1) node[not port] (not1) {}
+		(2.5,0) node[or port] (or1) {}
+		(3.5,0) node[not port] (not2) {}
+		(-0.8,-0.28) node[] (start) {}
+		(start) -| (or1.in 2)
+		(not1.out) -| (or1.in 1)
+		(or1.out) -| (not2.in)
+	;\end{circuitikz}
+
+\end{document}
