@@ -190,6 +190,7 @@ Una volta stabilito quale delle precedenti due opzioni riguarda il nostro caso s
 Ecco una breve tabella riassuntiva dell'interpretazione delle stringhe nella rappresentazione IEEE 754:
 \begin{table}[h!]
 	\centering
+	\caption{Riepilogo floating point}
 	\subimport{assets/tables/}{floating_point.tex}
 \end{table}
 
@@ -212,7 +213,7 @@ Procediamo ora alla traduzione.
 		E - 127 = 10000101 - 01111111 = 133 - 127 = 6
 	\end{equation*}
 	L'esponente è diverso da zero, perciò si tratta di un numero normalizzato.
-	\item La mantissa va moltiplicata per $2^{exp} = 2^{6}$ e, poiché il numero è normalizzato, devo considerare $1.M$:
+	\item La mantissa va moltiplicata per \(2^{exp} = 2^{6}\) e, poiché il numero è normalizzato, devo considerare $1.M$:
 	\begin{equation*}
 		1.M \cdot 2^{6} = 1.00110111000000000000000 \cdot 2^{6} = 1.00110111 \cdot 100000000 = 1001101.11
 	\end{equation*}
