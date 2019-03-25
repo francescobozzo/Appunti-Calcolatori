@@ -3,20 +3,16 @@
 \usepackage[table]{xcolor}
 
 \begin{document}
-\begin{tabular}{*{6}{c}}
-	\toprule
-		\multicolumn{3}{c}{Input} & \multicolumn{3}{c}{Output}\\
-		\cmidrule(lr){1-3} \cmidrule(lr){4-6}
-		\textsc{a} & \textsc{b} & \textsc{c} & \textsc{d} & \textsc{e} & \textsc{f} \\
-	\midrule
-		0 & 0 & 0 & 0 & 0 & 0 \\\hline
-		0 & 0 & 1 & 1 & 0 & 0 \\\hline
-		0 & 1 & 0 & 1 & 0 & 0 \\\hline
-		0 & 1 & 1 & 1 & 1 & 0 \\\hline
-		1 & 0 & 0 & 1 & 0 & 0 \\\hline
-		1 & 0 & 1 & 1 & 1 & 0 \\\hline
-		1 & 1 & 0 & 1 & 1 & 0 \\\hline
-		1 & 1 & 1 & 1 & 0 & 1 \\
-		\bottomrule
-\end{tabular}
+	\begin{tabular}{ccc|ccc}
+			\multicolumn{3}{c|}{Input} & \multicolumn{3}{c}{Output}\\
+			\textsc{a} & \textsc{b} & \textsc{c} & \textsc{d} & \textsc{e} & \textsc{f} \\\hline
+			0 & 0 & 0 & 0 & 0 & 0 \\
+			0 & 0 & 1 & 1 & 0 & 0 \\
+			0 & 1 & 0 & 1 & 0 & 0 \\
+			0 & 1 & 1 & 1 & 1 & 0 \\
+			1 & 0 & 0 & 1 & 0 & 0 \\
+			1 & 0 & 1 & 1 & 1 & 0 \\
+			1 & 1 & 0 & 1 & 1 & 0 \\
+			1 & 1 & 1 & 1 & 0 & 1 \\
+	\end{tabular}
 \end{document}
