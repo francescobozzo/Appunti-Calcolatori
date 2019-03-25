@@ -383,4 +383,180 @@ switch(a) {
 	jr $t0
 \end{minted}
 
+% Da qui inizia L’architettura MIPS 2, la vendemmia
+
+\section{Gestione delle procedure}
+L'utilità dei calcolatori sarebbe molto limitata se questi non avessero la possibilità di svolgere delle procedure, che possono essere immaginate a tutti gli effetti come delle funzioni che dato un certo input eseguono un determinato task a cui sono dedicate; inoltre un altro vantaggio dell'utilizzo di questi costrutti deriva dalla modularizzazione che introducono in un programma, aumentandone la facilità di lettura e di scrittura.\\
+L'aspetto fondamentale che si deve curare per dare la possibilità ai calcolatori di svolgere procedure è la definizione di un protocollo di chiamata delle procedure che deve stabilire con precisione questi aspetti:
+\begin{itemize}[noitemsep]
+	\item Come caricare i parametri di input della procedura in locazioni note
+	\item Come trasferire il controllo alla procedura, che deve:
+		\begin{itemize}[nolistsep, noitemsep]
+			\item Acquisire le risorse necessarie
+			\item Eseguire il task affidatole
+			\item Caricare gli output in locazioni note (così che il chiamante della procedura sappia dove trovare i risultati)
+			\item Restituire il controllo al chiamante
+		\end{itemize}
+	\item Come salvare il valore di ritorno della procedura e "fare pulizia"  (ovvero eliminare i registri temporanei  e ripristinare quelli da preservare)
+\end{itemize}
+I protocolli per la gestione delle procedure sono diversi in base all'architettura che si utilizza ed alle convenzioni di chiamata del compilatore, noi per ora studiamo il caso del MIPS.
+
+\section{Protocollo di chiamata MIPS}
+L'idea fondante del protocollo implementato da MIPS è di utilizzare ogniqualvolta possibile i registri, dato che essi sono il meccanismo più veloce a disposizione per la gestione dei parametri delle procedure. Ecco una tabella riassuntiva delle convenzioni sui registri definite nel MIPS:
+
+\begin{table}[H]
+	\centering
+	\caption{Convenzioni sui registri in MIPS}
+	\subimport{assets/tables/}{convenzioni-registri-MIPS.tex}
+\end{table}
+
+Oltre ai registri il MIPS mette a disposizione dell'utente l'istruzione \emph{jump and link (jal)} che effettua un salto all'indirizzo di inizio della procedura specificata e contemporaneamente memorizza in \emph{\$ra} l'indirizzo di ritorno della procedura, cove si ritornerà una volta terminata la funzione. Questo significa che quano si chiama la \emph{jal} si salva automaticamente in \emph{\$ra} il PC incrementato di 4 (l'iztruzione successiva).\\
+Alla fine della procedura sarà così sufficiente compiere il salto \mintinline{asm}{js \$ra} per riprendere lo svolgimento del programma principale da dove lo si era interrotto.
+
+\section{Gestione della memoria in MIPS}
+Abbiamo già visto come i dati utilizzati da un programma in MIPS debbano essere caricati nei registri perchè il calcolatore possa usarli, ma cosa succede quando la memoria dei registri non basta?\\
+In questo caso si utilizza lo stratagemma dello stack (esatto, proprio il buon vecchio stack) implementato nella memoria del calcolatore; Si ricordi che esso è una struttura dati di tipo LIFO, in MIPS vi si caricano i dati a partire da una posizione nota che viene puntata dal registro dedicato \emph{\$fp} (\emph{frame pointer}, che indica quindi la base dello stack).\\
+Viene utilizzato poi il registro \emph{\$sp} per puntare alla testa dello stack (dove vengono inseriti i nuovi elementi).
+I dati vengono caricati nello stack tramite operazioni di \emph{push} ed, una volta utilizzati, eliminati tramite una operazione di \emph{pop}.\\
+All'interno di questa struttura dati si possono salvare variabili locali di procedure come anche registri che sarà necessario ripristinare in seguito.\\
+
+\section{Svolgimento di una procedura in MIPS}
+Per rendere in modo migliore la spiegazione dello svolgimento di una procedura in MIPS osserveremo come la seguente funzione viene tradota dal linguaggio C in assembly MIPS:
+
+\begin{minted}{c}
+	int esempio(int g, int h, int i, int j){
+		int f;
+		f = (g+h)-(i+j);
+		return f;
+	}
+\end{minted}
+
+Quando chiamiamo una procedura in MIPS per prima cosa il compilatore sceglie un’etichetta associata all’indirizzo di entrata della procedura (in questo caso \emph{esempio}); in fase di collegamento l'etichetta è collegata ad un indirizzo.\\
+La prima operazione è quella di salvare in memoria tutti i registri che la procedura sovrascriverà, in modo da poterli ripristinare in seguito, tale fase è chiamata prologo e potrebbe richiedere di allocare nello stack anche spazio per le variabili locali (in caso di spazio insufficiente nei registri).\\
+Nell'esempio supponiamo, con lo scopo di osservare il metodo di salvataggio di un registro, di dover tenere in menoria i valori di \emph{\$s0}, \emph{\$t1} e \emph{\$t0}.\\
+
+\begin{minted}{asm}
+esempio: #decremento $sp di 12 byte creando lo spazio per 3 words
+		addi $sp, $sp, -12;
+	#salvo i registri nello stack prima che la funzione li sovrascriva
+		sw $t1, 8($sp)
+		sw $t0, 4($sp)
+		sw $s0, 0($sp)
+	#fine del prologo, inizio della procedura effettiva
+	#si suppone che g,h,i,j siano già salvate nei registri $a...
+		add $t0, $a0, $a1	#$t0="g"+"h"
+		add $t1, $a2, $a3	#$t1="i"+"j"
+		sub $s0, $t0, $t1	#$s0=(g+h)-(i+j)
+	#imposto il valore di ritorno
+		add $v0, $s0, $zero 	#$v0=$s0
+	#($s0 è il registro che contiene il valore di f)
+	#pulizia: dopo le operazioni resetto i registri
+		lw $s0, 0($sp)
+		lw $t0, 4($sp)
+		lw $t1, 8($sp)
+	#ora posso liberare lo spazio dello stack dove stavano i registri
+		addi $sp, $sp, 12
+	#infine "salto" all'istruzione successiva alla chiamata di esempio
+		jr $ra
+\end{minted}
+
+A titolo esplicativo si inserisce anche un'immagine dell'evoluzione dell stack durante lo svolgimento di questa funzione \emph{esempio}.
+
+\begin{figure}[H]
+	\centering
+	\caption{Evoluzione dello stack durante l'esecuzione di \emph{esempio}, si capisce che l'ampliamento dello stack avviene sottraendo word a \emph{\$sp} proprio perchè lo stack cresce "verso il basso"}
+	\includegraphics[width=0.9\textwidth,keepaspectratio]{Evoluzione-stack}
+\end{figure}
+
+Una volta visto l'esempio vanno fatte due precisazioni, un compilatore effettivo non avrebbe mai svolto così la procedura poichè:
+\begin{itemize}[nolistsep, noitemsep]
+	\item I registri temporanei NON devono essere preservati (Quindi di norma non si usano istruzioni \emph{sw} e \emph{lw} su registri \emph{\$t...})
+	\item L'utilizzo di \emph{\$s0} non era necessario (si poteva usare anche solo \emph{\$v0})
+\end{itemize}
+
+Vediamo ora un esempio più complesso dove si affrontano ostacoli come variabili locali e procedure annidate (a detta di tutti temutissime); la soluzione che si applica in questo caso è il salvare nello stack appunto tutte le variabili locali e tutti i valori del registro \emph{\$ra} (per poi rsalire la catena delle chiamate).
+
+\begin{minted}{c}
+   int fact(int n){
+	   if (n < 1)
+		   return 1;
+	   else
+		   return n*fact(n-1);
+   }
+\end{minted}
+
+Si nota che implementando questa funzione il registro \emph{\$ra} ed il registro \emph{\$a0} vengano sovrascritti n volte.
+Vediamo quindi la traduzione del seguente esempio da C ad assembly MIPS:
+
+\begin{minted}{asm}
+fact:   #decremento $sp di 8 creando lo spazio per 2 words
+		addi $sp, $sp, -8;
+	#salvo i registri $ra e $a0 nello stack
+	#remind: $ra contiene l'indirizzo di ritorno post-funzione
+	#remind: $a0 contiene il dato, in questo caso n
+		sw $ra, 4($sp)
+		sw $a0, 0($sp)
+	#fine del prologo, inizio della procedura effettiva
+		slti $t0, $a0, 1	  #Se $a0<1 setto $t0=1
+	#$t0 settato a 1 se n < 1
+		beq $t0, $zero, L1	#Se $t0==0 vado a L1 (ricorsiva)
+	#altrimenti proseguo con l'esecuzione finale
+		addi $v0, $zero, 1	#$v0=1
+		addi $sp, $sp, 8	  #Ripulisco lo stack
+	#ritorno all’indirizzo dopo la chiamata (n-esima) di fact
+		jr $ra
+	#da questa istruzione parte la risalita della sequenza di $ra
+L1:	     addi $a0, $a0, -1 #decremento n
+		jal fact	  #chiamiamo fact(n-1)
+	#a questo punto ripristino $a0 e $ra e ripulisco lo stack
+		lw $a0, 0($sp)	#Ripristino a0
+		lw $ra, 4($sp)	#Ripristino ra
+		addi $sp, $sp, 8      #ripulisco stack
+	#infine moltiplico n*fact(n-1), che è in $v0, e ritorno
+		mul $v0, $a0, $v0
+		jr $ra
+\end{minted}
+
+\section{Gestione delle variabili in MIPS}
+Le variabili in C sono in genere associate a locazioni di memoria, si caratterizzano per:
+\begin{itemize}[noitemsep]
+	\item \textbf{Tipo} (int, char, float, ecc.)
+	\item \textbf{Storage class} \textit{Automatic}, variabili locali che hanno un ciclo di vita collegato alla funzione e \textit{Static}, variabili globali o definite come static che sopravvivono anche al termine della funzione
+\end{itemize}
+Le variabili \textbf{statiche} sono memorizzate in una zona di memoria specifica (nel MIPS accessibile attraverso il registro global pointer, \emph{\$gp}).\\
+Le variabili \textbf{automatiche} invece possono essere memorizzate nei registri, tuttavia quando questi non bastano, come già visto, le variabili bvengono salvate all'interno dello stack; il segmento di stack che le contiene viene chiamato record di attivazione (o stack frame) e di conseguenza le variabili locali vengono individate tramite un offset a partire da un puntatore allo stack.
+Contrariamente a come si penserebbe tuttavia non si utilizza \emph{\$sp} come puntatore, poichè esso può variare all'interno dello svolgimento di una funzione, di conseguenza si utilizza il puntatore dedicato \emph{\$fp}.\\
+L'immagine qui sotto rappresenta l'evoluzione dei due puntatori \emph{\$sp} e \emph{\$fp} durante la chiamata di una funzione, per capire meglio i vantaggi dell'utilizo di \emph{\$fp}.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth,keepaspectratio]{sp-vs-fp}
+	\caption{Confronto tra puntatore \emph{\$sp} e \emph{\$fp}}
+\end{figure}
+
+Esiste inoltre un ultimo tipo di variabili (oltre alle globali ed alle locali), quelle dinamiche, che vengono allocate secondo lo schema di figura 1.3 dal MIPS; da notare il fatto che lo stack procede "decrescendo" mentre i dati allocati dinamicamente "crescono"  partendo da dove terminano i dati statici (e quindi si spiega perchè negli esempi precedenti abbiamo decrementato \emph{\$sp} per inserire word nello stack).
+\begin{figure}[H]
+	\centering
+	\caption{Schema allocazione dei dati in MIPS}
+	\includegraphics[width=0.4\textwidth,keepaspectratio]{Dove-finiscono-le-variabili}
+\end{figure}
+
+\section{Elaborazione delle procedure}
+Per spiegare come vengono elaborate le procedure da MIPS utilizziamo come esempio la seguente funzione:
+\begin{minted}{c}
+	int sum(int n){
+		if(n>0) { return sum(n-1)+n; }
+		else { return n; }
+	}
+\end{minted}
+
+Se si analizza la funzione si nota come il valore di ritorno viene costruito risalendo la catena di chiamate e quindi ogni frame di attivazione deve essere preservato per produrre il risultato corretto.\\
+Come possiamo immaginare il procedimento scritto così è  molto dispendioso in termini di memoria, ma possiamo, con un po' di esperienza e scaltrezza, riscrivere nel seguente modo il programma:
+\begin{minted}{c}
+	int sum(int n, int acc){
+		if(n>0) { return sum(n-1, acc+n) }
+		else { return acc; }
+	}
+\end{minted}
+In questo caso si applica il metodo di ricorsione in coda, che comporta un grande vantaggio dal punto di vista dell'utilizzo di memoria poichè una volta terminata una chiamata della funzione si può eliminare tutto il suo ambiente (che non risulterà più utile).
+
 \end{document}
