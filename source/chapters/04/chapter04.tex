@@ -61,11 +61,25 @@ In particolare, l'ultima espressione è stata ottenuta come somme di prodotti at
 
 \section{Le porte logiche}
 A seguire vengono rappresentate, attraverso i corrispettivi simboli, le porte logiche implementate attraverso gli operatori booleani fondamentali:
-\begin{figure}[H]
+\vspace{10px}
+
+\begin{minipage}[c]{.3\textwidth}
 	\centering
-	\includegraphics[width=0.8\textwidth,keepaspectratio]{porte_logiche.png}
-	\caption{Rappresentazione di AND, OR e NOT}
-\end{figure}
+	\subimport{assets/figures/}{and.tex}
+	\captionof{figure}{Porta AND}
+\end{minipage}
+\begin{minipage}[c]{.3\textwidth}
+	\centering
+	\subimport{assets/figures/}{or.tex}
+	\captionof{figure}{Porta OR}
+\end{minipage}
+\begin{minipage}[c]{.3\textwidth}
+	\centering
+	\subimport{assets/figures/}{not.tex}
+	\captionof{figure}{Porta NOT}
+\end{minipage}
+
+\vspace{10px}
 
 Si ricorda inoltre che è possibile combinare fra loro diverse porte logiche:
 \begin{figure}[H]
