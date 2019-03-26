@@ -10,15 +10,16 @@
 \section{Introduzione}
 Come ben sappiamo, a differenza di \emph{ENIAC}, i computer moderni sono realizzati da un'enorme quantità di circuiti elettronici. Trattandosi di elettronica digitale, a livello hardware è possibile lavorare con due livelli fondamentali:
 \begin{itemize}
-	\item \(1\): alto, asserito; associato alla tensione di alimentazione \emph{Vdd}.
-	\item \(0\): basso, negato; associato alla massa (tensione vicina a 0).
+	\item \emph{alto} (asserito); viene solitamente associato alla tensione di alimentazione \emph{Vdd}. Si indica con \(1\).
+	\item \emph{basso} (negato); viene solitamente associato alla massa (tensione vicina a 0). Si indica con \(0\).
 \end{itemize}
 
 Nel passaggio da un livello all'altro si presenta lo stato \emph{transitorio}, in cui la tensione assume valori intermedi fra zero e Vdd.\\
-In particolare, i \emph{circuiti logici} (formati dalle \emph{porte logiche}) vengono utilizzati per trasformare alcuni valori logici in ingresso in altri valori logici in uscita. I circuiti logici si differenziano principalmente in:
+In particolare, per trasformare alcuni valori logici in ingresso in altri valori logici in uscita, vengono utilizzati i \emph{circuiti logici}, costituiti dalle \emph{porte logiche}.\\
+I circuiti logici si differenziano principalmente in:
 \begin{itemize}
-	\item \emph{combinatorie}: l'uscita dipende unicamente dal valore di ingresso (non sono dotati di memoria).
-	\item \emph{sequenziali}: l'uscita dipende dal valore di ingresso e dalla storia degli ingressi precedenti (sono dotati di memoria, detta "stato" della rete).
+	\item \emph{reti combinatorie}: l'uscita dipende unicamente dal valore di ingresso (non sono dotati di memoria).
+	\item \emph{reti sequenziali}: l'uscita dipende dal valore di ingresso e dalla storia degli ingressi precedenti (sono dotati di memoria, detta "stato" della rete).
 \end{itemize}
 
 \`{E} possibile riassumere il comportamento di una rete logica attraverso una \emph{tabella di verità}, che descrive i diversi output al variare dei diversi input.
@@ -26,10 +27,11 @@ In particolare, i \emph{circuiti logici} (formati dalle \emph{porte logiche}) ve
 \section{L'algebra di Boole}
 Esistono principalmente tre operazioni di base:
 \begin{itemize}
-	\item \emph{AND}: \(A\cdot B\); produce 1 se entrambi gli operandi sono 1, 0 altrimenti.
-	\item \emph{OR}: \(A+B\); produce 0 se entrambi gli operandi sono 0, 1 altrimenti.
-	\item \emph{NOT}: \(\overline{A}\); inverte il valore logico.
+	\item \emph{AND}: produce 1 se entrambi gli operandi sono 1, 0 altrimenti. Solitamente si indica con \(A\cdot B\).
+	\item \emph{OR}: produce 0 se entrambi gli operandi sono 0, 1 altrimenti. Solitamente si indica con \(A+B\).
+	\item \emph{NOT}: inverte il valore logico. Solitamente si indica con \(\overline{A}\).
 \end{itemize}
+
 \subsection{Regole di semplificazione}
 \label{subsec:semplificazione}
 Di seguito vengono riportate alcune regole di semplificazione:
@@ -43,6 +45,7 @@ Di seguito vengono riportate alcune regole di semplificazione:
 	\item De Morgan: \(\overline{A\cdot B} = \overline{A}+\overline{B}\), \(\overline{A+B} = \overline{A}\cdot\overline{B}\)
 \end{itemize}
 Proprio grazie alla regola di De Morgan, si può affermare che la porta \emph{NAND} (not AND) e la porta \emph{NOR} (not OR) sono universali. Ciò significa che utilizzando unicamente porte NAND (rispettivamente NOR) è possibile costruire tutte le altre porte logiche.
+
 \subsection{La tavola di verità e i mintermini}
 \label{subsec:mintermini}
 \begin{table}[!h]
@@ -55,9 +58,12 @@ Si può verificare che:
 \begin{gather*}
 D = A+B+C\\
 F = A\cdot B\cdot C\\
-E = (A\cdot B\cdot\overline{C}) + (A\cdot C\cdot\overline{B}) + (B\cdot C\cdot\overline{A})
+E = (A\cdot B\cdot\overline{C}) + (A\cdot \overline{B} \cdot C) + (\overline{A} \cdot B\cdot C\cdot)
 \end{gather*}
+
 In particolare, l'ultima espressione è stata ottenuta come somme di prodotti attraverso i cosiddetti \emph{mintermini}. Per ciascun 1 presente nella colonna E, si scrive il prodotto degli input (asseriti se pari a 1, negati se pari a 0); il risultato dell'espressione è pari alla somma di tali prodotti.
+
+Spesso ritornerà il concetto di \emph{somme di prodotti} o più brevemente \emph{sp}, in particolare nella sezione~\ref{subsec:pla} trattando dei \emph{pla}.
 
 \section{Le porte logiche}
 A seguire vengono rappresentate, attraverso i corrispettivi simboli, le porte logiche implementate attraverso gli operatori booleani fondamentali:
@@ -124,6 +130,7 @@ Molto spesso, per operare con dati complessi, si compongono degli array di eleme
 \end{figure}
 
 \subsection{Programmable Logic Array (PLA)}
+\label{subsec:pla}
 Il \emph{programmable logic array} si compone di due strutture: una barriera di AND e da una barriera di OR. La dimensione totale del \emph{PLA} è data dalla somma del piano AND (numero di mintermini) e del piano OR (numero di uscite).\\
 Inoltre, il PLA implementa porte logiche solamente per le configurazioni che producono 1 in uscita. In aggiunta, se un mintermine è condiviso tra varie uscite, lo si può riutilizzare.
 Successivamente seguono due diverse implementazioni della rete logica descritta nel paragrafo~\ref{subsec:mintermini}.
@@ -146,12 +153,13 @@ Come appena visto, le reti logiche possono essere implementate in maniera differ
 \end{itemize}
 
 \section{Le reti sequenziali}
-Come si è visto, le reti combinatorie non hanno memoria degli stati del passato: in ogni istante di tempo l’uscita dipende solamente dagli ingressi nell’istante considerato. Tuttavia, in certe applicazioni è necessario introdurre una vera e propria memoria nel sistema.\\
+Come si è visto, le reti combinatorie non hanno memoria degli stati del passato: in ogni istante di tempo l’uscita dipende solamente dagli ingressi nell’istante considerato. Tuttavia, in certe applicazioni è necessario introdurre una vera e propria memoria nel sistema.
+
 La memoria in una rete logica si ottiene attraverso una \emph{retroazione}, che consiste nel ridirezionare alcune porte di uscita in ingresso ad altre porte del medesimo circuito, in maniera tale da formare un anello.\\
 Seppur questo meccanismo offra delle potenzialità enormi, l'analisi e la sintesi di una rete logica è molto più complessa rispetto a quella delle reti combinatorie.
 
 \subsection{Latch S-R}
-A seguire un'implementazione di una rete sequenziale \emph{latch S-R} (\emph{set-reset}) costruita attraverso due porte NOR:
+A seguire un'implementazione di una rete sequenziale \emph{latch S-R} (\emph{set-reset}) costruita attraverso due porte \emph{NOR}:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{es_latch.png}
