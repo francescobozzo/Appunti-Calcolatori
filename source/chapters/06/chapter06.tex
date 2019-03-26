@@ -29,19 +29,19 @@ Per dare una chiave di lettura al percorso che faremo su MIPS useremo alcuni pri
 In linea con questo principio, MIPS consente di effettuare operazioni aritmetiche solo nella loro forma più semplice, ossia con tre operandi: \(a = b + c\).
 Quest'istruzione, comune in C, Java, Python o altri linguaggi, in MIPS sarà scritta così:
 \begin{minted}{asm}
-	add a, b, c;
+add a, b, c;
 \end{minted}
 
 Notiamo subito che l'operando "di destinazione" viene messo come primo elemento (in altre ISA non è sempre così, tuttavia).\\
 Naturalmente, mentre nei linguaggi ad alto livello possiamo agevolmente scrivere espressioni matematiche complesse, in MIPS verranno tutte mappate in espressioni semplici, sicché una linea di codice, per quanto banale
 \begin{minted}{c}
-	f = (g + h) - (i + j);
+f = (g + h) - (i + j);
 \end{minted}
 può essere srotolata in molte righe assembly.
 \begin{minted}[linenos]{asm}
-	add t0, g, h;  # t0 (variabile temp) = g + h
-	add t1, i, j;  # t1 (variabile temp) = i + j
-	sub f, t0, t1;  # f = t0 - t1
+add t0, g, h;  # t0 (variabile temp) = g + h
+add t1, i, j;  # t1 (variabile temp) = i + j
+sub f, t0, t1;  # f = t0 - t1
 \end{minted}
 Notiamo inoltre che i commenti si scrivono con \#, e questo agisce solo sulla riga (anche se, come detto prima, non sempre è così; ad esempio GCC, l'assembler di Unix, usa i commenti come il C e l'operando di destinazione va in fondo).
 
@@ -62,9 +62,9 @@ Di fatto, se avessimo  più registri, aumenterebbe notevolmente il tempo di acce
 \paragraph{Notazione}
 A questo punto, tornando all'esempio in 1.2, illustriamo la sintassi per richiamare un registro:
 \begin{minted}[linenos, breaklines]{asm}
-	add $t0, $s1, $s2;  # al registro temporaneo t0 viene assegnato il valore come somma di s1 + s2
-	add $t1, $s3, $s4;  # same as before
-	sub $s0, $t0, $t1;  # f = t0 - t1
+add $t0, $s1, $s2;  # al registro temporaneo t0 viene assegnato il valore come somma di s1 + s2
+add $t1, $s3, $s4;  # same as before
+sub $s0, $t0, $t1;  # f = t0 - t1
 \end{minted}
 Come si evince, è sufficiente anteporre un \$ al nome del registro.
 \subsubsection{Movimenti}Naturalmente, i registri non sono minimamente sufficienti per contenere tutti i dati di un programma complesso (soprattutto perché alcuni vengono usati dal kernel e dal sistema operativo), ma le operazioni possono essere eseguite solo fra registri. Diventa quindi necessaria l'implementazione delle funzioni \emph{load} che, come anticipato, carica i dati dalla RAM a un registro, e \emph{store}, che passa il dato dal registro alla RAM.\\
@@ -80,13 +80,13 @@ Ecco un esempio di istruzione di load (analogamente per la store):
 \end{figure}
 Adesso prendiamo invece una semplice riga di codice:
 \begin{minted}{c}
-	A[12] = h + A[8];
+A[12] = h + A[8];
 \end{minted}
 E vediamone ora la traduzione fatta dal compilatore:
 \begin{minted}[linenos, breaklines]{asm}
-	lw $t0, 32($s3);   # la parola 8 comincia all'indirizzo 32 e il puntatore A è in $s3
-	add $t0, $s2, $t0; # h è in $s2
-	sw $t0, 48($s3);   # memorizzo il contenuto di $t0 in A[12]
+lw $t0, 32($s3);   # la parola 8 comincia all'indirizzo 32 e il puntatore A è in $s3
+add $t0, $s2, $t0; # h è in $s2
+sw $t0, 48($s3);   # memorizzo il contenuto di $t0 in A[12]
 \end{minted}
 Questo è un esempio un po' più complesso, si raccomanda una lettura accorta per comprendere ogni azione.
 
@@ -101,11 +101,11 @@ Molto spesso ci si trova a lavorare con le costanti. Nonostante ogni costante po
 
 Quindi ci conviene assolutamente costruire una sintassi dedicata all'esecuzione di operazioni con costanti, dove la \emph{i} sta per \emph{immediate}. Ad esempio:
 \begin{minted}{c}
-	f = f + 4;
+f = f + 4;
 \end{minted}
 diventerà
 \begin{minted}{asm}
-	addi $s3, $s3, 4
+addi $s3, $s3, 4
 \end{minted}
 
 Per dare un altro esempio, è molto conveniente implementare un registro zero (\emph{\$zero}), perché rende molto più semplici le operazioni di copia, che di fatto possono essere ridotte a una somma di un qualsiasi registro con il registro zero.
@@ -156,13 +156,13 @@ Nei casi di indirizzamento immediato e di operazioni con costanti MIPS mette a d
 
 Prendiamo come esempio il seguente codice:
 \begin{minted}{c}
-	A[300] = h + A[300];
+A[300] = h + A[300];
 \end{minted}
 Questa verrà tradotta in MIPS come:
-\begin{minted}{asm}
-	lw $t0, 1200($t1)
-	add $t0, $s2, $t0
-	sw $t0, 1200($t1)
+\begin{minted}[linenos]{asm}
+lw $t0, 1200($t1)
+add $t0, $s2, $t0
+sw $t0, 1200($t1)
 \end{minted}
 Osserviamo nel dettaglio cosa succede.
 \begin{figure}[H]
@@ -184,7 +184,7 @@ Inizialmente i calcolatori erano capaci di operare unicamente su parole intere, 
 \paragraph{Shift logico a sinistra}
 Consideriamo lo \emph{shift logico a sinistra}: l'idea consiste nell'inserire degli zeri nella posizione meno significativa e traslare tutto a sinistra perdendo, nel caso di overflow, i bit più significativi.
 
-\begin{minted}[breaklines]{asm}
+\begin{minted}[linenos, breaklines]{asm}
 ssl $t2, $s0, 4  # memorizza in t2 il contenuto del registro s0 shiftato a sinistra di 4
 \end{minted}
 
@@ -194,7 +194,7 @@ Eseguire uno shift a sinistra di \(k\) bit di un numero \(n\) positivo, consiste
 \paragraph{Shift logico a destra}
 In maniera analoga, lo \emph{shift logico a destra} consiste nell'inserire degli zeri nella posizione più significativa, traslando tutto a destra. Come per lo shift logico a sinistra, anche qui è possibile effettuare uno shift di al massimo 32 bit.
 
-\begin{minted}[breaklines]{asm}
+\begin{minted}[linenos, breaklines]{asm}
 srl $t2, $s0, 1  # memorizza in t2 il contenuto del registro s0 shiftato logicamente a destra di 1
 \end{minted}
 
@@ -203,7 +203,7 @@ Applicare uno shift logico a destra di \(k\) bit ad un numero \(n\) positivo è 
 \paragraph{Shift aritmetico a destra}
 Dunque, per trovare una soluzione all'implementazione della divisione intera anche per i numeri negativi codificati in CA2, è stato introdotto lo \emph{shift aritmetico a destra}.
 
-\begin{minted}[breaklines]{asm}
+\begin{minted}[linenos, breaklines]{asm}
 sra $t2, $s0, 1  # memorizza in t2 il contenuto del registro s0 shiftato aritmeticamente a destra di 1
 \end{minted}
 
@@ -223,23 +223,23 @@ L'operazione di \emph{bitwise AND} viene applicata principlamente per forzare al
 
 \paragraph{Bitwise OR}
 In maniera analoga, è possibile settare a \(1\) alcuni bit applicando l'operazione di \emph{bitwise OR} con un operando che abbia \(1\) nella posizione corrispondente (funzione di maschera). Ad esempio, per impostare ad \(1\) i \(4\) bit più significativi di \$s0:
-\begin{minted}[]{asm}
-	addi $t0, $zero, 0x000F
-	sll $t0, $t0, 28
-	or $s0, $s0, $t0
+\begin{minted}[linenos]{asm}
+addi $t0, $zero, 0x000F
+sll $t0, $t0, 28
+or $s0, $s0, $t0
 \end{minted}
 
 Un ulteriore esempio riguarda quello della \emph{rotazione} dei \(4\) bit più significativi di una parola sui suoi bit meno significativi:
 \begin{minted}[linenos, breaklines]{asm}
-	# si ottengono i 4 bit più significativi, spostandoli nei 4 meno significativi di $t0
-	srl $t0, $s0, 28
+# si ottengono i 4 bit più significativi, spostandoli nei 4 meno significativi di $t0
+srl $t0, $s0, 28
 
-	# si azzerano i 4 bit più significativi di $s0
-	sll $s0, $s0, 4
-	srl $s0, $s0, 4
+# si azzerano i 4 bit più significativi di $s0
+sll $s0, $s0, 4
+srl $s0, $s0, 4
 
-	# operazione di maschera
-	or $s0, $s0, $t0
+# operazione di maschera
+or $s0, $s0, $t0
 \end{minted}
 
 \paragraph{Bitwise NOR}
@@ -252,13 +252,13 @@ L'operazione di \emph{NOR} viene definita come segue:
 
 A seguire la sintassi MIPS dell'istruzione di \emph{bitwise NOR}:
 \begin{minted}[linenos]{asm}
-	nor $t0, $t1, $t2
+nor $t0, $t1, $t2
 \end{minted}
 
 \paragraph{Bitwise NOT}
 Dato il fatto che l'operatore di \emph{NOT} è unario, esso non è implementato in MIPS, per non interrompere la regolarità delle istruzioni a tre operandi. Un modo per ottenere il NOT, grazie alle leggi di De Morgan, è il seguente:
 \begin{minted}{asm}
-	nor $t0, $t1, $zero  # equivale a: not $s0
+nor $t0, $t1, $zero  # equivale a: not $s0
 \end{minted}
 
 \paragraph{OR esclusivo (XOR)}
@@ -271,7 +271,7 @@ L'\emph{OR esclusivo} produce \(1\) se i due bit di ingresso sono diversi, altri
 
 A seguire la sintassi MIPS dell'operazione di XOR:
 \begin{minted}{asm}
-	xor $t0, $t1, $t2  # $t0 = $t1 xor $t2
+xor $t0, $t1, $t2  # $t0 = $t1 xor $t2
 \end{minted}
 
 Curiosità: se si esegue lo XOR di un numero con se stesso, il risultato è pari a \(0\) per ciascun bit.
@@ -287,17 +287,17 @@ A differenza delle istruzioni di jump, i branch vengono eseguiti solo se una det
 
 A seguire la sintassi delle istruzioni di salto offerte da MIPS:
 \begin{minted}[linenos, breaklines]{asm}
-	# Branch on Equal
-	beq reg1, reg2, L1;  # vai a L1 se reg1 == reg2
+# Branch on Equal
+beq reg1, reg2, L1;  # vai a L1 se reg1 == reg2
 
-	# Branch on Non Equal
-	bne reg1, reg2, L1;  # vai a L1 se reg1 != reg2
+# Branch on Non Equal
+bne reg1, reg2, L1;  # vai a L1 se reg1 != reg2
 
-	# Jump
-	j LABEL; salta incondizionatamente a LABEL
+# Jump
+j LABEL; salta incondizionatamente a LABEL
 
-	# Jump Register
-	jr $t0; salta incondizionatemente all'indirizzo contenuto nel registro t0
+# Jump Register
+jr $t0; salta incondizionatemente all'indirizzo contenuto nel registro t0
 \end{minted}
 Come si può osservare, in fase di scrittura del codice si utilizzano delle \emph{label} (ossia etichette) piuttosto che veri e propri indirizzi di memoria. L'arduo compito di tradurre queste etichette in veri e propri indirizzi di memoria spetta al compilatore.
 
@@ -305,19 +305,19 @@ Viene data la seguente definizione di \emph{blocco di base}: sequenza di istruzi
 
 \subsection{Confronti per minorazioni}
 Esistono inoltre delle istruzioni che permettono di settare dei bit in determinati registri di \emph{flag} sulla base di una determinata condizione. In modo particolare osserviamo l'istruzione \emph{slt} e la sua controparte immediata, sia in versione signed che unsigned:
-\begin{minted}{asm}
-	slt $t0, $s3, $s4  # setta t0=1 se s3<s4
-	slti $t0, $s3, 10  # setta t0=1 se s3<10
-	sltu $t0, $s3, $s4  # unsigned: setta t0=1 se s3<s4
-	sltui $t0, $s3, 10  # unsigned: setta t0=1 se s3<10
+\begin{minted}[linenos]{asm}
+slt $t0, $s3, $s4  # setta t0=1 se s3<s4
+slti $t0, $s3, 10  # setta t0=1 se s3<10
+sltu $t0, $s3, $s4  # unsigned: setta t0=1 se s3<s4
+sltui $t0, $s3, 10  # unsigned: setta t0=1 se s3<10
 \end{minted}
 Queste istruzioni vengono molto utilizzate dai compilatori MIPS per ottenere salti su condizioni di minore o maggiore uguale, con l'ausilio di \emph{beq} e \emph{bne}. A seguire viene presentato un esempio di traduzione da codice C ad assembly MIPS.
 \begin{minted}[linenos, breaklines]{c}
-	if (i < j){
-		f = g + h;
-	} else {
-		f = g – h;
-	}
+if (i < j){
+	f = g + h;
+} else {
+	f = g – h;
+}
 \end{minted}
 \begin{minted}[linenos, breaklines]{asm}
 	slt $t0, $s3, $s4  # setta $t0 se i < j
@@ -330,19 +330,19 @@ ESCI:
 \end{minted}
 Un'ulteriore utilità di queste istruzioni può essere espressa utilizzando i vettori: supponiamo di volere controllare se un indice (\$s1) è fuori dal limite di un array ([0, \$t2]).
 \begin{minted}[linenos, breaklines]{asm}
-	sltu $t0, $s1, $t2
-	beq $t0, $zero, FuoriLimite
+sltu $t0, $s1, $t2
+beq $t0, $zero, FuoriLimite
 \end{minted}
 Infatti, se \$s1 è maggiore di \$t2, ovviamente avremo 0 in \$t0. D'altra parte, se \$s1 è negativo, interpretato come unsigned, sarà maggiore di \$t2 (che ha il bit più significativo a 0, essendo \$t2 necessariamente un numero positivo).
 
 \subsection{Implementazione del costrutto \emph{if}}
 Supponiamo di voler tradurre il seguente listato di codice in assembly MIPS:
 \begin{minted}[linenos, breaklines, tabsize = 4]{c}
-	if (i == j){
-		f = g + h;
-	} else {
-		f = g - h;
-	}
+if (i == j){
+	f = g + h;
+} else {
+	f = g - h;
+}
 \end{minted}
 
 A seguire viene presentata una possibile soluzione:
@@ -360,9 +360,9 @@ Si noti che l'espressione di controllo effettua consiste nel verificare il negat
 \subsection{Implementazione del costrutto \emph{while}}
 Supponiamo di voler tradurre il seguente listato di codice in assembly MIPS:
 \begin{minted}[linenos, breaklines, tabsize = 4]{c}
-	while (salva[i] == k){
-		i += 1;
-	}
+while (salva[i] == k){
+	i += 1;
+}
 \end{minted}
 
 A seguire viene presentata una possibile soluzione:
@@ -388,9 +388,9 @@ switch(a) {
 }
 \end{minted}
 \begin{minted}[linenos, breaklines]{asm}
-	sll $t0, $a0, 2 # moltiplica per 4
-	lw $t0, TABLE($t0)
-	jr $t0
+sll $t0, $a0, 2 # moltiplica per 4
+lw $t0, TABLE($t0)
+jr $t0
 \end{minted}
 
 % Da qui inizia L’architettura MIPS 2, la vendemmia
@@ -433,19 +433,19 @@ All'interno di questa struttura dati si possono salvare variabili locali di proc
 \section{Svolgimento di una procedura in MIPS}
 Per rendere in modo migliore la spiegazione dello svolgimento di una procedura in MIPS osserveremo come la seguente funzione viene tradota dal linguaggio C in assembly MIPS:
 
-\begin{minted}{c}
-	int esempio(int g, int h, int i, int j){
-		int f;
-		f = (g+h)-(i+j);
-		return f;
-	}
+\begin{minted}[linenos]{c}
+int esempio(int g, int h, int i, int j){
+	int f;
+	f = (g+h)-(i+j);
+	return f;
+}
 \end{minted}
 
 Quando chiamiamo una procedura in MIPS per prima cosa il compilatore sceglie un’etichetta associata all’indirizzo di entrata della procedura (in questo caso \emph{esempio}); in fase di collegamento l'etichetta è collegata ad un indirizzo.\\
 La prima operazione è quella di salvare in memoria tutti i registri che la procedura sovrascriverà, in modo da poterli ripristinare in seguito; tale fase è chiamata \emph{prologo} e potrebbe richiedere di allocare nello stack anche spazio per le variabili locali (in caso di spazio insufficiente nei registri).\\
 Nell'esempio supponiamo, con lo scopo di osservare il metodo di salvataggio di un registro, di dover tenere in menoria i valori di \emph{\$s0}, \emph{\$t1} e \emph{\$t0}.\\
 
-\begin{minted}{asm}
+\begin{minted}[linenos]{asm}
 esempio: #decremento $sp di 12 byte creando lo spazio per 3 words
 		addi $sp, $sp, -12;
 	#salvo i registri nello stack prima che la funzione li sovrascriva
@@ -487,19 +487,19 @@ Un compilatore effettivo non avrebbe \emph{mai} svolto così la procedura, perch
 
 Vediamo ora un esempio più complesso dove si affrontano ostacoli come variabili locali e procedure annidate (a detta di tutti temutissime); la soluzione che si applica in questo caso è il salvare nello stack appunto tutte le variabili locali e tutti i valori del registro \emph{\$ra} (per poi risalire la catena delle chiamate).
 
-\begin{minted}{c}
-   int fact(int n){
-	   if (n < 1)
-		   return 1;
-	   else
-		   return n*fact(n-1);
-   }
+\begin{minted}[linenos]{c}
+ int fact(int n){
+   if (n < 1)
+	   return 1;
+   else
+	   return n*fact(n-1);
+ }
 \end{minted}
 
 Si nota che implementando questa funzione il registro \emph{\$ra} ed il registro \emph{\$a0} vengano sovrascritti $n$ volte.
 Vediamo quindi la traduzione del seguente esempio da C ad assembly MIPS:
 
-\begin{minted}{asm}
+\begin{minted}[linenos]{asm}
 fact:   #decremento $sp di 8 creando lo spazio per 2 words
 		addi $sp, $sp, -8;
 	#salvo i registri $ra e $a0 nello stack
@@ -554,59 +554,55 @@ Esiste inoltre un ultimo tipo di variabili (oltre alle globali ed alle locali), 
 \section{Elaborazione delle procedure}
 Per spiegare come vengono elaborate le procedure complesse da MIPS utilizziamo come esempio la seguente funzione:
 
-\begin{minted}{c}
-	int sum(int n){
-		if(n>0) { return sum(n-1)+n; }
-		else { return n; }
-	}
+\begin{minted}[linenos]{c}
+int sum(int n){
+	if(n>0) { return sum(n-1)+n; }
+	else { return n; }
+}
 \end{minted}
 
 Se si analizza la funzione si nota come il valore di ritorno viene costruito risalendo la catena di chiamate e quindi ogni frame di attivazione deve essere preservato per produrre il risultato corretto.\\
 Ecco come compare il codice assembly della procedura \emph{sum}:
 
-\begin{minted}{asm}
-	sum: add  $v0, $a1, $zero   #Sposta $a1 in $v0
-	     blez $a0, $L5          #Se $a0<0, salta a L5
-	     addi $sp, $sp, -32     #Crea spazio nello stack
-	     sw   $ra, (28)$sp      #Salva $ra
-	     add  $a1, $a1, $a0     #(acc=acc+n)
-	     addi $a0, $a0, -1      #(n=n-1)
-	     jal  sum               #Ricorsione (aggiorna $ra)
-	     #parte di risalita della catena di $ra
-	     lw   $ra, (28)$sp      #Ripristina $ra
-	     addi $sp, $sp, 32      #Ripulisce lo stack
+\begin{minted}[linenos]{asm}
+sum: add  $v0, $a1, $zero   #Sposta $a1 in $v0
+     blez $a0, $L5          #Se $a0<0, salta a L5
+     addi $sp, $sp, -32     #Crea spazio nello stack
+     sw   $ra, (28)$sp      #Salva $ra
+     add  $a1, $a1, $a0     #(acc=acc+n)
+     addi $a0, $a0, -1      #(n=n-1)
+     jal  sum               #Ricorsione (aggiorna $ra)
+     #parte di risalita della catena di $ra
+     lw   $ra, (28)$sp      #Ripristina $ra
+     addi $sp, $sp, 32      #Ripulisce lo stack
 
-	L5:
-	     j    $ra               #Torna al programma chiamante
-
-
+L5:
+     j    $ra               #Torna al programma chiamante
 \end{minted}
 
 
 Come possiamo immaginare il procedimento scritto così è  molto dispendioso in termini di memoria, ma possiamo, con un po' di esperienza e scaltrezza, riscrivere nel seguente modo il programma:
 
-\begin{minted}{c}
-	int sum(int n, int acc){
-		if(n>0) { return sum(n-1, acc+n) }
-		else { return acc; }
-	}
+\begin{minted}[linenos]{c}
+int sum(int n, int acc){
+	if(n>0) { return sum(n-1, acc+n) }
+	else { return acc; }
+}
 \end{minted}
 
 In questo caso si applica il metodo di ricorsione in coda, che comporta un grande vantaggio dal punto di vista dell'utilizzo di memoria poichè una volta terminata una chiamata della funzione si può eliminare tutto il suo ambiente (che non risulterà più utile) e utilizzare sempre solo un ambiente unico ed un unico \emph{\$ra}, vediamo come:
 
-\begin{minted}{asm}
-	sum: add  $v0, $a1, $zero   #Sposta $a1 in $v0
-	     blez $a0, $L5          #Se $a0<0, salta a L5
+\begin{minted}[linenos]{asm}
+sum: add  $v0, $a1, $zero   #Sposta $a1 in $v0
+     blez $a0, $L5          #Se $a0<0, salta a L5
 
-	     add  $a1, $a1, $a0     #(acc=acc+n)
-	     addi $a0, $a0, -1      #(n=n-1)
-	     j  sum                 #Ricorsione (aggiorna $ra)
-	     #si osservi come non si usa più jal dato che non si
-	     #aggiorna più $ra ora che si lavora su un unico ambiente
-	L5:
-	     j    $ra               #Torna al programma chiamante
-
-
+     add  $a1, $a1, $a0     #(acc=acc+n)
+     addi $a0, $a0, -1      #(n=n-1)
+     j  sum                 #Ricorsione (aggiorna $ra)
+     #si osservi come non si usa più jal dato che non si
+     #aggiorna più $ra ora che si lavora su un unico ambiente
+L5:
+     j    $ra               #Torna al programma chiamante
 \end{minted}
 Alcuni compilatori sono in grado di ottimizzare automaticamente il programma in questo modo così da renderlo molto più veloce e leggero, il gcc è in grado di aggiustare, ove possibile, questo tipo di procedure con una complessità pari a O(2).\\
 
@@ -625,19 +621,19 @@ Appare chiaro che qui sovviene la necessità di copiare \emph{bytes}, non \emph{
 
 \subsubsection{\emph{load byte} e \emph{store byte}}
 Operare su bytes anziché su parole intere può tornare utile anche in altre situazioni, per cui in MIPS disponiamo di istruzioni dedicate: \emph{load byte} e \emph{store byte}, analoghe a quelle che operano sulle words. Eccone un esempio:
-\begin{minted}[breaklines]{asm}
-lb $t0, 0($sp) # leggi un byte dalla cima dello stack ed inseriscilo nei bit meno significativi di $t0
+\begin{minted}[linenos, breaklines]{asm}
+lb $t0, 0($sp)  # leggi un byte dalla cima dello stack ed inseriscilo nei bit meno significativi di $t0
 
-sb $t0, 0($gp) # inserisci gli otto bit meno significativi di $t0 in $gp
+sb $t0, 0($gp)  # inserisci gli otto bit meno significativi di $t0 in $gp
 \end{minted}
 \subsection{Possibile implementazione}
 \subsubsection{Prologo}
 Come il lettore a questo punto saprà, i due parametri \mintinline{c}{d} e  \mintinline{c}{s} sono contenuti in \mintinline{asm}{\$a0} e \mintinline{asm}{\$a1}.\\
 supponiamo di voler utilizzare \mintinline{asm}{\$s0} per salvare il contatore \mintinline{c}{i} (anche se naturalmente un compilatore non lo farebbe \emph{mai}, lo salverebbesu un registro temporaneo). \mintinline{asm}{\$s0} andrà salvato nello stack e poi inizializzata:
-\begin{minted}{asm}
-addi $sp, $sp, -4 # crea spazio nello stack per salvare $s0
-sw $s0, 0($sp) # salva $s0
-add $s0, $zero, $zero # i = 0
+\begin{minted}[linenos]{asm}
+addi $sp, $sp, -4  # crea spazio nello stack per salvare $s0
+sw $s0, 0($sp)  # salva $s0
+add $s0, $zero, $zero  # i = 0
 \end{minted}
 
 \subsubsection{Loop}
@@ -645,23 +641,23 @@ A questo punto procediamo all'implementazione del ciclo \emph{while} che eseguir
 (\underline{N.B.}: \mintinline{c}{&s[i] = s + i}, non \mintinline{c}{s + i * 4}).\\
 A questo punto carichiamo \mintinline{c}{s[i]}
 in \mintinline{asm}{\$t2} e salviamolo in \mintinline{c}{d[i]}.
-\begin{minted}{asm}
+\begin{minted}[linenos]{asm}
 L1:
-	add $t1, $s0, $a1 # inizio loop
+	add $t1, $s0, $a1  # inizio loop
 	lb $t2, 0($t1)
-	add $t3, $s0, $a0 # metti &d[i] in $t3
+	add $t3, $s0, $a0  # metti &d[i] in $t3
 	sb $t2, 0($t3)
 \end{minted}
 Ora che il corpo dell'istruzione è stato svolto, bisogna controllare se \mintinline{c}{s[i] == '\0'} e, in caso di risposta affermativa, il loop terminerà; altrimenti si incrementerà il contatore (che sta in \mintinline{asm}{\$s0}) e torna al ciclo.
-\begin{minted}{asm}
-beq $t2, $zero, L2 # se la stringa è finita, vai a L2 e termina il ciclo
-addi $s0, $s0, 1 # incrementa il contatore
-j L1 # torna al ciclo
+\begin{minted}[linenos]{asm}
+beq $t2, $zero, L2  # se la stringa è finita, vai a L2 e termina il ciclo
+addi $s0, $s0, 1   # incrementa il contatore
+j L1  # torna al ciclo
 \end{minted}
 
 \subsubsection{Epilogo}
 In questa fase viene implementata la fine del ciclo e il ritorno al chiamante; il valore precedente di \mintinline{asm}{\$s0}, viene ripristinato \mintinline{asm}{\$sp} e tutto ritorna.
-\begin{minted}{asm}
+\begin{minted}[linenos]{asm}
 L2:
 	lw $s0, 0($sp)
 	addi $s0, $s0, 4
