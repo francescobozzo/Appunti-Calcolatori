@@ -1,1 +1,13 @@
-add \$t0, $s1, $s2
+sum: add  $v0, $a1, $zero   #Sposta $a1 in $v0
+     blez $a0, $L5          #Se $a0<0, salta a L5
+     addi $sp, $sp, -32     #Crea spazio nello stack
+     sw   $ra, (28)$sp      #Salva $ra
+     add  $a1, $a1, $a0     #(acc=acc+n)
+     addi $a0, $a0, -1      #(n=n-1)
+     jal  sum               #Ricorsione (aggiorna $ra)
+     #parte di risalita della catena di $ra
+     lw   $ra, (28)$sp      #Ripristina $ra
+     addi $sp, $sp, 32      #Ripulisce lo stack
+
+L5:
+     j    $ra               #Torna al programma chiamante
