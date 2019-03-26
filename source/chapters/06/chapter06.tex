@@ -8,11 +8,11 @@
 \begin{document}
 \chapter{L'architettura MIPS}
 
-Dopo la breve introduzione del precedente capitolo, affronteremo ora lo studio dell'architettura \textit{MIPS}; iniziamo con questa perché, seppur non molto diffusa, è molto simile ad altre architetture che vedremo in seguito (soprattutto ARM), ed è quindi prodepeutica.
+Dopo la breve introduzione del precedente capitolo, affronteremo ora lo studio dell'architettura \emph{MIPS}; iniziamo con questa perché, seppur non molto diffusa, è molto simile ad altre architetture che vedremo in seguito (soprattutto ARM), ed è quindi prodepeutica.
 
 \section{Breve riepilogo su ISA}
 Come sappiamo già, ogni processore possiede un proprio linguaggio macchina, che non è altro che una sorta di "vocabolario di istruzioni" detto \emph{Instruction Set Architecture} (o \emph{ISA} per gli amici); queste istruzioni sono solitamente le operazioni aritmetiche fondamentali (a parte quelle che lavorano su floating point) e quelle logiche. \\
-Nonostante ogni processore possieda un proprio ISA, le differenze non sono poi così grandi (motivo per cui conoscere MIPS ci agevolerà molto nell'appren-dimento di altre ISA); una similitudine adeguata può essere fatta con i dialetti di una lingua maggiore (per esempio, veneziano, trevigiano e veronese sono tutte varianti locali mutualmente intelligibili della Grande Lingua Veneta).\\
+Nonostante ogni processore possieda un proprio ISA, le differenze non sono poi così grandi (motivo per cui conoscere MIPS ci agevolerà molto nell'apprendimento di altre ISA); una similitudine adeguata può essere fatta con i dialetti di una lingua maggiore (per esempio, veneziano, trevigiano e veronese sono tutte varianti locali mutualmente intelligibili della Grande Lingua Veneta).\\
 Lo scopo di avere questi sistemi di istruzioni è poter controllare e sfruttare la potenza di calcolo fornita dai nostri calcolatori senza conoscerne i dettagli; inoltre, come già fatto notare da Von Neumann nel 1947, la progettazione di un'architettura influisce enormemente sull'efficienza dell'hardware, ed è quindi fondamentale che si ricerchino istruzioni \emph{semplici, chiare e veloci}.\\
 Un organico di istruzioni andrà a costruire un \emph{programma memorizzato} che, come approfondiremo, altro non è che un insieme di istruzioni mappato sotto forma di numero binario, nom diversamente da numeri o qualsiasi altro dato.
 
@@ -532,7 +532,7 @@ L1:	     addi $a0, $a0, -1 #decremento n
 Le variabili in C sono in genere associate a locazioni di memoria, si caratterizzano per:
 \begin{itemize}[noitemsep]
 	\item \textbf{Tipo}: (int, char, float, ecc.);
-	\item \textbf{Storage class}: \textit{Automatic}, variabili locali che hanno un ciclo di vita collegato alla funzione, e \textit{Static}, variabili globali o definite come static che sopravvivono anche al termine della funzione.
+	\item \textbf{Storage class}: \emph{Automatic}, variabili locali che hanno un ciclo di vita collegato alla funzione, e \emph{Static}, variabili globali o definite come static che sopravvivono anche al termine della funzione.
 \end{itemize}
 Le variabili \textbf{statiche} sono memorizzate in una zona di memoria specifica (nel MIPS accessibile attraverso il registro global pointer, \emph{\$gp}).\\
 Le variabili \textbf{automatiche} invece possono essere memorizzate nei registri, tuttavia quando questi non bastano, come già visto, le variabili vengono salvate all'interno dello stack; il segmento di stack che le contiene viene chiamato record di attivazione (o stack frame) e di conseguenza le variabili locali vengono individate tramite un offset a partire da un puntatore allo stack.
