@@ -11,93 +11,98 @@
 \section{Perché esiste Assembly}
 
 Le CPU capiscono esclusivamente le istruzioni che sono scritte nel loro specifico linguaggio macchina, che corrisponde ad una sequenza di bit 0 e 1.
-Al giorno d’oggi programmiamo praticamente solo ad alto livello,  poiché programmare in linguaggio macchina sarebbe molto più complesso e dispendioso; il mezzo che ci permette di intermediare  tra l'alto livello a cui programmiamo e la macchina è l’Assembly.\\
+Al giorno d’oggi programmiamo praticamente solo ad alto livello,  poiché programmare in linguaggio macchina sarebbe molto più complesso e dispendioso; il mezzo che ci permette di intermediare  tra l'alto livello a cui programmiamo e la macchina è l’Assembly.
+
 Il vantaggio di Assembly è l’utilizzo di codici mnemonici  (le keyword del linguaggio) che al programmatore risultano più semplici delle stringhe di 0 e 1.\\
-Si deve però notare che Assembly, essendo di così basso livello, è un linguaggio molto specifico, che si adatta solo ad una certa struttura (anche se esistono architetture che possono essere gestite da più versioni di Assembly), ad esempio un linguaggio Assembly per ARM non può essere usato su architetture Intel.
+Si deve però notare che Assembly, essendo di così basso livello, è un linguaggio molto specifico, che si adatta solo ad una certa struttura (anche se esistono architetture che possono essere gestite da più versioni di Assembly). Ad esempio, un linguaggio Assembly per ARM non può essere usato su architetture Intel.
 
 \section{Come funziona Assembly}
 
 \subsection{L'Assembler}
-Una volta che il programmatore ha scritto il suo algoritmo e questo è stato codificato in Assembly dal calcolatore, chi si occupa della traduzione dell’Assembly? L’Assembler, che è appunto il compilatore dell’Assembly (es.: Se ho un’istruzione del tipo \emph{add a, b, c;} l’Assembler la trasforma in codice binario).\\
-L’insieme di tutte le istruzioni specifiche conosciute da un’architettura è detto \textbf{ISA} (Instruction Set Architecture);
+Una volta che il programmatore ha scritto il suo algoritmo e questo è stato codificato in Assembly dal calcolatore, chi si occupa della traduzione dell’Assembly? L’Assembler, che è appunto il compilatore dell’Assembly (es.: avendo un’istruzione del tipo \mintinline{asm}{add a, b, c}, è l’Assembler che la trasforma in codice binario).\\
+L’insieme di tutte le istruzioni specifiche conosciute da un’architettura è detto \emph{ISA} (Instruction Set Architecture).
 
 \subsection{Instruction Set Architecture}
-l’ISA è un insieme di regole e procedure che specifica come ogni istruzione deve essere strutturata, codificata ed anche eseguita; in pratica esso specifica sia la semantica che la sintassi, che cosa si deve fare per compiere delle istruzioni e come si fa.\\
+L’ISA è un insieme di regole e procedure che specifica come ogni istruzione deve essere strutturata, codificata ed anche eseguita; in pratica esso specifica sia la semantica che la sintassi, che cosa si deve fare per compiere delle istruzioni e come si fa.\\
 L’ISA specifica anche di che tipo sono i registri (possono essere \emph{general purpose} o  specializzati), come accedere ad essi (sono molto vicini alla CPU contengono i dati che devono essere utilizzati in maniera super-rapida) ed alla memoria (indirizzamento).\\
 Per comprendere bene le istruzioni che compongono l'ISA conviene ripassare le fasi di funzionamento di una CPU.
 
 \subsection{Funzionamento di una CPU}
 Il funzionamento di una CPU segue il seguente schema:
 \begin{itemize}[noitemsep]
-	\item \textbf{Fetch}: In questa fase viene letta l'istruzione da eseguire
+	\item \emph{fetch}: In questa fase viene letta l'istruzione da eseguire
 	\begin{enumerate}[noitemsep,nolistsep]
 		\item l'istruzione da eseguire, puntata dal Program Counter (registro che tiene conto della successiva istruzione da eseguire), viene copiata nell'Address Register (indirizzo di accesso al bus di sistema);
 		\item i dati dell'istruzione vengono quindi trasferiti dalla RAM al Data Register (che tiene conto dei dati da leggere o scrivere);
 		\item i dati vengono salvati in un registro invisibile al programmatore;
 		\item viene incrementato il program counter;
 	\end{enumerate}
-	\item \textbf{Decode}: L’istruzione qui dev’essere decodificata (spacchettata in una serie di campi) che contengono le varie caratteristiche dell’istruzione
-	\item \textbf{Execute}:  alla fine l’istruzione viene eseguita, essa può essere aritmetica, logica, di gestione della memoria, ecc.
+	\item \emph{decode}: L’istruzione qui dev’essere decodificata (spacchettata in una serie di campi) che contengono le varie caratteristiche dell’istruzione
+	\item \emph{execute}:  alla fine l’istruzione viene eseguita, essa può essere aritmetica, logica, di gestione della memoria, ecc.
 \end{itemize}
-Ricapitolando, il ciclo dell’esecuzione delle istruzioni segue lo schema \textbf{fetch}>\textbf{decode}>\textbf{execute}.\\
+Ricapitolando, il ciclo dell’esecuzione delle istruzioni segue lo schema \emph{fetch > decode > execute}.\\
 Queste operazioni vengono scandite dal clock, lo svolgimento delle istruzioni è prevalentemente lineare tuttavia esistono delle istruzioni che possono modificare il \emph{Program Counter}; istruzioni simili sono i cicli, i salti o le selezioni.
 
 \subsection{Ritornando ad Assembly}
 Nell’Assembly di fatto non esistono istruzioni come i cicli, però queste vengono implementate attraverso istruzioni che modificano il Program Counter.
 Complessivamente un programma in Assembly può essere descritto come una lista di istruzioni di tre tipi:
 \begin{itemize}[noitemsep]
-	\item Operazioni aritmetiche/logiche (o anche algebriche e booleane)
-	\item Operazioni di gestione dati (istruzioni di indirizzamento)
-	\item Operazioni di controllo del flusso del programma (operazioni sul Program Counter)
+	\item operazioni aritmetiche/logiche (o anche algebriche e booleane)
+	\item operazioni di gestione dati (istruzioni di indirizzamento)
+	\item operazioni di controllo del flusso del programma (operazioni sul Program Counter)
 \end{itemize}
-Generalmente possiamo utilizzare le istruzioni in due modi diversi: possiamo inserire direttamente i dati nel corpo dell'istruzione, ma questa è una grande limitazione poiché le istruzioni hanno dimensioni preimpostate (o comunque limitate), oppure possiamo inserire nelle istruzioni gli indirizzi di alcuni registri (dove posso stoccare i dati che necessito).\\
+Generalmente possiamo utilizzare le istruzioni in due modi diversi: possiamo inserire direttamente i dati nel corpo dell'istruzione, ma questa è una grande limitazione poiché le istruzioni hanno dimensioni preimpostate (o comunque limitate), oppure possiamo inserire nelle istruzioni gli indirizzi di alcuni registri (dove posso stoccare i dati che necessito).
+
 Esiste un'ultima possibilità, che ci permette di memorizzare nelle istruzioni gli indirizzi dei dati che stocchiamo in memoria (così da poter sfruttare le quantità enormi di memoria di un calcolatore) e poi prelevare i dati necessari dalla memoria e caricarli nei registri (così da avere la velocità di accesso dei registri).\\
 Si deve tenere in conto che però i registri sono limitati (in alcune architetture ARM sono addirittura solo 4) e devono anche essere ripuliti dopo ogni utilizzo (a questo pensa la CPU).
 \paragraph*{Registri}
-Esistono diversi tipi di registro, sia generali che specifici; un esempio di registro specifico è il \emph{registro zero}, che contiene tutti zeri e viene utilizzato per semplificare e diminuire le istruzioni dell’ISA. Per copiare un registro in un altro, invece che implementare una funzione apposta, si somma il registro con il \emph{registro zero} e si salva il risultato in un terzo registro (che sarà la copia del primo).
+Esistono diversi tipi di registro, sia generali che specifici; un esempio di registro specifico è il registro \emph{\$zero}, che contiene tutti zeri: viene utilizzato per semplificare e diminuire le istruzioni dell’ISA. Per copiare un registro in un altro, invece che implementare una funzione specifica, si somma il registro con il \emph{registro zero} e si salva il risultato in un terzo registro (che sarà la copia del primo).
 
 \subsection{Diversi tipi di ISA}
-Nel tempo si sono sviluppati due diversi approcci verso  gli ISA, il \emph{Complex Instruction Set Computer} (\textbf{CISC}) ed il \emph{Reduced Instruction Set Computer} (\textbf{RISC}) che appunto differiscono in questo:
-\begin{itemize}[noitemsep]
-	\item \textbf{CISC}: comprende molte istruzioni, anche complesse, e quindi ha molto meno bisogno di registri e la scrittura di programmi Assembly risulta più facile; tuttavia, per implementare le sue istruzioni (come già detto complesse), aumenta la difficoltà nella progettazione di l’hardware adatti.
-	\item \textbf{RISC}: comprende solo istruzioni di base o comunque poche istruzioni e relativamente semplici; in questo modo semplifica l’implementazione della CPU e della sua architettura, ma ha bisogno di molti più registri per caricare le istruzioni temporanee (le intermedie necessarie per compiere istruzioni più complesse) ed in più complica la programmazione in Assembly (il suo linguaggio conosce solo le istruzioni basilari, quindi quelle complesse dovranno essere descritte dal programmatore).
+Nel tempo si sono sviluppati due diversi approcci verso  gli ISA, il \emph{Complex Instruction Set Computer} (\emph{CISC}) ed il \emph{Reduced Instruction Set Computer} (\emph{RISC}). A seguire alcune loro caratteristiche:
+\begin{itemize}
+	\item \emph{CISC}: comprende molte istruzioni, anche complesse, e quindi ha molto meno bisogno di registri e la scrittura di programmi Assembly risulta più facile; tuttavia, per implementare le sue istruzioni (come già detto complesse), aumenta la difficoltà nella progettazione di l’hardware adatti.
+	\item \emph{RISC}: comprende solo istruzioni di base o comunque poche istruzioni e relativamente semplici; in questo modo semplifica l’implementazione della CPU e della sua architettura, ma ha bisogno di molti più registri per caricare le istruzioni temporanee (le intermedie necessarie per compiere istruzioni più complesse). Inoltre complica la programmazione in Assembly (il suo linguaggio conosce solo le istruzioni basilari, quindi quelle complesse dovranno essere descritte dal programmatore).
 \end{itemize}
 
 \subsection{I tipi di istruzioni}
+
 \paragraph*{Istruzioni algoritmiche/logiche}
 Le istruzioni aritmetiche e logiche spettano alla ALU, che è il “chip” che svolge effettivamente (che esegue) le istruzioni.
+
 \paragraph*{Istruzioni di gestione dati}
 Le istruzioni di gestione (o movimento) dati sono svolte da altri elementi specifici adibiti proprio allo spostamento di dati tra registri, da registri a memoria  e viceversa.\\
-Quando la CPU esegue un programma ha bisogno di due elementi, operandi e destinazione (dove salvare il risultato).  Le due tipologie di ISA offrono alternative diverse rispetto alla posizione dove mettere questi elementi per poi renderli utilizzabili dalla CPU: l’ISA RISC, per semplicità  e velocità, salva tutto nei registri, mentre l’ISA CISC riesce ad utilizzare/mettere questi elementi anche nella memoria (rendendo anche la programmazione in Assembly più semplice).
+Quando la CPU esegue un programma necessita di due elementi: operandi e destinazione (dove salvare il risultato). Le due tipologie di ISA offrono alternative diverse rispetto alla posizione dove mettere questi elementi per poi renderli utilizzabili dalla CPU: l’ISA \emph{RISC}, per semplicità  e velocità, salva tutto nei registri, mentre l’ISA \emph{CISC} riesce ad utilizzare/mettere questi elementi anche nella memoria (rendendo anche la programmazione in Assembly più semplice).
+
 \paragraph*{Istruzioni condizionali/di controllo del flusso}
-Per esprimere questo tipo di istruzioni, alcune ISA \emph{saltano} nel codice (modificando il \emph{Program Counter}) sfruttano il contenuto di registri generici; ad esempio, eseguono l’istruzione successiva solo se un certo registro è uguale ad un altro (questo però richiede l’implementazione del confronto tra registri, che è una classica operazione complessa da CISC); altri ISA controllano se sono presenti  degli elementi detti flag contenuti in un apposito registro (\emph{registro flag}) che segnalano determinate condizioni.\\
-Le istruzioni di controllo di flusso sono svolte da alcuni elementi che gestiscono il \emph{Program Counter}: quando non ci sono \emph{salti} incrementano il PC di 4 in 4 (o 8 in 8 a seconda delll’architettura), quando si verificano \emph{salti} invece le reti logiche hardware che gestiscono il PC devono cambiarlo ma tenere in memoria il suo indirizzo effettivo, per riprendere da lì al termine della subroutine.\\
+Per esprimere questo tipo di istruzioni, alcune ISA \emph{saltano} nel codice (modificando il \emph{Program Counter}) sfruttano il contenuto di registri generici; ad esempio, eseguono l’istruzione successiva solo se un certo registro è uguale ad un altro (questo però richiede l’implementazione del confronto tra registri, che è una classica operazione complessa da CISC); altri ISA controllano se sono presenti  degli elementi detti flag contenuti in un apposito registro (\emph{registro flag}) che segnalano determinate condizioni.
+
+Le istruzioni di controllo di flusso sono svolte da alcuni elementi che gestiscono il \emph{Program Counter}: quando non ci sono \emph{salti} incrementano il PC di 4 in 4 (o 8 in 8 a seconda delll’architettura), quando si verificano \emph{salti} invece le reti logiche hardware che gestiscono il PC devono cambiarlo ma tenere in memoria il suo indirizzo effettivo, per riprendere da lì al termine della subroutine.
+
 Curiosità: nell'architettura ARM tutte le istruzioni sono condizionali, mentre altre architetture hanno solo poche istruzioni dedicate al salto condizionale.
 
 \subsection{Confronto tra CISC e RISC}
-
-% INSERISCI TABELLA CONFRONTO %
-
 Una volta osservato tutto ciò potrebbe venire spontaneo chiedersi quale delle due ISA sia la migliore, ma la risposta ovviamente dipende dal contesto; le due modalità si sono sviluppate per essere ottimali in ambiti diversi e hanno obiettivi differenti.\\
-Esistono tuttavia ISA ibride, che derivano da entrambe le architetture, come ad esempio l’ARM, che è presente sulla maggior parte degli smartphone odierni. Questi ibridi sono detti RISC “\emph{pragmatici}” e combinano parte della flessibilità e complessità  CISC con parte della semplicità e regolarità RISC.
+Esistono tuttavia ISA ibride, che derivano da entrambe le architetture, come ad esempio l’ARM, che è presente sulla maggior parte degli smartphone odierni. Questi ibridi sono detti \emph{RISC} “\emph{pragmatici}” e combinano parte della flessibilità e complessità  \emph{CISC} con parte della semplicità e regolarità \emph{RISC}.
 
 \subsection{Accesso alla memoria}
-Per svolgere questa funzione in RISC vi sono solo le istruzioni \emph{load} e \emph{store}, mentre per CISC sono presenti istruzioni più generiche; in ogni caso l’argomento dell’istruzione è sempre \emph{<memory location>}.\\
+Per svolgere questa funzione in \emph{RISC} vi sono solo le istruzioni \emph{load} e \emph{store}, mentre per \emph{CISC} sono presenti istruzioni più generiche; in ogni caso l’argomento dell’istruzione è sempre \emph{<memory location>}.\\
 Ci sono varie modalità di indirizzamento che propongono che in questo campo siano scritti indirizzi diversi:
-\begin{itemize}[noitemsep]
-	\item \textbf{Indirizzamento assoluto}: nel campo (operando dell’istruzione)  indico l’indirizzo di memoria (difetto: posso indicare pochi indirizzi poiché ho pochi bit);
-	\item \textbf{Indirizzamento indiretto}: l’indirizzo di memoria contenuto in un registro (e nell’argomento \emph{<memory location>} ho l’indirizzo del registro che contiene );
-	\item \textbf{Base + spiazzamento}: l’indirizzo è ottenuto "shiftando" (o manipolando) il contenuto di un registro: ho un registro base con un indirizzo base ed un secondo registro che shifto (a partire dal base), e come argomento <memory location> scrivo di quanto devo shiftare questo secondo registro
-	\item \textbf{Combinazioni} varie delle modalità precedenti, che permettono di accedere a locazioni di memoria in maniera molto fine (es.: base + indice e base + indice + spiazzamento);
+\begin{itemize}
+	\item \emph{indirizzamento assoluto}: nel campo (operando dell’istruzione) indico l’indirizzo di memoria (difetto: posso indicare pochi indirizzi poiché ho pochi bit).
+	\item \emph{indirizzamento indiretto}: l’indirizzo di memoria contenuto in un registro (nell’argomento \emph{<memory location>}).
+	\item \emph{base + spiazzamento}: l’indirizzo è ottenuto "shiftando" (o manipolando) il contenuto di un registro: ho un registro base con un indirizzo base ed un secondo registro che shifto (a partire dal base), e come argomento \emph{<memory location>} scrivo di quanto devo shiftare questo secondo registro.
+	\item \emph{combinazioni} varie delle modalità precedenti, che permettono di accedere a locazioni di memoria in maniera molto fine (es.: base + indice e base + indice + spiazzamento).
 \end{itemize}
 
-Se si vuole questo può essere osservato come un esempio di confronto tra i due tipi di ISA: nell’ ISA CISC si può svolgere “\emph{base + spiazzamento}” direttamente in una stessa istruzione (espressione), mentre nell'ISA RISC si necessita di più istruzioni.
+Se si vuole questo può essere osservato come un esempio di confronto tra i due tipi di ISA: nell’ ISA \emph{CISC} si può svolgere “\emph{base + spiazzamento}” direttamente in una stessa istruzione (espressione), mentre nell'ISA \emph{RISC} si necessita di più istruzioni.
 
 \subsection{Application Binary Interface}
 L'ISA definisce numero, nome e funzione dei registri (\emph{general-purpose} o  specializzati), ma questo non basta, perché non abbiamo risposte a domande come: quali registri posso usare? Quali posso modificare durante una \emph{subroutine}? Come passo i valori dei parametri e di ritorno?\\
-Per questo c’è il bisogno dell'\emph{Application Binary Interface} (ABI), che fornisce una sorta di protocollo dell’utilizzo dei registri (sotstanzialmente una vera e propria raccolta di regole sull’utilizzo dei registri).\\
-Un programma è composto da tanti metodi e funzioni, e questi vengono mappati in \emph{subroutine} (un pezzo monolitico di istruzioni) dal linguaggio Assembly.
-Per esempio, quando lancio l’istruzione $r=funz(arg1, arg2, arg3, …);$ $funz$ questa è una \emph{subroutine}, e devo decidere quali registri posso utilizzare per immagazzinare gli input della funzione, dove posso salvare il suo output, quali registri essa può modificare liberamente. Le risposte a queste questioni vengono risolte dall’ABI che definisce a livello software le \textbf{convenzioni di chiamata}, che specificano come utilizzare i registri all’invocazione di una \emph{subroutine}.\\
+Per questo c’è il bisogno dell'\emph{Application Binary Interface} (ABI), che fornisce una sorta di protocollo dell’utilizzo dei registri (sotstanzialmente una vera e propria raccolta di regole sull’utilizzo dei registri).
+
+Un programma è composto da tanti metodi e funzioni, e questi vengono mappati in \emph{subroutine} (un pezzo monolitico di istruzioni) dal linguaggio Assembly. Per esempio, l’istruzione $r=funz(arg1, arg2, arg3, ...);$ richiama la \emph{subroutine} \(funz\). Si deve decidere quali registri utilizzare per immagazzinare gli input della funzione, dove si può salvare il suo output, quali registri essa può modificare liberamente. Le risposte a queste questioni vengono risolte dall’ABI che definisce a livello software le \emph{convenzioni di chiamata}, che specificano come utilizzare i registri all’invocazione di una subroutine.
+
 Nota tecnica: dato un ISA questo può essere servito da ABI diversi, poiché l’ABI influenza solo la gestione dei servizi.
 
 \end{document}
