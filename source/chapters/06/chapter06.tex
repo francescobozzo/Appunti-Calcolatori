@@ -33,14 +33,14 @@ Per dare una chiave di lettura al percorso che faremo su MIPS useremo alcuni pri
 \end{tcolorbox}
 \vspace{5pt}
 
-In linea con questo principio, MIPS consente di effettuare operazioni aritmetiche solo nella loro forma più semplice, ossia con tre operandi: \(a = b + c\).
+In linea con questo principio, MIPS consente di effettuare operazioni aritmetiche solo nella loro forma più semplice, ossia con tre operandi: \mintinline{c}{a = b + c}.
 Quest'istruzione, comune in C, Java, Python o altri linguaggi, in MIPS sarà scritta così:
 \begin{minted}[linenos]{asm}
 add a, b, c;
 \end{minted}
 
 Notiamo subito che l'operando "di destinazione" viene messo come primo elemento (in altre ISA non è sempre così, tuttavia).\\
-Naturalmente, mentre nei linguaggi ad alto livello possiamo agevolmente scrivere espressioni matematiche complesse, in MIPS verranno tutte mappate in espressioni semplici, sicché una linea di codice come \(f = (g + h) - (i + j)\), per quanto banale, può essere srotolata in diverse righe assembly:
+Naturalmente, mentre nei linguaggi ad alto livello possiamo agevolmente scrivere espressioni matematiche complesse, in MIPS verranno tutte mappate in espressioni semplici, sicché una linea di codice come \mintinline{c}{f = (g + h) - (i + j}, per quanto banale, può essere srotolata in diverse righe assembly:
 
 \begin{minted}[linenos]{asm}
 add t0, g, h   # t0 (variabile temp) = g + h
@@ -119,7 +119,7 @@ Molto spesso ci si trova a lavorare con le costanti. Nonostante ogni costante po
 \end{tcolorbox}
 \vspace{5pt}
 
-Quindi ci conviene assolutamente costruire una sintassi dedicata all'esecuzione di operazioni con costanti, dove la \emph{i} sta per \emph{immediate}. Ad esempio \(f = f + 4\) diventa: \mintinline[escapeinside=||]{asm}{addi |$\textdollar$|s3, |$\textdollar$|s3, 4}.
+Quindi ci conviene assolutamente costruire una sintassi dedicata all'esecuzione di operazioni con costanti, dove la \emph{i} sta per \emph{immediate}. Ad esempio \mintinline{c}{f = f + 4} diventa: \mintinline[escapeinside=||]{asm}{addi |$\textdollar$|s3, |$\textdollar$|s3, 4}.
 
 Per dare un altro esempio, è molto conveniente implementare un registro zero (\emph{\$zero}), perché rende molto più semplici le operazioni di copia, che di fatto possono essere ridotte a una somma di un qualsiasi registro con il registro zero.
 
