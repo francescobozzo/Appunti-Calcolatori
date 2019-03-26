@@ -552,7 +552,8 @@ Esiste inoltre un ultimo tipo di variabili (oltre alle globali ed alle locali), 
 \end{figure}
 
 \section{Elaborazione delle procedure}
-Per spiegare come vengono elaborate le procedure da MIPS utilizziamo come esempio la seguente funzione:
+Per spiegare come vengono elaborate le procedure complesse da MIPS utilizziamo come esempio la seguente funzione:
+
 \begin{minted}{c}
 	int sum(int n){
 		if(n>0) { return sum(n-1)+n; }
@@ -560,14 +561,53 @@ Per spiegare come vengono elaborate le procedure da MIPS utilizziamo come esempi
 	}
 \end{minted}
 
-Se si analizza la funzione si nota come il valore di ritorno viene costruito risalendo la catena di chiamate; quindi, ogni frame di attivazione deve essere preservato per produrre il risultato corretto.\\
+Se si analizza la funzione si nota come il valore di ritorno viene costruito risalendo la catena di chiamate e quindi ogni frame di attivazione deve essere preservato per produrre il risultato corretto.\\
+Ecco come compare il codice assembly della procedura \emph{sum}:
+
+\begin{minted}{asm}
+	sum: add  $v0, $a1, $zero   #Sposta $a1 in $v0
+	     blez $a0, $L5          #Se $a0<0, salta a L5
+	     addi $sp, $sp, -32     #Crea spazio nello stack
+	     sw   $ra, (28)$sp      #Salva $ra
+	     add  $a1, $a1, $a0     #(acc=acc+n)
+	     addi $a0, $a0, -1      #(n=n-1)
+	     jal  sum               #Ricorsione (aggiorna $ra)
+	     #parte di risalita della catena di $ra
+	     lw   $ra, (28)$sp      #Ripristina $ra
+	     addi $sp, $sp, 32      #Ripulisce lo stack
+
+	L5:
+	     j    $ra               #Torna al programma chiamante
+
+
+\end{minted}
+
+
 Come possiamo immaginare il procedimento scritto così è  molto dispendioso in termini di memoria, ma possiamo, con un po' di esperienza e scaltrezza, riscrivere nel seguente modo il programma:
+
 \begin{minted}{c}
 	int sum(int n, int acc){
 		if(n>0) { return sum(n-1, acc+n) }
 		else { return acc; }
 	}
 \end{minted}
-In questo caso si applica il metodo di ricorsione in coda, che comporta un grande vantaggio dal punto di vista dell'utilizzo di memoria: una volta terminata una chiamata della funzione si può eliminare tutto il suo ambiente, il quale risulterà non più utile.
+
+In questo caso si applica il metodo di ricorsione in coda, che comporta un grande vantaggio dal punto di vista dell'utilizzo di memoria poichè una volta terminata una chiamata della funzione si può eliminare tutto il suo ambiente (che non risulterà più utile) e utilizzare sempre solo un ambiente unico ed un unico \emph{\$ra}, vediamo come:
+
+\begin{minted}{asm}
+	sum: add  $v0, $a1, $zero   #Sposta $a1 in $v0
+	     blez $a0, $L5          #Se $a0<0, salta a L5
+
+	     add  $a1, $a1, $a0     #(acc=acc+n)
+	     addi $a0, $a0, -1      #(n=n-1)
+	     j  sum                 #Ricorsione (aggiorna $ra)
+	     #si osservi come non si usa più jal dato che non si
+	     #aggiorna più $ra ora che si lavora su un unico ambiente
+	L5:
+	     j    $ra               #Torna al programma chiamante
+
+
+\end{minted}
+Alcuni compilatori sono in grado di ottimizzare automaticamente il programma in questo modo così da renderlo molto più veloce e leggero, il gcc è in grado di aggiustare, ove possibile, questo tipo di procedure con una complessità pari a O(2).\\
 
 \end{document}
