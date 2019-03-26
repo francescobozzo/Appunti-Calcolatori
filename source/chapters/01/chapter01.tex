@@ -22,8 +22,8 @@ Prodotto da IBM nel 1969, disponeva di 2800 circuiti integrati, un processore da
 Seppur i calcolatori di oggi condividano la stessa idea di base, le soluzioni per ciascuna tipologia di applicazione sono piuttosto diverse. A seguire alcuni esempi di diverso tipo di calcolatori:
 
 \begin{table}[H]
-	\centering
-	\subimport{assets/tables/}{table_diff_calcolatori.tex}
+  \centering
+  \subimport{assets/tables/}{table_diff_calcolatori.tex}
 \end{table}
 
 
@@ -33,26 +33,28 @@ Per ovvi motivi, ogni tipologia di calcolatore è meglio adatta per differenti s
 Un buon programmatore, oltre a saper utilizzare degli efficienti paradgmi, deve comprendere la gerarchia di memoria e il concetto di parallelismo; conoscere a fondo il calcolatore è fondamentale.\\
 Fino a qualche tempo fa le prestazioni di qualsiasi calcolatore erano in balia della disponibilità di memoria. Al giorno d'oggi invece risulta un problema risolto, tranne per qualche criticità per le applicazioni embedded.\\
 Ecco una lista degli elementi che influenzano le prestazioni del calcolatore e il loro ruolo:
-\begin{itemize}[noitemsep, nolistsep]
-	\item \emph{Algoritmi}: determinano il numero di istruzioni di alto livello e di operazioni di I/O.
-	\item \emph{Linguaggi di programmazione, compilatori e architetture}: determinano il numero di istruzioni macchina per ogni istruzione di basso livello.
-	\item \emph{Processore e sistema di memoria}: determina quanto velocemente è possibile eseguire ciascuna istruzione.
-	\item \emph{Sistema di I/O (Hardware e sistema operativo)}: determina quanto velocemente possono essere eseguite le istruzioni.
+\begin{itemize}[noitemsep]
+  \item \emph{algoritmi}: determinano il numero di istruzioni di alto livello e di operazioni di I/O.
+  \item \emph{linguaggi di programmazione, compilatori e architetture}: determinano il numero di istruzioni macchina per ogni istruzione di basso livello.
+  \item \emph{processore e sistema di memoria}: determina quanto velocemente è possibile eseguire ciascuna istruzione.
+  \item \emph{sistema di I/O (hardware e sistema operativo)}: determina quanto velocemente possono essere eseguite le istruzioni.
 \end{itemize}
 
 \subsection{La memoria e il processore}
 \paragraph*{La memoria}
 \`{E} possibile classificare la memoria in:
 \begin{itemize}[noitemsep]
-	\item \emph{volatile}: è costituita da vari banchi di (tipicamente) 8 chip di RAM dinamica. \`{E} dominata dalle \emph{DRAM}.
-	\item \emph{permanente}: è costituita da memorie flash (es. SSD), dischi rigidi e CD/DVD.
+  \item \emph{volatile}: è costituita da vari banchi di (tipicamente) 8 chip di RAM dinamica. \`{E} dominata dalle \emph{DRAM}.
+  \item \emph{permanente}: è costituita da memorie flash (es. SSD), dischi rigidi e CD/DVD.
 \end{itemize}
 La prima viene utilizzata per memorizzare dati e programmi mentre vengono eseguiti (per questo motivo viene chiamata anche \emph{memoria principale}): allo spegnimento i dati vengono persi. La seconda viene usata per memorizzare grandi quantità di dati e programmi fra esecuzioni diverse.\\
-Il principio di funzionamento dell'hard disk è di magnetizzare delle particelle metalliche distribuite su un substrato:
+Filippo Daniotti
+Probabile
+\paragraph{Le memorie di massa}Il principio di funzionamento dell'hard disk è di magnetizzare delle particelle metalliche distribuite su un substrato:
 \begin{itemize}[noitemsep]
-	\item I dischi sono organizzati in strutture sovrapposte (cilindri).
-	\item Le particelle vengono lette da un dispositivo meccanico (testina) che si sposta radialmente su un braccio (in grado di fare movimenti angolari).
-	\item Questa componente rallenta i tempi di accesso ma aumenta al densità di memorizzazione (è possibile arrivare facilmente ai Terabyte).
+  \item i dischi sono organizzati in strutture sovrapposte (cilindri).
+  \item le particelle vengono lette da un dispositivo meccanico (testina) che si sposta radialmente su un braccio (in grado di fare movimenti angolari).
+  \item questa componente rallenta i tempi di accesso ma aumenta al densità di memorizzazione (è possibile arrivare facilmente ai Terabyte).
 \end{itemize}
 
 Diversamente dai dischi rigidi elettromeccanici, la memorizzazione su una memoria flash avviene intrappolando una carica elettrica in maniera permanente.\\
@@ -61,28 +63,28 @@ I dischi ottici funzionano sul principio di riflessione della luce: viene emesso
 \paragraph*{Il processore}
 La \emph{CPU} è l'unità centrale di ogni calcolatore. Si compone di:
 \begin{itemize}[noitemsep]
-	\item \emph{Datapath}: esegue operazioni aritmetiche sui dati.
-	\item \emph{Control Unit}: impartisce ordini al datapath, alla memoria e alle componenti I/O, sulla base di quanto stabilito dal programma.
+  \item \emph{datapath}: esegue operazioni aritmetiche sui dati.
+  \item \emph{control unit}: impartisce ordini al datapath, alla memoria e alle componenti I/O, sulla base di quanto stabilito dal programma.
 \end{itemize}
 Il processore offre l'\emph{ISA} (\emph{Instruction Set Architecture}), un'interfaccia che permette di utilizzarlo senza conoscerne i dettagli. Questa, assieme all'ulteriore interfaccia del sistema operativo, forma l'interfaccia binaria delle applicazioni \emph{ABI} (\emph{Application Binary Interface}). Ciò permette allo sviluppatore di svincolarsi dal livello hardware sottostante, secondo il principio di \emph{astrazione}.\\ Esistono due diversi tipi di architetture ISA:
-\begin{itemize}[noitemsep,nolistsep]
-	\item \emph{RISC}: offre un numero ridotto di istruzioni, rivolta soprattutto a sistemi \emph{embedded};
-	\item \emph{CISC}: offre Permette di usufruire di un maggior numero di istruzioni, rivolta prevalentemente ai PC.
+\begin{itemize}[noitemsep]
+  \item \emph{RISC}: offre un numero ridotto di istruzioni, rivolta soprattutto a sistemi \emph{embedded};
+  \item \emph{CISC}: offre Permette di usufruire di un maggior numero di istruzioni, rivolta prevalentemente ai PC.
 \end{itemize}
 
 \subsection{Software di sistema}
 Il \emph{sistema operativo}:
 \begin{itemize}[noitemsep]
-	\item gestisce le operazioni di I/O.
-	\item alloca la memoria.
-	\item consente il multitasking.
+  \item gestisce le operazioni di I/O.
+  \item alloca la memoria.
+  \item consente il multitasking.
 \end{itemize}
 Il \emph{compilatore} traduce da linguaggio ad alto livello a linguaggio macchina. Ogni istruzione di quest'ultimo è costituita da una determinata sequenza di \emph{bit}, ossia l'unità di base dell'informazione (1 o 0).\\
 L'utilità del compilatore consiste nel facilitare il lavoro del programmatore: non è più necessario implementare il software in codice binario, bensì è possibile utilizzare un linguaggio di programmazione più vicino al linguaggio naturale. Il primo linguaggio sviluppato per questo scopo è stato l'\emph{assembly}. Il software che traduce l'assembly in codice binario si chiama \emph{assembler}.\\
 \`{E} possibile riassumere la traduzione di un linguaggio di programmazione di alto livello in codice macchina in due semplici passi:
 \begin{enumerate}[noitemsep]
-	\item traduzione del linguaggio ad alto livello in linguaggio assembly, per via del compilatore
-	\item traduzione del linguaggio assembly in linguaggio macchina, attraverso l'assemblatore.
+  \item traduzione del linguaggio ad alto livello in linguaggio assembly, per via del compilatore
+  \item traduzione del linguaggio assembly in linguaggio macchina, attraverso l'assemblatore.
 \end{enumerate}
 Spesso fanno eccezione alcuni compilatori che trasformano direttamente il linguaggio ad alto livello in codice macchina.
 

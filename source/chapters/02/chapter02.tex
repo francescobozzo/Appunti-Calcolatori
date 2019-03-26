@@ -18,7 +18,7 @@
 Tutti i computer moderni sono composti da \emph{transistor} (detti anche triodi), delle strutture bistabili: possono assumere due stati come un interruttore, 0 (spento) e 1 (acceso). Molti \emph{transistor} collegati tra loro in una sorta di matrice possono rappresentare delle serie di porte logiche, ed è questa la struttura che sta alla base dell'architettura dei moderni calcolatori.\\
 Un computer memorizza (e manipola) solo sequenze di 0 e 1 (sequenze di bit); anche l’ENIAC funzionava allo stesso modo, solo che al posto dei \emph{transistor} era composto da \emph{valvole termoioniche}, che non erano differenti nel funzionamento (assumono sempre i due stati descritti in precedenza, solo più lentamente).
 \subsection{Interpretazione delle informazioni} In seguito le sequenze di bit che i computer elaborano/memorizzano possono essere interpretate in tantissimi modi diversi, tra cui numeri, caratteri, suoni, immagini, istruzioni e molti altri.\\
-Alla base di tutte le interpretazioni che si possono dare alle stringhe di simboli (che nel caso del computer sono proprio i due stati del bit) sta il concetto di \emph{codifica}. La \emph{codifica} è appunto uno schema, una legge, un \emph{mapping} che permette prima di tradurre, poi di interpretare stringhe di simboli.
+Alla base di tutte le interpretazioni che si possono dare alle stringhe di simboli (che nel caso del computer sono proprio i due stati del bit) sta il concetto di codifica. La \emph{codifica} è appunto uno schema, una legge, un \emph{mapping} che permette prima di tradurre, poi di interpretare stringhe di simboli.
 Nell’ambito dell’IT le codifiche sono fortemente caratterizzate dalla lunghezza (dal numero di bit) delle “parole” elementari della codifica. Ad esempio, per rappresentare tutti i caratteri (tabella ASCII) utilizziamo  8 bit [256 caratteri].
 Si osservi che essendo i \emph{transistor} sistemi bistabili la base 2 (con cifre 0 e 1) è perfetta per rappresentare la codifica dei dati memorizzati/elaborati da essi.
 \section{I numeri}
@@ -84,8 +84,8 @@ Si noti che quando è presente un 1 si riscrive il numero (nella posizione corri
 \paragraph*{Codifica in Complemento a 1:} L’idea alla base è semplice: il primo bit indica sempre il segno e per ottenere l’opposto di un numero positivo si invertono tutti gli 0 in 1 e gli 1 in 0 (e lo stesso si fa per ottenere l’opposto di un numero negativo). Si hanno ancora due rappresentazioni per +0 e -0 (rispettivamente, utilizzando 4 bit, 0000 e 1111). È più facile da sommare rispetto al modulo e segno ma solo se il bit significativo non dà riporto.
 Quando si sommano due numeri in \emph{CA1}:
 \begin{itemize}[noitemsep]
-	\item Si deve verificare che i riporti delle prime due cifre significative siano uguali, altrimenti il numero che si ottiene non è rappresentabile in CA1 su k bit.
-	\item Alla fine si deve sommare il riporto della prima cifra al risultato ottenuto (ultima riga).
+	\item si deve verificare che i riporti delle prime due cifre significative siano uguali, altrimenti il numero che si ottiene non è rappresentabile in CA1 su k bit.
+	\item alla fine si deve sommare il riporto della prima cifra al risultato ottenuto (ultima riga).
 \end{itemize}
 
 \begin{figure}[H]
@@ -97,7 +97,7 @@ Quando si sommano due numeri in \emph{CA1}:
 \paragraph*{Codifica in Complemento a 2} Per tradurre un numero da intero con segno a complemento a 2 (\emph{CA2}) basta invertire tutti i bit e poi sommare 1. Viceversa, per convertire da \emph{CA2} a binario, si sottrae 1 e poi si invertono tutti i bit. \\
 Ancora una volta il bit più significativo indica il segno, ma in questo caso la codifica dello 0 è unica, quindi con \emph{k} bit si possono rappresentare i numeri da $-2^{k-1}$ a $2^{k-1}-1$. Anche la somma è più semplice ma questo lo vedremo in futuro.
 
-\subsubsection{Somma algebrica in Complemento a 2} L'utilizzo della codifica \emph{CA2} permette di eseguire somme algebriche senza alcuna differenza operativa, ma rende necessario prestare attenzione agli \emph{overflows}.\\
+\subsubsection{Somma algebrica in Complemento a 2} L'utilizzo della codifica \emph{CA2} permette di eseguire somme algebriche senza alcuna differenza operativa, ma rende necessario prestare attenzione agli \emph{overflow}.\\
 Con il termine \emph{overflow} si intende la situazione in cui, date in input delle informazioni codificate in un numero $k$ di bit arbitrariamente scelto, lo stesso numero $k$ di bit non è sufficiente a codificare le informazioni in output. \\
 Diamo subito un esempio: supponiamo di voler eseguire $-64-8$ utilizzando il \emph{CA2} e $k=7$ bit. Ricordiamo che:\\\\
 $-64=1000000_{2}=\overline{1000000}+1=0111111+1=1000000 \text{ in \emph{CA2;}}$\\
@@ -119,7 +119,7 @@ ricordando che $-2^{k-1}\le a,b\le 2^{k-1}-1$.
 
 \subsection{Aritmetica modulare} Incosapevolmente noi utilizziamo l'\emph{aritmetica modulare} quasi continuamente, nella nostra quotidianità; l'esempio più comune è quando sommiamo le ore, che sono organizzate in modulo 24 (da cui la denominazione ufficiosa di "Matematica dell'orologio"), ma anche minuti e secondi (modulo 60) e gli angoli (modulo 360).\\
 Diamone una descrizione intuitiva: fissato un numero $n$ finito di valori, arrivato al numero più grande ($n-1$), al successivo avrò che $(n-1)+1=0$.\\
-Per completezza, forniamo ora la relazione di equivalenza di due numeri in modulo $n$:\\
+Per completezza, forniamo ora la relazione di equivalenza di due numeri in modulo $n$:
 \begin{equation*}
 \centering
 a\equiv b \longleftrightarrow a\%n=b\%n
@@ -128,8 +128,8 @@ a\equiv b \longleftrightarrow a\%n=b\%n
 Quando noi eseguiamo delle operazioni sui numeri in base 2 su $k$ bit, stiamo lavorando in un ambiente in modulo $2^{k}$, e calcolando $a+b$ stiamo in realtà trovando $(a+b)\%2^{k}$, e i due valori saranno uguali se e solo se $a+b<2^{k}$, perché altrimenti ogni valore successivo ricomincerebbe da 0: questo è l'\emph{overflow}.\\
 In particolare quando lavoriamo su numeri interi in \emph{CA2} dobbiamo ricordare che, se $-2^{k-1}\le a+b\le 2^{k-1}-1$ non avremo \emph{overflow}, altrimenti
 \begin{itemize}[noitemsep,nolistsep]
-	\item se $a+b<2^{k-1}-1$, otterremo $a+b+2^{k}$ $\longrightarrow$ \emph{OVERFLOW!}
-	\item se $a+b>-2^{k-1}$, otterremo $a+b-2^{k}$ $\longrightarrow$ \emph{OVERFLOW!}
+	\item se $a+b<2^{k-1}-1$, otterremo $a+b+2^{k}$ $\longrightarrow$ \emph{overflow}
+	\item se $a+b>-2^{k-1}$, otterremo $a+b-2^{k}$ $\longrightarrow$ \emph{overflow}
 \end{itemize}
 
 \subsection{I Reali} Non è sempre semplice codificare un numero reale $\alpha \in \mathbb{R}$, poiché di questo insieme fanno parte i numeri cosiddetti \emph{irrazionali}, che presentano infinite cifre non periodiche dopo la virgola (si pensi ad esempio a $\pi=3,14159...$, o $e=2.71828...$, o ancora $\sqrt{2}=1.41421...$).\\
@@ -194,15 +194,16 @@ Ecco una breve tabella riassuntiva dell'interpretazione delle stringhe nella rap
 	\subimport{assets/tables/}{floating_point.tex}
 \end{table}
 
-\subsubsection{Esempio di decodifica di un float}
-Traduciamo in float (IEEE 754) il seguente numero: 0 10000101 00110111000000000000000.
+\subsubsection{Esempio di decodifica di un numero in virgola mobile}
+Si traduca in IEEE754 il numero \((01000010 10011011 10000000 00000000)_2\).
+
 Spacchettiamolo nei vari campi:
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{|l|l|l|}
 		\hline
 		\multicolumn{1}{|c|}{MSB} & \multicolumn{1}{c|}{Esponente} & \multicolumn{1}{c|}{Mantissa} \\ \hline
-		0                & 10000101                  & 00110111000000000000000                    \\ \hline
+		0 & 10000101 & 00110111000000000000000\\\hline
 	\end{tabular}
 \end{table}
 Procediamo ora alla traduzione.
@@ -215,7 +216,7 @@ Procediamo ora alla traduzione.
 	L'esponente è diverso da zero, perciò si tratta di un numero normalizzato.
 	\item La mantissa va moltiplicata per \(2^{exp} = 2^{6}\) e, poiché il numero è normalizzato, devo considerare $1.M$:
 	\begin{equation*}
-		1.M \cdot 2^{6} = 1.00110111000000000000000 \cdot 2^{6} = 1.00110111 \cdot 100000000 = 1001101.11
+		1.M \cdot 2^{6} = 1.00110111000000000000000 \cdot 2^{6} = 1001101.11
 	\end{equation*}
 	\item A questo punto convertiamo il risultato ottenuto come fosse in virgola fissa:
 	\begin{equation*}
