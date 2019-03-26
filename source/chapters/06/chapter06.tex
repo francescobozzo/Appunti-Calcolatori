@@ -11,49 +11,62 @@
 Dopo la breve introduzione del precedente capitolo, affronteremo ora lo studio dell'architettura \emph{MIPS}; iniziamo con questa perché, seppur non molto diffusa, è molto simile ad altre architetture che vedremo in seguito (soprattutto ARM), ed è quindi prodepeutica.
 
 \section{Breve riepilogo su ISA}
-Come sappiamo già, ogni processore possiede un proprio linguaggio macchina, che non è altro che una sorta di "vocabolario di istruzioni" detto \emph{Instruction Set Architecture} (o \emph{ISA} per gli amici); queste istruzioni sono solitamente le operazioni aritmetiche fondamentali (a parte quelle che lavorano su floating point) e quelle logiche. \\
-Nonostante ogni processore possieda un proprio ISA, le differenze non sono poi così grandi (motivo per cui conoscere MIPS ci agevolerà molto nell'apprendimento di altre ISA); una similitudine adeguata può essere fatta con i dialetti di una lingua maggiore (per esempio, veneziano, trevigiano e veronese sono tutte varianti locali mutualmente intelligibili della Grande Lingua Veneta).\\
-Lo scopo di avere questi sistemi di istruzioni è poter controllare e sfruttare la potenza di calcolo fornita dai nostri calcolatori senza conoscerne i dettagli; inoltre, come già fatto notare da Von Neumann nel 1947, la progettazione di un'architettura influisce enormemente sull'efficienza dell'hardware, ed è quindi fondamentale che si ricerchino istruzioni \emph{semplici, chiare e veloci}.\\
+Come sappiamo già, ogni processore possiede un proprio linguaggio macchina, che non è altro che una sorta di "vocabolario di istruzioni" detto \emph{instruction set architecture} (o \emph{ISA} per gli amici); queste istruzioni sono solitamente le operazioni aritmetiche fondamentali (a parte quelle che lavorano su floating point) e quelle logiche.\\
+Nonostante ogni processore possieda un proprio ISA, le differenze non sono poi così grandi (motivo per cui conoscere MIPS ci agevolerà molto nell'apprendimento di altre ISA); una similitudine adeguata può essere fatta con i dialetti di una lingua maggiore (per esempio, veneziano, trevigiano e veronese sono tutte varianti locali mutualmente intelligibili della Grande Lingua Veneta).
+
+Lo scopo di avere questi sistemi di istruzioni è poter controllare e sfruttare la potenza di calcolo fornita dai nostri calcolatori senza conoscerne i dettagli; inoltre, come già fatto notare da Von Neumann nel 1947, la progettazione di un'architettura influisce enormemente sull'efficienza dell'hardware, ed è quindi fondamentale che si ricerchino istruzioni \emph{semplici, chiare e veloci}.
+
 Un organico di istruzioni andrà a costruire un \emph{programma memorizzato} che, come approfondiremo, altro non è che un insieme di istruzioni mappato sotto forma di numero binario, nom diversamente da numeri o qualsiasi altro dato.
 
 \subsubsection{Cos'è MIPS}
-Come già detto, nonostante non sia diffusissima, inizieremo a studiare l'architettura MIPS in quanto propedeutica. È una cosiddetta architettura RISC "pragmatica", ossia un'architettura ibrida la quale, pur essendo basata su RISC e quindi con un numero limitato di istruzioni disponibili, possiede anche alcune operazioni complesse tipiche delle ISA CISC.\\
+Come già detto, nonostante non sia diffusissima, inizieremo a studiare l'architettura MIPS in quanto propedeutica. È una cosiddetta architettura \emph{RISC} "pragmatica", ossia un'architettura ibrida la quale, pur essendo basata su \emph{RISC} e quindi con un numero limitato di istruzioni disponibili, possiede anche alcune operazioni complesse tipiche delle ISA \emph{CISC}.\\
 Per quanto semplice e vicino al linguaggio macchina un linguaggio potesse essere, era chiaro fin dai tempi di Von Neumann che non dovevano mancare le operazioni aritmetiche e logiche fondamentali; oltre a quelle, MIPS possiede inoltre alcuni comandi per il controllo di flusso.
 
 \section{Operazioni aritmetiche}
-Per dare una chiave di lettura al percorso che faremo su MIPS useremo alcuni principi di progettazione software e hardware che ogni informatico segue fin dagli albori della storia dell'informatica, e naturalmente, iniziando a parlare delle operazioni aritmetiche,  inizieremo così:
+Per dare una chiave di lettura al percorso che faremo su MIPS useremo alcuni principi di progettazione software e hardware che ogni informatico segue fin dagli albori, e naturalmente, introducendo le operazioni aritmetiche, inizieremo così:
 
-\paragraph{PRINCIPIO DI PROGETTAZIONE N. 1:}
-\emph{La semplicità favorisce la regolarità}.\\
+\vspace{8pt}
+\begin{tcolorbox}
+\centering
+\textbf{Primo principio di progettazione}\\
+\emph{La semplicità favorisce la regolarità}.
+\end{tcolorbox}
+\vspace{5pt}
 
 In linea con questo principio, MIPS consente di effettuare operazioni aritmetiche solo nella loro forma più semplice, ossia con tre operandi: \(a = b + c\).
 Quest'istruzione, comune in C, Java, Python o altri linguaggi, in MIPS sarà scritta così:
-\begin{minted}{asm}
+\begin{minted}[linenos]{asm}
 add a, b, c;
 \end{minted}
 
 Notiamo subito che l'operando "di destinazione" viene messo come primo elemento (in altre ISA non è sempre così, tuttavia).\\
-Naturalmente, mentre nei linguaggi ad alto livello possiamo agevolmente scrivere espressioni matematiche complesse, in MIPS verranno tutte mappate in espressioni semplici, sicché una linea di codice, per quanto banale
-\begin{minted}{c}
-f = (g + h) - (i + j);
-\end{minted}
-può essere srotolata in molte righe assembly.
+Naturalmente, mentre nei linguaggi ad alto livello possiamo agevolmente scrivere espressioni matematiche complesse, in MIPS verranno tutte mappate in espressioni semplici, sicché una linea di codice come \(f = (g + h) - (i + j)\), per quanto banale, può essere srotolata in diverse righe assembly:
+
 \begin{minted}[linenos]{asm}
-add t0, g, h;  # t0 (variabile temp) = g + h
-add t1, i, j;  # t1 (variabile temp) = i + j
-sub f, t0, t1;  # f = t0 - t1
+add t0, g, h   # t0 (variabile temp) = g + h
+add t1, i, j   # t1 (variabile temp) = i + j
+sub f, t0, t1  # f = t0 - t1
 \end{minted}
-Notiamo inoltre che i commenti si scrivono con \#, e questo agisce solo sulla riga (anche se, come detto prima, non sempre è così; ad esempio GCC, l'assembler di Unix, usa i commenti come il C e l'operando di destinazione va in fondo).
+
+La sintassi per scrivere commenti consiste nell'anteporre un \# al testo che si vuole inserire. Come per \textbackslash\textbackslash~in C, anche \# agisce solo su una riga.
+
+Esistono però alcune eccezioni: ad esempio \emph{GCC}, l'assembler di Unix, usa i commenti come il C e l'operando di destinazione delle operazioni va in fondo.
 
 \section{I registri}
 
 \subsection{Cosa sono}
 
-Fino ad ora abbiamo considerato gli operandi come fossero normali variabili, ma in realtà questi altro non sono che dei \emph{registri}, ossia delle particolari locazioni di memoria interne al processore e che possono essere reperite celerissimamente, con un solo colpo di clock.\\
-MIPS possiede 32 registri, ciascuno di 32 bit, per cui ogniqualvolta si debba eseguire delle operazioni è necessario caricare i dati dalla RAM con un'operazione di \emph{load}. Questo processo può apparire dispendioso ed è lecito domandarsi come mai non ci si possa dotare di più registri più capienti, e la risposta è espressa dal
+Fino ad ora abbiamo considerato gli operandi come fossero normali variabili, ma in realtà questi altro non sono che dei \emph{registri}, ossia delle particolari locazioni di memoria interne al processore che possono essere reperite molto rapidamente, in un solo colpo di clock.\\
 
-\paragraph{PRINCIPIO DI PROGETTAZIONE N.2:}
-\emph{Minori sono le dimensioni, maggiore è la velocità}\\
+MIPS possiede 32 registri, ciascuno di 32 bit, per cui ogniqualvolta si debba eseguire delle operazioni è necessario caricare i dati dalla RAM con un'operazione di \emph{load}. Questo processo può apparire dispendioso ed è lecito domandarsi come mai non ci si possa dotare di più registri più capienti, e la risposta è espressa dal secondo principio di progettazione.
+
+\vspace{8pt}
+\begin{tcolorbox}
+\centering
+\textbf{Secondo principio di progettazione}\\
+\emph{Minori sono le dimensioni, maggiore è la velocità}.
+\end{tcolorbox}
+\vspace{5pt}
 
 Di fatto, se avessimo  più registri, aumenterebbe notevolmente il tempo di accesso a questi, in quanto gli impulsi elettrici impiegherebbero fisicamente più tempo per passare da un registro all'altro, e la velocità di clock sarebbe sensibilmente compromessa.
 
@@ -63,12 +76,15 @@ Di fatto, se avessimo  più registri, aumenterebbe notevolmente il tempo di acce
 A questo punto, tornando all'esempio in 1.2, illustriamo la sintassi per richiamare un registro:
 \begin{minted}[linenos, breaklines]{asm}
 add $t0, $s1, $s2;  # al registro temporaneo t0 viene assegnato il valore come somma di s1 + s2
-add $t1, $s3, $s4;  # same as before
+add $t1, $s3, $s4;  # come prima
 sub $s0, $t0, $t1;  # f = t0 - t1
 \end{minted}
 Come si evince, è sufficiente anteporre un \$ al nome del registro.
-\subsubsection{Movimenti}Naturalmente, i registri non sono minimamente sufficienti per contenere tutti i dati di un programma complesso (soprattutto perché alcuni vengono usati dal kernel e dal sistema operativo), ma le operazioni possono essere eseguite solo fra registri. Diventa quindi necessaria l'implementazione delle funzioni \emph{load} che, come anticipato, carica i dati dalla RAM a un registro, e \emph{store}, che passa il dato dal registro alla RAM.\\
-La memoria è solitamente organizzata in gruppi da 8 bit (ossia 1 byte) ciascuno associato ad  un indirizzo lineare lprogressivo, ma il prelievo e il salvataggio dei dati segue un cosiddetto \textbf{vincolo di allineamento}: viene fissato un \emph{offset (spiazzamento)} di 4 byte (quindi della stessa dimensione dei registri), dimodoché ogni informazione che passa abbia la medesima dimensione di un registro (anche il program counter viene incrementato di 4 byte ogni fetch) e sia possibile accedere solamente ad indirizzi multipli di 4 byte; in questo contesto, ogni informazione di 4 byte che viene spostata tra RAM e registri viene detta \emph{parola}.\\
+
+\subsubsection{Movimenti}
+Naturalmente, i registri non sono minimamente sufficienti per contenere tutti i dati di un programma complesso (soprattutto perché alcuni vengono usati dal kernel e dal sistema operativo), ma le operazioni possono essere eseguite solo fra registri. Diventa quindi necessaria l'implementazione delle funzioni \emph{load} che, come anticipato, carica i dati dalla RAM a un registro, e \emph{store}, che passa il dato dal registro alla RAM.
+
+La memoria è solitamente organizzata in gruppi da 8 bit (ossia 1 byte) ciascuno associato ad  un indirizzo lineare progressivo, ma il prelievo e il salvataggio dei dati segue un cosiddetto \emph{vincolo di allineamento}: viene fissato un \emph{offset} (\emph{spiazzamento}) di 4 byte (quindi della stessa dimensione dei registri), dimodoché ogni informazione che passa abbia la medesima dimensione di un registro (anche il program counter viene incrementato di 4 byte ogni fetch) e sia possibile accedere solamente ad indirizzi multipli di 4 byte. In questo contesto, ogni informazione di 4 byte che viene spostata tra RAM e registri viene detta \emph{parola}.\\
 L'indirizzo di ogni parola viene quindi espresso con una \emph{base}, specifica per registro, e con lo \emph{spiazzamento} costante di cui abbiamo parlato prima.
 
 \paragraph{Load and store}
@@ -76,37 +92,34 @@ Ecco un esempio di istruzione di load (analogamente per la store):
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{load}
-	\caption{Descrizione di una \emph{load}}
+	\caption{Descrizione di una load}
 \end{figure}
 Adesso prendiamo invece una semplice riga di codice:
-\begin{minted}{c}
+\begin{minted}[linenos]{c}
 A[12] = h + A[8];
 \end{minted}
 E vediamone ora la traduzione fatta dal compilatore:
 \begin{minted}[linenos, breaklines]{asm}
-lw $t0, 32($s3);   # la parola 8 comincia all'indirizzo 32 e il puntatore A è in $s3
-add $t0, $s2, $t0; # h è in $s2
-sw $t0, 48($s3);   # memorizzo il contenuto di $t0 in A[12]
+lw $t0, 32($s3)   # la parola 8 comincia all'indirizzo 32 e il puntatore A è in $s3
+add $t0, $s2, $t0 # h è in $s2
+sw $t0, 48($s3)   # memorizzo il contenuto di $t0 in A[12]
 \end{minted}
-Questo è un esempio un po' più complesso, si raccomanda una lettura accorta per comprendere ogni azione.
 
 \paragraph{Register Spiling}
-Come già anticipato, i 32 registri non sono assolutamente sufficienti per contenere tutte le variabili usate da un programma complesso, quindi quello che succede a livello assembly è un continuo susseguirsi di load e store, e questa operazione si chiama \emph{register spilling} ed è eseguita dal compilatore (si dice che  prepara il \emph{working set}, ossia una stima delle load e store appropriate).
+Come già anticipato, i 32 registri non sono assolutamente sufficienti per contenere tutte le variabili usate da un programma complesso. Quello che succede a livello assembly, eseguito dal compilatore, è un continuo susseguirsi di load e store chiamato \emph{register spilling} (si dice che prepara il \emph{working set}, ossia una stima delle load e store appropriate).
 
 \subsection{Le costanti}
 Molto spesso ci si trova a lavorare con le costanti. Nonostante ogni costante possa essere salvata su un registro, questa soluzione è parecchio inefficiente, perché le costanti e le operazioni relative sono molto comuni.
 
-\paragraph{PRINCIPIO DI PROGETTAZIONE N.3:}
-\emph{Rendi più veloci possibile le operazioni comuni}.\\
+\vspace{8pt}
+\begin{tcolorbox}
+\centering
+\textbf{Terzo principio di progettazione}\\
+\emph{Rendi più veloci possibile le operazioni comuni}.
+\end{tcolorbox}
+\vspace{5pt}
 
-Quindi ci conviene assolutamente costruire una sintassi dedicata all'esecuzione di operazioni con costanti, dove la \emph{i} sta per \emph{immediate}. Ad esempio:
-\begin{minted}{c}
-f = f + 4;
-\end{minted}
-diventerà
-\begin{minted}{asm}
-addi $s3, $s3, 4
-\end{minted}
+Quindi ci conviene assolutamente costruire una sintassi dedicata all'esecuzione di operazioni con costanti, dove la \emph{i} sta per \emph{immediate}. Ad esempio \(f = f + 4\) diventa: \mintinline[escapeinside=||]{asm}{addi |$\textdollar$|s3, |$\textdollar$|s3, 4}.
 
 Per dare un altro esempio, è molto conveniente implementare un registro zero (\emph{\$zero}), perché rende molto più semplici le operazioni di copia, che di fatto possono essere ridotte a una somma di un qualsiasi registro con il registro zero.
 
@@ -141,12 +154,17 @@ In gerale questo sistema, detto R (da Registro), ogni campo dell'istruzione ha u
 \end{figure}
 A questo punto è lecito domandarsi come mai si usino solo 32 bit per rappresentare le istruzioni, e la risposta sta nel:
 
-\paragraph{PRINCIPIO DI PROGETTAZIONE N.4:}
-\emph{Uun buon progetto richiede buoni compromessi}\\
+\vspace{8pt}
+\begin{tcolorbox}
+\centering
+\textbf{Quarto principio di progettazione}\\
+\emph{Un buon progetto richiede buoni compromessi}.
+\end{tcolorbox}
+\vspace{5pt}
 
 Uilizzare una quantità limitata di registri e istruzioni e limitandone le dimensioni possiamo guadagnare moltissimo in efficienza!
 
-\subsection{Istruzioni \emph{Immediate}}
+\subsection{Istruzioni immediate}
 Nei casi di indirizzamento immediato e di operazioni con costanti MIPS mette a disposizione una diversa mappatura, detta appunto I. Forniamo qui un esempio e invitiamo il lettore a confrontare la seguente mappatura con l'equivalente R.
 \begin{figure}[H]
 	\centering
@@ -531,11 +549,11 @@ L1:	     addi $a0, $a0, -1 #decremento n
 \section{Gestione delle variabili in MIPS}
 Le variabili in C sono in genere associate a locazioni di memoria, si caratterizzano per:
 \begin{itemize}[noitemsep]
-	\item \textbf{Tipo}: (int, char, float, ecc.);
-	\item \textbf{Storage class}: \emph{Automatic}, variabili locali che hanno un ciclo di vita collegato alla funzione, e \emph{Static}, variabili globali o definite come static che sopravvivono anche al termine della funzione.
+	\item \emph{Tipo}: (int, char, float, ecc.);
+	\item \emph{Storage class}: \emph{Automatic}, variabili locali che hanno un ciclo di vita collegato alla funzione, e \emph{Static}, variabili globali o definite come static che sopravvivono anche al termine della funzione.
 \end{itemize}
-Le variabili \textbf{statiche} sono memorizzate in una zona di memoria specifica (nel MIPS accessibile attraverso il registro global pointer, \emph{\$gp}).\\
-Le variabili \textbf{automatiche} invece possono essere memorizzate nei registri, tuttavia quando questi non bastano, come già visto, le variabili vengono salvate all'interno dello stack; il segmento di stack che le contiene viene chiamato record di attivazione (o stack frame) e di conseguenza le variabili locali vengono individate tramite un offset a partire da un puntatore allo stack.
+Le variabili \emph{statiche} sono memorizzate in una zona di memoria specifica (nel MIPS accessibile attraverso il registro global pointer, \emph{\$gp}).\\
+Le variabili \emph{automatiche} invece possono essere memorizzate nei registri, tuttavia quando questi non bastano, come già visto, le variabili vengono salvate all'interno dello stack; il segmento di stack che le contiene viene chiamato record di attivazione (o stack frame) e di conseguenza le variabili locali vengono individate tramite un offset a partire da un puntatore allo stack.
 Contrariamente a come si penserebbe non si utilizza \emph{\$sp} come puntatore, poiché esso può variare all'interno dello svolgimento di una funzione, di conseguenza si utilizza il puntatore dedicato \emph{\$fp}.\\
 L'immagine qui sotto rappresenta l'evoluzione dei due puntatori \emph{\$sp} e \emph{\$fp} durante la chiamata di una funzione, per capire meglio i vantaggi dell'utilizo di \emph{\$fp}.
 \begin{figure}[H]
