@@ -610,4 +610,101 @@ In questo caso si applica il metodo di ricorsione in coda, che comporta un grand
 \end{minted}
 Alcuni compilatori sono in grado di ottimizzare automaticamente il programma in questo modo così da renderlo molto più veloce e leggero, il gcc è in grado di aggiustare, ove possibile, questo tipo di procedure con una complessità pari a O(2).\\
 
+\section{Le stringhe in MIPS}
+Nel linguaggio C le stringhe erano degli array di caratteri che terminava in \mintinline{c}{'\0'} (\mintinline{c}{NULL} character)
+e, secondo la codifica ASCII, ogni carattere veniva codificato con un byte. Presentiamo qui una funzione che copia una stringa.
+\begin{minted}[linenos]{c}
+	void copia_stringa(char *d , const char *s){
+
+		int i = 0;
+
+		while((d[i] = s[i]) != 0){
+			i+=1;
+		}
+	}
+%\end{minted}
+Appare chiaro che qui sovviene la necessità di copiare \emph{bytes}, non \emph{parole}. Vediamo quindi come implementare questa funzione in MIPS.
+
+\subsubsection{\emph{load byte} e \emph{store byte}}
+Operare su bytes anziché su parole intere può tornare utile anche in altre situazioni, per cui in MIPS disponiamo di istruzioni dedicate: \emph{load byte} e \emph{store byte}, analoghe a quelle che operano sulle words. Eccone un esempio:
+\begin{minted}[breaklines]{asm}
+lb $t0, 0($sp) # leggi un byte dalla cima dello stack ed inseriscilo nei bit meno significativi di $t0
+
+sb $t0, 0($gp) # inserisci gli otto bit meno significativi di $t0 in $gp
+\end{minted}
+\subsection{Possibile implementazione}
+\subsubsection{Prologo}
+Come il lettore a questo punto saprà, i due parametri \mintinline{c}{d} e  \mintinline{c}{s} sono contenuti in \mintinline{asm}{\$a0} e \mintinline{asm}{\$a1}.\\
+supponiamo di voler utilizzare \mintinline{asm}{\$s0} per salvare il contatore \mintinline{c}{i} (anche se naturalmente un compilatore non lo farebbe \emph{mai}, lo salverebbesu un registro temporaneo). \mintinline{asm}{\$s0} andrà salvato nello stack e poi inizializzata:
+\begin{minted}{asm}
+addi $sp, $sp, -4 # crea spazio nello stack per salvare $s0
+sw $s0, 0($sp) # salva $s0
+add $s0, $zero, $zero # i = 0
+\end{minted}
+
+\subsubsection{Loop}
+A questo punto procediamo all'implementazione del ciclo \emph{while} che eseguirà la copia di \mintinline{c}{s[i]} in \mintinline{c}{d[i]}. Iniziamo mettendo l'indirizzo di \mintinline{c}{s[i]}nel registro \mintinline{asm}{\$t1}.\\
+(\underline{N.B.}: \mintinline{c}{&s[i] = s + i}, non \mintinline{c}{s + i * 4}).\\
+A questo punto carichiamo \mintinline{c}{s[i]}
+in \mintinline{asm}{\$t2} e salviamolo in \mintinline{c}{d[i]}.
+\begin{minted}{asm}
+L1:
+	add $t1, $s0, $a1 # inizio loop
+	lb $t2, 0($t1)
+	add $t3, $s0, $a0 # metti &d[i] in $t3
+	sb $t2, 0($t3)
+\end{minted}
+Ora che il corpo dell'istruzione è stato svolto, bisogna controllare se \mintinline{c}{s[i] == '\0'} e, in caso di risposta affermativa, il loop terminerà; altrimenti si incrementerà il contatore (che sta in \mintinline{asm}{\$s0}) e torna al ciclo.
+\begin{minted}{asm}
+beq $t2, $zero, L2 # se la stringa è finita, vai a L2 e termina il ciclo
+addi $s0, $s0, 1 # incrementa il contatore
+j L1 # torna al ciclo
+\end{minted}
+
+\subsubsection{Epilogo}
+In questa fase viene implementata la fine del ciclo e il ritorno al chiamante; il valore precedente di \mintinline{asm}{\$s0}, viene ripristinato \mintinline{asm}{\$sp} e tutto ritorna.
+\begin{minted}{asm}
+L2:
+	lw $s0, 0($sp)
+	addi $s0, $s0, 4
+	jr $ra
+\end{minted}
+
+Ricapitolando, ecco come sarà la nostra procedura:
+\begin{minted}[linenos]{asm}
+addi $sp, $sp, -4
+sw $s0, 0($sp)
+add $s0, $zero, $zero
+L1:
+	add $t1, $s0, $a1
+	lb $t2, 0($t1)
+	add $t3, $s0, $a0
+	sb $t2, 0($t3)
+	beq $t2, $zero, L2
+	addi $s0, $s0, 1
+	j L1
+L2:
+	lw $s0, 0($sp)
+	addi $s0, $s0, 4
+	jr $ra
+\end{minted}
+
+\subsection{Implementazione realistica}
+Nessun compilatore avrebbe mai lavorato in questo modo. Abbiamo presentato la procedura così affinché fosse didatticamente più efficace, adesso invitiamo il lettore a dare un'occhiata a quella che potrebbe essere la traduzione di un vero compilatore, in particolare gcc:
+\begin{minted}[linenos]{asm}
+lb $v0, 0($a1)
+sb $v0, 0(%a0)
+beq $v0, $zero, %L5
+move $v0, $zero
+$L3:
+	addiu $v0, $v0, 1
+	addu $v1, $a1, $v0
+	lb $v1, 0($v1)
+	addu $a2, $a0, $v0
+	sb $v1, 0($a2)
+	bne $v1, $zero, $L3
+$L5:
+	jr $ra
+\end{minted}
+
 \end{document}
