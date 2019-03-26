@@ -614,14 +614,12 @@ Alcuni compilatori sono in grado di ottimizzare automaticamente il programma in 
 Nel linguaggio C le stringhe erano degli array di caratteri che terminava in \mintinline{c}{'\0'} (\mintinline{c}{NULL} character)
 e, secondo la codifica ASCII, ogni carattere veniva codificato con un byte. Presentiamo qui una funzione che copia una stringa.
 \begin{minted}[linenos]{c}
-	void copia_stringa(char *d , const char *s){
-
-		int i = 0;
-
-		while((d[i] = s[i]) != 0){
-			i+=1;
-		}
+void copia_stringa(char *d , const char *s){
+	int i = 0;
+	while((d[i] = s[i]) != 0){
+		i+=1;
 	}
+}
 %\end{minted}
 Appare chiaro che qui sovviene la necessità di copiare \emph{bytes}, non \emph{parole}. Vediamo quindi come implementare questa funzione in MIPS.
 
@@ -690,7 +688,7 @@ L2:
 \end{minted}
 
 \subsection{Implementazione realistica}
-Nessun compilatore avrebbe mai lavorato in questo modo. Abbiamo presentato la procedura così affinché fosse didatticamente più efficace, adesso invitiamo il lettore a dare un'occhiata a quella che potrebbe essere la traduzione di un vero compilatore, in particolare gcc:
+Nessun compilatore avrebbe mai lavorato in questo modo. Abbiamo presentato la procedura così affinché fosse didatticamente più efficace, adesso invitiamo il lettore a dare un'occhiata a quella che potrebbe essere la traduzione di un vero compilatore, in particolare \emph{gcc}:
 \begin{minted}[linenos]{asm}
 lb $v0, 0($a1)
 sb $v0, 0(%a0)
