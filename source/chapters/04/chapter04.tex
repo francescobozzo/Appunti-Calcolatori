@@ -8,7 +8,7 @@
 \begin{document}
 \chapter{Le reti logiche}
 \section{Introduzione}
-Come ben sappiamo, a differenza di \emph{ENIAC}, i computer moderni sono realizzati da un'enorme quantità di circuiti elettronici. Trattandosi di elettronica digitale, a livello hardware è possibile lavorare con due livelli fondamentali:
+Come ben sappiamo, a differenza di \emph{ENIAC}, i computer moderni si compongono di un'enorme quantità di circuiti elettronici. Trattandosi di elettronica digitale, a livello hardware è possibile lavorare con due livelli fondamentali:
 \begin{itemize}
 	\item \emph{alto} (asserito); viene solitamente associato alla tensione di alimentazione \emph{Vdd}. Si indica con \(1\).
 	\item \emph{basso} (negato); viene solitamente associato alla massa (tensione vicina a 0). Si indica con \(0\).
@@ -27,8 +27,8 @@ I circuiti logici si differenziano principalmente in:
 \section{L'algebra di Boole}
 Esistono principalmente tre operazioni di base:
 \begin{itemize}
-	\item \emph{AND}: produce 1 se entrambi gli operandi sono 1, 0 altrimenti. Solitamente si indica con \(A\cdot B\).
-	\item \emph{OR}: produce 0 se entrambi gli operandi sono 0, 1 altrimenti. Solitamente si indica con \(A+B\).
+	\item \emph{AND}: produce 1 se entrambi gli operandi sono 1, altrimenti 0. Solitamente si indica con \(A\cdot B\).
+	\item \emph{OR}: produce 0 se entrambi gli operandi sono 0, altrimenti 1. Solitamente si indica con \(A+B\).
 	\item \emph{NOT}: inverte il valore logico. Solitamente si indica con \(\overline{A}\).
 \end{itemize}
 
@@ -120,7 +120,7 @@ Prevede un input con valore \(S\) utilizzato come selettore. L'output del \emph{
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{multi_n_vie.png}
-	\caption{Multiplexer a n vie}
+	\caption{Multiplexer a $n$ vie}
 \end{figure}
 Molto spesso, per operare con dati complessi, si compongono degli array di elementi elementari. Segue un esempio di come sia possibile costruire un multiplexer con \emph{bus} a 32 bit utilizzando un array di multiplexer a 1 bit.
 \begin{figure}[H]
@@ -131,7 +131,7 @@ Molto spesso, per operare con dati complessi, si compongono degli array di eleme
 
 \subsection*{Programmable Logic Array (PLA)}
 \label{subsec:pla}
-Il \emph{programmable logic array} si compone di due strutture: una barriera di AND e da una barriera di OR. La dimensione totale del \emph{PLA} è data dalla somma del piano AND (numero di mintermini) e del piano OR (numero di uscite).\\
+Il \emph{programmable logic array} si compone di due strutture: una barriera di AND e una barriera di OR. La dimensione totale del \emph{PLA} è data dalla somma del piano AND (numero di mintermini) e del piano OR (numero di uscite).\\
 Inoltre, il PLA implementa porte logiche solamente per le configurazioni che producono 1 in uscita. In aggiunta, se un mintermine è condiviso tra varie uscite, lo si può riutilizzare.
 Successivamente seguono due diverse implementazioni della rete logica descritta nel paragrafo~\ref{subsec:mintermini}.
 \begin{figure}[H]
@@ -178,7 +178,7 @@ Ma, considerando che i segnali non si propagano in tempo nullo, ciò potrebbe ca
 \end{figure}
 Il difetto principale di un latch R-S è quello di avere uno stato indecidibile: l'uscita non può essere nota con certezza quando entrambi gli ingressi sono a 1.
 
-Una soluzione è implementata attraverso \emph{latch} tipo \emph{D}: gli ingressi al circuito sono ottenuti da un'unica variabile (di cui se ne fa il negato). Altrimenti, attraverso circuiti \emph{flip-flop master-slave} è possibile ottenere che l’uscita del circuito commuti esattamente al termine dell’impulso di clock.\\
+Una soluzione è implementata attraverso \emph{latch} tipo \emph{D}: gli ingressi al circuito sono ottenuti da un'unica variabile (di cui si fa il negato). Altrimenti, attraverso circuiti \emph{flip-flop master-slave} è possibile ottenere che l’uscita del circuito commuti esattamente al termine dell’impulso di clock.\\
 In particolare, i latch di tipo D vengono utilizzati per implementare i registri della CPU.
 
 \end{document}
