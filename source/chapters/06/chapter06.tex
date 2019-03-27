@@ -9,7 +9,7 @@
 \begin{document}
 \chapter{L'architettura MIPS}
 
-Dopo la breve introduzione del precedente capitolo, affronteremo ora lo studio dell'architettura \emph{MIPS}; iniziamo con questa perché, seppur non molto diffusa, è molto simile ad altre architetture che vedremo in seguito (soprattutto ARM), ed è quindi prodepeutica.
+Dopo la breve introduzione del precedente capitolo, affronteremo ora lo studio dell'architettura \emph{MIPS}; iniziamo con questa perché, seppur non molto diffusa, è molto simile ad altre architetture che vedremo in seguito (soprattutto ARM), ed è quindi propedeutica.
 
 \section{Breve riepilogo su ISA}
 Come sappiamo già, ogni processore possiede un proprio linguaggio macchina, che non è altro che una sorta di "vocabolario di istruzioni" detto \emph{instruction set architecture} (o \emph{ISA} per gli amici); queste istruzioni sono solitamente le operazioni aritmetiche fondamentali (a parte quelle che lavorano su floating point) e quelle logiche.\\
@@ -17,7 +17,7 @@ Nonostante ogni processore possieda un proprio ISA, le differenze non sono poi c
 
 Lo scopo di avere questi sistemi di istruzioni è poter controllare e sfruttare la potenza di calcolo fornita dai nostri calcolatori senza conoscerne i dettagli; inoltre, come già fatto notare da Von Neumann nel 1947, la progettazione di un'architettura influisce enormemente sull'efficienza dell'hardware, ed è quindi fondamentale che si ricerchino istruzioni \emph{semplici, chiare e veloci}.
 
-Un organico di istruzioni andrà a costruire un \emph{programma memorizzato} che, come approfondiremo, altro non è che un insieme di istruzioni mappato sotto forma di numero binario, nom diversamente da numeri o qualsiasi altro dato.
+Un organico di istruzioni andrà a costruire un \emph{programma memorizzato} che, come approfondiremo, altro non è che un insieme di istruzioni mappato sotto forma di numero binario, non diversamente da numeri o qualsiasi altro dato.
 
 \subsubsection{Cos'è MIPS}
 Come già detto, nonostante non sia diffusissima, inizieremo a studiare l'architettura MIPS in quanto propedeutica. È una cosiddetta architettura \emph{RISC} "pragmatica", ossia un'architettura ibrida la quale, pur essendo basata su \emph{RISC} e quindi con un numero limitato di istruzioni disponibili, possiede anche alcune operazioni complesse tipiche delle ISA \emph{CISC}.\\
@@ -37,11 +37,11 @@ Per dare una chiave di lettura al percorso che faremo su MIPS useremo alcuni pri
 In linea con questo principio, MIPS consente di effettuare operazioni aritmetiche solo nella loro forma più semplice, ossia con tre operandi: \mintinline{c}{a = b + c}.
 Quest'istruzione, comune in C, Java, Python o altri linguaggi, in MIPS sarà scritta così:
 \begin{minted}[linenos]{asm}
-add a, b, c;
+add a, b, c
 \end{minted}
 
 Notiamo subito che l'operando "di destinazione" viene messo come primo elemento (in altre ISA non è sempre così, tuttavia).\\
-Naturalmente, mentre nei linguaggi ad alto livello possiamo agevolmente scrivere espressioni matematiche complesse, in MIPS verranno tutte mappate in espressioni semplici, sicché una linea di codice come \mintinline{c}{f = (g + h) - (i + j}, per quanto banale, può essere srotolata in diverse righe assembly:
+Naturalmente, mentre nei linguaggi ad alto livello possiamo agevolmente scrivere espressioni matematiche complesse, in MIPS verranno tutte mappate in espressioni semplici, sicché una linea di codice come \mintinline{c}{f = (g + h) - (i + j)}, per quanto banale, può essere srotolata in diverse righe assembly:
 
 \begin{minted}[linenos]{asm}
 add t0, g, h   # t0 (variabile temp) = g + h
@@ -49,7 +49,7 @@ add t1, i, j   # t1 (variabile temp) = i + j
 sub f, t0, t1  # f = t0 - t1
 \end{minted}
 
-La sintassi per scrivere commenti consiste nell'anteporre un \# al testo che si vuole inserire. Come per \textbackslash\textbackslash~in C, anche \# agisce solo su una riga.
+La sintassi per scrivere commenti consiste nell'anteporre un \# al testo che si vuole inserire. Come per // in C, anche \# agisce solo su una riga.
 
 Esistono però alcune eccezioni: ad esempio \emph{GCC}, l'assembler di Unix, usa i commenti come il C e l'operando di destinazione delle operazioni va in fondo.
 
@@ -76,9 +76,9 @@ Di fatto, se avessimo  più registri, aumenterebbe notevolmente il tempo di acce
 \paragraph{Notazione}
 A questo punto, tornando all'esempio in 1.2, illustriamo la sintassi per richiamare un registro:
 \begin{minted}[linenos, breaklines]{asm}
-add $t0, $s1, $s2;  # al registro temporaneo t0 viene assegnato il valore come somma di s1 + s2
-add $t1, $s3, $s4;  # come prima
-sub $s0, $t0, $t1;  # f = t0 - t1
+add $t0, $s1, $s2  # al registro temporaneo t0 viene assegnato il valore come somma di s1 + s2
+add $t1, $s3, $s4  # come prima
+sub $s0, $t0, $t1  # f = t0 - t1
 \end{minted}
 Come si evince, è sufficiente anteporre un \$ al nome del registro.
 
@@ -101,7 +101,7 @@ A[12] = h + A[8];
 \end{minted}
 E vediamone ora la traduzione fatta dal compilatore:
 \begin{minted}[linenos, breaklines]{asm}
-lw $t0, 32($s3)   # la parola 8 comincia all'indirizzo 32 e il puntatore A è in $s3
+lw $t0, 32($s3)   # la parola 8 comincia all'indirizzo 32(=8*4) e il puntatore A è in $s3
 add $t0, $s2, $t0 # h è in $s2
 sw $t0, 48($s3)   # memorizzo il contenuto di $t0 in A[12]
 \end{minted}
@@ -205,7 +205,7 @@ Inizialmente i calcolatori erano capaci di operare unicamente su parole intere, 
 Consideriamo lo \emph{shift logico a sinistra}: l'idea consiste nell'inserire degli zeri nella posizione meno significativa e traslare tutto a sinistra perdendo, nel caso di overflow, i bit più significativi.
 
 \begin{minted}[linenos, breaklines]{asm}
-ssl $t2, $s0, 4  # memorizza in t2 il contenuto del registro s0 shiftato a sinistra di 4
+sll $t2, $s0, 4  # memorizza in t2 il contenuto del registro s0 shiftato a sinistra di 4
 \end{minted}
 
 Lo shift massimo che è possibile eseguire è di 32 bit (infatti, come precedentemente visto, vengono allocati 5 bit per il campo di \emph{shift amount}). Ciò non risulta un problema in quanto il vincolo di allineamento definito dall'implementazione MIPS che affronteremo è costituito da 32 bit.\\
@@ -228,7 +228,7 @@ sra $t2, $s0, 1  # memorizza in t2 il contenuto del registro s0 shiftato aritmet
 \end{minted}
 
 Piuttosto che inserire 0 come bit più significativo, come avviene nello shift logico, lo shift aritmetico a destra inserisce bit uguali al bit di segno. Dunque risolve i problemi con CA2.\\
-Si noti come non abbia senso parlare di shift aritmetico a sinistra, in quanto o il risultato è rappresentabile (attraverso lo shift logico) o non lo è.
+Si noti come non abbia senso parlare di shift aritmetico a sinistra, in quanto o il risultato è rappresentabile (attraverso lo shift logico) o non lo è (a causa di un overflow).
 
 \subsection{Operazioni bitwise}
 Vengono definite \emph{bitwise} quelle operazioni logiche che operano su ciascun bit.
@@ -307,10 +307,10 @@ A differenza delle istruzioni di jump, i branch vengono eseguiti solo se una det
 
 A seguire la sintassi delle istruzioni di salto offerte da MIPS:
 \begin{minted}[linenos, breaklines]{asm}
-# Branch on Equal
+# Branch Equal
 beq reg1, reg2, L1  # vai a L1 se reg1 == reg2
 
-# Branch on Non Equal
+# Branch Not Equal
 bne reg1, reg2, L1  # vai a L1 se reg1 != reg2
 
 # Jump
@@ -377,7 +377,7 @@ ELSE:
 	sub $s0, $s1, $s2   # f = g - h
 ESCI:
 \end{minted}
-Si noti che l'espressione di controllo effettua consiste nel verificare il negato della condizione voluta: tale stratagemma risulta infatti essere più efficiente.
+Si noti che l'espressione di controllo consiste nel verificare il negato della condizione voluta: tale stratagemma risulta infatti essere più efficiente.
 
 \subsection*{Implementazione del costrutto while}
 Supponiamo di voler tradurre il seguente listato di codice in assembly MIPS:
@@ -539,7 +539,7 @@ fact:
 	sw $a0, 0($sp)
 
 	# fine del prologo, inizio della procedura effettiva
-	slti $t0, $a0, 1  # se $a0<1 setta $t0=1
+	slti $t0, $a0, 1    # se $a0<1 setta $t0=1
 
 	# $t0 settato a 1 se n < 1
 	beq $t0, $zero, L1  # se $t0==0 si va a L1 (ricorsiva)
@@ -641,7 +641,7 @@ int sum(int n, int acc){
 
 In questo caso si applica il metodo di ricorsione in coda, che comporta un grande vantaggio dal punto di vista dell'utilizzo di memoria poichè una volta terminata una chiamata della funzione si può eliminare tutto il suo ambiente (che non risulterà più utile) e utilizzare sempre solo un ambiente unico ed un unico \emph{\$ra}, vediamo come:
 
-\begin{minted}[linenos]{asm}
+\begin{minted}[linenos,breaklines]{asm}
 SUM:
 	add  $v0, $a1, $zero   # sposta $a1 in $v0
 	blez $a0, $L5          # se $a0<0, salta a L5
@@ -649,12 +649,11 @@ SUM:
 	add  $a1, $a1, $a0     # (acc = acc + n)
 	addi $a0, $a0, -1      # (n = n - 1)
 	j  SUM                 # ricorsione (aggiorna $ra)
-	# si osservi come non si usa più jal dato che non si
-	# aggiorna più $ra ora che si lavora su un unico ambiente
+	# si osservi come non si usa più jal dato che non si aggiorna più $ra ora che si lavora su un unico ambiente
 L5:
 	j $ra                  # torna al programma chiamante
 \end{minted}
-Alcuni compilatori sono in grado di ottimizzare automaticamente il programma in questo modo così da renderlo molto più veloce e leggero, il gcc è in grado di aggiustare, ove possibile, questo tipo di procedure con una complessità pari a \emph{O(2)}.
+Alcuni compilatori sono in grado di ottimizzare automaticamente il programma in questo modo così da renderlo molto più veloce e leggero, il GCC è in grado di aggiustare, ove possibile, questo tipo di procedure con una complessità pari a \emph{O(2)}.
 
 \section{Le stringhe in MIPS}
 Nel linguaggio C le stringhe erano degli array di caratteri che terminava in \mintinline{c}{'\0'} (\mintinline{c}{NULL} character)
@@ -697,7 +696,7 @@ in \emph{\$t2} e salviamolo in \mintinline{c}{d[i]}.
 L1:
 	add $t1, $s0, $a1  # inizio loop
 	lb $t2, 0($t1)
-	add $t3, $s0, $a0  # metti &d[i] in $t3
+	add $t3, $s0, $a0  # metti (d+i) in $t3
 	sb $t2, 0($t3)
 \end{minted}
 Ora che il corpo dell'istruzione è stato svolto, bisogna controllare se \mintinline{c}{s[i] == '\0'} e, in caso di risposta affermativa, il loop terminerà; altrimenti si incrementerà il contatore (che sta in \emph{\$s0}) e torna al ciclo.
@@ -738,7 +737,7 @@ L2:
 \end{minted}
 
 \subsection{Implementazione realistica}
-Nessun compilatore avrebbe mai lavorato in questo modo. Abbiamo presentato la procedura così affinché fosse didatticamente più efficace, adesso invitiamo il lettore a dare un'occhiata a quella che potrebbe essere la traduzione di un vero compilatore, in particolare \emph{gcc}:
+Nessun compilatore avrebbe mai lavorato in questo modo. Abbiamo presentato la procedura così affinché fosse didatticamente più efficace, adesso invitiamo il lettore a dare un'occhiata a quella che potrebbe essere la traduzione di un vero compilatore, in particolare GCC:
 \begin{minted}[linenos, tabsize=4]{asm}
 COPIA_STRINGA:
 	lb $v0, 0($a1)
