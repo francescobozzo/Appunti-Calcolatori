@@ -1,0 +1,38 @@
+\documentclass[class=book, crop=false]{standalone}
+\usepackage[subpreambles=true]{standalone}
+
+\usepackage{../../style}
+
+\begin{document}
+
+\begin{table}[H]
+	\centering
+	\subimport{assets/tables/}{Istruzioni-aritmetico-logiche.tex}
+	\caption{Istruzioni aritmetico-logiche dell'assembly MIPS}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\subimport{assets/tables/}{Istruzioni-di-movimento-dati.tex}
+	\caption{Istruzioni di movimento dati dell'assembly MIPS}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\subimport{assets/tables/}{Istruzioni-di-salto.tex}
+	\caption{Istruzioni di salto dell'assembly MIPS}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\subimport{assets/tables/}{Istruzioni-di-supporto-ai-salti-condizionali.tex}
+	\caption{Istruzioni di supporto ai salti condizionali dell'assembly MIPS}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\subimport{assets/tables/}{Macro-spesso-implementate.tex}
+	\caption{Macro spesso implementate nell'assembly MIPS}
+\end{table}
+
+\end{document}

@@ -1,0 +1,17 @@
+\documentclass{standalone}
+
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+
+\begin{document}
+	\begin{tabularx}{\textwidth}{ >{\hsize=.11\textwidth}X >{\hsize=.18\textwidth}X >{\hsize=.08\textwidth}X X }
+		\toprule
+			Istruzione & Sintassi & Tipo & Funzione\\
+		\midrule
+			slt & slt \emph{\$d}, \emph{\$s}, \emph{\$t} & \centering R & set if less than: setta \emph{\$d} a 1 se \(s<t\)\\
+			sltu & sltu \emph{\$d}, \emph{\$s}, \emph{\$t} & \centering R & set if less than unsigned: setta \emph{\$d} a 1 se \(s<t\)(confronto tra naturali)\\
+			slti & slti \emph{\$d}, \emph{\$s}, C & \centering I & set if less than immediato: setta \emph{\$d} a 1 se \(s<C\)(valore immediato)\\
+		\bottomrule
+	\end{tabularx}
+\end{document}
