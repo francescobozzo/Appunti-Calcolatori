@@ -611,7 +611,7 @@ int sum(int n){
 Se si analizza la funzione si nota come il valore di ritorno viene costruito risalendo la catena di chiamate e quindi ogni frame di attivazione deve essere preservato per produrre il risultato corretto. Ecco come compare il codice assembly della procedura \emph{sum}:
 
 \begin{minted}[linenos]{asm}
-SUM::
+SUM:
 	add  $v0, $a1, $zero   # sposta $a1 in $v0
 	blez $a0, $L5          # se $a0<0, salta a L5
 	addi $sp, $sp, -32     # crea spazio nello stack
