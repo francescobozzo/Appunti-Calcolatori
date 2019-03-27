@@ -1,0 +1,24 @@
+\documentclass{standalone}
+
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+
+\begin{document}
+	\begin{tabularx}{\textwidth}{ >{\hsize=.11\textwidth}X >{\hsize=.18\textwidth}X >{\hsize=.08\textwidth}X X }
+		\toprule
+			Istruzione & Sintassi & Tipo & Funzione\\
+		\midrule
+			lw & lw \emph{\$d}, S(\emph{\$b}) &\centering I & load wold: carica in \emph{\$d} la parola memorizzata a \emph{b}+\emph{S} (\emph{\$b} = base, S =spiazzamento)\\
+			lh & lh \emph{\$d}, S(\emph{\$b}) &\centering I & load half word\\
+			lhu & lhu \emph{\$d}, S(\emph{\$b}) &\centering I & load half word unsigned\\
+			lb & lb \emph{\$d}, S(\emph{\$b}) &\centering I & load byte\\
+			sw & sw \emph{\$r}, S(\emph{\$b}) &\centering I & store word: salva in \emph{b}+\emph{S} la parola contenuta \emph{\$r}\\
+			sh & sh \emph{\$r}, S(\emph{\$b}) &\centering I & store half word\\
+			sb & sb \emph{\$r}, S(\emph{\$b}) &\centering I & store byte\\
+			lui & lui \emph{\$d}, C &\centering I &  load upper register immediato: carica C nei 16 bit più significativi di \emph{\$d}\\
+			mfhi & mfhi \emph{\$d} &\centering R & muovi HI in \emph{\$d}\\
+			mflo & mflo \emph{\$d} &\centering R & muovi LO in \emph{\$d}\\
+		\bottomrule
+	\end{tabularx}
+\end{document}

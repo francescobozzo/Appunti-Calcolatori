@@ -1,0 +1,17 @@
+\documentclass{standalone}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+
+\begin{document}
+\begin{tabular}{ ccc }
+	\toprule
+		Categoria & Esponente & Mantissa\\
+	\midrule
+		Zeri & 0 & 0 \\\hline
+		Num. denormalizzati & 0 & non zero\\\hline
+		Num. normalizzati & 1-254 & qualunque\\\hline
+		Infiniti & 255 & 0\\\hline
+		Nan (not a number) & 255 & non zero\\
+	\bottomrule
+\end{tabular}
+\end{document}

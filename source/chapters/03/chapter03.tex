@@ -1,0 +1,32 @@
+\documentclass[class=book, crop=false]{standalone}
+\usepackage[subpreambles=true]{standalone}
+
+\usepackage{../../style}
+
+\graphicspath{{./assets/images/}}
+
+\begin{document}
+\chapter{Codifica del testo}
+\section{La codifica ASCII}
+Oltre alle codifiche per numeri naturali, interi e reali viste nel capitolo precedente, sono state introdotte delle codifiche per rappresentare sequenze di caratteri. Una delle più note è la codifica \emph{ASCII} (\emph{American Standard Code for Information Interchange}.), che utilizza \(7\) bit per rappresentare ciascun carattere (quindi \(2^7=128\) caratteri disponibili in totale).
+Attraverso la codifica \emph{ASCII} è possibile rappresentare tutte le lettere dell'alfabeto anglosassone (lettere maiuscole, minuscole, numeri, punteggiatura, ecc.).
+
+Questa codifica presenta uno svantaggio: seppur utilizzi solamente 7 bit, un byte è formato da 8 bit. Ciò implica che il primo bit di ciascun carattere viene impostato a 0 per default.
+
+\section{La codifica ASCII estesa}
+A differenza dell'\emph{ASCII} tradizionale, l'\emph{extended ASCII} sfrutta anche l'ottavo bit per codificare caratteri addizionali (quindi \(2^8=256\) caratteri disponibili in totale).
+
+Non esiste un unico standard esteso: sono state implementate diverse versioni, ciascuna in grado di supportare diversi alfabeti specifici. In particolare, i byte con valore minore di \(128\) sono comuni a tutte le implementazioni della codifica ASCII estesa.
+
+\section{La codifica UNICODE}
+La necessità di avere una codifica univoca ha portato ad aumentare fino a \(32\) il numero di bit per la rappresentazione di un carattere attraverso la codifica \emph{UNICODE}. Anche qui non mancano differenti formati di codifica:
+\begin{itemize}[noitemsep]
+	\item \emph{UTF-32}: ogni simbolo è composto da 32 bit.
+	\item \emph{UTF-16}: ogni simbolo è composto da 16 o più bit (lunghezza variabile).
+	\item \emph{UTF-8}: ogni simbolo è composto da 8 o più bit; mantiene la compatibilità con ASCII.
+\end{itemize}
+
+\paragraph*{Input e output da file}
+Come si è visto precedentemente, è dunque possibile codificare dati numerici in diverse modalità. Quando si scrive un programma che si interfaccia con file testuali, si consiglia caldamente di salvare i dati numerici in formato binario e non in forma di stringa. Questa accortezza permette di ridurre la dimensione in byte del file finale prodotto.
+
+\end{document}

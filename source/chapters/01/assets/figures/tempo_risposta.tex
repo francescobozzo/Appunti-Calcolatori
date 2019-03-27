@@ -1,0 +1,22 @@
+\documentclass[convert = false]{standalone}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+\begin{document}
+\tikzstyle{block} = [draw, fill=blue!15, rectangle]
+
+\begin{tikzpicture}[auto, node distance=10cm]
+	\node [block] (risp) at(0,2) {Tempo di risposta};
+	\node [block] (esec) at(4,1) {Tempo d'esecuzione della CPU};
+	\node [block] (task) at(4,3) {Interferenza dovuta agli altri task};
+	\node [block] (utente) at(8,0) {Tempo di CPU utente};
+	\node [block] (sistema) at(8,2) {Tempo di CPU sistema};
+
+	\draw [->] (risp) -- (task);
+	\draw [->] (risp) -- (esec);
+	\draw [->] (esec) -- (utente);
+	\draw [->] (esec) -- (sistema);
+\end{tikzpicture}
+
+\end{document}
