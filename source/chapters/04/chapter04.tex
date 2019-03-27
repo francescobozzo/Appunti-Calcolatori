@@ -95,7 +95,7 @@ Si ricorda inoltre che è possibile combinare fra loro diverse porte logiche:
 \end{figure}
 
 \section{Alcuni circuiti degni di nota}
-\subsection{Decoder}
+\subsection*{Decoder}
 L'ingresso del \emph{decoder} svolge il ruolo di selettore: ricevendo in input il valore \(n\), si accenderà l'\(n\)-esima uscita. A seguire l'implementazione di un decoder a 3 bit:
 \begin{figure}[H]
 	\centering
@@ -109,7 +109,7 @@ L'ingresso del \emph{decoder} svolge il ruolo di selettore: ricevendo in input i
 	\label{decoder-3bit}
 \end{table}
 
-\subsection{Multiplexer}
+\subsection*{Multiplexer}
 Prevede un input con valore \(S\) utilizzato come selettore. L'output del \emph{multiplexer} è il valore dell'input \(S\)-esimo.
 \begin{figure}[H]
 	\centering
@@ -129,7 +129,7 @@ Molto spesso, per operare con dati complessi, si compongono degli array di eleme
 	\caption{Multiplexer a 32 bit}
 \end{figure}
 
-\subsection{Programmable Logic Array (PLA)}
+\subsection*{Programmable Logic Array (PLA)}
 \label{subsec:pla}
 Il \emph{programmable logic array} si compone di due strutture: una barriera di AND e da una barriera di OR. La dimensione totale del \emph{PLA} è data dalla somma del piano AND (numero di mintermini) e del piano OR (numero di uscite).\\
 Inoltre, il PLA implementa porte logiche solamente per le configurazioni che producono 1 in uscita. In aggiunta, se un mintermine è condiviso tra varie uscite, lo si può riutilizzare.
@@ -158,7 +158,7 @@ Come si è visto, le reti combinatorie non hanno memoria degli stati del passato
 La memoria in una rete logica si ottiene attraverso una \emph{retroazione}, che consiste nel ridirezionare alcune porte di uscita in ingresso ad altre porte del medesimo circuito, in maniera tale da formare un anello.\\
 Seppur questo meccanismo offra delle potenzialità enormi, l'analisi e la sintesi di una rete logica è molto più complessa rispetto a quella delle reti combinatorie.
 
-\subsection{Latch S-R}
+\subsection*{Latch S-R}
 A seguire un'implementazione di una rete sequenziale \emph{latch S-R} (\emph{set-reset}) costruita attraverso due porte \emph{NOR}:
 \begin{figure}[H]
 	\centering

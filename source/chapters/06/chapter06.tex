@@ -55,7 +55,7 @@ Esistono però alcune eccezioni: ad esempio \emph{GCC}, l'assembler di Unix, usa
 
 \section{I registri}
 
-\subsection{Cosa sono}
+\subsection*{Cosa sono}
 
 Fino ad ora abbiamo considerato gli operandi come fossero normali variabili, ma in realtà questi altro non sono che dei \emph{registri}, ossia delle particolari locazioni di memoria interne al processore che possono essere reperite molto rapidamente, in un solo colpo di clock.\\
 
@@ -71,7 +71,7 @@ MIPS possiede 32 registri, ciascuno di 32 bit, per cui ogniqualvolta si debba es
 
 Di fatto, se avessimo  più registri, aumenterebbe notevolmente il tempo di accesso a questi, in quanto gli impulsi elettrici impiegherebbero fisicamente più tempo per passare da un registro all'altro, e la velocità di clock sarebbe sensibilmente compromessa.
 
-\subsection{Gestione dei registri}
+\subsection*{Gestione dei registri}
 
 \paragraph{Notazione}
 A questo punto, tornando all'esempio in 1.2, illustriamo la sintassi per richiamare un registro:
@@ -109,7 +109,7 @@ sw $t0, 48($s3)   # memorizzo il contenuto di $t0 in A[12]
 \paragraph{Register Spiling}
 Come già anticipato, i 32 registri non sono assolutamente sufficienti per contenere tutte le variabili usate da un programma complesso. Quello che succede a livello assembly, eseguito dal compilatore, è un continuo susseguirsi di load e store chiamato \emph{register spilling} (si dice che prepara il \emph{working set}, ossia una stima delle load e store appropriate).
 
-\subsection{Le costanti}
+\subsection*{Le costanti}
 Molto spesso ci si trova a lavorare con le costanti. Nonostante ogni costante possa essere salvata su un registro, questa soluzione è parecchio inefficiente, perché le costanti e le operazioni relative sono molto comuni.
 
 \vspace{8pt}
@@ -170,7 +170,7 @@ A questo punto è lecito domandarsi come mai si usino solo 32 bit per rappresent
 
 Utilizzando una quantità limitata di registri e istruzioni, è dunque possibile guadagnare moltissimo in efficienza!
 
-\subsection{Istruzioni immediate}
+\subsection{Le istruzioni immediate}
 Nei casi di indirizzamento immediato e di operazioni con costanti, MIPS mette a disposizione una diversa mappatura, detta appunto \emph{I}. Forniamo qui un esempio e invitiamo il lettore a confrontare la seguente mappatura con l'equivalente R.
 \begin{figure}[H]
 	\centering
@@ -230,8 +230,8 @@ sra $t2, $s0, 1  # memorizza in t2 il contenuto del registro s0 shiftato aritmet
 Piuttosto che inserire 0 come bit più significativo, come avviene nello shift logico, lo shift aritmetico a destra inserisce bit uguali al bit di segno. Dunque risolve i problemi con CA2.\\
 Si noti come non abbia senso parlare di shift aritmetico a sinistra, in quanto o il risultato è rappresentabile (attraverso lo shift logico) o non lo è.
 
-\subsection{Operazione di bitwise}
-Vengono definite di \emph{bitwise} quelle operazioni logiche che operano su ciascun bit.
+\subsection{Operazioni bitwise}
+Vengono definite \emph{bitwise} quelle operazioni logiche che operano su ciascun bit.
 
 \paragraph{Bitwise AND}
 L'operazione di \emph{bitwise AND} viene applicata principalmente per forzare alcuni bit a 0 usando come operando una maschera (i cui bit corrispondenti a quelli che si vogliono annullare sono settati a 0).
@@ -324,7 +324,7 @@ Come si può osservare, in fase di scrittura del codice si utilizzano delle \emp
 
 Viene data la seguente definizione di \emph{blocco di base}: sequenza di istruzioni che non contiene né istruzioni di salto (con l’eccezione dell’ultima) né etichette di destinazione (con l’eccezione della prima). In fase di compilazione ricoprono un ruolo non indifferente, in quanto una delle prime analisi eseguite sul codice consiste nel cercare proprio queste porzioni di codice. Inoltre, tutti i cicli dei linguaggi di programmazione ad alto livello vengono implementati con l'ausilio di blocchi base.
 
-\subsection{Confronti per minorazioni}
+\subsection*{Confronti per minorazioni}
 Esistono inoltre delle istruzioni che permettono di settare dei bit in determinati registri di \emph{flag} sulla base di una determinata condizione. In modo particolare osserviamo l'istruzione \emph{slt} e la sua controparte immediata, sia in versione signed che unsigned:
 \begin{minted}[linenos]{asm}
 slt $t0, $s3, $s4   # setta t0=1 se s3<s4
@@ -357,7 +357,7 @@ beq $t0, $zero, FUORI_LIMITE
 \end{minted}
 Infatti, se \emph{\$s1} è maggiore di \emph{\$t2}, ovviamente avremo 0 in \emph{\$t0}. D'altra parte, se \emph{\$s1} è negativo, interpretato come unsigned, sarà maggiore di \emph{\$t2} (che ha il bit più significativo a 0, essendo \emph{\$t2} necessariamente un numero positivo).
 
-\subsection{Implementazione del costrutto if}
+\subsection*{Implementazione del costrutto if}
 Supponiamo di voler tradurre il seguente listato di codice in assembly MIPS:
 \begin{minted}[linenos, breaklines, tabsize = 4]{c}
 if (i == j){
@@ -379,7 +379,7 @@ ESCI:
 \end{minted}
 Si noti che l'espressione di controllo effettua consiste nel verificare il negato della condizione voluta: tale stratagemma risulta infatti essere più efficiente.
 
-\subsection{Implementazione del costrutto while}
+\subsection*{Implementazione del costrutto while}
 Supponiamo di voler tradurre il seguente listato di codice in assembly MIPS:
 \begin{minted}[linenos, breaklines, tabsize = 4]{c}
 while (salva[i] == k){
@@ -400,7 +400,7 @@ ESCI:
 \end{minted}
 Si noti come il registro \emph{\$s2} venga utilizzato come contatore, e che \emph{\$s6} è l'offset di base del vettore \emph{salva[]}.
 
-\subsection{Implementazione del costrutto switch/case}
+\subsection*{Implementazione del costrutto switch/case}
 Piuttosto che eseguire una cascata di if-else, esiste una tecnica per implementare un costrutto \emph{switch/case}: memorizzare i vari indirizzi del codice da eseguire in una tabella, caricando l'indirizzo a cui saltare in un registro, per poi utilizzare un \emph{jr}.\\
 A seguire un esempio di switch in codice C trasformato in assembly MIPS:
 \begin{minted}[linenos, breaklines, tabsize = 4]{c}
