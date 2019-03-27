@@ -417,7 +417,7 @@ jr $t0
 
 % Da qui inizia L’architettura MIPS 2, la vendemmia
 
-\section{Gestione delle procedure}
+\section{Le procedure}
 L'utilità dei calcolatori sarebbe molto limitata se questi non avessero la possibilità di svolgere delle procedure; queste possono essere immaginate a tutti gli effetti come delle funzioni che dato un certo input eseguono un determinato task a cui sono dedicate. Un primo vantaggio dell'utilizzo di questi costrutti deriva dalla modularizzazione che introducono in un programma, aumentandone la facilità di lettura e di scrittura.
 
 L'aspetto fondamentale che si deve curare per dare la possibilità ai calcolatori di svolgere procedure è la definizione di un protocollo di chiamata delle procedure che deve stabilire con precisione questi aspetti:
@@ -434,7 +434,7 @@ L'aspetto fondamentale che si deve curare per dare la possibilità ai calcolator
 \end{itemize}
 I protocolli per la gestione delle procedure sono diversi in base all'architettura che si utilizza ed alle convenzioni di chiamata del compilatore, noi per ora studiamo il caso del MIPS.
 
-\section{Protocolli di chiamata MIPS}
+\subsection{Protocolli di chiamata MIPS}
 L'idea fondante del protocollo implementato da MIPS è di utilizzare ogniqualvolta sia possibile i registri, dato che essi sono il meccanismo più veloce a disposizione per la gestione dei parametri delle procedure. Ecco una tabella riassuntiva delle convenzioni sui registri definite nel MIPS:
 
 \begin{table}[H]
@@ -446,14 +446,14 @@ L'idea fondante del protocollo implementato da MIPS è di utilizzare ogniqualvol
 Oltre ai registri, il MIPS mette a disposizione dell'utente l'istruzione \emph{jump and link} (\emph{jal}) che effettua un salto all'indirizzo di inizio della procedura specificata e contemporaneamente memorizza in \emph{\$ra} l'indirizzo di ritorno della procedura, dove si ritornerà una volta terminata la funzione. Questo significa che quando si chiama la \emph{jal} si salva automaticamente in \emph{\$ra} il PC incrementato di 4 (l'istruzione successiva).\\
 Alla fine della procedura sarà così sufficiente compiere il salto \mintinline{asm}{js $ra} per riprendere lo svolgimento del programma principale da dove lo si era interrotto.
 
-\section{Gestione della memoria in MIPS}
+\subsection{Gestione della memoria in MIPS}
 Abbiamo già visto come i dati utilizzati da un programma in MIPS debbano essere caricati nei registri affinché il calcolatore possa usarli, ma cosa succede quando la memoria dei registri non basta?\\
 In questo caso si utilizza lo stratagemma dello stack (esatto, proprio il buon vecchio stack, la nostra struttura dati di tipo LIFO preferita) implementato nella memoria del calcolatore; in MIPS vi si caricano i dati a partire da una posizione nota che viene puntata dal registro dedicato \emph{\$fp} (\emph{frame pointer}, che indica quindi la base dello stack).\\
 Viene utilizzato poi il registro \emph{\$sp} per puntare alla testa dello stack (dove vengono inseriti i nuovi elementi).
 I dati vengono caricati nello stack tramite operazioni di \emph{push} ed, una volta utilizzati, eliminati tramite una operazione di \emph{pop}.\\
 All'interno di questa struttura dati si possono salvare variabili locali di procedure come anche registri che sarà necessario ripristinare in seguito.\\
 
-\section{Svolgimento di una procedura in MIPS}
+\subsection{Svolgimento di una procedura in MIPS}
 Per rendere in modo migliore la spiegazione dello svolgimento di una procedura in MIPS osserveremo come la seguente funzione viene tradotta dal linguaggio C in assembly MIPS:
 
 \begin{minted}[linenos, tabsize = 4]{c}
@@ -565,7 +565,7 @@ L1:
 	jr $ra
 \end{minted}
 
-\section{Gestione delle variabili in MIPS}
+\subsection{Gestione delle variabili in MIPS}
 Le variabili in C sono in genere associate a locazioni di memoria e si caratterizzano per:
 \begin{itemize}
 	\item \emph{tipo}: (int, char, float, ecc.);
@@ -595,7 +595,7 @@ Esiste inoltre un ultimo tipo di variabili (oltre alle globali ed alle locali), 
 	\caption{Schema allocazione dei dati in MIPS}
 \end{figure}
 
-\section{Elaborazione delle procedure}
+\subsection{Elaborazione delle procedure}
 Per spiegare come vengono elaborate le procedure complesse da MIPS utilizziamo come esempio la seguente funzione:
 
 \begin{minted}[linenos, tabsize=4]{c}
