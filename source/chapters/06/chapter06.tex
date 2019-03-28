@@ -588,7 +588,7 @@ L'immagine qui sotto rappresenta l'evoluzione dei due puntatori \emph{\$sp} e \e
 	\caption{Confronto tra puntatore \emph{\$sp} e \emph{\$fp}}
 \end{figure}
 
-Esiste inoltre un ultimo tipo di variabili (oltre alle globali ed alle locali), quelle dinamiche, che vengono allocate secondo lo schema di figura 1.3 dal MIPS; da notare il fatto che lo stack procede "decrescendo", mentre i dati allocati dinamicamente "crescono"  partendo da dove terminano i dati statici (e quindi si spiega perché negli esempi precedenti abbiamo decrementato \emph{\$sp} per inserire word nello stack).
+Esiste inoltre un ultimo tipo di variabili (oltre alle globali ed alle locali), quelle dinamiche, che vengono allocate secondo lo schema della figura sottostante dal MIPS; da notare il fatto che lo stack procede "decrescendo", mentre i dati allocati dinamicamente "crescono"  partendo da dove terminano i dati statici (e quindi si spiega perché negli esempi precedenti abbiamo decrementato \emph{\$sp} per inserire word nello stack).
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.4\textwidth,keepaspectratio]{Dove-finiscono-le-variabili}
@@ -613,7 +613,7 @@ Se si analizza la funzione si nota come il valore di ritorno viene costruito ris
 \begin{minted}[linenos]{asm}
 SUM:
 	add  $v0, $a1, $zero   # sposta $a1 in $v0
-	blez $a0, $L5          # se $a0<0, salta a L5
+	blez $a0, $L5          # se $a0<=0, salta a L5
 	addi $sp, $sp, -32     # crea spazio nello stack
 	sw   $ra, (28)$sp      # salva $ra
 	add  $a1, $a1, $a0     # (acc = acc + n)
@@ -639,12 +639,12 @@ int sum(int n, int acc){
 }
 \end{minted}
 
-In questo caso si applica il metodo di ricorsione in coda, che comporta un grande vantaggio dal punto di vista dell'utilizzo di memoria poichè una volta terminata una chiamata della funzione si può eliminare tutto il suo ambiente (che non risulterà più utile) e utilizzare sempre solo un ambiente unico ed un unico \emph{\$ra}, vediamo come:
+In questo caso si applica il metodo di ricorsione in coda, che comporta un grande vantaggio dal punto di vista dell'utilizzo di memoria poiché una volta terminata una chiamata della funzione si può eliminare tutto il suo ambiente (che non risulterà più utile) e utilizzare sempre solo un ambiente unico ed un unico \emph{\$ra}, vediamo come:
 
 \begin{minted}[linenos,breaklines]{asm}
 SUM:
 	add  $v0, $a1, $zero   # sposta $a1 in $v0
-	blez $a0, $L5          # se $a0<0, salta a L5
+	blez $a0, $L5          # se $a0<=0, salta a L5
 
 	add  $a1, $a1, $a0     # (acc = acc + n)
 	addi $a0, $a0, -1      # (n = n - 1)
