@@ -444,7 +444,7 @@ L'idea fondante del protocollo implementato da MIPS è di utilizzare ogniqualvol
 \end{table}
 
 Oltre ai registri, il MIPS mette a disposizione dell'utente l'istruzione \emph{jump and link} (\emph{jal}) che effettua un salto all'indirizzo di inizio della procedura specificata e contemporaneamente memorizza in \emph{\$ra} l'indirizzo di ritorno della procedura, dove si ritornerà una volta terminata la funzione. Questo significa che quando si chiama la \emph{jal} si salva automaticamente in \emph{\$ra} il PC incrementato di 4 (l'istruzione successiva).\\
-Alla fine della procedura sarà così sufficiente compiere il salto \mintinline{asm}{js $ra} per riprendere lo svolgimento del programma principale da dove lo si era interrotto.
+Alla fine della procedura sarà così sufficiente compiere il salto \mintinline{asm}{jr $ra} per riprendere lo svolgimento del programma principale da dove lo si era interrotto.
 
 \subsection{Gestione della memoria in MIPS}
 Abbiamo già visto come i dati utilizzati da un programma in MIPS debbano essere caricati nei registri affinché il calcolatore possa usarli, ma cosa succede quando la memoria dei registri non basta?\\
