@@ -153,49 +153,49 @@ Alcuni numeri non possono quindi essere rappresentati con un numero finito di bi
   \end{itemize}
 
 \subsubsection{Codifica in virgola mobile}
-Un qualsiasi numero reale può essere scritto anche nella forma $x=M\cdot B^{E}$ dove M si dice \emph{mantissa}, E \emph{esponente} e B è la base della rappresentazione (che nel nostro caso è la leggendaria base 2).\\
+Un qualsiasi numero reale può essere scritto anche nella forma $x=M\cdot B^{exp}$ dove M si dice \emph{mantissa}, \emph{exp} \emph{esponente} (effettivo dei calcoli) e B è la base della rappresentazione (che nel nostro caso è la leggendaria base 2).\\
 Questo metodo di rappresentazione, molto simile alla notazione scientifica standard, è implementato anche nell'informatica in più modi diversi ma alla base di tutti si riconosce lo stesso schema: \\
-$x$ può essere rappresentato su \emph{k} bit utilizzando \emph{m} bit per il campo mantissa M ed $e=k-m$ bit per il campo esponente E; quest'ultimo permette in un certo senso di "spostare" la virgola; con esponenti negativi si avranno $x$ "piccoli" e viceversa con esponenti positivi si avranno $x$ "grandi".\\
+$x$ può essere rappresentato su \emph{k} bit utilizzando \emph{m} bit per il campo mantissa M ed $e=k-m$ bit per il campo esponente E (esponente memorizzato, attenzione: è diverso dall'esponente effettivo dei calcoli); quest'ultimo permette in un certo senso di "spostare" la virgola; con esponenti "piccoli" si avranno $x$ "piccoli" e viceversa con esponenti "gramdi" si avranno $x$ "grandi".\\
 Lo standard più comunemente utilizzato è l'IEEE 754 che, nei numeri \emph{float} a precisione singola (dove si usano 32 bit), ha questa struttura:
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{|l|l|l|}
 		\hline
 		\multicolumn{1}{|c|}{1 bit} & \multicolumn{1}{c|}{8 bit} & \multicolumn{1}{c|}{23 bit} \\ \hline
-		Bit di segno                & Esponente                  & Mantissa                    \\ \hline
+		Bit di segno                & E (esponente memorizzato)    & Mantissa                    \\ \hline
 	\end{tabular}
 \end{table}
 
 
-Il bit di segno ha la funzione che già conosciamo, mentre il campo $E$ può contenere valori compresi tra 0 e 255% ($-2^{e-1}+1 < E \le 2^{e-1}-1$)
-; questi ultimi due valori vengono utilizzati per funzioni speciali, mentre i valori da 1 a 254 compresi codificano l'esponente effettivo dei calcoli, che diremo $exp$\footnote{La notazione $exp$ è stata introdotta da noi autori della dispensa perchè ci è sembrata più chiara ed agile di quella utilizzata dal professore, chiediamo venia se questo genererà confusione}, in questo modo:
+Il bit di segno ha la funzione che già conosciamo, mentre il campo $E$ può contenere valori compresi tra 0 e 255 (se non si tratta di un \emph{float} a precisione singola i valori sono compresi tra 0 e \(2^{e-1}-1\))% ($-2^{e-1}+1 < E \le 2^{e-1}-1$)
+; questi ultimi due valori vengono utilizzati per funzioni speciali, mentre i valori da 1 a 254 compresi codificano l'\emph{esponente effettivo dei calcoli}, che diremo $exp$\footnote{La notazione $exp$ è stata introdotta da noi autori della dispensa perchè ci è sembrata più chiara ed agile di quella utilizzata nelle slides, chiediamo venia se questo genererà confusione.}, in questo modo:
 \begin{equation*}
-exp=E-2^{e-1}-1
+exp=E-(2^{e-1}-1)
 \end{equation*}
 Il numero $2^{e-1}-1$ viene detto \emph{bias} e nel nostro caso è \(127\), per cui $exp=E-127$. L'ultimo campo, la \emph{mantissa}, codifica un numero intero.
 \paragraph{Come calcolare il valore di un \emph{float}} Il primo bit è utilizzato per indicare il segno, i successivi 8 per $E$ e i restanti 23 per la mantissa. La decodifica in decimale assume due forme in base al valore di $E$:
 \begin{itemize}[noitemsep,nolistsep]
-	\item se $E=0$, allora il numero in base 10 è $x_{10}=0.M \cdot 2^{0}$;
+	\item se $E=0$, allora il numero in base 10 è $x_{10}=0.M \cdot 2^{(exp+1=-126)}$;
 	\item se $E>0$, allora il numero in base 10 è $x_{10}=1.M \cdot 2^{exp}$, dove $exp$ è definito come qui sopra descritto.
 \end{itemize}
-Nel primo di questi due casi i numeri si dicono \emph{denormalizzati}, essi rappresentano tutti i numeri compresi tra 0 e 1; nel secondo caso i numeri si dicono \emph{normalizzati} [questa distinzione è stata aggiunta per migliorare la precisione della notazione con numeri molto vicini allo 0].\\
-Per tradurre in decimale un numero in virgola mobile si deve quindi per prima cosa determinare il segno, poi si calcola l'esponente effettivo dei calcoli ($exp=E-\text{bias}$) e da qui, simmetricamente a prima, si procede in due modi: \\
+Nel primo di questi due casi i numeri si dicono \emph{denormalizzati}, essi rappresentano tutti i numeri compresi tra \(1.4\cdot10^{-45}\) e \(1.1754942\cdot10^{-38}\); nel secondo caso i numeri si dicono \emph{normalizzati} [questa distinzione è stata aggiunta per migliorare la precisione della notazione con numeri molto vicini allo 0].\\
+Per tradurre in decimale un numero in virgola mobile si deve quindi per prima cosa determinare il segno, poi si calcola l'esponente effettivo dei calcoli ($exp=E-\text{\emph{bias}}$) e da qui, simmetricamente a prima, si procede in due modi: \\
 \begin{itemize}[noitemsep,nolistsep]
-	\item se $exp\neq-\text{bias}$ si parla di numero \emph{normalizzato} e quindi si aggiunge un bit 1 alla mantissa in modo da ottenere il numero $1.M$ e si sposta la virgola di $exp$ posizioni e per completare il tutto si traduce il numero binario così ottenuto in decimale;
-	\item se $exp=-\text{bias}$ si parla di numero \emph{denormalizzato} e quindi si aggiunge un bit 0 alla mantissa in modo da ottenere $0.M$ e come prima si sposta la virgola di ($\text{bias}$) posizioni e poi si decifra il numero (binario) così ottenuto;
+	\item se $exp\neq-\text{\emph{bias}}$ si parla di numero \emph{normalizzato} e quindi si aggiunge un bit 1 alla mantissa in modo da ottenere il numero $1.M$ e si sposta la virgola di $exp$ posizioni e per completare il tutto si traduce il numero binario (in virgola fissa) così ottenuto in decimale;
+	\item se $exp=-\text{\emph{bias}}$ si parla di numero \emph{denormalizzato} e quindi si aggiunge un bit 0 alla mantissa in modo da ottenere $0.M$ e come prima si sposta la virgola di ($\text{\emph{exp}+1}$) posizioni e poi si decifra il numero (binario in virgola fissa) così ottenuto;
 \end{itemize}
 
-Una volta stabilito quale delle precedenti due opzioni riguarda il nostro caso spostiamo la virgola di \emph{exp} posizioni nel numero $1.M$ oppure $0.M$ (verso destra se $exp>0$ e viceversa), decodifichiamo il numero ottenuto come se fosse un binario in virola fissa.\\
+Ripetiamo ancora una volta il procedimento per chiarezza: stabilito quale delle precedenti due opzioni riguarda il nostro caso spostiamo la virgola di \emph{exp} posizioni nel numero $1.M$ oppure $0.M$ (verso destra se $exp>0$ e viceversa), ed in conclusione decodifichiamo il numero ottenuto come se fosse un binario in virgola fissa.\\
 \subsubsection{Tabella riassuntiva}
 Ecco una breve tabella riassuntiva dell'interpretazione delle stringhe nella rappresentazione IEEE 754:
 \begin{table}[h!]
 	\centering
-	\caption{Riepilogo floating point}
 	\subimport{assets/tables/}{floating_point.tex}
+	\caption{Riepilogo floating point}
 \end{table}
 
 \subsubsection{Esempio di decodifica di un numero in virgola mobile}
-Si traduca in IEEE754 il numero \((01000010 10011011 10000000 00000000)_2\).
+Si traduca in IEEE 754 il numero \((01000010 10011011 10000000 00000000)_2\).
 
 Spacchettiamolo nei vari campi:
 \begin{table}[h!]
