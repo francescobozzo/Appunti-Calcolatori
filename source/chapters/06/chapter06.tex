@@ -680,7 +680,7 @@ sb $t0, 0($gp)  # inserisci gli otto bit meno significativi di $t0 in $gp
 \subsection{Possibile implementazione}
 
 \subsubsection{Prologo}
-Come il lettore a questo punto saprà, i due parametri \mintinline{c}{d} e \mintinline{c}{s} sono contenuti in \emph{\$a0} e \emph{\$a1}. Supponiamo di voler utilizzare \emph{\$s0} per salvare il contatore \mintinline{c}{i} (anche se naturalmente un compilatore non lo farebbe \emph{mai}, in quanto lo salverebbe su un registro temporaneo). Il registro \emph{\$s0} andrà dunque salvato nello stack e successivamente inizializzato:
+Come il lettore a questo punto saprà, i due parametri \mintinline{c}{d} e \mintinline{c}{s} sono contenuti in \emph{\$a0} e \emph{\$a1}. Supponiamo di voler utilizzare \emph{\$s0} per salvare il contatore \mintinline{c}{i} (anche se naturalmente un compilatore non lo farebbe \emph{mai}, lo salverebbe su un registro temporaneo). Il registro \emph{\$s0} andrà dunque salvato nello stack e successivamente inizializzato:
 \begin{minted}[linenos, tabsize=4]{asm}
 COPIA_STRINGA:
 	addi $sp, $sp, -4      # crea spazio nello stack per salvare $s0
@@ -708,11 +708,11 @@ Ora che il corpo dell'istruzione è stato svolto, bisogna controllare se \mintin
 \end{minted}
 
 \subsubsection{Epilogo}
-In questa fase viene implementata la fine del ciclo e il ritorno al chiamante; il valore precedente di \emph{\$s0}, viene ripristinato \emph{\$sp} e tutto ritorna.
+In questa fase viene implementata la fine del ciclo e il ritorno al chiamante; si recupera il valore precedente di \emph{\$s0}, viene ripristinato \emph{\$sp} e tutto ritorna.
 \begin{minted}[linenos, tabsize=4, firstnumber=13]{asm}
 L2:
 	lw $s0, 0($sp)
-	addi $s0, $s0, 4
+	addi $sp, $sp, 4
 	jr $ra
 \end{minted}
 
@@ -733,7 +733,7 @@ L1:
 	j L1
 L2:
 	lw $s0, 0($sp)
-	addi $s0, $s0, 4
+	addi $sp, $sp, 4
 	jr $ra
 \end{minted}
 
