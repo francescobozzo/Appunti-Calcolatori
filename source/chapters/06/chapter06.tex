@@ -106,7 +106,7 @@ add $t0, $s2, $t0 # h è in $s2
 sw $t0, 48($s3)   # memorizzo il contenuto di $t0 in A[12]
 \end{minted}
 
-\paragraph{Register Spiling}
+\paragraph{Register Spilling}
 Come già anticipato, i 32 registri non sono assolutamente sufficienti per contenere tutte le variabili usate da un programma complesso. Quello che succede a livello assembly, eseguito dal compilatore, è un continuo susseguirsi di load e store chiamato \emph{register spilling} (si dice che prepara il \emph{working set}, ossia una stima delle load e store appropriate).
 
 \subsection*{Le costanti}
@@ -132,7 +132,7 @@ Prima di indicare come vengono codificate le istruzioni, ricordiamo che 1 byte �
 Quando si devono codificare parole di 4 byte è importante decidere dove vada il byte più significativo:
 \begin{itemize}[nolistsep]
 	\item se il byte più significativo è posto per primo, la notazione è detta \emph{big endian} (usata nei processori Motorola e protocolli internet).
-	\item se il byte più significativo è posto per primo, la notazione è detta \emph{little endian} (usata nei processori Intel).
+	\item se il byte meno significativo è posto per primo, la notazione è detta \emph{little endian} (usata nei processori Intel).
 \end{itemize}
 
 \subsection{Le istruzioni register}
@@ -278,7 +278,7 @@ nor $t0, $t1, $t2
 \paragraph{Bitwise NOT}
 Dato il fatto che l'operatore di \emph{NOT} è unario, esso non è implementato in MIPS, per non interrompere la regolarità delle istruzioni a tre operandi. Un modo per ottenere il \emph{NOT}, grazie alle leggi di De Morgan, è il seguente:
 \begin{minted}[linenos]{asm}
-nor $t0, $t1, $zero  # equivale a: not $s0
+nor $t0, $t1, $zero  # equivale a: not $t1
 \end{minted}
 
 \paragraph{OR esclusivo (XOR)}
@@ -303,7 +303,7 @@ Esistono sostanzialmente due differenti tipi di salto:
 	\item \emph{jump}: salto non condizionato.
 	\item \emph{branch}: salto condizionato.
 \end{itemize}
-A differenza delle istruzioni di jump, i branch vengono eseguiti solo se una determinata condizione è verificata: uguaglianza di due registri (nel caso di \emph{beq}) e disuguaglianza di due registri (nel caso di \emph{bne}). Si definiscono perciò come operazioni che hanno la capacità di modificare il flusso del programma.
+A differenza delle istruzioni di jump, i branch vengono eseguiti solo se una determinata condizione è verificata: uguaglianza di due registri (nel caso di \mintinline{asm}{beq}) e disuguaglianza di due registri (nel caso di \mintinline{asm}{bne}). Si definiscono perciò come operazioni che hanno la capacità di modificare il flusso del programma.
 
 A seguire la sintassi delle istruzioni di salto offerte da MIPS:
 \begin{minted}[linenos, breaklines]{asm}
@@ -322,17 +322,17 @@ jr $t0  # salta incondizionatemente all'indirizzo contenuto nel registro t0
 
 Come si può osservare, in fase di scrittura del codice si utilizzano delle \emph{label} (ossia etichette) piuttosto che veri e propri indirizzi di memoria. L'arduo compito di tradurre queste etichette in veri e propri indirizzi di memoria spetta al compilatore.
 
-Viene data la seguente definizione di \emph{blocco di base}: sequenza di istruzioni che non contiene né istruzioni di salto (con l’eccezione dell’ultima) né etichette di destinazione (con l’eccezione della prima). In fase di compilazione ricoprono un ruolo non indifferente, in quanto una delle prime analisi eseguite sul codice consiste nel cercare proprio queste porzioni di codice. Inoltre, tutti i cicli dei linguaggi di programmazione ad alto livello vengono implementati con l'ausilio di blocchi base.
+\paragraph*{Blocco di base} Viene data la seguente definizione di \emph{blocco di base}: sequenza di istruzioni che non contiene né istruzioni di salto (con l’eccezione dell’ultima) né etichette di destinazione (con l’eccezione della prima). In fase di compilazione ricoprono un ruolo non indifferente, in quanto una delle prime analisi eseguite sul codice consiste nel cercare proprio queste porzioni di codice. Inoltre, tutti i cicli dei linguaggi di programmazione ad alto livello vengono implementati con l'ausilio di blocchi base.
 
 \subsection*{Confronti per minorazioni}
-Esistono inoltre delle istruzioni che permettono di settare dei bit in determinati registri di \emph{flag} sulla base di una determinata condizione. In modo particolare osserviamo l'istruzione \emph{slt} e la sua controparte immediata, sia in versione signed che unsigned:
+Esistono inoltre delle istruzioni che permettono di settare dei bit in determinati registri di \emph{flag} sulla base di una determinata condizione. In modo particolare osserviamo l'istruzione \mintinline{asm}{slt} e la sua controparte immediata, sia in versione signed che unsigned:
 \begin{minted}[linenos]{asm}
 slt $t0, $s3, $s4   # setta t0=1 se s3<s4
 slti $t0, $s3, 10   # setta t0=1 se s3<10
 sltu $t0, $s3, $s4  # unsigned: setta t0=1 se s3<s4
 sltui $t0, $s3, 10  # unsigned: setta t0=1 se s3<10
 \end{minted}
-Queste istruzioni vengono molto utilizzate dai compilatori MIPS per ottenere salti su condizioni di minore o maggiore uguale, con l'ausilio di \emph{beq} e \emph{bne}. A seguire viene presentato un esempio di traduzione da codice C ad assembly MIPS.
+Queste istruzioni vengono molto utilizzate dai compilatori MIPS per ottenere salti su condizioni di minore o maggiore uguale, con l'ausilio di \mintinline{asm}{beq} e \mintinline{asm}{bne}. A seguire viene presentato un esempio di traduzione da codice C ad assembly MIPS.
 \begin{minted}[linenos, breaklines, tabsize = 4]{c}
 if (i < j){
 	f = g + h;
@@ -398,10 +398,10 @@ CICLO:
 	j CICLO
 ESCI:
 \end{minted}
-Si noti come il registro \emph{\$s2} venga utilizzato come contatore, e che \emph{\$s6} è l'offset di base del vettore \emph{salva[]}.
+Si noti come il registro \emph{\$s2} venga utilizzato come contatore, e che \emph{\$s6} è l'offset di base del vettore \mintinline{c}{salva[]}.
 
 \subsection*{Implementazione del costrutto switch/case}
-Piuttosto che eseguire una cascata di if-else, esiste una tecnica per implementare un costrutto \emph{switch/case}: memorizzare i vari indirizzi del codice da eseguire in una tabella, caricando l'indirizzo a cui saltare in un registro, per poi utilizzare un \emph{jr}.\\
+Piuttosto che eseguire una cascata di \mintinline{c}{if}-\mintinline{c}{else}, esiste una tecnica per implementare un costrutto \mintinline{c}{switch}/\mintinline{c}{case}: memorizzare i vari indirizzi del codice da eseguire in una tabella, caricando l'indirizzo a cui saltare in un registro, per poi utilizzare un \mintinline{asm}{jr}.\\
 A seguire un esempio di switch in codice C trasformato in assembly MIPS:
 \begin{minted}[linenos, breaklines, tabsize = 4]{c}
 switch(a) {
@@ -443,7 +443,7 @@ L'idea fondante del protocollo implementato da MIPS è di utilizzare ogniqualvol
 	\caption{Convenzioni sui registri in MIPS}
 \end{table}
 
-Oltre ai registri, il MIPS mette a disposizione dell'utente l'istruzione \emph{jump and link} (\emph{jal}) che effettua un salto all'indirizzo di inizio della procedura specificata e contemporaneamente memorizza in \emph{\$ra} l'indirizzo di ritorno della procedura, dove si ritornerà una volta terminata la funzione. Questo significa che quando si chiama la \emph{jal} si salva automaticamente in \emph{\$ra} il PC incrementato di 4 (l'istruzione successiva).\\
+Oltre ai registri, il MIPS mette a disposizione dell'utente l'istruzione \emph{jump and link} (\mintinline{asm}{jal}) che effettua un salto all'indirizzo di inizio della procedura specificata e contemporaneamente memorizza in \emph{\$ra} l'indirizzo di ritorno della procedura, dove si ritornerà una volta terminata la funzione. Questo significa che quando si chiama la \mintinline{asm}{jal} si salva automaticamente in \emph{\$ra} il PC incrementato di 4 (l'istruzione successiva).\\
 Alla fine della procedura sarà così sufficiente compiere il salto \mintinline{asm}{jr $ra} per riprendere lo svolgimento del programma principale da dove lo si era interrotto.
 
 \subsection{Gestione della memoria in MIPS}
@@ -469,34 +469,35 @@ La prima operazione è quella di salvare in memoria tutti i registri che la proc
 Nell'esempio supponiamo, con lo scopo di osservare il metodo di salvataggio di un registro, di dover tenere in memoria i valori di \emph{\$s0}, \emph{\$t1} e \emph{\$t0}.
 
 \begin{minted}[linenos, tabsize = 4]{asm}
-# decremento $sp di 12 byte creando lo spazio per 3 words
-addi $sp, $sp, -12;
+ESEMPIO:
+	# decremento $sp di 12 byte creando lo spazio per 3 words
+	addi $sp, $sp, -12;
 
-# salvo i registri nello stack prima che la funzione li sovrascriva
-sw $t1, 8($sp)
-sw $t0, 4($sp)
-sw $s0, 0($sp)
+	# salvo i registri nello stack prima che la funzione li sovrascriva
+	sw $t1, 8($sp)
+	sw $t0, 4($sp)
+	sw $s0, 0($sp)
 
-# fine del prologo, inizio della procedura effettiva
-# si suppone che g,h,i,j siano già salvate nei registri $a...
-add $t0, $a0, $a1  # $t0="g"+"h"
-add $t1, $a2, $a3  # $t1="i"+"j"
-sub $s0, $t0, $t1  # $s0=(g+h)-(i+j)
+	# fine del prologo, inizio della procedura effettiva
+	# si suppone che g,h,i,j siano già salvate nei registri $a...
+	add $t0, $a0, $a1  # $t0="g"+"h"
+	add $t1, $a2, $a3  # $t1="i"+"j"
+	sub $s0, $t0, $t1  # $s0=(g+h)-(i+j)
 
-# imposto il valore di ritorno
-add $v0, $s0, $zero  # $v0=$s0
+	# imposto il valore di ritorno
+	add $v0, $s0, $zero  # $v0=$s0
 
-# ($s0 è il registro che contiene il valore di f)
-# pulizia: dopo le operazioni resetto i registri
-lw $s0, 0($sp)
-lw $t0, 4($sp)
-lw $t1, 8($sp)
+	# ($s0 è il registro che contiene il valore di f)
+	# pulizia: dopo le operazioni resetto i registri
+	lw $s0, 0($sp)
+	lw $t0, 4($sp)
+	lw $t1, 8($sp)
 
-# ora posso liberare lo spazio dello stack dove stavano i registri
-addi $sp, $sp, 12
+	# ora posso liberare lo spazio dello stack dove stavano i registri
+	addi $sp, $sp, 12
 
-# infine "salto" all'istruzione successiva alla chiamata di esempio
-jr $ra
+	# infine "salto" all'istruzione successiva alla chiamata di esempio
+	jr $ra
 \end{minted}
 
 A titolo esplicativo si inserisce anche un'immagine dell'evoluzione dello stack durante lo svolgimento di questa funzione \emph{esempio}.
@@ -509,7 +510,7 @@ A titolo esplicativo si inserisce anche un'immagine dell'evoluzione dello stack 
 
 Una volta visto l'esempio vanno fatte alcune precisazioni. Infatti un compilatore effettivo non avrebbe \emph{mai} svolto così la procedura, perché:
 \begin{itemize}
-	\item i registri temporanei \emph{non} devono essere preservati (quindi di norma non si usano istruzioni \emph{sw} e \emph{lw} su registri \emph{\$t...})
+	\item i registri temporanei \emph{non} devono essere preservati (quindi di norma non si usano istruzioni \mintinline{asm}{sw} e \mintinline{asm}{lw} su registri \emph{\$t...})
 	\item l'utilizzo di \emph{\$s0} non era necessario (si poteva usare anche solo \emph{\$v0})
 \end{itemize}
 
@@ -528,7 +529,7 @@ Si nota che implementando questa funzione il registro \emph{\$ra} ed il registro
 Vediamo quindi la traduzione del seguente esempio da C ad assembly MIPS:
 
 \begin{minted}[linenos, tabsize = 4]{asm}
-fact:
+FACT:
 	# decrementa $sp di 8 creando lo spazio per 2 words
 	addi $sp, $sp, -8;
 
@@ -568,7 +569,7 @@ L1:
 \subsection{Gestione delle variabili in MIPS}
 Le variabili in C sono in genere associate a locazioni di memoria e si caratterizzano per:
 \begin{itemize}
-	\item \emph{tipo}: (int, char, float, ecc.);
+	\item \emph{tipo}: (\mintinline{c}{int}, \mintinline{c}{char}, \mintinline{c}{float}, ecc.);
 	\item \emph{storage class}:
 	\begin{itemize}
 		\item \emph{automatic}: variabili locali che hanno un ciclo di vita collegato alla funzione
@@ -679,7 +680,7 @@ sb $t0, 0($gp)  # inserisci gli otto bit meno significativi di $t0 in $gp
 \subsection{Possibile implementazione}
 
 \subsubsection{Prologo}
-Come il lettore a questo punto saprà, i due parametri \emph{d} e \emph{s} sono contenuti in \emph{\$a0} e \emph{\$a1}. Supponiamo di voler utilizzare \emph{\$s0} per salvare il contatore \emph{i} (anche se naturalmente un compilatore non lo farebbe \emph{mai}, in quanto lo salverebbe su un registro temporaneo). Il registro \emph{\$s0} andrà dunque salvato nello stack e successivamente inizializzato:
+Come il lettore a questo punto saprà, i due parametri \mintinline{c}{d} e \mintinline{c}{s} sono contenuti in \emph{\$a0} e \emph{\$a1}. Supponiamo di voler utilizzare \emph{\$s0} per salvare il contatore \mintinline{c}{i} (anche se naturalmente un compilatore non lo farebbe \emph{mai}, in quanto lo salverebbe su un registro temporaneo). Il registro \emph{\$s0} andrà dunque salvato nello stack e successivamente inizializzato:
 \begin{minted}[linenos, tabsize=4]{asm}
 COPIA_STRINGA:
 	addi $sp, $sp, -4      # crea spazio nello stack per salvare $s0
