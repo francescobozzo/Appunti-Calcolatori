@@ -540,13 +540,13 @@ FACT:
 	sw $a0, 0($sp)
 
 	# fine del prologo, inizio della procedura effettiva
-	slti $t0, $a0, 1    # se $a0<1 setta $t0=1
+	slti $t0, $a0, 1    # se $a0 < 1 setta $t0=1
 
 	# $t0 settato a 1 se n < 1
-	beq $t0, $zero, L1  # se $t0==0 si va a L1 (ricorsiva)
+	beq $t0, $zero, L1  # se $t0 == 0 si va a L1 (ricorsiva)
 
 	# altrimenti si prosegue con l'esecuzione finale
-	addi $v0, $zero, 1  # $v0=1
+	addi $v0, $zero, 1  # $v0 = 1
 	addi $sp, $sp, 8    # si ripulisce lo stack
 
 	# ritorna all’indirizzo dopo la chiamata (n-esima) di fact
@@ -616,13 +616,13 @@ SUM:
 	add  $v0, $a1, $zero   # sposta $a1 in $v0
 	blez $a0, $L5          # se $a0<=0, salta a L5
 	addi $sp, $sp, -32     # crea spazio nello stack
-	sw   $ra, (28)$sp      # salva $ra
+	sw   $ra, 28($sp)      # salva $ra
 	add  $a1, $a1, $a0     # (acc = acc + n)
 	addi $a0, $a0, -1      # (n = n - 1)
 	jal  SUM               # ricorsione (aggiorna $ra)
 
 	# parte di risalita della catena di $ra
-	lw   $ra, (28)$sp      # ripristina $ra
+	lw   $ra, 28($sp)      # ripristina $ra
 	addi $sp, $sp, 32      # ripulisce lo stack
 L5:
 	j $ra                  # torna al programma chiamante
@@ -645,11 +645,11 @@ In questo caso si applica il metodo di ricorsione in coda, che comporta un grand
 \begin{minted}[linenos,breaklines]{asm}
 SUM:
 	add  $v0, $a1, $zero   # sposta $a1 in $v0
-	blez $a0, $L5          # se $a0<=0, salta a L5
+	blez $a0, $L5          # se $a0 <= 0, salta a L5
 
 	add  $a1, $a1, $a0     # (acc = acc + n)
 	addi $a0, $a0, -1      # (n = n - 1)
-	j  SUM                 # ricorsione (aggiorna $ra)
+	j  SUM                 # ricorsione
 	# si osservi come non si usa più jal dato che non si aggiorna più $ra ora che si lavora su un unico ambiente
 L5:
 	j $ra                  # torna al programma chiamante
