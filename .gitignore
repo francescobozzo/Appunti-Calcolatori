@@ -10,14 +10,7 @@
 *.sta
 *.pdf
 
-source/_minted-main
-source/chapters/01/_minted-chapter01
-source/chapters/02/_minted-chapter02
-source/chapters/03/_minted-chapter03
-source/chapters/04/_minted-chapter04
-source/chapters/05/_minted-chapter05
-source/chapters/06/_minted-chapter06
-source/chapters/Appendice_A/_minted-Appendice_A
+_minted*
 
 # script per compilare tutti i capitoli
 *.bat
