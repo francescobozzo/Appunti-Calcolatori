@@ -11,6 +11,3 @@
 *.pdf
 
 _minted*
-
-# script per compilare tutti i capitoli
-*.bat
