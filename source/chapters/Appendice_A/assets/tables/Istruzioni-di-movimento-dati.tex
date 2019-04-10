@@ -4,23 +4,33 @@
 \usepackage{tabularx}
 \usepackage[table]{xcolor}
 
+\setlength\lightrulewidth{0.1pt}
+\newcommand\lightrule{%
+	\arrayrulecolor{black!30}%
+	\midrule[\lightrulewidth]%
+	\arrayrulecolor{black}}
+
+\newcommand\register[1]{%
+	\texttt{#1}%
+}
+
 % arara: pdflatex
 % arara: latexmk: { clean: partial }
 \begin{document}
 \begin{tabularx}{\textwidth}{ >{\hsize=.11\textwidth}X >{\hsize=.18\textwidth}X >{\hsize=.08\textwidth}X X }
 	\toprule
-		Istruzione & Sintassi & Tipo & Funzione\\
+		Istruzione & Sintassi & Tipo & Funzione \\
 	\midrule
-		lw & lw \emph{\$d}, S(\emph{\$b}) &\centering I & load wold: carica in \emph{\$d} la parola memorizzata a \emph{b}+\emph{S} (\emph{\$b} = base, S =spiazzamento)\\
-		lh & lh \emph{\$d}, S(\emph{\$b}) &\centering I & load half word\\
-		lhu & lhu \emph{\$d}, S(\emph{\$b}) &\centering I & load half word unsigned\\
-		lb & lb \emph{\$d}, S(\emph{\$b}) &\centering I & load byte\\
-		sw & sw \emph{\$r}, S(\emph{\$b}) &\centering I & store word: salva in \emph{b}+\emph{S} la parola contenuta \emph{\$r}\\
-		sh & sh \emph{\$r}, S(\emph{\$b}) &\centering I & store half word\\
-		sb & sb \emph{\$r}, S(\emph{\$b}) &\centering I & store byte\\
-		lui & lui \emph{\$d}, C &\centering I &  load upper register immediato: carica C nei 16 bit più significativi di \emph{\$d}\\
-		mfhi & mfhi \emph{\$d} &\centering R & muovi HI in \emph{\$d}\\
-		mflo & mflo \emph{\$d} &\centering R & muovi LO in \emph{\$d}\\
+		lw & lw \register{\$d}, S(\register{\$b}) & I & load wold: carica in \register{\$d} la parola memorizzata a \register{b}+\register{S} (\register{\$b} = base, S =spiazzamento) \\\lightrule
+		lh & lh \register{\$d}, S(\register{\$b}) & I & load half word \\\lightrule
+		lhu & lhu \register{\$d}, S(\register{\$b}) & I & load half word unsigned \\\lightrule
+		lb & lb \register{\$d}, S(\register{\$b}) & I & load byte \\\lightrule
+		sw & sw \register{\$r}, S(\register{\$b}) & I & store word: salva in \register{b}\(+\)\register{S} la parola contenuta \register{\$r} \\\lightrule
+		sh & sh \register{\$r}, S(\register{\$b}) & I & store half word \\\lightrule
+		sb & sb \register{\$r}, S(\register{\$b}) & I & store byte \\\lightrule
+		lui & lui \register{\$d}, C & I &  load upper register immediato: carica C nei 16 bit più significativi di \register{\$d} \\\lightrule
+		mfhi & mfhi \register{\$d} & R & muovi HI in \register{\$d} \\\lightrule
+		mflo & mflo \register{\$d} & R & muovi LO in \register{\$d} \\
 	\bottomrule
 \end{tabularx}
 \end{document}

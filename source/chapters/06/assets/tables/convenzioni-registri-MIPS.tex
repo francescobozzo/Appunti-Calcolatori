@@ -4,11 +4,15 @@
 \usepackage{booktabs}
 \usepackage[table]{xcolor}
 
-%\setlength\lightrulewidth{0.1pt}
-%\newcommand\lightrule{%
-%	\arrayrulecolor{black!30}%
-%	\midrule[\lightrulewidth]%
-%	\arrayrulecolor{black}}
+\setlength\lightrulewidth{0.1pt}
+\newcommand\lightrule{%
+	\arrayrulecolor{black!30}%
+	\midrule[\lightrulewidth]%
+	\arrayrulecolor{black}}
+
+\newcommand\register[1]{%
+	\texttt{#1}%
+}
 
 % arara: pdflatex
 % arara: latexmk: { clean: partial }
@@ -17,16 +21,16 @@
 		\toprule
 			Nome & Numero & Utilizzo & Preservare \\
 		\midrule
-			\emph{\$zero} & 0 & Valore costante 0 & Costante \\
-			\emph{\$v0}-\emph{\$v1} & 2-3 & Valori di ritorno funzioni e valutazione espressioni & No \\
-			\emph{\$a0}-\emph{\$a3} & 4-7 & Argomenti & No \\
-			\emph{\$t0}-\emph{\$t7} & 8-15 & Temporanei & No \\
-			\emph{\$s0}-\emph{\$s7} & 16-23 & Salvati & Sì \\
-			\emph{\$t8}-\emph{\$t9} & 24-25 & Altri temporanei & No \\
-			\emph{\$gp} & 28 & Global pointer & Sì \\
-			\emph{\$sp} & 29 & Stack pointer & Sì \\
-			\emph{\$fp} & 30 & Frame pointer & Sì \\
-			\emph{\$ra} & 31 & Return address & Sì \\
+			\register{\$zero} & 0 & Valore costante \(0\) & Costante \\\lightrule
+			\register{\$v0-\$v1} & 2-3 & Valori di ritorno funzioni e valutazione espressioni & No \\\lightrule
+			\register{\$a0-\$a3} & 4-7 & Argomenti & No \\\lightrule
+			\register{\$t0-\$t7} & 8-15 & Temporanei & No \\\lightrule
+			\register{\$s0-\$s7} & 16-23 & Salvati & Sì \\\lightrule
+			\register{\$t8-\$t9} & 24-25 & Altri temporanei & No \\\lightrule
+			\register{\$gp} & 28 & Global pointer & Sì \\\lightrule
+			\register{\$sp} & 29 & Stack pointer & Sì \\\lightrule
+			\register{\$fp} & 30 & Frame pointer & Sì \\\lightrule
+			\register{\$ra} & 31 & Return address & Sì \\\lightrule
 		\bottomrule
 	\end{tabularx}
 \end{document}

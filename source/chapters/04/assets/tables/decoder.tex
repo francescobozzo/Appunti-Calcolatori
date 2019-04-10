@@ -1,12 +1,23 @@
 \documentclass{standalone}
+
 \usepackage{booktabs}
+\usepackage[table]{xcolor}
+
+\setlength\lightrulewidth{0.1pt}
+\providecommand\lightrule{%
+	\arrayrulecolor{black!30}%
+	\midrule[\lightrulewidth]%
+	\arrayrulecolor{black}}
 
 % arara: pdflatex
 % arara: latexmk: { clean: partial }
 \begin{document}
-	\begin{tabular}{ccc|cccccccc}
-		\multicolumn{3}{c|}{Input} & \multicolumn{8}{c}{Output} \\
-		In2 & In1 & In0 & Out0 & Out1 & Out2 & Out3 & Out4 & Out5 & Out6 & Out7 \\ \hline
+	\begin{tabular}{@{} ccccccccccc @{}}
+	\toprule
+		\multicolumn{3}{c}{Input} & \multicolumn{8}{c}{Output} \\
+	\cmidrule(r){1-3} \cmidrule(l){4-11}
+		In2 & In1 & In0 & Out0 & Out1 & Out2 & Out3 & Out4 & Out5 & Out6 & Out7 \\
+	\cmidrule(r){1-3} \cmidrule(l){4-11}
 		0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
 		0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
 		0 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\
@@ -15,5 +26,6 @@
 		1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
 		1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
 		1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+	\bottomrule
 	\end{tabular}
 \end{document}

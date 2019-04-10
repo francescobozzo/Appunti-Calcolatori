@@ -1,29 +1,57 @@
-\documentclass{standalone}
+\documentclass[varwidth=6in]{standalone}
 
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage[table]{xcolor}
+\usepackage{amssymb}
+\usepackage{multirow}
 
+\setlength\lightrulewidth{0.1pt}
+\newcommand\lightrule{%
+	\arrayrulecolor{black!30}%
+	\midrule[\lightrulewidth]%
+	\arrayrulecolor{black}}
+
+\newcommand\register[1]{%
+	\texttt{#1}%
+}
+
+% TODO finire di correggere, buon lavoro! :-)
 % arara: pdflatex
 % arara: latexmk: { clean: partial }
 \begin{document}
-\begin{tabularx}{\textwidth}{ >{\hsize=.13\textwidth}X >{\hsize=.17\textwidth}X >{\hsize=.29\textwidth}X X }
+\small
+\begin{tabularx}{\textwidth}{ >{\hsize=.30\textwidth}X >{\hsize=.20\textwidth}X >{\hsize=.23\textwidth}X >{\hsize=.35\textwidth}X }
 	\toprule
-		Macro & Sintassi & Espansa a & Funzione\\
+		Macro & Sintassi & Espansa a & Funzione \\
 	\midrule
-		Move & move \$rt, \$rs & add \$rt, \$rs, \$zero & \(rt=rs\)\\
-		Clear & clear \$rt & add \$rt, \$zero, \$zero & \(rt=0\)\\
-		Not & not \$rt, \$rs & nor \$rt, \$rs, \$zero & \(rt=!rs\)\\
-		Load Adress & la \$rd, Addr & \begin{tabular}[c]{@{}l@{}l@{}l@{}} \\  lui \$rd, Addr[31:16] \\ ori \$rd, \$rd, Addr[15:0] \end{tabular} & rd=Address\\
-		Load Immediate & li \$rd, v & \begin{tabular}[c]{@{}l@{}l@{}} \\  lui \$rd, v[31:16] \\ ori \$rd, \$rd, v[15:0] \end{tabular} & rd=32 bit value\\
-		Branch & b Label & beq \$zero, \$zero, Label & \(PC=Label\)\\
-		Branch if greater & bgt \$rs, \$rt, Label & \begin{tabular}[c]{@{}l@{}l@{}} \\  slt \$at, \$rt, \$rs \\ bne \$at, \$zero, Label \end{tabular} & if \(rs>rt\) PC=Label\\
-		Branch if less & blt \$rs, \$rt, Label & \begin{tabular}[c]{@{}l@{}l@{}} \\  slt \$at, \$rs, \$rt \\ bne \$at, \$zero, Label \end{tabular} & if \(rs<rt\) PC=Label\\
-		Branch if greater or equal & bge \$rs, \$rt, Label & \begin{tabular}[c]{@{}l@{}l@{}} \\  slt \$at, \$rs, \$rt \\ beq \$at, \$zero, Label \end{tabular} & if\(rs \ge rt\)PC=Label\\
-		Branch if less or equal & ble \$rs, \$rt, Label & \begin{tabular}[c]{@{}l@{}l@{}} \\  slt \$at, \$rt, \$rs \\ beq \$at, \$zero, Label \end{tabular} & if \(rs\le rt\) PC=Label\\
-		Multiply 32 bit & mul \$d, \$s, \$t & mult \$s, \$t; mflo \$d & \(d=s*t\)\\
-		Division & div \$d, \$s, \$t & div \$s, \$t; mflo \$d & \(d=s/t\)\\
-		Reminder & rem \$d, \$s, \$t & div \$s, \$t; mfhi \$d & \(d=s\%t\)\\
+		Move & move \register{\$rt}, \register{\$rs} & add \register{\$rt}, \register{\$rs}, \register{\$zero} & \(rt=rs\) \\\lightrule
+
+		Clear & clear \register{\$rt} & add \register{\$rt}, \register{\$zero}, \register{\$zero} & \(rt=0\) \\\lightrule
+
+		Not & not \register{\$rt}, \register{\$rs} & nor \register{\$rt}, \register{\$rs}, \register{\$zero} & \(rt \neq rs\) \\\lightrule
+
+		\multirow{2}{*}{Load Adress} & \multirow{2}{*}{la \register{\$rd}, Addr} & lui \register{\$rd}, Addr[31:16] & \multirow{2}{*}{rd = Address} \\
+		&& ori \register{\$rd}, \register{\$rd}, Addr[15:0] & \\\lightrule
+
+		\multirow{2}{*}{Load Immediate} & \multirow{2}{*}{li \register{\$rd}, v} & lui \register{\$rd}, v[31:16] & \multirow{2}{*}{rd = \(32\) bit value} \\
+		&& ori \register{\$rd}, \register{\$rd}, v[15:0] & \\\lightrule
+
+		Branch & b Label & beq \register{\$zero}, \register{\$zero}, Label & PC \(=\) Label \\\lightrule
+
+		% Branch if greater & bgt \register{\$rs}, \register{\$rt}, Label & \begin{tabular}[c]{@{}l@{}l@{}}  \\  slt \register{\$at}, \register{\$rt}, \register{\$rs}  \\ bne \register{\$at}, \register{\$zero}, Label \end{tabular} & if \(rs > rt\) PC=Label \\
+
+		% Branch if less & blt \register{\$rs}, \register{\$rt}, Label & \begin{tabular}[c]{@{}l@{}l@{}}  \\  slt \register{\$at}, \register{\$rs}, \register{\$rt}  \\ bne \register{\$at}, \register{\$zero}, Label \end{tabular} & if \(rs<rt\) PC=Label \\
+
+		% Branch if greater or equal & bge \register{\$rs}, \register{\$rt}, Label & \begin{tabular}[c]{@{}l@{}l@{}}  \\  slt \register{\$at}, \register{\$rs}, \register{\$rt}  \\ beq \register{\$at}, \register{\$zero}, Label \end{tabular} & if\(rs \geqslant rt\)PC=Label \\
+
+		% Branch if less or equal & ble \register{\$rs}, \register{\$rt}, Label & \begin{tabular}[c]{@{}l@{}l@{}}  \\  slt \register{\$at}, \register{\$rt}, \register{\$rs}  \\ beq \register{\$at}, \register{\$zero}, Label \end{tabular} & if \(rs \leqslant rt\) PC\(=\)Label \\
+
+		Multiply 32 bit & mul \register{\$d}, \register{\$s}, \register{\$t} & mult \register{\$s}, \register{\$t}; mflo \register{\$d} & d = s \(\cdot\) t \\\lightrule
+
+		Division & div \register{\$d}, \register{\$s}, \register{\$t} & div \register{\$s}, \register{\$t}; mflo \register{\$d} & d = s / t \\\lightrule
+
+		Reminder & rem \register{\$d}, \register{\$s}, \register{\$t} & div \register{\$s}, \register{\$t}; mfhi \register{\$d} & d = s \% t \\
 	\bottomrule
 \end{tabularx}
 \end{document}
