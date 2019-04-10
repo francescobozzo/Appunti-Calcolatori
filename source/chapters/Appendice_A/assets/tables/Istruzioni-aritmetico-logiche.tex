@@ -4,33 +4,45 @@
 \usepackage{tabularx}
 \usepackage[table]{xcolor}
 
+\setlength\lightrulewidth{0.1pt}
+\newcommand\lightrule{%
+	\arrayrulecolor{black!30}%
+	\midrule[\lightrulewidth]%
+	\arrayrulecolor{black}}
+
+\newcommand\register[1]{%
+	\texttt{#1}%
+}
+
+% arara: pdflatex
+% arara: latexmk: { clean: partial }
 \begin{document}
-	\begin{tabularx}{\textwidth}{ >{\hsize=.12\textwidth}X >{\hsize=.20\textwidth}X >{\hsize=.08\textwidth}X X }
-		\toprule
-			Istruzione & Sintassi & Tipo & Funzione\\
-		\midrule
-			add & add \emph{\$d}, \emph{\$s}, \emph{\$t} &\centering R & somma, generando eccezione in caso di overflow\\
-			sub & sub \emph{\$d}, \emph{\$s}, \emph{\$t} &\centering R & sottrazione, generando eccezione se overflow\\
-			and & and \emph{\$d}, \emph{\$s}, \emph{\$t} &\centering R & and logico bit a bit\\
-			or & or \emph{\$d}, \emph{\$s}, \emph{\$t} &\centering R & or logico bit a bit\\
-			xor & xor \emph{\$d}, \emph{\$s}, \emph{\$t} &\centering R & or esclusivo bit a bit\\
-			nor & nor \emph{\$d}, \emph{\$s}, \emph{\$t} &\centering R & or logico bit a bit negato\\
-			addu & addu \emph{\$d}, \emph{\$s}, \emph{\$t} &\centering R & somma, ignorando overflow\\
-			subu & subu \emph{\$d}, \emph{\$s}, \emph{\$t} &\centering R & sottrazione ignorando overflow (no eccezioni)\\
-			addi & addi \emph{\$d}, \emph{\$s}, I &\centering I & somma con valore immediato (ecezione se overflow)\\
-			andi & andi \emph{\$d}, \emph{\$s}, I &\centering I & and logico bit a bit con valore immediato\\
-			ori & ori \emph{\$d}, \emph{\$s}, I &\centering I & or logico bit a bit con valore immediato\\
-			addiu &  addiu \emph{\$d}, \emph{\$s}, I &\centering I & somma con valore immediato ignorando overflow (no eccezioni)\\
-			sll & sll \emph{\$d}, \emph{\$s}, i &\centering R & shift logico a sinistra di \emph{i} bit\\
-			srl & srl \emph{\$d}, \emph{\$s}, i &\centering R & shift logico a destra di \emph{i} bit\\
-			sra & sra \emph{\$d}, \emph{\$s}, i &\centering R & shift aritmetico a destra di \emph{i} bit\\
-			sllv & sllv \emph{\$d}, \emph{\$s}, \emph{\$t} &\centering R & shift logico a sinistra di \emph{\$t} bit\\
-			srlv & srlv \emph{\$d}, \emph{\$s}, \emph{\$t} &\centering R & shift logico a destra di \emph{\$t} bit\\
-			srav & srav \emph{\$d}, \emph{\$s}, \emph{\$t} &\centering R & shift aritmetico a destra di \emph{\$t} bit\\
-			mult & mult \emph{\$s}, \emph{\$t} &\centering R & moltiplicazione (risultato in registri speciali HI e LO)\\
-			multu & multu \emph{\$s}, \emph{\$t} &\centering R & moltiplicazione tra unsigned (risultato in HI e LO)\\
-			div & div \emph{\$s}, \emph{\$t} &\centering R & divisione (quoziente in LO e resto in HI)\\
-			divu & divu \emph{\$s}, \emph{\$t} &\centering R & divisione tra unsigned (quoziente in LO e resto in HI)\\
-		\bottomrule
-	\end{tabularx}
+\begin{tabularx}{\textwidth}{ >{\hsize=.12\textwidth}X >{\hsize=.20\textwidth}X >{\hsize=.08\textwidth}X X }
+	\toprule
+		Istruzione & Sintassi & Tipo & Funzione \\
+	\midrule
+		add & add \register{\$d}, \register{\$s}, \register{\$t} & R & somma, generando eccezione in caso di overflow \\\lightrule
+		sub & sub \register{\$d}, \register{\$s}, \register{\$t} & R & sottrazione, generando eccezione se overflow \\\lightrule
+		and & and \register{\$d}, \register{\$s}, \register{\$t} & R & and logico bit a bit \\\lightrule
+		or & or \register{\$d}, \register{\$s}, \register{\$t} & R & or logico bit a bit \\\lightrule
+		xor & xor \register{\$d}, \register{\$s}, \register{\$t} & R & or esclusivo bit a bit \\\lightrule
+		nor & nor \register{\$d}, \register{\$s}, \register{\$t} & R & or logico bit a bit negato \\\lightrule
+		addu & addu \register{\$d}, \register{\$s}, \register{\$t} & R & somma, ignorando overflow \\\lightrule
+		subu & subu \register{\$d}, \register{\$s}, \register{\$t} & R & sottrazione ignorando overflow (no eccezioni) \\\lightrule
+		addi & addi \register{\$d}, \register{\$s}, I & I & somma con valore immediato (ecezione se overflow) \\\lightrule
+		andi & andi \register{\$d}, \register{\$s}, I & I & and logico bit a bit con valore immediato \\\lightrule
+		ori & ori \register{\$d}, \register{\$s}, I & I & or logico bit a bit con valore immediato \\\lightrule
+		addiu &  addiu \register{\$d}, \register{\$s}, I & I & somma con valore immediato ignorando overflow (no eccezioni) \\\lightrule
+		sll & sll \register{\$d}, \register{\$s}, i & R & shift logico a sinistra di \register{i} bit \\\lightrule
+		srl & srl \register{\$d}, \register{\$s}, i & R & shift logico a destra di \register{i} bit \\\lightrule
+		sra & sra \register{\$d}, \register{\$s}, i & R & shift aritmetico a destra di \register{i} bit \\\lightrule
+		sllv & sllv \register{\$d}, \register{\$s}, \register{\$t} & R & shift logico a sinistra di \register{\$t} bit \\\lightrule
+		srlv & srlv \register{\$d}, \register{\$s}, \register{\$t} & R & shift logico a destra di \register{\$t} bit \\\lightrule
+		srav & srav \register{\$d}, \register{\$s}, \register{\$t} & R & shift aritmetico a destra di \register{\$t} bit \\\lightrule
+		mult & mult \register{\$s}, \register{\$t} & R & moltiplicazione (risultato in registri speciali HI e LO) \\\lightrule
+		multu & multu \register{\$s}, \register{\$t} & R & moltiplicazione tra unsigned (risultato in HI e LO) \\\lightrule
+		div & div \register{\$s}, \register{\$t} & R & divisione (quoziente in LO e resto in HI) \\\lightrule
+		divu & divu \register{\$s}, \register{\$t} & R & divisione tra unsigned (quoziente in LO e resto in HI) \\\lightrule
+	\bottomrule
+\end{tabularx}
 \end{document}

@@ -5,110 +5,139 @@
 
 \graphicspath{{./assets/images/}}
 
+% arara: pdflatex: { synctex: yes, shell: yes }
+% arara: latexmk: { clean: partial }
 \begin{document}
 \chapter{Introduzione ai calcolatori}
+
 \section{Un po' di storia dell'informatica}
+
 \paragraph{ENIAC, il primo computer della storia}
-Commissionato nel 1946 dal Dipartimento di Difesa degli Stati Uniti, \emph{ENIAC} (\emph{Electronic Numerical Integrator and Computer}) è diventato il primo calcolatore della storia.
-Dotato di $18000$ valvole termoioniche, esso occupava una stanza di 9x30 metri, consumando un ammontare spropositato di energia.\\
-Il suo impiego principale consisteva nel calcolare traiettorie dei proiettili di artiglieria. Infatti, è doveroso specificare come i primi calcolatori della storia sono stati concepiti per essere sfruttati in applicazioni belliche.
+Commissionato nel 1946 dal Dipartimento di Difesa degli Stati Uniti, \acrfull{eniac} è diventato il primo calcolatore della storia.
+Dotato di \(18000\) valvole termoioniche, esso occupava una stanza di \(9 \times 30\) metri, consumando un ammontare spropositato di energia.
+Il suo impiego principale consisteva nel calcolare traiettorie dei proiettili di artiglieria.
+Infatti, è doveroso specificare come i primi calcolatori della storia sono stati concepiti per essere sfruttati in applicazioni belliche.
 
 \paragraph{Apollo Guidance Computer}
-Prodotto da IBM nel 1969, disponeva di 2800 circuiti integrati, un processore da \unit[0.043]{MHz} e \unit[152]{KByte} complessivi di memoria ROM/RAM. Presentava un'interfaccia display \& keyboard: i comandi utilizzavano una sintassi del tipo "verbo + nome".
+Prodotto da IBM nel 1969, disponeva di \(2800\) circuiti integrati, un processore da \unit[0.043]{MHz} e \unit[152]{KByte} complessivi di memoria ROM/RAM.
+Presentava un'interfaccia display \& keyboard: i comandi utilizzavano una sintassi del tipo \enquote{verbo \(+\) nome}.
 
-\paragraph{Programma 101} Nel 1964 l'Olivetti ha rilasciato il primo \emph{personal computer} della storia che, sfortunatamente, non avrà successo.
+\paragraph{Programma 101}
+Nel 1964 l'Olivetti rilasciò il primo \emph{personal computer} della storia che, sfortunatamente, non ebbe successo.
 
 \subsection{Differenziazione dei calcolatori}
-Seppur i calcolatori di oggi condividano la stessa idea di base, le soluzioni per ciascuna tipologia di applicazione sono piuttosto diverse. A seguire alcuni esempi di diverso tipo di calcolatori:
+
+Seppur i calcolatori di oggi condividano la stessa idea di base, le soluzioni per ciascuna tipologia di applicazione sono piuttosto diverse.
+A seguire alcuni esempi di diverso tipo di calcolatori:
 
 \begin{table}[H]
-  \centering
-  \subimport{assets/tables/}{table_diff_calcolatori.tex}
+	\centering
+	\subimport{assets/tables/}{table_diff_calcolatori.tex}
 \end{table}
 
-
-Per ovvi motivi, ogni tipologia di calcolatore è meglio adatta per differenti scopi. Ottenere delle buone prestazioni senza eccedere in prezzo e potenza è ciò che decreta il successo commerciale di un prodotto.
+Per ovvi motivi, ogni tipologia di calcolatore è meglio adatta per differenti scopi.
+Ottenere delle buone prestazioni senza eccedere in prezzo e potenza è ciò che decreta il successo commerciale di un prodotto.
 
 \section{Le prestazioni dei calcolatori}
-Un buon programmatore, oltre a saper utilizzare degli efficienti paradigmi, deve comprendere la gerarchia di memoria e il concetto di parallelismo; conoscere a fondo il calcolatore è fondamentale.\\
-Fino a qualche tempo fa, le prestazioni di qualsiasi calcolatore erano in balia della disponibilità di memoria. Al giorno d'oggi invece risulta un problema risolto, tranne per qualche criticità per le applicazioni embedded.\\
+
+Un buon programmatore, oltre a saper utilizzare degli efficienti paradigmi, deve comprendere la gerarchia di memoria e il concetto di parallelismo; conoscere a fondo il calcolatore è fondamentale.
+Fino a qualche tempo fa, le prestazioni di qualsiasi calcolatore erano in balia della disponibilità di memoria.
+Al giorno d'oggi invece risulta un problema risolto, tranne per qualche criticità per le applicazioni embedded.
 Ecco una lista degli elementi che influenzano le prestazioni del calcolatore e il loro ruolo:
 \begin{itemize}[noitemsep]
-  \item \emph{algoritmi}: determinano il numero di istruzioni di alto livello e di operazioni di I/O.
-  \item \emph{linguaggi di programmazione, compilatori e architetture}: determinano il numero di istruzioni macchina per ogni istruzione di basso livello.
-  \item \emph{processore e sistema di memoria}: determina quanto velocemente è possibile eseguire ciascuna istruzione.
-  \item \emph{sistema di I/O} (\emph{hardware e sistema operativo}): determina quanto velocemente possono essere eseguite le istruzioni.
+	\item \emph{algoritmi}: determinano il numero di istruzioni di alto livello e di operazioni di I/O;
+	\item \emph{linguaggi di programmazione, compilatori e architetture}: determinano il numero di istruzioni macchina per ogni istruzione di basso livello;
+	\item \emph{processore e sistema di memoria}: determina quanto velocemente è possibile eseguire ciascuna istruzione;
+	\item \emph{sistema di I/O} (\emph{hardware e sistema operativo}): determina quanto velocemente possono essere eseguite le istruzioni.
 \end{itemize}
 
 \subsection{La memoria e il processore}
+
 \paragraph*{La memoria}
 \`{E} possibile classificare la memoria in:
 \begin{itemize}[noitemsep]
-	\item \emph{volatile}: è costituita da vari banchi di (tipicamente) 8 chip di \emph{RAM} dinamica. \`{E} dominata dalle \emph{DRAM}.
+	\item \emph{volatile}: è costituita da vari banchi di (tipicamente) \(8\) chip di \emph{RAM} dinamica. \`{E} dominata dalle \emph{DRAM};
 	\item \emph{permanente}: è costituita da memorie flash (es. \emph{SSD}), dischi rigidi e CD/DVD.
 \end{itemize}
-La prima viene utilizzata per memorizzare dati e programmi mentre vengono eseguiti (per questo motivo viene chiamata anche \emph{memoria principale}): allo spegnimento i dati vengono persi. La seconda viene usata per memorizzare grandi quantità di dati e programmi fra esecuzioni diverse.
+
+La prima viene utilizzata per memorizzare dati e programmi mentre vengono eseguiti (per questo motivo viene chiamata anche \emph{memoria principale}): allo spegnimento i dati vengono persi.
+La seconda viene usata per memorizzare grandi quantità di dati e programmi fra esecuzioni diverse.
 
 \paragraph{Le memorie di massa}
 Il principio di funzionamento dell'hard disk è di magnetizzare delle particelle metalliche distribuite su un substrato:
 \begin{itemize}[noitemsep]
-  \item i dischi sono organizzati in strutture sovrapposte (cilindri).
-  \item le particelle vengono lette da un dispositivo meccanico (testina) che si sposta radialmente su un braccio (in grado di fare movimenti angolari).
-  \item questa componente rallenta i tempi di accesso ma aumenta al densità di memorizzazione (è possibile arrivare facilmente ai Terabyte).
+	\item i dischi sono organizzati in strutture sovrapposte (cilindri);
+	\item le particelle vengono lette da un dispositivo meccanico (testina) che si sposta radialmente su un braccio (in grado di fare movimenti angolari);
+	\item questa componente rallenta i tempi di accesso ma aumenta al densità di memorizzazione (è possibile arrivare facilmente ai Terabyte).
 \end{itemize}
 
 Diversamente dai dischi rigidi elettromeccanici, la memorizzazione su una memoria flash avviene intrappolando una carica elettrica in maniera permanente.
 
-I dischi ottici funzionano sul principio di riflessione della luce: viene emesso un raggio laser che viene riflesso dai rilievi, nel caso bit 1, e assorbito dalle buche, nel caso bit 0. Nei dischi riscrivibili è inoltre presente un particolare substrato che, se riscaldato, torna alla condizione di partenza, eliminando tutti i dati memorizzati.
+I dischi ottici funzionano sul principio di riflessione della luce: viene emesso un raggio laser che viene riflesso dai rilievi, nel caso bit \(1\), e assorbito dalle buche, nel caso bit \(0\).
+Nei dischi riscrivibili è inoltre presente un particolare substrato che, se riscaldato, torna alla condizione di partenza, eliminando tutti i dati memorizzati.
 
 \paragraph*{Il processore}
 La \emph{CPU} è l'unità centrale di ogni calcolatore. Si compone principalmente di:
 \begin{itemize}[noitemsep]
-  \item \emph{datapath}: esegue operazioni aritmetiche sui dati.
-  \item \emph{control unit}: impartisce ordini al datapath, alla memoria e alle componenti I/O, sulla base di quanto stabilito dal programma.
+	\item \emph{datapath}: esegue operazioni aritmetiche sui dati;
+	\item \emph{control unit}: impartisce ordini al datapath, alla memoria e alle componenti I/O, sulla base di quanto stabilito dal programma.
 \end{itemize}
-Ciascun processore dispone di un'\emph{ISA} (\emph{Instruction Set Architecture}), ossia un'interfaccia che permette di utilizzarlo senza conoscerne i dettagli. Questa, assieme all'ulteriore interfaccia del sistema operativo, forma l'interfaccia binaria delle applicazioni \emph{ABI} (\emph{Application Binary Interface}). Ciò permette allo sviluppatore di svincolarsi dal livello hardware sottostante, secondo il principio di \emph{astrazione}.
+Ciascun processore dispone di un'\acrfull{isa}, ossia un'interfaccia che permette di utilizzarlo senza conoscerne i dettagli.
+Questa, assieme all'ulteriore interfaccia del sistema operativo, forma l'interfaccia binaria delle applicazioni \acrfull{abi}.
+Ciò permette allo sviluppatore di svincolarsi dal livello hardware sottostante, secondo il principio di \emph{astrazione}.
 
-Esistono due diversi tipi di architetture ISA:
+Esistono due diversi tipi di architetture \acrshort{isa}:
 \begin{itemize}[noitemsep]
-	\item \emph{RISC}: offre un numero ridotto di istruzioni, rivolta soprattutto a sistemi embedded.
-	\item \emph{CISC}: permette di usufruire di un maggior numero di istruzioni, rivolta prevalentemente ai personal computer.
+	\item \acrshort{risc}: offre un numero ridotto di istruzioni, rivolta soprattutto a sistemi embedded.
+	\item \acrshort{cisc}: permette di usufruire di un maggior numero di istruzioni, rivolta prevalentemente ai personal computer.
 \end{itemize}
 
 \subsection{Software di sistema}
 Le principali funzioni che deve svolgere un \emph{sistema operativo}:
 \begin{itemize}[noitemsep]
-  \item gestione delle operazioni di I/O.
-  \item allocazione della memoria.
-  \item consentire e regolare il multitasking.
+	\item gestione delle operazioni di I/O;
+	\item allocazione della memoria;
+	\item consentire e regolare il multitasking.
 \end{itemize}
-Il \emph{compilatore} traduce da linguaggio di alto livello a linguaggio macchina. Ogni istruzione di quest'ultimo è costituita da una determinata sequenza di \emph{bit}, ossia l'unità di base dell'informazione (0 o 1).\\
-L'utilità del compilatore consiste nel facilitare il lavoro del programmatore: non è più necessario implementare il software in codice binario, bensì è possibile utilizzare un linguaggio di programmazione più vicino al linguaggio naturale. Il primo linguaggio sviluppato per questo scopo è stato l'\emph{Assembly}. Il software che traduce l'assembly in codice binario si chiama \emph{Assembler}.\\
+
+Il \emph{compilatore} traduce da linguaggio di alto livello a linguaggio macchina. Ogni istruzione di quest'ultimo è costituita da una determinata sequenza di \emph{bit}, ossia l'unità di base dell'informazione (\(0\) o \(1\)).
+L'utilità del compilatore consiste nel facilitare il lavoro del programmatore: non è più necessario implementare il software in codice binario, bensì è possibile utilizzare un linguaggio di programmazione più vicino al linguaggio naturale.
+Il primo linguaggio sviluppato per questo scopo è stato l'\emph{Assembly}.
+Il software che traduce l'assembly in codice binario si chiama \emph{Assembler}.
 \`{E} possibile riassumere la traduzione di un linguaggio di programmazione di alto livello in codice macchina in due semplici passi:
 \begin{enumerate}[noitemsep]
-  \item traduzione del linguaggio ad alto livello in linguaggio Assembly, per via del compilatore.
-  \item traduzione del linguaggio Assembly in linguaggio macchina, attraverso l'assemblatore.
+	\item traduzione del linguaggio ad alto livello in linguaggio Assembly, per via del compilatore;
+	\item traduzione del linguaggio Assembly in linguaggio macchina, attraverso l'assemblatore.
 \end{enumerate}
+
 Spesso fanno eccezione alcuni compilatori che trasformano direttamente il linguaggio ad alto livello in codice macchina.
 
 \subsection{Periferiche di I/O}
 
 \paragraph{Il mouse}
-Il \emph{mouse} è stato inventato nel 1967 da \emph{Doug Engelbart} nei laboratori della \emph{Xerox}. Attualmente sfrutta la tecnologia ottica: attraverso le variazioni di luce provocate da alcuni led che illuminano il piano, il mouse è in grado di rilevare gli spostamenti.
+Il \emph{mouse} è stato inventato nel 1967 da \emph{Doug Engelbart} nei laboratori della \emph{Xerox}.
+Attualmente sfrutta la tecnologia ottica: attraverso le variazioni di luce provocate da alcuni led che illuminano il piano, il mouse è in grado di rilevare gli spostamenti.
 
 \paragraph{Il display LCD}
-Gli schermi \emph{LCD} (\emph{Liquid Crystal Display}) sono costituiti da alcuni cristalli che galleggiano in un fluido: ciascuno di essi corrisponde ad un pixel. Attraverso un campo elettrico è possibile ruotare di 90 gradi ogni singolo cristallo, che di conseguenza può impedire o meno il passaggio della luce secondo il fenomeno fisico della \emph{polarizzazione}.
+Gli schermi \emph{LCD} (\emph{Liquid Crystal Display}) sono costituiti da alcuni cristalli che galleggiano in un fluido: ciascuno di essi corrisponde ad un pixel.
+Attraverso un campo elettrico è possibile ruotare di 90 gradi ogni singolo cristallo, che di conseguenza può impedire o meno il passaggio della luce secondo il fenomeno fisico della \emph{polarizzazione}.
 
-L'immagine viene rappresentata da una matrice di pixel: ciascuno di essi ha associata una componente rossa, verde, blu (sistema \emph{RGB}). Questa immagine viene memorizzata in un \emph{frame buffer}, una RAM che viene aggiornata  fino a 100 volte al secondo.
+L'immagine viene rappresentata da una matrice di pixel: ciascuno di essi ha associata una componente rossa, verde, blu (sistema \emph{RGB}).
+Questa immagine viene memorizzata in un \emph{frame buffer}, una RAM che viene aggiornata fino a \(100\) volte al secondo.
 
 \subsection{Misurazione delle prestazioni}
-I moderni processori sono costruiti usando un segnale periodico che ne sincronizza le operazioni. Il \emph{ciclo di clock} è l’intervallo di tempo che intercorre tra due colpi di clock. La frequenza è definita come $\frac{1}{\text{ciclo di clock}}$. Il ciclo di clock è misurato in secondi, la frequenza in Hertz.\\
+
+I moderni processori sono costruiti usando un segnale periodico che ne sincronizza le operazioni.
+Il \emph{ciclo di clock} è l'intervallo di tempo che intercorre tra due colpi di clock. La frequenza è definita come \(\frac{1}{\text{ciclo di clock}}\).
+Il ciclo di clock è misurato in secondi, la frequenza in Hertz.
+
 Il tempo d'esecuzione di un programma dipende da tre fattori:
 \begin{itemize}[nolistsep]
 	\item il numero di istruzioni dell'algoritmo.
 	\item i cicli di clock per istruzione (\emph{CPI}).
 	\item la frequenza di clock.
 \end{itemize}
+
 \begin{equation*}
 \text{Tempo CPU} = \text{N. di istruzioni} \cdot \text{CPI} \cdot \text{Periodo Clock} = \frac{\text{N. di istruzioni} \cdot \text{CPI}}{\text{Frequenza Clock}}
 \end{equation*}
@@ -119,9 +148,12 @@ Il tempo d'esecuzione di un programma dipende da tre fattori:
 	\caption{Diagramma tempo di risposta}
 \end{figure}
 
-Un algoritmo è efficiente se viene strutturato in modo da risparmiare istruzioni e, per una particolare architettura, se utilizza le istruzioni più efficienti (quelle con un basso CPI, poiché il CPI dei diversi tipi di istruzione varia in base all'architettura).\\
-Il linguaggio di programmazione influenza il numero di istruzioni e il CPI: più di alto livello sono i costrutti, più lunghe sono le sequenze di istruzioni macchina ottenute traducendo il codice di partenza.\\
-Il compilatore sicuramente influenza sia il numero di istruzioni che il CPI in base alla propria efficienza e ottimizzazione.\\
+Un algoritmo è efficiente se viene strutturato in modo da risparmiare istruzioni e, per una particolare architettura, se utilizza le istruzioni più efficienti (quelle con un basso CPI, poiché il CPI dei diversi tipi di istruzione varia in base all'architettura).
+
+Il linguaggio di programmazione influenza il numero di istruzioni e il CPI: più di alto livello sono i costrutti, più lunghe sono le sequenze di istruzioni macchina ottenute traducendo il codice di partenza.
+
+Il compilatore sicuramente influenza sia il numero di istruzioni che il CPI in base alla propria efficienza e ottimizzazione.
+
 In base alla sua progettazione, anche l'ISA ha un impatto sul numero di istruzioni, sul CPI, e sulla frequenza di clock: essa può fornire istruzioni di basso o alto livello (più o meno istruzioni per eseguire un'operazione).
 
 \subsection{La legge di Moore}
@@ -129,13 +161,19 @@ Negli scorsi anni, le prestazioni dei calcolatori sono aumentate costantemente, 
 
 \subsection{La barriera dell'energia}
 Dagli anni Ottanta ad oggi, la frequenza media dei processori è incrementata di tre ordini di grandezza, con un conseguente aumento dei consumi di 30 volte.
+
 \begin{equation*}
-\text{Potenza} = \text{capacità}\cdot \text{tensione}^2\cdot \text{frequenza di commutazione}
+\text{Potenza} = \text{capacità} \cdot \text{tensione}^2 \cdot \text{frequenza di commutazione}
 \end{equation*}
+
 dove il valore della frequenza di commutazione è strettamente legato alla frequenza di clock del processore.
 
-Incrementare la frequenza senza eccedere in consumi è stato permesso grazie un abbassamento della tensione di alimentazione (termine quadratico, quindi il più influente) da \unit[5]{V} ad un minimo di \unit[1.2]{V}. Al di sotto di questo valore avvengono fenomeni di tipo elettrostatico che portano il sistema in una condizione anomala, dunque inutilizzabile.\\
-C'è inoltre un limite alla capacità di estrarre la potenza prodotta dai processori (e il conseguente calore) tramite ventole o radiatori. Il processo di refrigerazione diventa molto costoso e difficilmente attuabile in dispositivi desktop e laptop.
+Incrementare la frequenza senza eccedere in consumi è stato permesso grazie un abbassamento della tensione di alimentazione (termine quadratico, quindi il più influente) da \unit[5]{V} ad un minimo di \unit[1.2]{V}.
+Al di sotto di questo valore avvengono fenomeni di tipo elettrostatico che portano il sistema in una condizione anomala, dunque inutilizzabile.
 
-La soluzione più adottata consiste nelle \emph{architetture multicore}, attraverso il concetto di \emph{parallelismo}. Ciò comporta una maggiore difficoltà e responsabilità durante la scrittura di codice da parte del programmatore (debugging, bilanciamento del carico di lavoro fra le CPU), ma porta a notevoli miglioramenti in termini di efficienza.
+C'è inoltre un limite alla capacità di estrarre la potenza prodotta dai processori (e il conseguente calore) tramite ventole o radiatori.
+Il processo di refrigerazione diventa molto costoso e difficilmente attuabile in dispositivi desktop e laptop.
+
+La soluzione più adottata consiste nelle \emph{architetture multicore}, attraverso il concetto di \emph{parallelismo}.
+Ciò comporta una maggiore difficoltà e responsabilità durante la scrittura di codice da parte del programmatore (debugging, bilanciamento del carico di lavoro fra le CPU), ma porta a notevoli miglioramenti in termini di efficienza.
 \end{document}

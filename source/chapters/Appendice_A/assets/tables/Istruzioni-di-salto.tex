@@ -4,16 +4,28 @@
 \usepackage{tabularx}
 \usepackage[table]{xcolor}
 
+\setlength\lightrulewidth{0.1pt}
+\newcommand\lightrule{%
+	\arrayrulecolor{black!30}%
+	\midrule[\lightrulewidth]%
+	\arrayrulecolor{black}}
+
+\newcommand\register[1]{%
+	\texttt{#1}%
+}
+
+% arara: pdflatex
+% arara: latexmk: { clean: partial }
 \begin{document}
-	\begin{tabularx}{\textwidth}{ >{\hsize=.11\textwidth}X >{\hsize=.18\textwidth}X >{\hsize=.08\textwidth}X X }
-		\toprule
-			Istruzione & Sintassi & Tipo & Funzione\\
-		\midrule
-			j & j C &\centering J & jump: salta a \(C\cdot4\)\\
-			jal & jal C &\centering J & jump and link: salta a \(C\cdot4\) e salva il valore di PC in \emph{\$ra}\\
-			jr & jr \emph{\$r} &\centering R & jump register: salta all'indirizzo contenuto in \emph{\$r}\\
-			beq & beq \emph{\$s}, \emph{\$t}, C &\centering I & branch equal: se \emph{s} e \emph{t} sono uguali, salta a  \(PC+4+C\cdot4\)\\
-			bne & bne \emph{\$s}, \emph{\$t}, C &\centering I & branch not equal: se \emph{s} e \emph{t} sono diversi, salta a  \(PC+4+C\cdot4\)\\
-		\bottomrule
-	\end{tabularx}
+\begin{tabularx}{\textwidth}{ >{\hsize=.11\textwidth}X >{\hsize=.18\textwidth}X >{\hsize=.08\textwidth}X X }
+	\toprule
+		Istruzione & Sintassi & Tipo & Funzione \\
+	\midrule
+		j & j C & J & jump: salta a \(C\cdot4\) \\\lightrule
+		jal & jal C & J & jump and link: salta a \(C\cdot4\) e salva il valore di PC in \register{\$ra} \\\lightrule
+		jr & jr \register{\$r} & R & jump register: salta all'indirizzo contenuto in \register{\$r} \\\lightrule
+		beq & beq \register{\$s}, \register{\$t}, C & I & branch equal: se \register{s} e \register{t} sono uguali, salta a  \(PC + 4 + C \cdot 4\) \\\lightrule
+		bne & bne \register{\$s}, \register{\$t}, C & I & branch not equal: se \register{s} e \register{t} sono diversi, salta a  \(PC + 4 + C \cdot 4\) \\
+	\bottomrule
+\end{tabularx}
 \end{document}
