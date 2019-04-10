@@ -1,0 +1,38 @@
+\documentclass[varwidth=6in]{standalone}
+
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+
+\setlength\lightrulewidth{0.1pt}
+\newcommand\lightrule{%
+	\arrayrulecolor{black!30}%
+	\midrule[\lightrulewidth]%
+	\arrayrulecolor{black}}
+
+\newcommand\register[1]{%
+	\texttt{#1}%
+}
+
+% arara: pdflatex
+% arara: latexmk: { clean: partial }
+\begin{document}
+	\begin{tabularx}{\textwidth}{ >{\hsize=.13\textwidth}X >{\hsize=.12\textwidth}X >{\hsize=.50\textwidth}X X }
+		\toprule
+			Nome & Numero & Utilizzo & Preservare \\
+		\midrule
+			\register{\$zero} & 0 & Valore costante \(0\) & Costante \\\lightrule
+			\register{\$at} & 1 & Assembler‐linker per pseudo‐istruzioni e macro & No\\\lightrule
+			\register{\$v0-\$v1} & 2-3 & Valori di ritorno funzioni e valutazione espressioni & No \\\lightrule
+			\register{\$a0-\$a3} & 4-7 & Argomenti & No \\\lightrule
+			\register{\$t0-\$t7} & 8-15 & Temporanei & No \\\lightrule
+			\register{\$s0-\$s7} & 16-23 & Salvati & Sì \\\lightrule
+			\register{\$t8-\$t9} & 24-25 & Altri temporanei & No \\\lightrule
+			\register{\$k0-\$k1} & 26-27 & Dedicati al kernel, da NON USARE & No \\\lightrule
+			\register{\$gp} & 28 & Global pointer & Sì \\\lightrule
+			\register{\$sp} & 29 & Stack pointer & Sì \\\lightrule
+			\register{\$fp} & 30 & Frame pointer & Sì \\\lightrule
+			\register{\$ra} & 31 & Return address & Sì \\\lightrule
+		\bottomrule
+	\end{tabularx}
+\end{document}
