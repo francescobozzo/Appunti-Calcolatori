@@ -1,38 +1,46 @@
-\documentclass[a4paper,12pt, oneside]{book}
-%\documentclass[a4paper,12pt, draft]{book}
+\documentclass[
+	,a4paper
+	,12pt
+	,oneside
+	% ,draft
+]{book}
+
 \usepackage{style}
 
 \graphicspath{%
-{./chapters/01/assets/images/}%
-{./chapters/02/assets/images/}%
-{./chapters/03/assets/images/}%
-{./chapters/04/assets/images/}%
-{./chapters/05/assets/images/}%
-{./chapters/06/assets/images/}%
-{./chapters/07/assets/images/}%
-{./chapters/08/assets/images/}%
+	{./chapters/01/assets/images/}%
+	{./chapters/02/assets/images/}%
+	{./chapters/03/assets/images/}%
+	{./chapters/04/assets/images/}%
+	{./chapters/05/assets/images/}%
+	{./chapters/06/assets/images/}%
+	{./chapters/07/assets/images/}%
 }
 
 \author{Bozzo Francesco \and Conti Samuele \and Daniotti Filippo}
 \title{Appunti Calcolatori per la PPI}
 \date{\today}
 
+% arara: pdflatex: { shell: yes }
+% arara: latexmk: { clean: partial }
 \begin{document}
-	\frontmatter
+\frontmatter
+
 	\maketitle
 	\tableofcontents
 
-	\mainmatter
+\mainmatter
 
 	\import{./chapters/01/}{chapter01}
 	\import{./chapters/02/}{chapter02}
 	\import{./chapters/03/}{chapter03}
 	\import{./chapters/04/}{chapter04}
 	\import{./chapters/05/}{chapter05}
-	\import{./chapters/06/}{chapter06}
+	\import{./chapters/06/}{chapter06} % ~10 seconds
 	\import{./chapters/07/}{chapter07}
 	\import{./chapters/08/}{chapter08}
-	\import{./chapters/Appendice_A/}{Appendice_A}
 
-	\backmatter
+\backmatter
+
+	\import{./chapters/Appendice_A/}{Appendice_A}
 \end{document}

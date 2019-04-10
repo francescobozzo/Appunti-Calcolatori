@@ -5,16 +5,23 @@
 
 \graphicspath{{./assets/images/}}
 
+% arara: pdflatex: { shell: yes }
+% arara: latexmk: { clean: partial }
+%! arara: clean: { extensions: [sta] }
 \begin{document}
+
 \chapter{Aritmetica dei calcolatori}
+
 \section{Informazione nei computer}
 
 \subsection{I transistor}
+
 \begin{wrapfigure}{r}{0.4\textwidth}
 	\includegraphics[width=0.9\linewidth]{transistor.png}
 	\label{fig:transistor}
 	\centering
 \end{wrapfigure}
+
 Tutti i computer moderni sono composti da \emph{transistor} (detti anche triodi), delle strutture bistabili: possono assumere due stati come un interruttore, 0 (spento) e 1 (acceso). Molti \emph{transistor} collegati tra loro in una sorta di matrice possono rappresentare delle serie di porte logiche, ed è questa la struttura che sta alla base dell'architettura dei moderni calcolatori.\\
 Un computer memorizza (e manipola) solo sequenze di 0 e 1 (sequenze di bit); anche l’ENIAC funzionava allo stesso modo, solo che al posto dei \emph{transistor} era composto da \emph{valvole termoioniche}, che non erano differenti nel funzionamento (assumono sempre i due stati descritti in precedenza, solo più lentamente).
 \subsection{Interpretazione delle informazioni} In seguito le sequenze di bit che i computer elaborano/memorizzano possono essere interpretate in tantissimi modi diversi, tra cui numeri, caratteri, suoni, immagini, istruzioni e molti altri.\\

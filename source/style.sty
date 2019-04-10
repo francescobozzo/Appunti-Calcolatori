@@ -1,17 +1,23 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[italian]{babel}
+\usepackage[english, italian]{babel}
 
-\usepackage{graphicx}
-\usepackage{wrapfig}
-\usepackage{float}
+\usepackage{
+	,graphicx
+	,wrapfig
+	,float
+}
 
 \usepackage[table,xcdraw]{xcolor}
 \usepackage{tikz}
+
 \usepackage{circuitikz}
-\usetikzlibrary{shapes,arrows,calc,arrows.meta}
-\usepackage{circuitikz}
-\usetikzlibrary{circuits.logic.IEC,calc}
+\usetikzlibrary{
+	,arrows
+	,calc
+	,circuits.logic.IEC
+	,shapes
+}
 
 \usepackage{enumitem}
 
@@ -20,19 +26,18 @@
 
 \usepackage{standalone}
 \usepackage{import}
-\usepackage{booktabs}
-\usepackage{tabularx}
+
+\usepackage{
+	,tabularx
+	,booktabs
+}
 
 \usepackage{minted}
-\AtBeginEnvironment{asminline}{\catcode‘\$=12\mathcode‘\$="613B}
+% source: TODO
+% \AtBeginEnvironment{asminline}{\catcode‘\$=12\mathcode‘\$="613B}
 \usepackage{caption}
+% \usepackage{subcaption}
 
 \usepackage[hidelinks]{hyperref}
+
 \usepackage{tcolorbox}
-
-
-\setlength\lightrulewidth{0.1pt}
-\newcommand\lightrule{%
-	\arrayrulecolor{black!30}%
-	\midrule[\lightrulewidth]%
-	\arrayrulecolor{black}}
