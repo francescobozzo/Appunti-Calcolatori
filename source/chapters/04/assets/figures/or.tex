@@ -3,9 +3,10 @@
 \usepackage{tikz}
 \usepackage{circuitikz}
 
+% arara: pdflatex
+% arara: latexmk: { clean: partial }
 \begin{document}
-	\begin{circuitikz} \draw
-		node[american or port]{}
-	; \end{circuitikz}
-
+\begin{circuitikz}
+	\draw node[american or port]{};
+\end{circuitikz}
 \end{document}

@@ -6,6 +6,9 @@
 \graphicspath{{./assets/images/}}
 \newmintinline{asm}{}
 
+% arara: pdflatex: { shell: yes }
+% arara: latexmk: { clean: partial }
+%! arara: clean: { extensions: [sta] }
 \begin{document}
 \chapter{Architettura ARM}
 \paragraph{L'architettura ARM} nasce negli anni '80 come architettura RISC leggermente pragmatica, che tenta di migliorare la suddetta architettura implementando delle istruzioni e delle strategie appartenenti ad Intel, probabilmente è esattamente questa la ragione del suo successo.\\

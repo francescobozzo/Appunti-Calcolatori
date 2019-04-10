@@ -2,15 +2,17 @@
 
 \usepackage{booktabs}
 
+% arara: pdflatex
+% arara: latexmk: { clean: partial }
 \begin{document}
-	\begin{tabular}{ccc}
-		\toprule
-			\multicolumn{2}{c}{Input} & Ouput\\
-		\midrule
-			0 & 0 & 1\\
-			0 & 1 & 0\\
-			1 & 0 & 0\\
-			1 & 1 & 0\\
-		\bottomrule
-	\end{tabular}
+\begin{tabular}{ccc}
+	\toprule
+		\multicolumn{2}{c}{Input} & Ouput \\
+	\midrule
+		0 & 0 & 1 \\
+		0 & 1 & 0 \\
+		1 & 0 & 0 \\
+		1 & 1 & 0 \\
+	\bottomrule
+\end{tabular}
 \end{document}
