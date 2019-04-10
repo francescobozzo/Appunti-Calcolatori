@@ -42,7 +42,13 @@ Come per quanto riguarda gli ABI esistono molte alternative distinte di \emph{co
 Le istruzioni dell'Assembly ARM sono molto simili a quelle del buon vecchio MIPS, tuttavia sono meno regolari in quanto alcune di esse presentano solamente due argomenti; è inoltre notevole il fatto che nonostante la dicitura RISC l'ARM presenti una lunga lista di istruzioni.\\
 Come nel MIPS le istruzioni a tre argomenti prevedono il primo come destinazione e i seguenti come operandi, l'operando di sinistra dev'essere un registro mentre quello di destra può essere sia un registro che un valore immediato. Da notare che non si possono usare operandi in memoria, per sfruttare questa vedremo in seguito l'utilizzo delle operazioni specifiche \emph{load/store register}.\\
 Tutte le istruzioni in ARM permettono esecuzione condizionale grazie all'inserimento di determinati suffssi al termine del identificativo dell'operazione, che comportano l'esecuzione dell'operazione stessa solo se i Bit del registro di flag corrispondono alla condizione desiderata; qui è riportata una tabella con i principali suffissi ed il loro funzionamento:\\
-inseriscimi, sono la tabella fraaaaah\\
+
+\begin{table}[H]
+	\centering
+	\subimport{assets/tables/}{condizionali.tex}
+	\caption*{Suffissi condizionali ARM}
+\end{table}
+
 I flag stessi possono essere modificati da apposite operazioni come \emph{cmp}(compare), o da operazioni a cui si aggiunge il suffiusso opziionale \emph{s}, che va a settare i Bit del registro di flag se si registrano determinate condizioni (ad esempio un overflow durante una somma).\\
 
 \subsection*{Istruzioni più comuni}
@@ -53,9 +59,7 @@ Lo schema base di un'operazione è il seguente:
 \end{minted}
 
 Dove [-cond] ed [-s] sono facoltativi ed r* può essere sia un registro che un valore immediato, tuttavia, a differenza di MIPS, ARM non ha bisogno di due operandi distinti \mintinline{asm}{add} e \mintinline{asm}{addi}, utilizza solo il primo di questi due.\\
-Se il secondo operando è un registro si possono inserire al termine dell'operazione dei comandi ulteriori che permettono di eseguire operazioni di shift o rotazione sul secondo esercizio (sopo l'avvenimento dell'operazione), vengono mostrati ora alcuni di questi operandi e la loro funzione.\\
-Inserisci una tabella degli operandi quissotto.\\
-
+Se il secondo operando è un registro si possono inserire al termine dell'operazione dei comandi ulteriori che permettono di eseguire operazioni di shift o rotazione sul secondo operando (sopo l'avvenimento dell'operazione), ad esempio \emph{lsl/asl, lsr, asr, ror, rrx}.\\
 Vediamo ora una lista delle operazioni più comuni:
 % se si trova un metodo migliore di una lista di emph oro
 % altriemnti pace...
@@ -126,6 +130,6 @@ Una possibilità molto interessante offerta da ARM è l'utilizzo dei meccanismi 
 
 Tirando le somme sui metodi di indirizzamento si può dire che sono senz'altro più potenti di quelli offerti da MIPS, soprattutto grazie alla possibilità di aggiuronare automaticamente il registro di base, che diventa super comoda quando si devono gestire delgli array. Rispetto ad Intel invece ARM ha la limitazione di non poter usare contemporaneamente offset ed indice.
 
-\section{Esempio: Copia di una stringa}
+%\section{Esempio: Copia di una stringa}
 
 \end{document}

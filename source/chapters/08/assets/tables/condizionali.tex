@@ -1,0 +1,27 @@
+\documentclass[varwidth=6in]{standalone}
+
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+
+\setlength\lightrulewidth{0.1pt}
+%\newcommand\lightrule{%
+%	\arrayrulecolor{black!30}%
+%	\midrule[\lightrulewidth]%
+%	\arrayrulecolor{black}}
+
+% arara: pdflatex
+% arara: latexmk: { clean: partial }
+\begin{document}
+	\begin{tabularx}{.42\textwidth}{ >{\hsize=.08\textwidth}X X}
+		\toprule
+			Suffisso & Condizione verificata \\
+		\midrule
+			eq & equal \\\lightrule
+			ne & not equal \\\lightrule
+			hs & higher or same \\\lightrule
+			lo & lower \\\lightrule
+			mi & minor \\
+		\bottomrule
+	\end{tabularx}
+\end{document}
