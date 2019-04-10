@@ -4,19 +4,52 @@
 \usepackage{../../style}
 
 \graphicspath{{./assets/images/}}
+\newmintinline{asm}{}
 
 \begin{document}
 \chapter{Architettura ARM}
 \paragraph{L'architettura ARM} nasce negli anni '80 come architettura RISC leggermente pragmatica, che tenta di migliorare la suddetta architettura implementando delle istruzioni e delle strategie appartenenti ad Intel, probabilmente è esattamente questa la ragione del suo successo.\\
-Un'altra caratteristica peculiare dell'ARM è la presenza di una modalità \emph{low power}, che limita di molto il consumo di energia restringendo le istruzioni utilizzabili solo a quelle più semplici (e quindi meno costose). È propio per questa ragione che l'ARM ha avuto un'enorme diffusione come architettura per i dispositivi \emph{portable} e \emph{wearable}.
+Un'altra caratteristica peculiare dell'ARM è la presenza di una modalità \emph{low power}, che limita di molto il consumo di energia restringendo le istruzioni utilizzabili solo a quelle più semplici (e quindi meno costose). È propio per questa ragione che l'ARM ha avuto un'enorme diffusione come architettura per i dispositivi \emph{portable} e \emph{wearable} oltre che per i sistemi \emph{embedded}.\\
+Per amor di precisione ci teniamo a specificare che in realtà "architettura ARM" non è una dicitura univoca in quanto esistono più CPU ARM con ISA differenti, per non parlare del numero spropositato di ABI anche molto diverse tra loro che si possono trovare per questa architettura.\\
+Passiamo ora ai dettagli tecnici.
 
 \section{Registri e relativo utilizzo}
+In ARM i registri sono 16 a 32 Bit (anche se ultimamente se ne vedono pure a 64 Bit... \emph{non ci sono più i registri di una volta}). I registri hanno sono nominati da \mintinline{asm}{r0} a \mintinline{asm}{r15} (gioite, è scoparso l'orribile simbolo di demarcazione \$) ed alcuni di essi hanno (generalmente) funzioni specifiche, ovvero:
 
-\paragraph{Le convenzioni di chiamata}
+\begin{itemize}[nolistsep]
+	\item \textbf{r13}, detto anche \emph{stack pointer} è il registro che contiene il puntatore allo stack
+	\item \textbf{r14}, detto anche \emph{link register} è il registro che contiene l'indirizzo di ritorno delle subroutine (l'equivalente di \$ra in MIPS)
+	\item \textbf{r15}, contiene il \emph{program counter} e nei bit più significativi segnala i flags
+\end{itemize}
+
+In realtà questo standard pur essendo molto diffuso non è assoluto, di fatto esistono ABI che implementano l'utilizzo dei registri in modo diverso.\\
+
+\paragraph{Le convenzioni di chiamata} servono appunto per "mettere d'accordo" diversi compilatori/librerie e altre parti del Sistema Operativo e vengono specificate appositamente dall'ABI, sono esse che determinano come passare i parametri (se solo tramite registri o anche via stack), quali registri preservare, quali registri utilizzare liberamente ecc.\\
+Come per quanto riguarda gli ABI esistono molte alternative distinte di \emph{convenzioni di chiamata}, vediamo ora che cosa stabiliscono le più diffuse nel mondo ARM:
+\begin{itemize}[nolistsep]
+	\item i primi quattro registri \mintinline{asm}{r0},...,\mintinline{asm}{r3} ed il registro\mintinline{asm}{r12} sono registri temporanei
+	\item i registri da \mintinline{asm}{r4} a \mintinline{asm}{r12} invece sono da preservare, con l'eccezione di \mintinline{asm}{r9}, che in alcuni ABI è bullizzato e non viene preservato
+	\item i rimanenti registri \mintinline{asm}{r13},\mintinline{asm}{r14} ed\mintinline{asm}{r15} hanno le funzioni descritte prima
+\end{itemize}
+
+\section{Le istruzioni ARM}
+Le istruzioni dell'Assembly ARM sono molto simili a quelle del buon vecchio MIPS, tuttavia sono meno regolari in quanto alcune di esse presentano solamente due argomenti; è inoltre notevole il fatto che nonostante la dicitura RISC l'ARM presenti una lunga lista di istruzioni.\\
+Come nel MIPS le istruzioni a tre argomenti prevedono il primo come destinazione e i seguenti come operandi, l'operando di sinistra dev'essere un registro mentre quello di destra può essere sia un registro che un valore immediato. Da notare che non si possono usare operandi in memoria, per sfruttare questa vedremo in seguito l'utilizzo delle operazioni specifiche \emph{load/store register}.\\
+Tutte le istruzioni in ARM permettono esecuzione condizionale grazie all'inserimento di determinati suffssi al termine del identificativo dell'operazione, che comportano l'esecuzione dell'operazione stessa solo se i Bit del registro di flag corrispondono alla condizione desiderata; qui è riportata una tabella con i principali suffissi ed il loro funzionamento:\\
+inseriscimi, sono la tabella fraaaaah\\
+I flag stessi possono essere modificati da apposite operazioni come \emph{cmp}(compare), o da operazioni a cui si aggiunge il suffiusso opziionale \emph{s}, che va a settare i Bit del registro di flag se si registrano determinate condizioni (ad esempio un overflow durante una somma).\\
+
+\subsection*{Istruzioni più comuni}
+Lo schema base di un'operazione è il seguente:
+\begin{minted}[linenos, tabsize=4]{asm}
+
+\end{minted}
+
 
 \section{Modalità di indirizzamento in ARM}
 
-\section{Particolarità delle istruzioni ARM}	 
 
+\section{Particolarità delle istruzioni ARM}
+\section{Esempio: Copia di una stringa}
 
 \end{document}
