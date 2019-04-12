@@ -16,42 +16,50 @@
 	\texttt{#1}%
 }
 
+\newcommand\registerOp[3]{%
+	\register{#1} \(#2\) \register{#3}%
+}
+
 % TODO finire di correggere, buon lavoro! :-)
 % arara: pdflatex
 % arara: latexmk: { clean: partial }
 \begin{document}
 \small
-\begin{tabularx}{\textwidth}{ >{\hsize=.30\textwidth}X >{\hsize=.20\textwidth}X >{\hsize=.23\textwidth}X >{\hsize=.35\textwidth}X }
+\begin{tabularx}{\textwidth}{ >{\hsize=.25\textwidth}X >{\hsize=.20\textwidth}X >{\hsize=.23\textwidth}X >{\hsize=.35\textwidth}X }
 	\toprule
 		Macro & Sintassi & Espansa a & Funzione \\
 	\midrule
-		Move & move \register{\$rt}, \register{\$rs} & add \register{\$rt}, \register{\$rs}, \register{\$zero} & \(rt=rs\) \\\lightrule
+		Move & move \register{\$rt}, \register{\$rs} & add \register{\$rt}, \register{\$rs}, \register{\$zero} & \registerOp{rt}{=}{rs} \\\lightrule
 
-		Clear & clear \register{\$rt} & add \register{\$rt}, \register{\$zero}, \register{\$zero} & \(rt=0\) \\\lightrule
+		Clear & clear \register{\$rt} & add \register{\$rt}, \register{\$zero}, \register{\$zero} & \register{rt} \(=0\) \\\lightrule
 
-		Not & not \register{\$rt}, \register{\$rs} & nor \register{\$rt}, \register{\$rs}, \register{\$zero} & \(rt \neq rs\) \\\lightrule
+		Not & not \register{\$rt}, \register{\$rs} & nor \register{\$rt}, \register{\$rs}, \register{\$zero} & \registerOp{rt}{\neq}{rs} \\\lightrule
 
-		\multirow{2}{*}{Load Adress} & \multirow{2}{*}{la \register{\$rd}, Addr} & lui \register{\$rd}, Addr[31:16] & \multirow{2}{*}{rd = Address} \\
+		\multirow{2}{*}{Load Adress} & \multirow{2}{*}{la \register{\$rd}, Addr} & lui \register{\$rd}, Addr[31:16] & \multirow{2}{*}{\register{rd} = Address} \\
 		&& ori \register{\$rd}, \register{\$rd}, Addr[15:0] & \\\lightrule
 
-		\multirow{2}{*}{Load Immediate} & \multirow{2}{*}{li \register{\$rd}, v} & lui \register{\$rd}, v[31:16] & \multirow{2}{*}{rd = \(32\) bit value} \\
+		\multirow{2}{*}{Load Immediate} & \multirow{2}{*}{li \register{\$rd}, v} & lui \register{\$rd}, v[31:16] & \multirow{2}{*}{\register{rd} = \(32\) bit value} \\
 		&& ori \register{\$rd}, \register{\$rd}, v[15:0] & \\\lightrule
 
-		Branch & b Label & beq \register{\$zero}, \register{\$zero}, Label & PC \(=\) Label \\\lightrule
+		Branch & b Label & beq \register{\$zero}, \register{\$zero}, Label & \register{PC} \(=\) Label \\\lightrule
 
-		% Branch if greater & bgt \register{\$rs}, \register{\$rt}, Label & \begin{tabular}[c]{@{}l@{}l@{}}  \\  slt \register{\$at}, \register{\$rt}, \register{\$rs}  \\ bne \register{\$at}, \register{\$zero}, Label \end{tabular} & if \(rs > rt\) PC=Label \\
+		\multirow{2}{*}{Branch if greater} & \multirow{2}{*}{bgt \register{\$rs}, \register{\$rt}, Label} & slt \register{\$at}, \register{\$rt}, \register{\$rs} & \multirow{2}{*}{if \registerOp{rs}{>}{rt} \register{PC} \( = \) Label} \\
+		&& bne \register{\$at}, \register{\$zero}, Label & \\\lightrule
 
-		% Branch if less & blt \register{\$rs}, \register{\$rt}, Label & \begin{tabular}[c]{@{}l@{}l@{}}  \\  slt \register{\$at}, \register{\$rs}, \register{\$rt}  \\ bne \register{\$at}, \register{\$zero}, Label \end{tabular} & if \(rs<rt\) PC=Label \\
+		\multirow{2}{*}{Branch if less} & \multirow{2}{*}{blt \register{\$rs}, \register{\$rt}, Label} & slt \register{\$at}, \register{\$rs}, \register{\$rt} & \multirow{2}{*}{if \registerOp{rs}{<}{rt} \register{PC} \(=\) Label} \\
+		&& bne \register{\$at}, \register{\$zero}, Label & \\\lightrule
 
-		% Branch if greater or equal & bge \register{\$rs}, \register{\$rt}, Label & \begin{tabular}[c]{@{}l@{}l@{}}  \\  slt \register{\$at}, \register{\$rs}, \register{\$rt}  \\ beq \register{\$at}, \register{\$zero}, Label \end{tabular} & if\(rs \geqslant rt\)PC=Label \\
+		\multirow{2}{*}{Branch if greater or equal} & \multirow{2}{*}{bge \register{\$rs}, \register{\$rt}, Label} & slt \register{\$at}, \register{\$rs}, \register{\$rt} & \multirow{2}{*}{if \registerOp{rs}{\geqslant}{rt} \register{PC} \(=\) Label} \\
+		&& beq \register{\$at}, \register{\$zero}, Label & \\\lightrule
 
-		% Branch if less or equal & ble \register{\$rs}, \register{\$rt}, Label & \begin{tabular}[c]{@{}l@{}l@{}}  \\  slt \register{\$at}, \register{\$rt}, \register{\$rs}  \\ beq \register{\$at}, \register{\$zero}, Label \end{tabular} & if \(rs \leqslant rt\) PC\(=\)Label \\
+		\multirow{2}{*}{Branch if less or equal} & \multirow{2}{*}{ble \register{\$rs}, \register{\$rt}, Label} & slt \register{\$at}, \register{\$rt}, \register{\$rs} & \multirow{2}{*}{if \registerOp{rs}{\leqslant}{rt} \register{PC} \(=\) Label} \\
+		&& beq \register{\$at}, \register{\$zero}, Label & \\\lightrule
 
-		Multiply 32 bit & mul \register{\$d}, \register{\$s}, \register{\$t} & mult \register{\$s}, \register{\$t}; mflo \register{\$d} & d = s \(\cdot\) t \\\lightrule
+		Multiply 32 bit & mul \register{\$d}, \register{\$s}, \register{\$t} & mult \register{\$s}, \register{\$t}; mflo \register{\$d} & \register{d} = \registerOp{s}{\cdot}{t} \\\lightrule
 
-		Division & div \register{\$d}, \register{\$s}, \register{\$t} & div \register{\$s}, \register{\$t}; mflo \register{\$d} & d = s / t \\\lightrule
+		Division & div \register{\$d}, \register{\$s}, \register{\$t} & div \register{\$s}, \register{\$t}; mflo \register{\$d} & \register{d} = \registerOp{s}{/}{t} \\\lightrule
 
-		Reminder & rem \register{\$d}, \register{\$s}, \register{\$t} & div \register{\$s}, \register{\$t}; mfhi \register{\$d} & d = s \% t \\
+		Reminder & rem \register{\$d}, \register{\$s}, \register{\$t} & div \register{\$s}, \register{\$t}; mfhi \register{\$d} & \register{d} = \registerOp{s}{\bmod}{t} \\
 	\bottomrule
 \end{tabularx}
 \end{document}

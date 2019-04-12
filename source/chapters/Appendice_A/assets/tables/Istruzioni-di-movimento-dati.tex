@@ -21,7 +21,7 @@
 	\toprule
 		Istruzione & Sintassi & Tipo & Funzione \\
 	\midrule
-		lw & lw \register{\$d}, S(\register{\$b}) & I & load wold: carica in \register{\$d} la parola memorizzata a \register{b}+\register{S} (\register{\$b} = base, S =spiazzamento) \\\lightrule
+		lw & lw \register{\$d}, S(\register{\$b}) & I & load wold: carica in \register{\$d} la parola memorizzata a \register{b}\(+\)\register{S} (\register{\$b} = base, S =spiazzamento) \\\lightrule
 		lh & lh \register{\$d}, S(\register{\$b}) & I & load half word \\\lightrule
 		lhu & lhu \register{\$d}, S(\register{\$b}) & I & load half word unsigned \\\lightrule
 		lb & lb \register{\$d}, S(\register{\$b}) & I & load byte \\\lightrule
@@ -29,8 +29,8 @@
 		sh & sh \register{\$r}, S(\register{\$b}) & I & store half word \\\lightrule
 		sb & sb \register{\$r}, S(\register{\$b}) & I & store byte \\\lightrule
 		lui & lui \register{\$d}, C & I &  load upper register immediato: carica C nei 16 bit più significativi di \register{\$d} \\\lightrule
-		mfhi & mfhi \register{\$d} & R & muovi HI in \register{\$d} \\\lightrule
-		mflo & mflo \register{\$d} & R & muovi LO in \register{\$d} \\
+		mfhi & mfhi \register{\$d} & R & muove HI in \register{\$d} \\\lightrule
+		mflo & mflo \register{\$d} & R & muove LO in \register{\$d} \\
 	\bottomrule
 \end{tabularx}
 \end{document}

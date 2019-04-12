@@ -21,11 +21,11 @@
 	\toprule
 		Istruzione & Sintassi & Tipo & Funzione \\
 	\midrule
-		j & j C & J & jump: salta a \(C\cdot4\) \\\lightrule
-		jal & jal C & J & jump and link: salta a \(C\cdot4\) e salva il valore di PC in \register{\$ra} \\\lightrule
+		j & j C & J & jump: salta a C\(\cdot4\) \\\lightrule
+		jal & jal C & J & jump and link: salta a C\(\cdot4\) e salva il valore di \register{PC} in \register{\$ra} \\\lightrule
 		jr & jr \register{\$r} & R & jump register: salta all'indirizzo contenuto in \register{\$r} \\\lightrule
-		beq & beq \register{\$s}, \register{\$t}, C & I & branch equal: se \register{s} e \register{t} sono uguali, salta a  \(PC + 4 + C \cdot 4\) \\\lightrule
-		bne & bne \register{\$s}, \register{\$t}, C & I & branch not equal: se \register{s} e \register{t} sono diversi, salta a  \(PC + 4 + C \cdot 4\) \\
+		beq & beq \register{\$s}, \register{\$t}, C & I & branch equal: se \register{s} e \register{t} sono uguali, salta a \register{PC}\(+4 +\)C\(\cdot 4\) \\\lightrule
+		bne & bne \register{\$s}, \register{\$t}, C & I & branch not equal: se \register{s} e \register{t} sono diversi, salta a  \register{PC}\(+4 +\)C\(\cdot 4\) \\
 	\bottomrule
 \end{tabularx}
 \end{document}
