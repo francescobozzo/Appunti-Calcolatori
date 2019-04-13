@@ -21,7 +21,12 @@
 
 \usepackage{enumitem}
 
-\usepackage{amsmath,amssymb,amsthm} % matematica
+\usepackage{
+	,amsmath
+	,amssymb
+	,amsthm
+}
+
 \usepackage{units} % unità di misura
 
 \usepackage{standalone}
@@ -30,16 +35,6 @@
 \usepackage{
 	,tabularx
 	,booktabs
-}
-
-\setlength\lightrulewidth{0.1pt}
-\newcommand\lightrule{%
-	\arrayrulecolor{black!30}%
-	\midrule[\lightrulewidth]%
-	\arrayrulecolor{black}}
-
-\newcommand\register[1]{%
-	\texttt{#1}%
 }
 
 \usepackage{minted}
@@ -62,3 +57,17 @@
 \newacronym{cisc}{CISC}{Complex Instruction Set Computer}
 
 \usepackage{csquotes}
+
+\setlength\lightrulewidth{0.1pt}
+\providecommand\lightrule{%
+	\arrayrulecolor{black!30}%
+	\midrule[\lightrulewidth]%
+	\arrayrulecolor{black}}
+
+\providecommand\register[1]{%
+	\texttt{#1}%
+}
+
+\providecommand\opcode[1]{%
+	\mintinline{asm}{#1}%
+}

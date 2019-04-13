@@ -20,6 +20,108 @@ Come già ampiamente trattato nei precendenti capitoli, un'architettura di tipo 
 Per semplicità, in questa dispensa si tratterà l'\emph{ISA} più moderna, chiamata \emph{x86\_64}, nota anche come \emph{amd64}. Essa è caratterizzata da parole a 64 bit e da 16 registri. Fra le varie \emph{ABI} verrà utilizzata quella di Linux, che per qualche aspetto differisce da quella dei sistemi Microsoft e Apple.
 
 \section{La gestione dei registri}
+Principalmente, per indicare i registri si antepone un \%, mentre per le costanti di antepone un \$.
+
+% TODO spiegare la suddivisione dei registri a 64 bit in sottoregistri
+
+\subsection{I registri general purpose}
+La versione di \emph{Intel} analizzata è caratterizzata da \(16\) registri a 64 bit \emph{general purpose}. Si possono dividere in:
+\begin{itemize}
+	\item derivanti dall'architettura \(8080\): \register{\%rax} (accumulatore), \register{\%rbx}, \register{\%rcx}, \register{\%rdx};
+	\item derivanti dall'architettura \(8086\): \register{\%rsi} (source index), \register{\%rdi} (destination index), utilizzati per la copia di array;
+	\item puntatore allo stack frame (base pointer): \register{\%rbp};
+	\item puntatore allo stack pointer: \register{\%rsp};
+	\item introdotti in \emph{x86\_64}: \register{\%r8}, \register{\%r9}, \register{\%r10}, \register{\%r11}, \register{\%r12}, \register{\%r13}, \register{\%r14}, \register{\%r15}.
+\end{itemize}
+
+\subsection{I registri specializzati}
+Oltre ai registri general purpose, si aggiungono i registri specializzati:
+\begin{itemize}
+	\item \register{\%rip} (\emph{instruction pointer}, ossia il program counter per \emph{Intel});
+	\item \register{\%rflags} (\emph{flag register}, che contiene i \emph{flag} per i salti condizionali).
+\end{itemize}
+Si noti che \register{\%rflags} estende \register{\%eflags}, il quale a sua volta estende \register{\%flags}. Alcuni flag contenuti nel registro di flag sono: \register{CF}, \register{ZF}, \register{SF}, \register{OF}, \register{IF}.
+
+\section{Le convenzioni di chiamata}
+Come già ripetuto in molteplici occasioni, le convenzioni di chiamata vengono specificate nell'\emph{ABI}. In particolare, noi utilizzeremo quella di Linux. Principalmente andremo a definire il meccanismo di passaggio di argomenti, di restituzione di valori e i registri da preservare:
+\begin{itemize}
+	\item il passagio di argomenti è costituito da:
+	\begin{itemize}
+		\item i primi \(6\) argomenti nei registri: \register{\%rdi}, \register{\%rsi}, \register{\%rdx}, \register{\%rcx}, \register{\%r8}, \register{\%r9};
+		\item ulteriori argometi possono essere salvati nello stack;
+	\end{itemize}
+	\item i valori di ritorno vengono salvati nei registri \register{\%rax} e \register{\%rdx};
+	\item i registri da preservare sono: \register{\%rbp}, \register{\%rbx}, \register{\%r12}, \register{\%r13}, \register{\%r14}, \register{\%r15}.
+\end{itemize}
+
+\section{Le modalità di indirizzamento}
+Esistono svariate modalità di indirizzamento in \emph{Intel}:
+\begin{itemize}
+	\item \texttt{<displacement>};
+	\item \texttt{[<displacement>](<base register>)};
+	\item \texttt{[<displacement>](<index register>, [<scale>])};
+	\item \texttt{[<displacement>](<base register>, <index register>, [<scale>])}.
+\end{itemize}
+dove\texttt{ <displacement> }e\texttt{ <scale> } sono valori immediati mentre\texttt{ <base register> }e\texttt{ <index register> }stanno ad indicare due registri generici. L'indirizo di memoria corrispondente viene calcolato come segue:
+\begin{equation*}
+	\texttt{<displacement>} + \texttt{<base>} + \texttt{<index>} \cdot 2^\texttt{<scale>}
+\end{equation*}
+dove:
+\begin{itemize}
+	\item \texttt{<displacement>} è una costante a \(8\), \(16\) o \(32\) bit;
+	\item \texttt{<base>} è un registro;
+	\item \texttt{<indice>} è un registro;
+	\item \texttt{<scala>} è \(0\), \(1\), \(2\) o \(3\).
+\end{itemize}
+
+\section{La sintassi delle istruzioni}
+In generale si può affermare che molte istruzioni si presentano nella forma: \texttt{<opcode>[<size>] <source>, <destination>}. Dunque, il secondo elemento è sia un operando che la destinazione del risultato dell'operazione: in quanto tale esso deve essere un registro o un indirizzo di memoria. Il primo operando, oltre a poter essere un registro e un indirizzo di memoria, può essere anche un valore immediato. In particolare esistono però due vincoli:
+\begin{itemize}
+	\item i due operatori non possono contemporaneamente essere indirizzi di memoria;
+	\item non è possibile specificare due operandi e una destinazione diversa.
+\end{itemize}
+Il suffisso\texttt{ <size>}, può essere usato per indicare l’ampiezza in bit degli operandi:
+\begin{itemize}
+	\item \texttt{b} significa ampiezza di 8 bit (\emph{byte});
+	\item \texttt{w} significa ampiezza di 16 bit (\emph{word});
+	\item \texttt{l} significa ampiezza di 32 bit (\emph{long word});
+	\item \texttt{q} significa ampiezza di 64 bit (\emph{quad word}).
+\end{itemize}
+Esso è opzionale quando uno dei due operandi è un registro, mentre diventa obbligatorio nel caso l'istruzione non presenti nessun registro come operandi.\\
+Un esempio in cui\texttt{ <size> }è obbligatorio è nel caso in cui \mintinline{asm}{notl 200(%rbp)}.
+
+\section{Alcune istruzioni frequenti}
+A seguire un elenco delle istruzioni aritmetico logiche più frequenti:
+\begin{itemize}[noitemsep]
+	\item \opcode{mov};
+	\item \opcode{push} e \opcode{pop};
+	\item \opcode{add} (somma) e \opcode{addc} (somma con carry);
+	\item \opcode{sub} (sottrazione) e \opcode{subc} (sottrazione con carry);
+	\item \opcode{mul} (moltiplicazione con segno) e \opcode{imul} (moltiplicazione senza segno);
+	\item \opcode{div} (divisione con segno) e \opcode{idiv} (divisione senza segno);
+	\item \opcode{inc} (somma \(1\)) e \opcode{dec} (sottrae \(1\));
+	\item \opcode{and}, \opcode{or}, \opcode{xor} e \opcode{not}: operazioni logiche bit a bit;
+	\item \opcode{lea}: \emph{load effective address};
+	\item \opcode{rcl}, \opcode{rcr}, \opcode{rol}, \opcode{ror}: varie forme di \emph{rotate};
+	\item \opcode{sal}, \opcode{sar}, \opcode{shl}, \opcode{shr}: \emph{shift} aritmetico e logico;
+	\item \opcode{jmp}: salto incondizionato;
+	\item \opcode{je} (jump if equal), \opcode{jnz} (jump if not zero), \opcode{jc} (jump if carry), \opcode{jnc} (jump if not carry);
+	\item \opcode{neg};
+	\item \opcode{cmp}: setta i flag facendo una sottrazione, ma senza salvare il risultato;
+	\item \opcode{call} e \opcode{ret}: indirizzo di ritorno sullo stack;
+	\item \opcode{nop};
+	\item eventuali istruzioni condizionali.
+\end{itemize}
+
+\subsection{Load Effective Address (LEA)}
+
+\subsection{Incremento e decremento}
+
+
+% \section{Movimento dati}
+
+% \section{Controllo del flusso}
+
 
 
 
