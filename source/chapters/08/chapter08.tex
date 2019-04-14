@@ -49,16 +49,12 @@ Tutte le istruzioni in ARM permettono esecuzione condizionale grazie all'inserim
 	\caption*{Suffissi condizionali ARM}
 \end{table}
 
-I flag stessi possono essere modificati da apposite operazioni come \emph{cmp}(compare), o da operazioni a cui si aggiunge il suffiusso opziionale \emph{s}, che va a settare i Bit del registro di flag se si registrano determinate condizioni (ad esempio un overflow durante una somma).\\
+I flag stessi possono essere modificati da apposite operazioni come \emph{cmp}(compare), o da operazioni a cui si aggiunge il suffiusso opzionale \emph{s}, che va a settare i Bit del registro di flag se si registrano determinate condizioni (ad esempio un overflow durante una somma).\\
 
 \subsection*{Istruzioni più comuni}
-Lo schema base di un'operazione è il seguente:
-
-\begin{minted}[tabsize=4]{asm}
-	id operazione [-cond][-s] rd, rl, r*
-\end{minted}
-
-Dove [-cond] ed [-s] sono facoltativi ed r* può essere sia un registro che un valore immediato, tuttavia, a differenza di MIPS, ARM non ha bisogno di due operandi distinti \mintinline{asm}{add} e \mintinline{asm}{addi}, utilizza solo il primo di questi due.\\
+Lo schema base di un'operazione è il seguente:\\
+	\texttt{<opcode>[<-cond>][<-s>] <rd>, <rl>, <ri>}\\
+Dove \texttt{<-cond>} ed \texttt{<-s>} sono facoltativi ed \texttt{<ri>} può essere sia un registro che un valore immediato, tuttavia, a differenza di MIPS, ARM non ha bisogno di due operandi distinti \mintinline{asm}{add} e \mintinline{asm}{addi}, utilizza solo il primo di questi due.\\
 Se il secondo operando è un registro si possono inserire al termine dell'operazione dei comandi ulteriori che permettono di eseguire operazioni di shift o rotazione sul secondo operando (sopo l'avvenimento dell'operazione), ad esempio \emph{lsl/asl, lsr, asr, ror, rrx}.\\
 Vediamo ora una lista delle operazioni più comuni:
 % se si trova un metodo migliore di una lista di emph oro
