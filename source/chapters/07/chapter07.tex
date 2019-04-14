@@ -22,7 +22,11 @@ Per semplicità, in questa dispensa si tratterà l'\emph{ISA} più moderna, chia
 \section{La gestione dei registri}
 Principalmente, per indicare i registri si antepone un \%, mentre per le costanti di antepone un \$.
 
-% TODO spiegare la suddivisione dei registri a 64 bit in sottoregistri
+\begin{figure}[H]
+	\centering
+	\subimport{assets/figures/}{registri.tex}
+	\caption{Il registro \register{\%rax} e i suoi sottoregistri}
+\end{figure}
 
 \subsection{I registri general purpose}
 La versione di \emph{Intel} analizzata in questa dispensa è caratterizzata da \(16\) registri a 64 bit \emph{general purpose}. Si possono dividere in:

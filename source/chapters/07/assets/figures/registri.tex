@@ -1,0 +1,18 @@
+\documentclass[convert = false, border={5pt 0pt 5pt 8pt}]{standalone}
+
+\usepackage{bytefield}
+
+% arara: pdflatex
+% arara: latexmk: { clean: partial }
+\begin{document}
+\begin{bytefield}[bitwidth=0.01\linewidth]{64}
+
+	\bitheader{0, 7, 15, 23, 31, 39, 47, 55, 63} \\
+	\bitbox{64}{\%rax} \\
+	\bitbox{32}{\%eax} & \bitbox{32}{}\\
+	\bitbox{16}{\%ax} & \bitbox{16}{} & \bitbox{16}{} & \bitbox{16}{}\\
+	\bitbox{8}{\%hax} & \bitbox{8}{\%lax} & \bitbox{8}{} & \bitbox{8}{} & \bitbox{8}{} & \bitbox{8}{} & \bitbox{8}{} & \bitbox{8}{}\\
+
+
+\end{bytefield}
+\end{document}
