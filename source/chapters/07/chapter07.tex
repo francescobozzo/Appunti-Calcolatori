@@ -25,7 +25,7 @@ Principalmente, per indicare i registri si antepone un \%, mentre per le costant
 % TODO spiegare la suddivisione dei registri a 64 bit in sottoregistri
 
 \subsection{I registri general purpose}
-La versione di \emph{Intel} analizzata è caratterizzata da \(16\) registri a 64 bit \emph{general purpose}. Si possono dividere in:
+La versione di \emph{Intel} analizzata in questa dispensa è caratterizzata da \(16\) registri a 64 bit \emph{general purpose}. Si possono dividere in:
 \begin{itemize}
 	\item derivanti dall'architettura \(8080\): \register{\%rax} (accumulatore), \register{\%rbx}, \register{\%rcx}, \register{\%rdx};
 	\item derivanti dall'architettura \(8086\): \register{\%rsi} (source index), \register{\%rdi} (destination index), utilizzati per la copia di array;
@@ -45,7 +45,7 @@ Si noti che \register{\%rflags} estende \register{\%eflags}, il quale a sua volt
 \section{Le convenzioni di chiamata}
 Come già ripetuto in molteplici occasioni, le convenzioni di chiamata vengono specificate nell'\emph{ABI}. In particolare, noi utilizzeremo quella di Linux. Principalmente andremo a definire il meccanismo di passaggio di argomenti, di restituzione di valori e i registri da preservare:
 \begin{itemize}
-	\item il passagio di argomenti è costituito da:
+	\item il passagio di argomenti si compone di:
 	\begin{itemize}
 		\item i primi \(6\) argomenti nei registri: \register{\%rdi}, \register{\%rsi}, \register{\%rdx}, \register{\%rcx}, \register{\%r8}, \register{\%r9};
 		\item ulteriori argometi possono essere salvati nello stack;
@@ -53,6 +53,13 @@ Come già ripetuto in molteplici occasioni, le convenzioni di chiamata vengono s
 	\item i valori di ritorno vengono salvati nei registri \register{\%rax} e \register{\%rdx};
 	\item i registri da preservare sono: \register{\%rbp}, \register{\%rbx}, \register{\%r12}, \register{\%r13}, \register{\%r14}, \register{\%r15}.
 \end{itemize}
+
+Esistono due modalità per richiamare una funzione attraverso l'istruzione \mintinline{asm}{call}:
+\begin{itemize}
+	\item \mintinline{asm}{call address}: invoca la subroutine presente all'indirizzo indicato;
+	\item \mintinline{asm}{call *register}: invoca la subroutine presente all'indirizzo contenuto nel registro indicato.
+\end{itemize}
+Una caratteristica di \emph{Intel} è quella di salvare automaticamente il \emph{link register} nello stack quando una funzione viene richiamata, facilitando di molto la scrittura di funzioni ricorsive. In maniera analoga, l'istruzione \mintinline{asm}{ret}, che viene utilizzata per terminare una funzione, preleva automaticamente dallo stack l'indirizzo da utilizzare nell'instruction pointer.
 
 \section{Le modalità di indirizzamento}
 Esistono svariate modalità di indirizzamento in \emph{Intel}:
@@ -93,8 +100,8 @@ Un esempio in cui\texttt{ <size> }è obbligatorio è nel caso in cui \mintinline
 \section{Alcune istruzioni frequenti}
 A seguire un elenco delle istruzioni aritmetico logiche più frequenti:
 \begin{itemize}[noitemsep]
-	\item \opcode{mov};
-	\item \opcode{push} e \opcode{pop};
+	\item \opcode{mov} per scambiare dati fra memoria e registri e viceversa (la destinazione non può essere un valore immediato);
+	\item \opcode{push} e \opcode{pop} per leggere e salvare dati sullo stack, senza dover modificare lo stack pointer come avviene in \emph{MIPS};
 	\item \opcode{add} (somma) e \opcode{addc} (somma con carry);
 	\item \opcode{sub} (sottrazione) e \opcode{subc} (sottrazione con carry);
 	\item \opcode{mul} (moltiplicazione con segno) e \opcode{imul} (moltiplicazione senza segno);
@@ -107,22 +114,24 @@ A seguire un elenco delle istruzioni aritmetico logiche più frequenti:
 	\item \opcode{jmp}: salto incondizionato;
 	\item \opcode{je} (jump if equal), \opcode{jnz} (jump if not zero), \opcode{jc} (jump if carry), \opcode{jnc} (jump if not carry);
 	\item \opcode{neg};
-	\item \opcode{cmp}: setta i flag facendo una sottrazione, ma senza salvare il risultato;
+	\item \opcode{cmp}: setta i flag facendo una sottrazione, ma senza salvarne il risultato;
 	\item \opcode{call} e \opcode{ret}: indirizzo di ritorno sullo stack;
 	\item \opcode{nop};
 	\item eventuali istruzioni condizionali.
 \end{itemize}
 
 \subsection{Load Effective Address (LEA)}
+Seppur questa istruzione sia stata implementata per calcolare indirizzi (con indirizzamento indiretto) senza effettuare accessi, principalmente viene utilizzata per un secondo scopo. Essa infatti risulta molto utile per effettuare una somma di due registri, salvandone il risultato in un terzo (anche con eventuali shift). Si ricordi che, mentre in \emph{MIPS} questo sia la normalità, in \emph{Intel} per ciascuna istruzione possono essere specificati al massimo due registri. Ad esempio:
+\begin{minted}[linenos]{asm}
+lea (%rbx, %rcx), %rax
+\end{minted}
+esegue la somma di \register{\%rbx} e \register{\%rcx} e la salva nel registro \register{\%rax}.
 
 \subsection{Incremento e decremento}
-
+Come avete potuto notare dalla lista delle istruzioni comuni in \emph{Intel}, sono presenti le istruzioni \mintinline{asm}{inc} e \mintinline{asm}{dec}, che rispettivamente incrementano e decrementano di una unità il valore del registro specificato. Ma per quale motivo non si utilizza la semplice istruzione \mintinline{asm}{add $1, register}? In \emph{Intel} si è visto che le istruzioni possono essere codificate con una sequenza di bit di lunghezza variabile. Utilizzare la funzione di incremento piuttosto che quella di somma significa non dover memorizzare un valore immediato, con il conseguente risparmio di 16 bit.
 
 % \section{Movimento dati}
 
 % \section{Controllo del flusso}
-
-
-
 
 \end{document}
