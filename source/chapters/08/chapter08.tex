@@ -8,124 +8,120 @@
 
 % arara: pdflatex: { synctex: yes, shell: yes }
 % arara: latexmk: { clean: partial }
-%! arara: clean: { extensions: [sta] }
 \begin{document}
 
 \chapter{Architettura ARM}
 
-\paragraph{L'architettura ARM} nasce negli anni '80 come architettura RISC leggermente pragmatica, che tenta di migliorare la suddetta architettura implementando delle istruzioni e delle strategie appartenenti ad Intel, probabilmente è esattamente questa la ragione del suo successo.\\
-Un'altra caratteristica peculiare dell'ARM è la presenza di una modalità \emph{low power}, che limita di molto il consumo di energia restringendo le istruzioni utilizzabili solo a quelle più semplici (e quindi meno costose). È propio per questa ragione che l'ARM ha avuto un'enorme diffusione come architettura per i dispositivi \emph{portable} e \emph{wearable} oltre che per i sistemi \emph{embedded}.\\
-Per amor di precisione ci teniamo a specificare che in realtà "architettura ARM" non è una dicitura univoca in quanto esistono più CPU ARM con ISA differenti, per non parlare del numero spropositato di ABI anche molto diverse tra loro che si possono trovare per questa architettura.\\
-Passiamo ora ai dettagli tecnici.
+\section{Introduzione}
+L'architettura \emph{ARM} nasce negli anni Ottanta come architettura \emph{RISC} pragmatica, che tenta di migliorare la suddetta architettura implementando delle istruzioni e delle strategie appartenenti ad \emph{Intel}, probabilmente è esattamente questa la ragione del suo successo.
+
+Un'altra caratteristica peculiare dell'\emph{ARM} è la presenza di una modalità \emph{low power}, che limita di molto il consumo di energia restringendo le istruzioni utilizzabili solo a quelle più semplici (e quindi meno costose). È propio per questa ragione che l'\emph{ARM} ha avuto un'enorme diffusione come architettura per i dispositivi \emph{portable} e \emph{wearable} oltre che per i sistemi \emph{embedded}.
+
+Per amor di precisione ci teniamo a specificare che in realtà "architettura ARM" non è una dicitura univoca in quanto esistono più \emph{CPU} \emph{ARM} con \emph{ISA} differenti, per non parlare del numero spropositato di \emph{ABI} anche molto diverse tra loro che si possono trovare per questa architettura.
 
 \section{Registri e relativo utilizzo}
-In ARM i registri sono 16 a 32 Bit (anche se ultimamente se ne vedono pure a 64 Bit... \emph{non ci sono più i registri di una volta}). I registri hanno sono nominati da \mintinline{asm}{r0} a \mintinline{asm}{r15} (gioite, è scoparso l'orribile simbolo di demarcazione \$) ed alcuni di essi hanno (generalmente) funzioni specifiche, ovvero:
+In ARM i registri sono 16 a 32 bit (anche se ultimamente se ne vedono pure a 64 bit... \emph{non ci sono più i registri di una volta}). I registri hanno sono nominati da \register{r0} a \register{r15} (gioite, è scoparso l'orribile simbolo di demarcazione \$) ed alcuni di essi hanno (generalmente) funzioni specifiche, ovvero:
 
-\begin{itemize}[nolistsep]
-	\item \textbf{r13}, detto anche \emph{stack pointer} è il registro che contiene il puntatore allo stack
-	\item \textbf{r14}, detto anche \emph{link register} è il registro che contiene l'indirizzo di ritorno delle subroutine (l'equivalente di \$ra in MIPS)
-	\item \textbf{r15}, contiene il \emph{program counter} e nei bit più significativi segnala i flags
+\begin{itemize}
+	\item \register{r13}: \emph{stack pointer} (che contiene il puntatore allo stack);
+	\item \register{r14}: \emph{link register} (che contiene l'indirizzo di ritorno delle subroutine, come \register{\$ra} in MIPS);
+	\item \register{r15}: \emph{program counter} (nei bit più significativi contiene anche dei flags).
 \end{itemize}
+In realtà questo standard, pur essendo molto diffuso, non è assoluto, di fatto esistono \emph{ABI} che implementano l'utilizzo dei registri in modo diverso.
 
-In realtà questo standard pur essendo molto diffuso non è assoluto, di fatto esistono ABI che implementano l'utilizzo dei registri in modo diverso.\\
-
-\paragraph{Le convenzioni di chiamata} servono appunto per "mettere d'accordo" diversi compilatori/librerie e altre parti del Sistema Operativo e vengono specificate appositamente dall'ABI, sono esse che determinano come passare i parametri (se solo tramite registri o anche via stack), quali registri preservare, quali registri utilizzare liberamente ecc.\\
-Come per quanto riguarda gli ABI esistono molte alternative distinte di \emph{convenzioni di chiamata}, vediamo ora che cosa stabiliscono le più diffuse nel mondo ARM:
-
-\begin{itemize}[nolistsep]
-	\item i primi quattro registri \mintinline{asm}{r0},...,\mintinline{asm}{r3} ed il registro\mintinline{asm}{r12} sono registri temporanei
-	\item i registri da \mintinline{asm}{r4} a \mintinline{asm}{r12} invece sono da preservare, con l'eccezione di \mintinline{asm}{r9}, che in alcuni ABI è bullizzato e non viene preservato
-	\item i rimanenti registri \mintinline{asm}{r13},\mintinline{asm}{r14} ed\mintinline{asm}{r15} hanno le funzioni descritte prima
+\section{Le convenzioni di chiamata}
+Le convenzioni di chiamata servono appunto per "mettere d'accordo" diversi compilatori/librerie e altre parti del sistema operativo e vengono specificate appositamente dall'\emph{ABI}: sono esse che determinano come passare i parametri (se solo tramite registri o anche via stack), quali registri preservare, quali registri utilizzare liberamente e come gestire l'indirizzo di ritorno. A seguire ecco cosa stabilisce l'\emph{ABI} più diffusa del mondo \emph{ARM}:
+\begin{itemize}
+	\item \register{r0}, \register{r1}, \register{r2}, \register{r3}, \register{r12} sono registri temporanei;
+	\item da \register{r4} a \register{r11} sono da preservare, con l'eccezione di \register{r9} che in alcuni ABI non viene preservato.
 \end{itemize}
 
 \section{Le istruzioni ARM}
-Le istruzioni dell'Assembly ARM sono molto simili a quelle del buon vecchio MIPS, tuttavia sono meno regolari in quanto alcune di esse presentano solamente due argomenti; è inoltre notevole il fatto che nonostante la dicitura RISC l'ARM presenti una lunga lista di istruzioni.\\
-Come nel MIPS le istruzioni a tre argomenti prevedono il primo come destinazione e i seguenti come operandi, l'operando di sinistra dev'essere un registro mentre quello di destra può essere sia un registro che un valore immediato. Da notare che non si possono usare operandi in memoria, per sfruttare questa vedremo in seguito l'utilizzo delle operazioni specifiche \emph{load/store register}.\\
-Tutte le istruzioni in ARM permettono esecuzione condizionale grazie all'inserimento di determinati suffssi al termine del identificativo dell'operazione, che comportano l'esecuzione dell'operazione stessa solo se i Bit del registro di flag corrispondono alla condizione desiderata; qui è riportata una tabella con i principali suffissi ed il loro funzionamento:\\
+Le istruzioni dell'Assembly \emph{ARM} sono molto simili a quelle del buon vecchio \emph{MIPS}, tuttavia sono meno regolari in quanto alcune di esse presentano solamente due argomenti; è inoltre notevole il fatto che nonostante la dicitura \emph{RISC} l'\emph{ARM} presenti una lunga lista di istruzioni.
 
+Come nel \emph{MIPS}, le istruzioni a tre argomenti prevedono il primo come destinazione e i seguenti come operandi, l'operando di sinistra dev'essere un registro mentre quello di destra può essere sia un registro che un valore immediato. Da notare che non si possono usare operandi in memoria, per sfruttare questa vedremo in seguito l'utilizzo delle operazioni specifiche \emph{load/store register}.
+
+Tutte le istruzioni in \emph{ARM} permettono esecuzione condizionale grazie all'inserimento di determinati suffissi al termine del identificativo dell'operazione, che comportano l'esecuzione dell'operazione stessa solo se i bit del registro di flag corrispondono alla condizione desiderata; qui è riportata una tabella con i principali suffissi ed il loro funzionamento:
+
+\vspace{0.4cm}
 \begin{table}[H]
 	\centering
 	\subimport{assets/tables/}{condizionali.tex}
-	\caption*{Suffissi condizionali ARM}
+	\caption{Suffissi condizionali ARM}
 \end{table}
+I flag stessi possono essere modificati da apposite operazioni come \opcode{cmp} (\emph{compare}), o da operazioni a cui si aggiunge il suffisso opzionale \suffix{-s}, che va a settare i bit del registro di flag se si registrano determinate condizioni (ad esempio un overflow durante una somma).
 
-I flag stessi possono essere modificati da apposite operazioni come \emph{cmp}(compare), o da operazioni a cui si aggiunge il suffiusso opzionale \emph{s}, che va a settare i Bit del registro di flag se si registrano determinate condizioni (ad esempio un overflow durante una somma).\\
+Lo schema base di un'operazione è il seguente:
+\begin{center}
+	\texttt{<opcode>[<-cond>][<-s>] <rd>, <rl>, <r>}
+\end{center}
+dove \suffix{<-cond>} ed \suffix{<-s>} sono facoltativi, \register{<rd>} è il registro di destinazione, \register{<rl>} è il registro di sinistra e \register{<r>} è il registro di destra. Si noti inoltre che \register{<r>} può essere sia un registro che un valore immediato. Tuttavia, a differenza di \emph{MIPS}, \emph{ARM} non ha bisogno di due opcode distinti per definire l'operazione di somma: in \emph{ARM} è possibile utilizzare \opcode{add} sia per sommare due registri, che per sommare un valore immediato ad un registro.
 
-\subsection*{Istruzioni più comuni}
-Lo schema base di un'operazione è il seguente:\\
-	\texttt{<opcode>[<-cond>][<-s>] <rd>, <rl>, <ri>}\\
-Dove \texttt{<-cond>} ed \texttt{<-s>} sono facoltativi ed \texttt{<ri>} può essere sia un registro che un valore immediato, tuttavia, a differenza di MIPS, ARM non ha bisogno di due operandi distinti \mintinline{asm}{add} e \mintinline{asm}{addi}, utilizza solo il primo di questi due.\\
-Se il secondo operando è un registro si possono inserire al termine dell'operazione dei comandi ulteriori che permettono di eseguire operazioni di shift o rotazione sul secondo operando (sopo l'avvenimento dell'operazione), ad esempio \emph{lsl/asl, lsr, asr, ror, rrx}.\\
+Se il secondo operando è un registro, si possono inserire al termine dell'operazione dei comandi ulteriori che permettono di eseguire operazioni di shift o rotazione sul secondo operando (sopo l'avvenimento dell'operazione), ad esempio \opcode{lsl}/\opcode{asl}, \opcode{lsr}, \opcode{asr}, \opcode{ror}, \opcode{rrx}.
+
+\subsection*{Le istruzioni più comuni}
 Vediamo ora una lista delle operazioni più comuni:
-% se si trova un metodo migliore di una lista di emph oro
-% altriemnti pace...
-\paragraph*{add/adc} sono i comandi per la somma e la somma con resto.
-\paragraph{sub/sbc} specularmente usati per sottrazione e sottrazione con resto.
-\paragraph*{rsb/rsc} letteralmente \emph{reverse sub/reverse sub with carry} vengono utilizzati per fare una sottrazione invertendo il primo ed il secondo operando, dimodoché si possa sottrarre un registro ad un intero (ricordiamo che i valori immediati possono trovarsi solo al posto del secondo operando, non del primo).
-\paragraph*{and/orr/eor/bic} sono i comandi per compiere le operazioni booleane bit a bit, "\mintinline{asm}{bic r0, r1, r}" calcola $r0=(r1\text{ }and\text{ }(not\text{ }r))$.
-\paragraph*{mul/mla} e altre simili sono i comandi per varie forme di moltiplicazione\footnote{Non esistono comandi per la divisione in assembly ARM}.
-\paragraph*{b/bl/bx} i primi due corrispondono rispettivamente a \emph{branch} e \emph{branch and link}, il terzo è implementato solo in alcune CPU, schematicamente corrisponde a  "\mintinline{asm}{move r15, r}"; da notare che tutti questi comandi possono essere eseguiti in modo condizionale se vi si pone un suffisso condizionale come quelli di cui si è discusso in precedenza.
-\paragraph*{cmp} settaflags comparando due operandi, ma senza risultato, da usarsi prima di salti condizionali; allo stesso modo funzionano le istruzioni \mintinline{asm}{tst} (and) e \mintinline{asm}{teq} (xor).
-\paragraph*{ldr/str} sono rispettivamente i comandi \emph{load register} e \emph{store register} che rispecchiano i comandi \mintinline{asm}{lw} e \mintinline{asm}{sw} dell'assembly MIPS.
-\paragraph*{mov/mvn} \emph{move} equivalente all'omonimo MIPS e \emph{move not}, che sposta il complemento a 1 del registro sorgente (e viene utilizzata per implementare il not).
-Ecco un esempio di un'operazione in varie versioni diverse, per capire meglio tutte le possibilità offerte da ARM.\\
 
-\begin{minted}[linenos, tabsize=4]{asm}
-	add r0, r1, #1
-	adds r0, r1, r2
-	addeq r0, r1, r2, lsl #2
-	addeqs r0, r1, r2, lsl r3
-\end{minted}
-
-Analizziamo le righe di codce una ad una:
 \begin{itemize}
-	\item [1] r0 = r1 + 1
-	\item [2] r0 = r1 + r2 (e setta dei flag se necessario)
-	\item [3] r0 = r1 + r2 (esegue la add solo se il flag eq è settato, dopo l'operazione esegue uno shift a sinistra di 2 del registro r2)
-	\item [4] r0 = r1 + r2 (esegue la add solo se il flag eq è settato, setta falg se necessario, dopo l'operazione esegue uno shift a sinistra di r3 del registro r2)
+	\item \opcode{add}/\opcode{adc}: rispettivamente somma e somma con resto;
+	\item \opcode{sub}/\opcode{sbc}: rispettivamente sottrazione e sottrazione con resto;
+	\item \opcode{rsb}/\opcode{rsc}: \emph{reverse sub/reverse sub with carry} che permettono una sottrazione invertendo il primo ed il secondo operando. In questo modo risulta possibile sottrarre un registro ad un numero;
+	\item \opcode{and}/\opcode{orr}/\opcode{eor}/\opcode{bic}: operazioni booleane bit a bit. Si noti che \mintinline{asm}{bic r0, r1, r} calcola \(\register{r0} = (\register{r1} \textrm{ and } (\textrm{not } \register{r}))\);
+	\item \opcode{mul}/\opcode{mla} e simili sono per varie forme di moltiplicazione \footnote{Non esistono comandi per la divisione in assembly ARM};
+	\item \opcode{b}/\opcode{bl} rispettivamente \emph{branch} e \emph{branch and link} (da notare che è possibile aggiungere qualsiasi suffisso condizionale);
+	\item \opcode{bx} è implementato solo in alcune CPU, corrisponde a \mintinline{asm}{move r15, r};
+	\item \opcode{cmp} setta i flags comparando due operandi, ma senza risultato, da usarsi prima di salti condizionali. Funzionano similmente anche \opcode{tst} (attraverso un and) e \opcode{teq} (attraverso uno xor);
+	\item \opcode{ldr}/\opcode{str} sono rispettivamente \emph{load register} e \emph{store register}. Rispecchiano rispettivamente \opcode{lw} e \opcode{sw} dell'assembly MIPS;
+	\item \opcode{mov}/\opcode{mvn}: \emph{move} equivalente all'omonimo MIPS e \emph{move not}, che sposta il complemento a 1 del registro sorgente (utilizzata per implementare il not).
 \end{itemize}
-
-Dedichiamo ora una sezione a parte per la categoria delle istruzioni di \emph{load/store} multiple.
+Ecco un esempio di un'operazione in varie versioni diverse, per capire meglio tutte le possibilità offerte da ARM:
+\begin{minted}[linenos, tabsize=4]{asm}
+add r0, r1, #1
+adds r0, r1, r2
+addeq r0, r1, r2, lsl #2
+addeqs r0, r1, r2, lsl r3
+\end{minted}
+Analizziamo le righe di codce una ad una:
+\begin{enumerate}
+	\item \register{r0} \(=\) \registerOp{r1}{+}{1};
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2} (e setta dei flag se necessario);
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2} (esegue la add solo se il flag eq è settato, dopo l'operazione esegue uno shift a sinistra di 2 del registro r2);
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2} (esegue la add solo se il flag eq è settato, setta falg se necessario, dopo l'operazione esegue uno shift a sinistra di r3 del registro r2).
+\end{enumerate}
 
 \subsection*{Istruzioni di load/store multiple}
-Assembly ARM permette il salvataggio in memoria o il caricamento da memoria di più registri con una sola istruzione, \mintinline{asm}{ldm} e \mintinline{asm}{stm} per l'appunto.\\
-Le istruzioni appena citate hanno la seguente struttura:
-
-\begin{minted}[tabsize=4]{asm}
-ldm [-mode][-cond] rb[!], (lista dei registri)
-\end{minted}
-
-Dove rb è il registro che contiene la base, -cond è l'eventuale suffisso condizionale di cui si è già discussoin precedenza, mentre il suffisso (facoltativo) mode può essere:
-
-\begin{itemize}[nolistsep]
-	\item \textbf{ia}, \emph{increment after}, incrementa il registro base dopo l'esecuzione di \mintinline{asm}{ldm}
-	\item \textbf{ib}, \emph{increment before}, incrementa il registro base prima dell'esecuzione
-	\item \textbf{da}, \emph{decrement after}, decrementa il registro base dopo l'esecuzione
-	\item \textbf{db}, \emph{decrement before}, decrementa il registro base prima dell'esecuzione
+L'Assembly \emph{ARM} permette il salvataggio in memoria o il caricamento da memoria di più registri con una sola istruzione, \mintinline{asm}{ldm} e \mintinline{asm}{stm} per l'appunto. Le istruzioni appena citate hanno la seguente struttura:
+\begin{center}
+	\texttt{ldm [-mode][-cond] rb[!], (lista dei registri)}
+\end{center}
+dove \register{rb} è il registro che contiene la base, \suffix{-cond} è l'eventuale suffisso condizionale di cui si è già discusso in precedenza, mentre il suffisso (facoltativo) \suffix{mode} può essere:
+\begin{itemize}
+	\item \suffix{ia}: \emph{increment after}, incrementa il registro base dopo l'esecuzione di \opcode{ldm};
+	\item \suffix{ib}: \emph{increment before}, incrementa il registro base prima dell'esecuzione;
+	\item \suffix{da}: \emph{decrement after}, decrementa il registro base dopo l'esecuzione;
+	\item \suffix{db}: \emph{decrement before}, decrementa il registro base prima dell'esecuzione.
 \end{itemize}
 
-Il !, facoltativo anch'esso, serve per rendere definitive le modifiche, operate dai suffissi appena elencati, dopo l'operazione.
+Il \suffix{!}, facoltativo anch'esso, serve per rendere definitive le modifiche operate dai suffissi appena elencati, dopo l'operazione.
 
 \section{Modalità di indirizzamento in ARM}
-In modo semplificato esistono due metodologie di indirizzamento in ARM, ovvero $Base + offset$ (immediato) o $Base + indice$ (eventualmente scalato). La struttura dell'istruzione è la seguente:
+In modo semplificato esistono due metodologie di indirizzamento in ARM, ovvero \(\textrm{base} + \textrm{offset}\) (immediato) o \(\textrm{base} + \textrm{indice}\) (eventualmente scalato). La struttura dell'istruzione è la seguente:
 
-\begin{minted}[tabsize=4]{asm}
-	ldr rd, rb (offset)           # base + offset
-	ldr rd, rb (indice) [shift]   # base + indice shiftato
+\begin{minted}[tabsize=4, linenos]{asm}
+ldr rd, rb (offset)           # base + offset
+ldr rd, rb (indice) [shift]   # base + indice shiftato
 \end{minted}
+dove \register{rd} è il registro destinazione, \register{rb} è il registro contenente l'indirizzo base, \register{offset} è un immediato codificato su 12 bit e \register{indice} è un valore in registro, eventualmente shiftato o ruotato.
 
-Dove rd è il registro destinazione, rb è il registro contenente l'indirizzo base, offset è un immediato codificato su 12 Bit e indice è un valore in registro, eventualmente shiftato o ruaotato.\\
-Una possibilità molto interessante offerta da ARM è l'utilizzo dei meccanismi di \emph{pre} e \emph{post indexing}, vediamo come funzionano:
+Una possibilità molto interessante offerta da \emph{ARM} è l'utilizzo dei meccanismi di \emph{pre} e \emph{post indexing}, vediamo come funzionano:
 
 \begin{itemize}
-	\item pre-indexing con offset: "\mintinline{asm}{[rb, \#i]!}" in questo caso la somma tra rb e i viene  effettuata prima dell'indirizzamento, il ! è facoltativo, se è presente finalizza la somma (il valore di rb dopo l'esecuzione è dato da rb+i)
-	\item post-indexing con offset: "\mintinline{asm}{[rb], \#i!}" in questo caso la somma tra rb e i viene  effettuata dopo l'indirizzamento, il ! se è presente finalizza la somma (il valore di rb dopo l'esecuzione è dato da rb+i)
-	\item pre-indexing con indice e shift: "\mintinline{asm}{[rb, ri, shift]!}" in questo caso la somma tra rb e ri shiftato (si ricorda che lo shift è facoltativo) viene  effettuata prima dell'indirizzamento, il ! se è presente finalizza la somma
-	\item post-indexing con indice e shift: "\mintinline{asm}{[rb], ri, shift !}" in questo caso la somma tra rb e ri eventualmente shiftato viene  effettuata dopo dell'indirizzamento, il ! non fa molto, ma è un lavoro onesto
+	\item pre-indexing con offset: \texttt{[rb, \#i]!} in questo caso la somma tra \register{rb} e \register{i} viene  effettuata prima dell'indirizzamento, il \register{!} è facoltativo, se è presente finalizza la somma (il valore di \register{rb} dopo l'esecuzione è dato da \registerOp{rb}{+}{i});
+	\item post-indexing con offset: \texttt{[rb], \#i!} in questo caso la somma tra \register{rb} e \register{i} viene effettuata dopo l'indirizzamento, il \suffix{!} se è presente finalizza la somma (il valore di \register{rb} dopo l'esecuzione è dato da \registerOp{rb}{+}{i});
+	\item pre-indexing con indice e shift: \texttt{[rb, ri, shift]!} in questo caso la somma tra \register{rb} e \register{ri} shiftato (si ricorda che lo shift è facoltativo) viene  effettuata prima dell'indirizzamento, il \suffix{!} se è presente finalizza la somma;
+	\item post-indexing con indice e shift: \texttt{[rb], ri, shift !} in questo caso la somma tra \register{rb} e \register{ri} eventualmente shiftato viene effettuata dopo dell'indirizzamento, il \suffix{!} non fa molto, ma è un lavoro onesto.
 \end{itemize}
 
-Tirando le somme sui metodi di indirizzamento si può dire che sono senz'altro più potenti di quelli offerti da MIPS, soprattutto grazie alla possibilità di aggiuronare automaticamente il registro di base, che diventa super comoda quando si devono gestire delgli array. Rispetto ad Intel invece ARM ha la limitazione di non poter usare contemporaneamente offset ed indice.
-
-%\section{Esempio: Copia di una stringa}
+Tirando le somme sui metodi di indirizzamento, si può dire che sono senz'altro più potenti di quelli offerti da \emph{MIPS}, soprattutto grazie alla possibilità di aggiornare automaticamente il registro di base, che diventa super comoda quando si devono gestire degli array. Rispetto ad \emph{Intel} invece \emph{ARM} ha la limitazione di non poter usare contemporaneamente offset ed indice.
 
 \end{document}

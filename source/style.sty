@@ -35,6 +35,7 @@
 \usepackage{
 	,tabularx
 	,booktabs
+	,multirow
 }
 
 \usepackage{minted}
@@ -46,6 +47,8 @@
 \usepackage[hidelinks]{hyperref}
 
 \usepackage{tcolorbox}
+
+\usepackage{bytefield}
 
 \usepackage[toc, acronym, numberedsection]{glossaries}
 \setglossarystyle{altlist}
@@ -70,4 +73,12 @@
 
 \providecommand\opcode[1]{%
 	\mintinline{asm}{#1}%
+}
+
+\newcommand\registerOp[3]{%
+	\register{#1} \(#2\) \register{#3}%
+}
+
+\providecommand\suffix[1]{%
+	\texttt{#1}%
 }
