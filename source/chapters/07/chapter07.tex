@@ -49,7 +49,7 @@ Si noti che \register{\%rflags} estende \register{\%eflags}, il quale a sua volt
 \section{Le convenzioni di chiamata}
 Come già ripetuto in molteplici occasioni, le convenzioni di chiamata vengono specificate nell'\emph{ABI}. In particolare, noi utilizzeremo quella di Linux. Principalmente andremo a definire il meccanismo di passaggio di argomenti, di restituzione di valori e i registri da preservare:
 \begin{itemize}
-	\item il passagio di argomenti si compone di:
+	\item il passaggio di argomenti si compone di:
 	\begin{itemize}
 		\item i primi \(6\) argomenti nei registri: \register{\%rdi}, \register{\%rsi}, \register{\%rdx}, \register{\%rcx}, \register{\%r8}, \register{\%r9};
 		\item ulteriori argometi possono essere salvati nello stack;
@@ -125,7 +125,7 @@ A seguire un elenco delle istruzioni aritmetico logiche più frequenti:
 \end{itemize}
 
 \subsection{Load Effective Address (LEA)}
-Seppur questa istruzione sia stata implementata per calcolare indirizzi (con indirizzamento indiretto) senza effettuare accessi, principalmente viene utilizzata per un secondo scopo. Essa infatti risulta molto utile per effettuare una somma di due registri, salvandone il risultato in un terzo (anche con eventuali shift). Si ricordi che, mentre in \emph{MIPS} questo sia la normalità, in \emph{Intel} per ciascuna istruzione possono essere specificati al massimo due registri. Ad esempio:
+Seppur questa istruzione sia stata implementata per calcolare indirizzi (con indirizzamento indiretto) senza effettuare accessi, principalmente viene utilizzata per un secondo scopo. Essa infatti risulta molto utile per effettuare una somma di due registri, salvandone il risultato in un terzo (anche con eventuali shift). Si ricordi che, mentre in \emph{MIPS} lavorare con tre registri è la normalità, in \emph{Intel} per ciascuna istruzione possono esserne specificati al massimo due. Ad esempio:
 \begin{minted}[linenos]{asm}
 lea (%rbx, %rcx), %rax
 \end{minted}
