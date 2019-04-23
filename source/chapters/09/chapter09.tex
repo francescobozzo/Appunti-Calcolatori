@@ -1,0 +1,52 @@
+\documentclass[class=book, crop=false, oneside]{standalone}
+\usepackage[subpreambles=true]{standalone}
+
+\usepackage{../../style}
+
+\graphicspath{{./assets/images/}}
+\newmintinline{asm}{}
+
+% arara: pdflatex: { synctex: yes, shell: yes }
+% arara: latexmk: { clean: partial }
+\begin{document}
+
+\chapter{Esempi e confronti di programmi Assembly}
+Ora andiamo a riprendere alcuni esempi già portati nel capitolo dedicato all'Assembly MIPS e andremo a confrontare le implementazioni proposte con le corrispettive per Assembly x86 e ARM.\\
+Per completezza, specifichiamo che il codice che mostreremo è stato ottenuto con il compilatore GCC, lievemente modificato affinché risulti più leggibile (principalmente sull'ordine logico delle istruzioni e sulla nomenclatura dei registri).
+
+\section{Semplici espressioni aritmetico-logiche}
+Cominciamo con delle semplici operazioni aritmetiche, che evidenzieranno come le architetture RISC (MIPS e ARM) permettono di eseguire questo tipo di istruzioni in modo molto naturale, al contrario dell'implementazione leggermente più macchinosa di x86.\\
+L'espressione è la seguente:
+\begin{minted}{c}
+f = (g + h) - (i + j);
+\end{minted}
+
+\subsection*{Implementazione MIPS}
+In MIPS assumiamo che le variabili \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} vengano mappate nei 4 registri dedicati agli argomenti, rispettivamente \register{\$a0}, \register{\$a1}, \register{\$a2} e \register{\$a3}, e decidiamo di salvare il risultato in \register{\$v0}. A questo punto la conversione Assembly è immediata:
+\begin{minted}{asm}
+add $a0, $a0, $a1  # memorizza in $a0 g + h
+add $v0, $a2, $a3  # memorizza in $v0 i + j
+sub $v0, $a0, $v0  # memorizza in $v0 (g + h) - (i + j)
+\end{minted}
+
+\subsection*{Implementazione x86}
+Siano \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} mappate rispettivamente in \register{\%rdi}, \register{\%rsi}, \register{\%rcx} e \register{\%rdx} e si voglia salvare il risultato in \register{\%rax}.\\
+Il problema di x86 sta nel fatto che le operazioni sono solo a due operandi, con il primo che funge da destinazione, e quindi non è possibile specificare un diverso registro di destinazione.\\
+Possiamo aggirare questa limitazione sfruttando l'istruzione \mintinline{asm}{lea}: questa infatti ha come argomenti \texttt{<addr>, <dst>} e calcola l'indirizzo \texttt{<addr>} secondo base, spiazzamento e indice shiftato, e salva tutto in \texttt{<dst>}. Sarà quindi sufficiente impostare spiazzamento e shift a 0 per riuscire a sommare agevolmente base (per noi \register{\%rdi}) a indice non shiftato (\register{\%rsi}) e salvarne il risultato in \register{\%rax}.
+\begin{minted}{asm}
+leaq (%rdi, %rsi), %rax  # memorizza in %rax g + h con il trick visto sopra
+addq %rcx, %rdx  # memorizza in %rcx i + j
+subq %rdx, %rax  # memorizza in %rdx (g + h) - (i + j)
+\end{minted}
+
+\subsection*{Implementazione ARM}
+Analogamente a MIPS, anche l'implementazione ARM è molto semplice e naturale, una volta mappate \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} in \register{r0}, \register{r1}, \register{r2} e \register{r3} e decidendo di salvare il tutto in \register{r0}.\\
+Qui vengono usate \mintinline{asm}{adds} e \mintinline{asm}{subs}, che aggiornano i flag, ma usare le normalissime \mintinline{asm}{add} e \mintinline{asm}{sub} non avrebbe cambiato nulla.
+\begin{minted}{asm}
+adds r1, r0, r1  # memorizza in r1 g + h
+adds r3, r2, r3  # memorizza in r3 i + j
+subs r0, r1, r3  # memorizza in r0 (g + h) - (i + j)
+\end{minted}
+
+
+\end{document}
