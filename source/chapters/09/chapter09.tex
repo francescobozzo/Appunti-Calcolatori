@@ -31,12 +31,12 @@ sub $v0, $a0, $v0  # memorizza in $v0 (g + h) - (i + j)
 
 \subsection*{Implementazione x86}
 Siano \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} mappate rispettivamente in \register{\%rdi}, \register{\%rsi}, \register{\%rcx} e \register{\%rdx} e si voglia salvare il risultato in \register{\%rax}.\\
-Il problema di x86 sta nel fatto che le operazioni sono solo a due operandi, con il primo che funge da destinazione, e quindi non è possibile specificare un diverso registro di destinazione.\\
+Il problema di x86 sta nel fatto che le operazioni sono solo a due operandi, con il secondo che funge da destinazione, e quindi non è possibile specificare un diverso registro di destinazione.\\
 Possiamo aggirare questa limitazione sfruttando l'istruzione \mintinline{asm}{lea}: questa infatti ha come argomenti \texttt{<addr>, <dst>} e calcola l'indirizzo \texttt{<addr>} secondo base, spiazzamento e indice shiftato, e salva tutto in \texttt{<dst>}. Sarà quindi sufficiente impostare spiazzamento e shift a 0 per riuscire a sommare agevolmente base (per noi \register{\%rdi}) a indice non shiftato (\register{\%rsi}) e salvarne il risultato in \register{\%rax}.
 \begin{minted}{asm}
 leaq (%rdi, %rsi), %rax  # memorizza in %rax g + h con il trick visto sopra
-addq %rcx, %rdx  # memorizza in %rcx i + j
-subq %rdx, %rax  # memorizza in %rdx (g + h) - (i + j)
+addq %rcx, %rdx  # memorizza in %rdx i + j
+subq %rdx, %rax  # memorizza in %rax (g + h) - (i + j)
 \end{minted}
 
 \subsection*{Implementazione ARM}
@@ -46,6 +46,37 @@ Qui vengono usate \mintinline{asm}{adds} e \mintinline{asm}{subs}, che aggiornan
 adds r1, r0, r1  # memorizza in r1 g + h
 adds r3, r2, r3  # memorizza in r3 i + j
 subs r0, r1, r3  # memorizza in r0 (g + h) - (i + j)
+\end{minted}
+
+\section{Array e accesso alla memoria}
+Ora invece prenderemo come esempio una semplice istruzione che agisce su un array per mostrare diverse modalità di accesso alla memoria: questa volta, x86 permetterà di ridurre notevolmente il numero di righe di codice, mentre le due ISA RISC richiederanno molte più istruzioni.
+\begin{minted}{c}
+a[12] = h + a[8];
+\end{minted}
+\subsection*{Implementazione MIPS}
+Come visto in 6.3, in MIPS sarà necessario utilizzare le istruzioni di \mintinline{asm}{lw} e \mintinline{asm}{sw} per accedere all'indirizzo dell'array; inoltre, ricordiamo che  lo shift necessario a ottenere l'indirizzo desiderato andrà sempre moltiplicato per lo spiazzamento di 4 byte, sicché ogni parola risulti lunga 32 bit.\\
+Assumendo quindi che \mintinline{c}{h} stia in \register{\$a0} e l'indirizzo dell'array \mintinline{c}{a} in \register{\$a1} otteniamo:
+\begin{minted}{asm}
+lw $v0, 32($a1)  # carica in $v0 il contenuto di a shiftato di 4 * 8
+add $a0, $v0, $a0  # salva in $a0 a[8] + h
+sw $a0, 48($a1)  # riponi il contenuto di $a0 nell'indirizzo di a shiftato di 4 * 12
+\end{minted}
+
+\subsection*{Implementazione x86}
+La capacità di accedere direttamente alla memoria grazie a istruzioni come \mintinline{asm}{addl} e \mintinline{asm}{movl} semplifica di molto questa operazione per l'ISA Intel.\\
+Assumendo che  \mintinline{c}{h} stia \register{\%edi} e l'indirizzo di \mintinline{c}{a} in \register{\%rsi},otteniamo:
+\begin{minted}{asm}
+addl 32(%rsi), %edi  # memorizza in %edi a[8] + h
+movl %edi, 48(%rsi)  # sposta a[8] + h in a[12]
+\end{minted}
+
+\subsection*{Implementazione ARM}
+La versione ARM è molto simile a quella MIPS.\\
+Assumendo che \mintinline{c}{h} stia in \register{r0} e l'indirizzo di \mintinline{c}{a} in \register{r1}, otteniamo:
+\begin{minted}{asm}
+ldr r3, [r1, \#32]  # carica a[8] in r3
+add r0, r3, r0   # salva in r0 a[8] + h
+str r0, [r1, \#48]  # riponi r0 in a[12]
 \end{minted}
 
 
