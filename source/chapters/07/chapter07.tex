@@ -73,7 +73,7 @@ Esistono svariate modalità di indirizzamento in \emph{Intel}:
 	\item \texttt{[<displacement>](<index register>, [<scale>])};
 	\item \texttt{[<displacement>](<base register>, <index register>, [<scale>])}.
 \end{itemize}
-dove\texttt{ <displacement> }e\texttt{ <scale> } sono valori immediati mentre\texttt{ <base register> }e\texttt{ <index register> }stanno ad indicare due registri generici. L'indirizo di memoria corrispondente viene calcolato come segue:
+dove\texttt{ <displacement> }e\texttt{ <scale> } sono valori immediati mentre\texttt{ <base register> }e\texttt{ <index register> }stanno ad indicare due registri generici. L'indirizzo di memoria corrispondente viene calcolato come segue:
 \begin{equation*}
 	\texttt{<displacement>} + \texttt{<base>} + \texttt{<index>} \cdot 2^\texttt{<scale>}
 \end{equation*}
@@ -81,8 +81,8 @@ dove:
 \begin{itemize}
 	\item \texttt{<displacement>} è una costante a \(8\), \(16\) o \(32\) bit;
 	\item \texttt{<base>} è un registro;
-	\item \texttt{<indice>} è un registro;
-	\item \texttt{<scala>} è \(0\), \(1\), \(2\) o \(3\).
+	\item \texttt{<index>} è un registro;
+	\item \texttt{<scale>} è \(0\), \(1\), \(2\) o \(3\).
 \end{itemize}
 
 \section{La sintassi delle istruzioni}
