@@ -80,4 +80,299 @@ str r0, [r1, #48]  # riponi r0 in a[12]
 \end{minted}
 
 
+\section{Blocchi condizionali}
+Vediamo ora la gestione di istruzioni condizionali. Solitamente queste vengono gestite da istruzioni di salti condizionati, ma alcune ISA hanno modalità di gestione decisamente peculiari.
+\subsection*{Condizioni di uguaglianza}
+Andiamo ad analizzare le traduzioni del segente codice C:
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+if (i == j){
+	f = g + h;
+} else {
+	f = g - h;
+}
+\end{minted}
+\subsubsection*{Implementazione MIPS}
+In MIPS assumiamo che le variabili \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} vengano mappate nei 4 registri dedicati agli argomenti, rispettivamente \register{\$a0}, \register{\$a1}, \register{\$a2} e \register{\$a3}, e decidiamo di salvare il risultato in \register{\$v0}.\\
+Utilizzeremo quindi \mintinline{asm}{bne} per operare un confronto fra due registri general purpose per verificare \mintinline{c}{i == j}; qualora la condizione non fosse verificata, faremo il salto a L2 e alla sottrazione \mintinline{c}{g -h}. Differentemente, verrà eseguita la somma \mintinline{c}{g + h} e un salto incondizionato \mintinline{asm}{j} farà terminare la sequenza.
+\begin{minted}[linenos, tabsize = 4]{asm}
+  bne $a2, $a3, L2   # salta a L2 se $a2 e $a3 sono diversi
+  add $v0, $a0, $a1
+  j L3   # salta a L3
+L2:
+  sub $v0, $a0, $a1
+L3:
+\end{minted}
+
+\subsubsection*{Implementazione x86}
+Siano \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} mappate rispettivamente in \register{\%rdi}, \register{\%rsi}, \register{\%rcx} e \register{\%rdx} e si voglia salvare il risultato \mintinline{c}{f} in \register{\%rax}.\\
+L'implementazione risulta più complessa rispetto a quella di MIPS, poiché dovremo usare \mintinline{asm}{lea} al posto di \mintinline{asm}{add} e sopratto dovremo affiancare alla \mintinline{asm}{sub} una \mintinline{asm}{mov} per far sì che il risultato vada salvato in \register{\%rax}. Inoltre, è necessaria una \mintinline{asm}{cmpq} per settare i flag e solo dopo possiamo lanciare l'istruzione di salto.
+\begin{minted}[linenos, tabsize = 4]{asm}
+  cmpq %rcx, %rdx  # confronta i e j e setta il flag
+  jne L2   # se i != j, salta a L2
+  leaq (%rdi, %rsi), %rax  # salva in %rax g + h
+  jmp L3
+L2:
+  movq %rdi, %rax  # sposta g da %rdi a %rax
+  subq %rsi, %rax  # salva in %rax
+L3:
+\end{minted}
+Tutto questo può però essere semplificato dalla magica istruzione \mintinline{asm}{cmov} (\mintinline{asm}{mov} condizionale) di x86:
+\begin{minted}[linenos, tabsize = 4]{asm}
+leaq (%rdi, %rsi), %rax  # salva in %rax g + h
+subq %rsi, %rax  # salva in %rax
+cmpq %rcx, %rdx  # i == j
+cmovne %rdi, %rax  # sposta %rdi in %rax se il i è diverso da j
+\end{minted}
+
+\subsubsection*{Implementazione ARM}
+L'implementazione ARM ci permette di evitare istruzioni di salto grazie alla sua versione condizionale delle operazioni aritmetiche. Assumendo che \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} vengano mappate rispettivamente in \register{r0}, \register{r1}, \register{r2} e \register{r3} e che il risultato vada in \register{r0}, otteniamo:
+\begin{minted}[linenos]{arm}
+cmp r2, r3   # setta i flag
+addeq r0, r0, r1   # se i == j, salva in r0 g + h
+subne r0, r0, r1   # altrimenti, salva in r0 g - h
+\end{minted}
+
+\subsection*{Condizioni di disuguaglianza}
+Vediamo ora invece una condizione di disuguaglianza:
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+if (i < j){
+	f = g + h;
+} else {
+	f = g - h;
+}
+\end{minted}
+\subsubsection*{Implementazione MIPS}
+Assumendo che le variabili vengano mappate come sopra, il codice MIPS non appare troppo diverso, se non per l'utilizzo dell'istruzione \mintinline{asm}{slt}:
+\begin{minted}[linenos, tabsize = 4]{asm}
+  slt $a2, $a2, $a3   # setta $a2 se i < j
+  beq $a2, $zero, L2   # se $a2 == 0 (non settato), vai a L2
+  add $v0, $a0, $a1
+  j L3   # salta a L3
+L2:
+  sub $v0, $a0, $a1
+L3:
+\end{minted}
+\subsubsection*{Implementazione x86}
+L'implementazione è quasi identitica a quella della condizione di uguaglianza, cambia solamente l'istruzione di salto.
+\begin{minted}[linenos, tabsize = 4]{asm}
+  cmpq %rcx, %rdx  # confronta i e j e setta il flag
+  jge L2   # se i < j, salta a L2
+  leaq (%rdi, %rsi), %rax  # salva in %rax g + h
+  jmp L3
+L2:
+  movq %rdi, %rax  # sposta g da %rdi a %rax
+  subq %rsi, %rax  # salva in %rax
+L3:
+\end{minted}
+Anche l'implementazione con \mintinline{asm}{cmov} è simile:
+\begin{minted}[linenos, tabsize = 4]{asm}
+leaq (%rdi, %rsi), %rax  # salva in %rax g + h
+subq %rsi, %rax  # salva in %rax
+cmpq %rcx, %rdx  # flag
+cmovge %rdi, %rax  # sposta %rdi in %rax se il i < j
+\end{minted}
+
+\subsubsection*{Implementazione ARM}
+Ancora una volta, le indicazioni condizionali delle istruzioni ARM ci semplificano la vita:
+\begin{minted}[linenos]{arm}
+cmp r2, r3   # setta i flag
+addlt r0, r0, r1   # se i < j, salva in r0 g + h
+subge r0, r0, r1   # altrimenti, salva in r0 g - h
+\end{minted}
+
+\section{Cicli}
+Ora analizziamo l'implementazione di un ciclo con condizione di terminazione basata sui valori contenuti in un array di interi. Il codice C è il seguente:
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+int i = 0;
+while (a[i] == k){
+	i += 1;
+}
+\end{minted}
+
+\subsubsection*{Implementazione MIPS}
+In MIPS mappiamo \mintinline{c}{k} in \register{\$a0}, l'indirizzo di \mintinline{c}{a} in\register{\$a1} e \mintinline{c}{i} in \register{\$v0}.
+
+\begin{minted}[linenos, tabsize = 4]{asm}
+	move $v0, $zero	 # i = 0
+L1:
+	sll $t1, $v0, 2	 # salva in $t1 4 * i
+	add $t1, $t1, $a1	 # ottieni l'indirizzo di a[i]
+	lw $t0, 0($t1)	 # carica in $t0 il contenuto di a[i]
+	bne $t0, $a0, L2	 # salta a l2 se a[i] è diverso da k
+	addi $v0, $v0, 1
+	j L1
+L2:
+\end{minted}
+
+Implementazione di GCC:
+\begin{minted}[linenos, tabsize = 4]{asm}
+	lw $a2, 0($a1)
+	bne $a2, $a0, L2
+	add $a1, $a1, 4
+	move $v0, $zero
+L1:
+	addi $a1, $a1, 4
+	lw $v1, -4($a1)
+	addi $v0, $v0, 1
+	beq $v1, $a0, L1
+	j L3
+L2:
+	move $v0, $zero
+L3:
+\end{minted}
+
+\subsubsection*{Implementazione x86}
+\begin{minted}[linenos, tabsize = 4]{asm}
+	cmpl (%rsi), %edi
+	jne L2
+	movq $0, %rax
+L1:
+	addq $1, %rax
+	cmpl %edi, (%rsi, %rax, 4)
+	je L1
+	jmp L3
+L2:
+	movq $0, %rax
+L3:
+\end{minted}
+
+\subsubsection*{Implementazione ARM}
+\begin{minted}[linenos,tabsize = 4]{arm}
+	ldr r3, [r1]
+	cmp r0, r3
+	bne L2
+	mov r3, #0
+L1:
+	add r3, r3, #1
+	ldr r2 [r1, #4]!
+	cmp r2, r0
+	beq L1
+	b L3
+L2:
+	mov r3, #0
+L3:
+	mov r0, r3
+\end{minted}
+
+\section{Invocazione di subroutine}
+\subsection*{Funzioni foglia}
+
+\begin{minted}[linenos,tabsize = 4]{c}
+int esempio_foglia(int g, int h, int i, int j){
+	int f;
+	f = (g + h) - (i + j);
+	return f;
+}
+\end{minted}
+
+\subsubsection*{Implementazione MIPS}
+\begin{minted}[linenos,tabsize = 4]{asm}
+esempio_foglia:
+	addu $a0, $a0, $a1
+	addu $v0, $a2, $a3
+	subu $v0, $a0, $v0
+	jr $ra
+\end{minted}
+
+\subsubsection*{Implementazione x86}
+\begin{minted}[linenos,tabsize = 4]{asm}
+esempio_foglia:
+	leal (%rdi, %rsi), %eax
+	addl %ecx, %edx
+	subl %edx, %eax
+	ret
+\end{minted}
+
+\subsubsection*{Implementazione ARM}
+\begin{minted}[linenos,tabsize = 4]{arm}
+esempio_foglia:
+	add r0, r0, r1
+	add r3, r2, r3
+	rsb r0, r3, r0
+	bx lr
+\end{minted}
+
+\subsection*{Funzioni non foglia}
+
+\begin{minted}[linenos,breaklines, tabsize = 4]{c}
+int inc(int n){
+	return n + 1;
+}
+
+int f(int x){
+	return inc(x) - 4;
+}
+\end{minted}
+
+\subsubsection*{Implementazione MIPS}
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+inc:
+	addiu $v0, $a0, 1
+	jr $ra
+
+	f:
+		addiu $sp, $sp, -4
+		sw $ra, 0($sp)
+		jal inc
+		addiu $v0, $v0, -4
+		lw $ra, 0($sp)
+		addiu $sp, $sp, 4
+		jr $ra
+\end{minted}
+
+Implementazione GCC:
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+inc:
+	addiu $v0, $a0, 1
+	jr $ra
+
+f:
+	addiu $sp, $sp, -8
+	sw $ra, 4($sp)
+	jal inc
+	addiu $v0, $v0, -4
+	lw $ra, 4($sp)
+	addiu $sp, $sp, 8
+	jr $ra
+\end{minted}
+
+\subsubsection*{Implementazione x86}
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+inc:
+	leal 1(%rdi), %eax
+	ret
+
+f:
+	call inc
+	subl $4, %eax
+	ret
+\end{minted}
+
+\subsubsection*{Implementazione ARM}
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+inc:
+	add r0, r0, #1
+	bx lr
+
+f:
+	str lr, [sp, #-4]!
+	bl inc
+	sub r0, r0 #4
+	ldr pc, [sp], #4
+\end{minted}
+
+Implementazione GCC:
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+inc:
+	add r0, r0, #1
+	bx lr
+
+f:
+	stmfd sp!, {r4, lr}
+	bl inc
+	sub r0, r0 #4
+	ldmfd sp!, {r4, pc}
+\end{minted}
+
+
 \end{document}
