@@ -13,14 +13,14 @@
 \chapter{L'architettura Intel x86}
 
 \section{Introduzione}
-Le CPU \emph{Intel} della famiglia \emph{x86} si basano su un architettura di tipo \emph{CISC}. Esse vengono utilizzate principalmente su laptop, desktop e server, a partire dagli anni Settanta. Un'importante complicazione dell'architettura \emph{Intel} è dettata dal mantenimento della retrocompatibilità: le moderne CPU a 64 bit di ultima generazione sono infatti in grado di eseguire il vecchio codice a 8 bit. A differenza del MIPS infatti le istruzioni \emph{Intel} non sono codificate in una singola parola, bensì possono occupare da 8 a 64 bit.
+Le CPU \emph{Intel} della famiglia \emph{x86} si basano su un architettura di tipo \emph{CISC}. Esse vengono utilizzate principalmente su laptop, desktop e server, a partire dagli anni Settanta. Un'importante complicazione dell'architettura \emph{Intel} è dettata dal mantenimento della retrocompatibilità: le moderne CPU a 64 bit di ultima generazione sono infatti in grado di eseguire il vecchio codice a 8 bit. A differenza del \emph{MIPS} infatti le istruzioni \emph{Intel} non sono codificate in una singola parola, bensì possono occupare da 8 a 64 bit.
 
 Come già ampiamente trattato nei precendenti capitoli, un'architettura di tipo \emph{CISC} è in grado di offrire un notevole set di istruzioni e un potente meccanismo di indirizzamento. Ciò implica che non sono più solo le singole operazioni di load e store quelle che permettono di accedere alla memoria.
 
-Per semplicità, in questa dispensa si tratterà l'\emph{ISA} più moderna, chiamata \emph{x86\_64}, nota anche come \emph{amd64}. Essa è caratterizzata da parole a 64 bit e da 16 registri. Fra le varie \emph{ABI} verrà utilizzata quella di Linux, che per qualche aspetto differisce da quella dei sistemi Microsoft e Apple.
+Per semplicità, in questa dispensa si tratterà l'\emph{ISA} più moderna, chiamata \emph{x86\_64}, nota anche come \emph{amd64}. Essa è caratterizzata da parole a 64 bit e da 16 registri. Fra le varie \emph{ABI} verrà utilizzata quella di Linux, che differisce per qualche aspetto da quella dei sistemi Microsoft e Apple.
 
 \section{La gestione dei registri}
-Principalmente, per indicare i registri si antepone un \%, mentre per le costanti di antepone un \$.
+Per indicare i registri si antepone un \% al nome del registro, mentre indicare le costanti si antepone un \$ al valore della costante stessa.
 
 \begin{figure}[H]
 	\centering
@@ -51,7 +51,7 @@ Come già ripetuto in molteplici occasioni, le convenzioni di chiamata vengono s
 \begin{itemize}
 	\item il passaggio di argomenti si compone di:
 	\begin{itemize}
-		\item i primi \(6\) argomenti nei registri: \register{\%rdi}, \register{\%rsi}, \register{\%rdx}, \register{\%rcx}, \register{\%r8}, \register{\%r9};
+		\item i primi \(6\) argomenti nei registri: \register{\%rsi}, \register{\%rdi}, \register{\%rcx}, \register{\%rdx}, \register{\%r8}, \register{\%r9};
 		\item ulteriori argometi possono essere salvati nello stack;
 	\end{itemize}
 	\item i valori di ritorno vengono salvati nei registri \register{\%rax} e \register{\%rdx};
@@ -99,7 +99,7 @@ Il suffisso\texttt{ <size>}, può essere usato per indicare l’ampiezza in bit 
 	\item \texttt{q} significa ampiezza di 64 bit (\emph{quad word}).
 \end{itemize}
 Esso è opzionale quando uno dei due operandi è un registro, mentre diventa obbligatorio nel caso l'istruzione non presenti nessun registro come operandi.\\
-Un esempio in cui\texttt{ <size> }è obbligatorio è nel caso in cui \mintinline{asm}{notl 200(%rbp)}.
+Un esempio in cui\texttt{ <size> }è obbligatorio: \mintinline{asm}{notl 200(%rbp)}.
 
 \section{Alcune istruzioni frequenti}
 A seguire un elenco delle istruzioni aritmetico logiche più frequenti:
@@ -125,17 +125,19 @@ A seguire un elenco delle istruzioni aritmetico logiche più frequenti:
 \end{itemize}
 
 \subsection{Load Effective Address (LEA)}
-Seppur questa istruzione sia stata implementata per calcolare indirizzi (con indirizzamento indiretto) senza effettuare accessi, principalmente viene utilizzata per un secondo scopo. Essa infatti risulta molto utile per effettuare una somma di due registri, salvandone il risultato in un terzo (anche con eventuali shift). Si ricordi che, mentre in \emph{MIPS} lavorare con tre registri è la normalità, in \emph{Intel} per ciascuna istruzione possono esserne specificati al massimo due. Ad esempio:
+Seppur questa istruzione sia stata implementata per calcolare indirizzi (con indirizzamento indiretto) senza effettuare accessi, principalmente viene utilizzata per un secondo scopo. Essa infatti risulta molto utile per effettuare una somma di due registri, salvandone il risultato in un terzo (anche con eventuali shift). Ricordiamo che, mentre in \emph{MIPS} lavorare con tre registri è la normalità, in \emph{Intel} per ciascuna istruzione possono esserne specificati al massimo due.
+
+Ad esempio:
 \begin{minted}[linenos]{asm}
 lea (%rbx, %rcx), %rax
 \end{minted}
 esegue la somma di \register{\%rbx} e \register{\%rcx} e la salva nel registro \register{\%rax}.
 
+Si noti come nonostante la sintassi sia identica a quella per l'indirizzamento, in questo caso non si sta eseguendo un accesso alla memoria. La stessa sintassi, in un'altra istruzione, avrebbe portato ad accedere al blocco di memoria contenuto in \register{(\%rcx+\%rbx)}.
+
 \subsection{Incremento e decremento}
-Come avete potuto notare dalla lista delle istruzioni comuni in \emph{Intel}, sono presenti le istruzioni \mintinline{asm}{inc} e \mintinline{asm}{dec}, che rispettivamente incrementano e decrementano di una unità il valore del registro specificato. Ma per quale motivo non si utilizza la semplice istruzione \mintinline{asm}{add $1, register}? In \emph{Intel} si è visto che le istruzioni possono essere codificate con una sequenza di bit di lunghezza variabile. Utilizzare la funzione di incremento piuttosto che quella di somma significa non dover memorizzare un valore immediato, con il conseguente risparmio di 16 bit.
+Come avete potuto notare dalla lista delle istruzioni comuni in \emph{Intel}, sono presenti le istruzioni \mintinline{asm}{inc} e \mintinline{asm}{dec}, che rispettivamente incrementano e decrementano di una unità il valore del registro specificato. Ma per quale motivo non si utilizza la semplice istruzione \mintinline{asm}{add $1, register}?
 
-% \section{Movimento dati}
-
-% \section{Controllo del flusso}
+In \emph{Intel} si è visto che le istruzioni possono essere codificate con una sequenza di bit di lunghezza variabile. Utilizzare la funzione di incremento piuttosto che quella di somma significa non dover memorizzare un valore immediato, con il conseguente risparmio di 16 bit.
 
 \end{document}
