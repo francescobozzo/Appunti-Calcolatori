@@ -73,7 +73,7 @@ movl %edi, 48(%rsi)  # sposta a[8] + h in a[12]
 \subsection*{Implementazione ARM}
 La versione ARM è molto simile a quella MIPS.\\
 Assumendo che \mintinline{c}{h} stia in \register{r0} e l'indirizzo di \mintinline{c}{a} in \register{r1}, otteniamo:
-\begin{minted}{gas}
+\begin{minted}{arm}
 ldr r3, [r1, #32]  # carica a[8] in r3
 add r0, r3, r0     # salva in r0 a[8] + h
 str r0, [r1, #48]  # riponi r0 in a[12]
