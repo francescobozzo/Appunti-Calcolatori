@@ -32,7 +32,7 @@ sub $v0, $a0, $v0  # memorizza in $v0 (g + h) - (i + j)
 \subsection*{Implementazione x86}
 Siano \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} mappate rispettivamente in \register{\%rdi}, \register{\%rsi}, \register{\%rcx} e \register{\%rdx} e si voglia salvare il risultato in \register{\%rax}.\\
 Il problema di x86 sta nel fatto che le operazioni sono solo a due operandi, con il secondo che funge da destinazione, e quindi non è possibile specificare un diverso registro di destinazione.\\
-Possiamo aggirare questa limitazione sfruttando l'istruzione \mintinline{asm}{lea}: questa infatti ha come argomenti \texttt{<addr>, <dst>} e calcola l'indirizzo \texttt{<addr>} secondo base, spiazzamento e indice shiftato, e salva tutto in \texttt{<dst>}. Sarà quindi sufficiente impostare spiazzamento e shift a 0 per riuscire a sommare agevolmente base (per noi \register{\%rdi}) a indice non shiftato (\register{\%rsi}) e salvarne il risultato in \register{\%rax}.
+Possiamo aggirare questa limitazione sfruttando l'istruzione \mintinline{gas}{lea}: questa infatti ha come argomenti \texttt{<addr>, <dst>} e calcola l'indirizzo \texttt{<addr>} secondo base, spiazzamento e indice shiftato, e salva tutto in \texttt{<dst>}. Sarà quindi sufficiente impostare spiazzamento e shift a 0 per riuscire a sommare agevolmente base (per noi \register{\%rdi}) a indice non shiftato (\register{\%rsi}) e salvarne il risultato in \register{\%rax}.
 \begin{minted}{gas}
 leaq (%rdi, %rsi), %rax  # %rax = g + h con il trick visto sopra
 addq %rcx, %rdx          # %rdx = i + j
@@ -42,7 +42,7 @@ subq %rdx, %rax          # %rax = (g + h) - (i + j)
 \subsection*{Implementazione ARM}
 Analogamente a MIPS, anche l'implementazione ARM è molto semplice e naturale, una volta mappate \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} in \register{r0}, \register{r1}, \register{r2} e \register{r3} e decidendo di salvare il tutto in \register{r0}.\\
 Qui vengono usate \mintinline{asm}{adds} e \mintinline{asm}{subs}, che aggiornano i flag, ma usare le normalissime \mintinline{asm}{add} e \mintinline{asm}{sub} non avrebbe cambiato nulla.
-\begin{minted}{asm}
+\begin{minted}{arm}
 adds r1, r0, r1  # r1 = g + h
 adds r3, r2, r3  # r3 = i + j
 subs r0, r1, r3  # r0 = (g + h) - (i + j)
@@ -63,9 +63,9 @@ sw $a0, 48($a1)    # riponi il contenuto di $a0 nell'indirizzo di a shiftato di 
 \end{minted}
 
 \subsection*{Implementazione x86}
-La capacità di accedere direttamente alla memoria grazie a istruzioni come \mintinline{asm}{addl} e \mintinline{asm}{movl} semplifica di molto questa operazione per l'ISA Intel.\\
+La capacità di accedere direttamente alla memoria grazie a istruzioni come \mintinline{gas}{addl} e \mintinline{gas}{movl} semplifica di molto questa operazione per l'ISA Intel.\\
 Assumendo che  \mintinline{c}{h} stia \register{\%edi} e l'indirizzo di \mintinline{c}{a} in \register{\%rsi},otteniamo:
-\begin{minted}{asm}
+\begin{minted}{gas}
 addl 32(%rsi), %edi  # %edi = a[8] + h
 movl %edi, 48(%rsi)  # sposta a[8] + h in a[12]
 \end{minted}
@@ -105,8 +105,8 @@ L3:
 
 \subsubsection*{Implementazione x86}
 Siano \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} mappate rispettivamente in \register{\%rdi}, \register{\%rsi}, \register{\%rcx} e \register{\%rdx} e si voglia salvare il risultato \mintinline{c}{f} in \register{\%rax}.\\
-L'implementazione risulta più complessa rispetto a quella di MIPS, poiché dovremo usare \mintinline{asm}{lea} al posto di \mintinline{asm}{add} e sopratto dovremo affiancare alla \mintinline{asm}{sub} una \mintinline{asm}{mov} per far sì che il risultato vada salvato in \register{\%rax}. Inoltre, è necessaria una \mintinline{asm}{cmpq} per settare i flag e solo dopo possiamo lanciare l'istruzione di salto.
-\begin{minted}[linenos, tabsize = 4]{asm}
+L'implementazione risulta più complessa rispetto a quella di MIPS, poiché dovremo usare \mintinline{gas}{lea} al posto di \mintinline{gas}{add} e sopratto dovremo affiancare alla \mintinline{gas}{sub} una \mintinline{gas}{mov} per far sì che il risultato vada salvato in \register{\%rax}. Inoltre, è necessaria una \mintinline{gas}{cmpq} per settare i flag e solo dopo possiamo lanciare l'istruzione di salto.
+\begin{minted}[linenos, tabsize = 4]{gas}
   cmpq %rcx, %rdx  # confronta i e j e setta il flag
   jne L2   # se i != j, salta a L2
   leaq (%rdi, %rsi), %rax  # salva in %rax g + h
@@ -116,8 +116,8 @@ L2:
   subq %rsi, %rax  # salva in %rax
 L3:
 \end{minted}
-Tutto questo può però essere semplificato dalla magica istruzione \mintinline{asm}{cmov} (\mintinline{asm}{mov} condizionale) di x86:
-\begin{minted}[linenos, tabsize = 4]{asm}
+Tutto questo può però essere semplificato dalla magica istruzione \mintinline{gas}{cmov} (\mintinline{gas}{mov} condizionale) di x86:
+\begin{minted}[linenos, tabsize = 4]{gas}
 leaq (%rdi, %rsi), %rax  # salva in %rax g + h
 subq %rsi, %rax  # salva in %rax
 cmpq %rcx, %rdx  # i == j
@@ -154,7 +154,7 @@ L3:
 \end{minted}
 \subsubsection*{Implementazione x86}
 L'implementazione è quasi identitica a quella della condizione di uguaglianza, cambia solamente l'istruzione di salto.
-\begin{minted}[linenos, tabsize = 4]{asm}
+\begin{minted}[linenos, tabsize = 4]{gas}
   cmpq %rcx, %rdx  # confronta i e j e setta il flag
   jge L2   # se i < j, salta a L2
   leaq (%rdi, %rsi), %rax  # salva in %rax g + h
@@ -164,8 +164,8 @@ L2:
   subq %rsi, %rax  # salva in %rax
 L3:
 \end{minted}
-Anche l'implementazione con \mintinline{asm}{cmov} è simile:
-\begin{minted}[linenos, tabsize = 4]{asm}
+Anche l'implementazione con \mintinline{gas}{cmov} è simile:
+\begin{minted}[linenos, tabsize = 4]{gas}
 leaq (%rdi, %rsi), %rax  # salva in %rax g + h
 subq %rsi, %rax  # salva in %rax
 cmpq %rcx, %rdx  # flag
@@ -222,7 +222,7 @@ L3:
 \end{minted}
 
 \subsubsection*{Implementazione x86}
-\begin{minted}[linenos, tabsize = 4]{asm}
+\begin{minted}[linenos, tabsize = 4]{gas}
 	cmpl (%rsi), %edi
 	jne L2
 	movq $0, %rax
@@ -275,7 +275,7 @@ esempio_foglia:
 \end{minted}
 
 \subsubsection*{Implementazione x86}
-\begin{minted}[linenos,tabsize = 4]{asm}
+\begin{minted}[linenos,tabsize = 4]{gas}
 esempio_foglia:
 	leal (%rdi, %rsi), %eax
 	addl %ecx, %edx
@@ -337,7 +337,7 @@ f:
 \end{minted}
 
 \subsubsection*{Implementazione x86}
-\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
 inc:
 	leal 1(%rdi), %eax
 	ret
