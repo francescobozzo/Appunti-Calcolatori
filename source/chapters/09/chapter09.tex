@@ -310,14 +310,14 @@ inc:
 	addiu $v0, $a0, 1
 	jr $ra
 
-	f:
-		addiu $sp, $sp, -4
-		sw $ra, 0($sp)
-		jal inc
-		addiu $v0, $v0, -4
-		lw $ra, 0($sp)
-		addiu $sp, $sp, 4
-		jr $ra
+f:
+	addiu $sp, $sp, -4
+	sw $ra, 0($sp)
+	jal inc
+	addiu $v0, $v0, -4
+	lw $ra, 0($sp)
+	addiu $sp, $sp, 4
+	jr $ra
 \end{minted}
 
 Implementazione GCC:
