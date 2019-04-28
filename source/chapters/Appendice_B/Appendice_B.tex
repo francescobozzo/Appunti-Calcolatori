@@ -7,8 +7,124 @@
 % arara: latexmk: { clean: partial }
 %! arara: clean: { extensions: [sta] }
 \begin{document}
-\chapter{Compilare Assembly Intel su Linux}
+\chapter{Come compilare Assembly Intel}
+
 \section{Prerequisiti}
+Il sistema operativo che utilizzeremo è una qualsiasi distribuzione Linux. A seguire i software che andremo a utilizzare:
+\begin{itemize}
+	\item \emph{gcc}: il compilatore C GNU;
+	\item \emph{ld}: il linker GNU;
+	\item \emph{nasm}: un assemblatore Intel x86.
+\end{itemize}
+
+\subsection{Come utilizzare gcc}
+Per compilare il file C "main.c" attraverso gcc nell'eseguibile "main":
+\begin{minted}{batch}
+gcc main.c -o main
+\end{minted}
+mentre per compilare un file C in assembly AT\&T attraverso gcc:
+\begin{minted}{batch}
+gcc -S main.c -o main.s
+\end{minted}
+
+\subsection{Come utilizzare nasm e ld}
+Per compilare un file Assembly Intel "pluto.asm" nel file oggetto "pluto.o":
+\begin{minted}{batch}
+nasm -felf64 -o pluto.o pluto.asm
+\end{minted}
+e successivamente per linkare il file oggetto e ottenere l'eseguibile "pluto":
+\begin{minted}{batch}
+ld -m elf_i386 -o pluto pluto.o
+\end{minted}
+
+\section{Un po' di esempi}
+Esistono principalmente due sezioni: \mintinline{gas}{.data} che racchiude eventuali dati da salvare in memoria e \mintinline{gas}{.text} che contiene il codice Assembly. In particolare, in quest'ultima sezione bisogna specificare un'etichetta come \mintinline{gas}{global}: l'etichetta che andiamo a specificare indicherà l'inizio del programma.
+
+\subsection{Hello World}
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+SECTION .data
+msg db "Hello World", 0Ah  # 0A permette di andare a capo riga
+
+SECTION .text
+global _start
+
+_start:
+	mov edx, 13   # lunghezza stringa
+	mov ecx, msg  # puntatore alla stringa
+	mov ebx, 1    # seleziona come output lo std output
+	mov eax, 4    # system call per stampare
+	int 80h
+
+	mov ebx, 0    # return 0
+	mov eax, 1    # sys call close
+	int 80h
+\end{minted}
+Da notare che se non si inserisce l’ultima sys call (return 0) verrà prodotto un errore di segmentation fault.
+
+\subsection{Stampa di una stringa di lunghezza variabile}
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+SECTION .data
+msg db "Hello World", 0Ah, 0h  # 0h terminatore di stringa
+
+SECTION .text
+global _start
+
+_start:
+	# esegue un ciclo while
+	mov ebx, msg
+	mov eax, ebx
+nextchar:
+	cmp byte[eax], 0
+	jz finished
+	inc eax
+	jmp nextchar
+finished:
+	sub eax, ebx
+	# stessa cosa di prima, semplicemente la lunghezza è variabile in eax
+	mov edx, eax
+	mov ecx, msg
+	mov ebx, 1
+	mov eax, 4
+	int 80h
+
+	mov ebx, 0
+	mov eax, 1
+	int 80h
+\end{minted}
+
+\subsection{Esempio di subroutine}
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+SECTION .data
+msg db "Scritta", 0Ah, 0h
+
+SECTION .text
+global _start
+
+_start:
+	mov eax, msg
+	call strlen
+
+	mov edx, eax
+	mov ecx, msg
+	mov ebx, 1
+	mov eax, 4
+	int 80h
+	mov ebx, 0
+	mov eax, 1
+	int 80h
+strlen:
+	push ebx
+	mov ebx, ea
+nextchar:
+	cmp byte[eax], 0
+	jz finished
+	inc eax
+	jmp nextchar
+finished:
+	sub eax, ebx
+	pop ebx
+	ret
+\end{minted}
 
 
 
