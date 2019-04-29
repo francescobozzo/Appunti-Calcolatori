@@ -12,7 +12,7 @@
 
 \chapter{Esempi e confronti di programmi Assembly}
 Ora andiamo a riprendere alcuni esempi già portati nel capitolo dedicato all'Assembly MIPS e andremo a confrontare le implementazioni proposte con le corrispettive per Assembly x86 e ARM.\\
-Per completezza, specifichiamo che il codice che mostreremo è stato ottenuto con il compilatore GCC, lievemente modificato affinché risulti più leggibile (principalmente sull'ordine logico delle istruzioni e sulla nomenclatura dei registri).
+Per completezza, specifichiamo che il codice che mostreremo è stato ottenuto con il compilatore \register{gcc}, lievemente modificato affinché risulti più leggibile (principalmente sull'ordine logico delle istruzioni e sulla nomenclatura dei registri).
 
 \section{Semplici espressioni aritmetico-logiche}
 Cominciamo con delle semplici operazioni aritmetiche, che evidenzieranno come le architetture RISC (MIPS e ARM) permettono di eseguire questo tipo di istruzioni in modo molto naturale, al contrario dell'implementazione leggermente più macchinosa di x86.\\
@@ -204,7 +204,7 @@ L1:
 L2:
 \end{minted}
 
-Implementazione di GCC:
+Implementazione di \register{gcc}:
 \begin{minted}[linenos, tabsize = 4]{asm}
 	lw $a2, 0($a1)
 	bne $a2, $a0, L2
@@ -320,7 +320,7 @@ f:
 	jr $ra
 \end{minted}
 
-Implementazione GCC:
+Implementazione \register{gcc}:
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 inc:
 	addiu $v0, $a0, 1
@@ -361,7 +361,7 @@ f:
 	ldr pc, [sp], #4
 \end{minted}
 
-Implementazione GCC:
+Implementazione \register{gcc}:
 \begin{minted}[linenos, breaklines, tabsize = 4]{arm}
 inc:
 	add r0, r0, #1
@@ -459,7 +459,7 @@ out_ordina:
 	jr $ra
 \end{minted}
 
-Ecco invece l'implementazione, più complessa, che ci presenta il nostro fido gcc:
+Ecco invece l'implementazione, più complessa, che ci presenta il nostro fido \register{gcc}:
 
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 sposta:
@@ -571,7 +571,7 @@ out_ordina:
 	ret
 \end{minted}
 
-Implementazione di GCC:
+Implementazione di \register{gcc}:
 
 \begin{minted}[linenos, breaklines, tabsize = 4]{gas}
 sposta:
@@ -821,6 +821,272 @@ L3:
 	bx lr
 \end{minted}
 
+\section{Copia stringa}
+Consideriamo ora una funziona che copia un array di caratteri:
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+void copia_stringa(char *d , const char *s){
+	int i = 0;
 
+	while((d[i] = s[i]) != 0){
+		i+=1;
+	}
+}
+\end{minted}
+
+\subsubsection{Implementazione MIPS}
+Abbiamo già discusso l'implementazione MIPS di questa funzione in 6.9, per cui qui riporteremo solamente il codice, generato da \register{gcc}:
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+copia_stringa:
+	lb $v0, 0($a1)
+	sb $v0, 0($a0)
+	beq $v0, $zero, L5
+	move $v0, $zero
+L3:
+	addiu $v0, $v0, 1
+	addu $v1, $a1, $v0
+	lb $v1, 0($v1)
+	addu $a2, $a0, $v0
+	sb $v1, 0($a2)
+	bne $v1, $zero, L3
+L5:
+	jr $ra
+\end{minted}
+
+\subsubsection{Implementazione x86}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+copia_stringa:
+	movzbl (%rsi), %eax
+	movb %al, (%rdi)
+	testb %al, %al
+	je L1
+	movl $0, %eax
+L3 :
+	addl $1, %eax
+	movslq %eax, %rcx
+	movzbl (%rsi, %rcx), %edx
+	movb %dl, (%rdi, %rcx)
+	testb %dl, %dl
+	jne L3
+L1:
+	ret
+\end{minted}
+
+\subsubsection{Implementazione ARM}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+copia_stringa:
+	ldrb r3, [r1]
+	strb r3, [r0]
+	cmp r3, #0
+	bxeq lr
+L3:
+	ldrb r3, [r1, #1]!
+	strb r3, [r0, #1]!
+	cmp r3, #0
+	bne L3
+	bx lr
+\end{minted}
+
+\section{Successione di Fibonacci}
+Presentiamo ora l'implementazione di una funzione che calcola l'\(n\)-esimo numero di Fibonacci:
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+int fibonacci(int n){
+	if (n < 2){
+		return 1;
+	} else {
+		return 3 * fibonacci(n - 1) - fibonacci(n - 2);
+	}
+}
+\end{minted}
+
+\subsubsection{Implementazione MIPS}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+fibonacci:
+	addiu $sp, $sp, -16
+	sw $ra, 12($sp)
+	sw $s1, 8($sp)
+	sw $s0, 4($sp)
+	move $s0, $a0
+	slt $v0, $a0, 2
+	bne $v0, $zero, L3
+	addiu $a0, $a0, -1
+	jal fibonacci
+	move $s1, $v0
+	addiu $a0, $s0, -2
+	jal fibonacci
+	sll $v1, $s1, 1
+	addu $s1, $v1, $s1
+	subu $v0, $s1, $v0
+	j L2
+L3:
+	li $v0, 1	 # 0x1
+L2 :
+	lw $ra, 12($sp)
+	lw $s1, 8($sp)
+	lw $s0, 4($sp)
+	addiu $sp, $sp, 16
+	jr $ra
+\end{minted}
+
+\subsubsection{Implementazione x86}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+fibonacci:
+	movl $1, %eax
+	cmpl $1, %edi
+	jle L6
+	pushq %rbp
+	pushq %rbx
+	subq $8, %rsp
+	movl %edi, %ebx
+	leal -1(%rdi), %edi
+	call fibonacci
+	movl %eax, %ebp
+	leal -2(%rbx), %edi
+	call fibonacci
+	leal 0(%rbp, %rbp, 2), %edx
+	subl %eax, %edx
+	movl %edx, %eax
+	addq $8, %rsp
+	popq %rbx
+	popq %rbp
+L6:
+	ret
+\end{minted}
+
+\subsubsection{Implementazione ARM}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+fibonacci:
+	cmp r0, #1
+	ble L3
+	stmfd sp!, {r4, r5, r6, lr}
+	mov r5, r0
+	sub r0, r0, #1
+	bl fibonacci
+	mov r4, r0
+	sub r0, r5, #2
+	bl fibonacci
+	add r4, r4, r4, lsl #1
+	rsb r0, r0, r4
+	ldmfd sp!, {r4, r5, r6, pc}
+L3:
+	mov r0, #1
+	bx lr
+\end{minted}
+
+\section{Serie tail recursive}
+Vediamo ora una funzione che calcola i primi \(n\) numeri naturali, in versione tail recursive:
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+int sum(int n, int acc){
+	if (n > 0){
+		return sum(n - 1, acc + n);
+	} else {
+		return acc;
+	}
+}
+\end{minted}
+
+\subsection*{Senza ottimizzazione di chiamate in coda}
+Vediamone inizialmente una traduzione fatta senza l'eliminazione delle chiamate ricorsive:
+\subsubsection{Implementazione MIPS}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+sum:
+	move $v1, $a0
+	move $v0, $a1
+	blez $a0, L5
+	addiu $sp, $sp, -8
+	sw $ra, 4($sp)
+	addiu $a0, $a0, -1
+	addu $a1, $a1 , $v1
+	jal sum
+	lw $ra, 4($sp)
+	addiu $sp, $sp,8
+L5:
+	jr $ra
+\end{minted}
+
+\subsubsection{Implementazione x86}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+sum :
+	movl %esi, %eax
+	testl %edi, %edi
+	jle L6
+	subq $8, %rsp
+	addl %edi, %esi
+	subl $1, %edi
+	call sum
+	addq $8, %rsp
+L6:
+	ret
+\end{minted}
+
+\subsubsection{Implementazione ARM}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+sum:
+	cmp r0, #0
+	ble L3
+	stmfd sp!, {r4, lr}
+	add r1, r0, r1
+	sub r0, r0, #1
+	bl sum
+	ldmfd sp!, {r4, pc}
+L3:
+	mov r0, r1
+	bx lr
+\end{minted}
+
+\subsection*{Chiamate in coda ottimizzate}
+Proponiamo ora la traduzione che \register{gcc} esegue attivando il comando \emph{-foptimize-sibling-calls}, la cui funzione è ottimizzare le chiamate in coda:
+\subsubsection{Implementazione MIPS}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+sum:
+	move $v0, $a1
+	blez $a0, L2
+L4:
+	addu $v0, $v0, $a0
+	addiu $a0, $a0, -1
+	bne $a0, $zero, L4
+L2:
+	jr $ra
+\end{minted}
+
+\subsubsection{Implementazione x86}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+sum:
+	movl %esi, %eax
+	testl %edi , %edi
+	jle L2
+L4:
+	addl %edi, %eax
+	subl $1, %edi
+	jne L4
+L2:
+	ret
+\end{minted}
+
+\subsubsection{Implementazione ARM}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+sum:
+	cmp r0, #0
+	ble L2
+L4:
+	sub r3, r0, #1
+	add r1, r1, r0
+	mov r0, r3
+	cmp r3, #0
+	bne L4
+L2:
+	mov r0, r1
+	bx lr
+\end{minted}
 
 \end{document}
