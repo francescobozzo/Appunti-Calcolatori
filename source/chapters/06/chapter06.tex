@@ -54,7 +54,7 @@ sub f, t0, t1  # f = t0 - t1
 
 La sintassi per scrivere commenti consiste nell'anteporre un \# al testo che si vuole inserire. Come per // in C, anche \# agisce solo su una riga.
 
-Esistono però alcune eccezioni: ad esempio \emph{GCC}, l'assembler di Unix, usa i commenti come il C e l'operando di destinazione delle operazioni va in fondo.
+Esistono però alcune eccezioni: ad esempio \register{gcc}, l'assembler di Unix, usa i commenti come il C e l'operando di destinazione delle operazioni va in fondo.
 
 \section{I registri}
 
@@ -657,7 +657,7 @@ SUM:
 L5:
 	j $ra                  # torna al programma chiamante
 \end{minted}
-Alcuni compilatori sono in grado di ottimizzare automaticamente il programma in questo modo così da renderlo molto più veloce e leggero, il GCC è in grado di aggiustare, ove possibile, questo tipo di procedure con una complessità pari a \emph{O(2)}.
+Alcuni compilatori sono in grado di ottimizzare automaticamente il programma in questo modo così da renderlo molto più veloce e leggero, il \register{gcc} è in grado di aggiustare, ove possibile, questo tipo di procedure con una complessità pari a \emph{O(2)}.
 
 \section{Le stringhe in MIPS}
 Nel linguaggio C le stringhe erano degli array di caratteri che terminava in \mintinline{c}{'\0'} (\mintinline{c}{NULL} character)
@@ -741,7 +741,7 @@ L2:
 \end{minted}
 
 \subsection{Implementazione realistica}
-Nessun compilatore avrebbe mai lavorato in questo modo. Abbiamo presentato la procedura così affinché fosse didatticamente più efficace, adesso invitiamo il lettore a dare un'occhiata a quella che potrebbe essere la traduzione di un vero compilatore, in particolare GCC:
+Nessun compilatore avrebbe mai lavorato in questo modo. Abbiamo presentato la procedura così affinché fosse didatticamente più efficace, adesso invitiamo il lettore a dare un'occhiata a quella che potrebbe essere la traduzione di un vero compilatore, in particolare \register{gcc}:
 \begin{minted}[linenos, tabsize=4]{asm}
 COPIA_STRINGA:
 	lb $v0, 0($a1)
