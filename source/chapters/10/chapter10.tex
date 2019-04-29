@@ -1,0 +1,114 @@
+\documentclass[class=book, crop=false, oneside]{standalone}
+\usepackage[subpreambles=true]{standalone}
+
+\usepackage{../../style}
+
+\graphicspath{{./assets/images/}}
+\newmintinline{asm}{}
+
+% arara: pdflatex: { synctex: yes, shell: yes }
+% arara: latexmk: { clean: partial }
+\begin{document}
+
+\chapter{Toolchain}
+
+La \emph{toolchain} è la catena di strumenti che permette di tradurre il codice di alto livello in linguaggio macchina, scopriremo in questo capitolo quali sono i suoi componenti e come funzionano.
+
+\section{Introduzione}
+
+Come ben sappiamo non è possibile per il calcolatore comprendere né i linguaggi di alto livello né il linguaggio assembly, nonostante il suo livello molto basso di astrazione, quindi si utilizzano degli strumenti come compilatori ed assemblatori per tradurre i programmi in modo da renderli comprensibili alla macchina.
+
+Eccoci quindi finalmente pronti a discutere di come questa traduzione avviene, partendo con un esempio di traduzione dal C, osserviamo le componenti che entrano in gioco nel processo:
+\begin{enumerate}
+	\item \textbf{preprocessore}: gestisce le direttive \# (\emph{include}, \emph{define} etc.) generalmente sostituendo pezzi di codice ed eliminando i commenti;
+	\item \textbf{compilatore}: compila il codice da .c a .s (assembly);
+	\item \textbf{assembler}: traduce da assembly in linguaggio macchina, da .s a .o;
+	\item \textbf{linker}: collega tra loro diversi file .o per linkare al file oggetto del programma le librerie o gli altri file .o di cui ha bisogno, una volta terminato produce un file eseguibile.
+\end{enumerate}
+Una volta ottenuto il file eseguibile questo può esserecaricato in memoria con una system call ed eseguito.
+Normalmente un driver gestisce tutto questo processo in maniera automatica.
+
+\subsection*{La toolchain GCC}
+Uno degli strumeti pià diffusi per compiere queste operazioni è la toolchain Gnu Compiler Collection (GCC) che può compilare diversi linguaggi e generare linguaggio macchina per varie architetture CPU, MIPS compreso.
+
+La GCC è definita in diverse fasi, operate da diversi comonenti, questi sono: componente prettamente psichedelico (cpp), compilatore (cc), assembler (as) e loader (ld).
+Quando si utilizza GCC si può invocare la compilazione su un file con diversi parametri:
+\begin{itemize}
+	\item \texttt{gcc -c <file>} si ferma dopo aver invocato as (genera quindi un file oggetto .o)
+	\item \texttt{gcc -S <file>} si ferma dopo aver invocato cc (genera quindi un file assembly .s)
+	\item \texttt{gcc <file>} invoca tutti i porgrammi necessari
+\end{itemize}
+Vediamo ora nello specifico le fasi che caratterizzano tutto il processo svolto da GCC.
+
+\section{Processo: dal codice sorgente al file oggetto}
+
+Per comprendere bene il funzionamento di questi processi verrà ora illustrato il procedimento che porta da un file .c ad un eseguibile.
+
+Il primo passo dato un file .c è di invocare su di esso l'istruzione \texttt{gcc -S}, chiamando così il cc (compilatore), che traduce il file da linguaggio C ad assembly generando un file .s del tipo esatto (poichè cc riconosce l'architettura per cui sta lavorando).
+
+Da notare che spesso il codice assembly generato dal compilatore è migliore di quello che potrebbescrivere un programmatore dato che è programmato per effettuare una serie di semplificazioni e migliorie al codice mentre lo traduce così da renderlo più leggero e più performante (srotolando loop, accorpando variabili, diminuendo l'uso di variabili temporanee...); tuttavia i livelli di ottimizzazione si possono settare tramite l'opzione (facoltativa) -o... che permette di indicare uno tra i 3 livelli di semplificazione disponibili.
+
+Il secondo passo prevede di utilizzare il comando \texttt{gcc -c} sul file (può essere invocato sia sul file .c, rendendo implicito lo svolgimento del primo passo, che sul file .s ottenuto dal primo passo). Questo significa che viene utilizzato l'assemblatore as per generare un file .o, ovvero un file oggetto.
+
+Nello specifico as fa molto di più che tradurre da assembly in linguaggio macchina:
+\begin{itemize}
+	\item converte le pseudo-istruzioni in sequenze di istruzioni standard;
+	\item converte le istruzioni assembly in linguaggio macchina;
+	\item converte i numeri da decimale/esadecimale in binario;
+	\item gestisce le label traducendole in indirizzi veri e propri;
+	\item gestisce i salti, se l'indirizzo è troppo lontano e non sta nello spazio dedicato all'operazioen j, questa va convertita in caricamento della destinazione in un registro ed in seguito jr al registro stesso;
+	\item genera i metadati, informazioni di alto livello che serviranno in seguito al loader per caricare il codice binario.
+\end{itemize}
+
+Alla fine delle operazioni dell'as si ottiene quindi un file oggetto, composto da varie sezioni.
+\begin{itemize}
+	\item Header: contiene dati come le posizioni di altri dati all'interno del file (segmenti, tabelle, etc.).
+	\item Segmenti: principalmente testo (codice) e dati (variablili globali).
+	\item Tabella di rilocazione: comprende tutti i simboli\footnote{I simboli sono stringhe come etichette, nomi di funzioni e variabili che implicitamente rappresentano indirizzi} che sono locali al file oggetto stesso.
+	\item Tabella dei simboli: contiene tutti i simboli che non sono contenuti all'interno del file oggetto stesso ma saranno dedotti da file estern e quindi saranno noti solo una volta che il linker avrà svolto il suo compito di collegamento tra file, in pratica questa tabella enumera tutti i simboli che (al momento) risultano indefiniti.
+	\item Altre informazioni (ad esempio per il debugging).
+\end{itemize}
+
+\section{Processo: dal file oggetto all'eseguibile}
+
+A questo punto non rimane altro che prendere il file oggetto e trasformarlo in eseguibile, questo significa invocare il comando \texttt{gcc} senza modificatori, ovvero eseguendo anche l'ultimo passo, quello del linking.
+Il linker ld mette assieme uno o più file oggetto eseguendo le necessarie rilocazioni, generalmente svolge le seguenti operazioni:
+\begin{enumerate}
+	\item decide come codice e dati sono disposti in memoria compattando tra loro le sezioni con funzioni uguali;
+	\item associa indirizzi assoluti a tutti i simboli, risolvendo anche quelli contenuti nella tabella dei somboli, che quindi non sono locali e deve andare a cercare nei file .o linkati;
+	\item patcha le istruzioni macchina ciatte nella tabella di rilocazione risistemando gli indirizzi, che sono stati modificati dopo lo svolgimento del punto 1. di questo elenco.
+\end{enumerate}
+
+Quindi lo scopo principale dell'ld è quello dieliminare le tabelle dei simboli e di rilocazione sostituendo tutti gli indirizzi relativi e inesistenti con indirizzi assoluti, per fare questo ha bisogno di collegare tra loro più file .o dato che alcuni oggetti definiti in un file potrebbero essere richiamati da un'altro file.
+
+\subsection{Linker e simboli}
+
+I tipi di simboli con cui il linker si trova ad avere a che fare sono tre:
+\begin{itemize}
+	%TODO chiedi chiarimento sui simboli definiti
+	%TODO chiedi se i dimboli locali sono registrati nella tabella di riloocazione
+	\item simboli locali: (non esportati) sono simobli definiti (e visibili solamente) all'interno del file.
+	\item simboli definiti: (defined) associati ad un indirizzo relativo nella tabella dei simboli, tuttavia definiti all'interno del file stesso;
+	\item simboli non definiti: (undefined) presenti nella tabella dei simboli ma dichiarati in un file diverso;\footnote{Nel caso un simbolo non locale non venga trovato nei file .o linkati viene generato un errore di linking}
+\end{itemize}
+
+In tutti questi casi il lavoro del linker rimane lo stesso, ovvero di ssociare ad ogni simbolo un'indirizzo assoluto, perché solo in questo modo essi saranno interpretabili dal calcolatore.
+
+\section{Linking puntigliosamente}
+
+Il linking può essere spiegato più precisamente suddividendolo nei tre passi qui elencati.
+\begin{enumerate}
+	\item Disporre in memoria i vari segmenti riordinandoli, ovvero prendendo le parti .text di tutti i file .o linkati ed unendole, facendo la stessa cosa con tutte le sezioni, così da ottenere un unico file .o contenente tutto il codice e strutturalmente ordinato.
+	\item Assegnare un indirizzo assoluto ad ogni simbolo presente nelle tabelle dei simboli tenendo conto del passaggio precedente.
+	\item Infine risistemare tutte le istruzioni con gli indirizzi appena calcolati, sistemando definitivamente anche tutti i simboli delle tabelle di rilocazione.
+\end{enumerate}
+
+Il file risultante viene finalmente "incapsulato" in un file eseguibile, che quindi si riteoverà a contenere i vari segmenti (testo, dati, etc.), le informazioni per il caricamento in memoria (indirizzo di caricamento dei segmenti, entry point del programma, etc.) ed altre informazioni aggiuntive (ad esempio per il debugging).
+
+\section{Librerie}
+
+
+
+%\section{Esempio}
+
+\end{document}
