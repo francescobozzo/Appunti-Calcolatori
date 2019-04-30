@@ -1,0 +1,81 @@
+\documentclass[class=book, crop=false, oneside]{standalone}
+\usepackage[subpreambles=true]{standalone}
+
+\usepackage{../../style}
+
+\graphicspath{{./assets/images/}}
+\newmintinline{asm}{}
+
+% arara: pdflatex: { synctex: yes, shell: yes }
+% arara: latexmk: { clean: partial }
+\begin{document}
+\chapter{Central Processing Unit}
+
+In questo capitolo andremo ad analizzare come il nostro processore elabora ed esegue le istruzioni che gli arrivano dai programmi Assembly; in particolare ci baseremo ancora su MIPS, in quanto super regolare e particolarmente utile a scopo didattico.\\
+
+\section{Introduzione}
+Per come è stato progettato MIPS, le istruzioni presentano dei tratti comuni;in particolare le prime due fasi del ciclo della CPU (vedi~\ref{subsec:cpu}), ossia il prelievo dell'istruzione e la lettura dei valori dei registri operandi sono comuni a ogni istruzione.\\
+Noi in particolare, dopo aver spiegato i vari elementi che concorrono a far funzionare tutta la baracca, andremo ad analizzare le istruzioni aritmetico-logiche, quelle di accesso alla memoria e quelle di salti, dal momento che tutte le altre si implementano con tecniche simili.
+
+\section{Arithmetic-Logic Unit}
+A eccezione di \mintinline{asm}{j}, tutte le istruzioni MIPS fanno uso di \emph{arithmetic-logic unit} (ALU per gli amici), una rete logica combinatoria abbastanza complessa preposta all'esecuzione di tutti calcoli di cui abbiamo bisogno; sostanzialmente, è un’unione di blocchi fondamentali che fanno operazioni su singoli bit.\\
+Al di là delle operazioni puramente aritmetiche (per le quali lo scopo di ALU è ovvio), viene usato nelle operazioni di accesso alla memoria (\mintinline{asm}{sw} e \mintinline{asm}{lw}) per il calcolo degli indirizzi e dalle operazioni di salto condizionato per effettuare i confronti; successivamente, ognuna di queste tre categorie differisce. \\ 
+
+\section{Il datapath}
+Datapath: parte del processore attraverso cui passano le istruzioni, è letteralmente un percorso da seguire per l’esecuzione delle istruzioni\\
+
+PRIMA FASE: prendo l’indirizzo dell’istruzione dal program counter (sto assumeno che il programma sia già stato messo in memoria) e spacchettiamo l’istruzione\\
+
+SECONDA FASE: i registri (vettori di 32 latch) vengono caricati nel banco dei registri (i registri da caricare sono contenuti nell’istruzione, se è di tipo R)\\
+
+TERZA FASE: facciamo lavorare la ALU, che potrebbe anche mandare un dato al banco registri, e ottiene il valore (o l’indirizzo) desiderato\\
+
+
+QUARTA FASE: i risultati ALU vengono salvati in memoria dat\\
+
+QUINTA FASE: incremento del program counter per mezzo di una ALU dedicata, e un successivo circuito calcola l’indirizzo verso cui mi dovrò spostare\\
+
+La  figura però è incompleta, perché manca qualcosa che dica ai blocchi cosa fare. Ad esempio, dimentichiamo i punti di decisione (l’incremento del program couter in caso di salti è uno di questi)\\
+
+Il secondo operando della ALU può provenrie o da un registro o dal codice dell’istruzione, per scegliere questa cosa viene utilizzato un multiplexer come selettore.\\
+
+MULTIPLEXER: vigile che sceglie se far passare una o l’altra macchina\\
+
+E chi setta il segnale del selettore?  È presto detto, l’unità di controllo!\\
+\section{Control Unit}
+C’è un MUX prima del PC che prende il primo blocco add del pc come primo operando e il secodno come, be’, secondo; il selettore è SALTA, che decide se stiamo facendo (dritto o storto? Che cazzo fa?)\\
+
+Ok allora c’è il blocco che vede se stiamo facendo un operazione di salto che va dentro a un and, e il risultato dell’and va come selettore\\
+
+Ce n’è uno anche per il discorso di prendere l’indirizzo di destinazione e per scegliere se andare a leggere o scrivere in memoria\\
+
+Stessa cosa per quanto riguarda la scelta del caricamento di un registro o una costante come secondo operando, sempre gestita da un MUX direttamente gestito dall’unità di controllo\\
+
+Uno va dentro alla ALU, che è un bus di più bit per scegliere il tipo di operazione svolta dall’unità
+Regwrite dice di scrivere il registro (decisamente da approfondire)\\
+
+LE ARCHITETTURE CISC SONO MOLTO PIÙ COMPLESSE DI COSÌ\\
+
+A questo punto abbiamo moltissimi segnali che viaggiano nel processore, si manifesta la necessità di sincronizzarli, ed è a questo che serve il CLOCK (assumiamo che tutte le istruzioni vengano eseguite con un singolo colpo di clock lungo abbastanza\\
+
+Reti sequenziali hanno un valore DI STATO, e hanno due ingressi: valori di stato (registri in ingresso) e un clock per sincronizzare le transizioni di stato\\
+
+Il flip-flop d-latch è l’elemento base per memorizzare un bit, e registri sono vettori di flip flop\\
+
+TEMPORIZZAZIONE: quando faccio una lettura, sono sicuro che quello che sto leggendo è ciò che e stato scritto al ciclo precedente, e che quindi la sequenza delle cose è quella\\
+
+Il tempo T di clock deve essere tale da dare tempo ai dati di attraversare le reti ed è fondamentale perché altrimenti l’output prodotto sarebbe una merda, perché non sapremmo quando leggere il dato e che dato stiamo leggendo; grazie al tempo, possiamo avere indicazioni molto precise\\
+
+Andando a rivedere il datapath, abbiamo memoria istruzioni, pc e l’addizionatore\\
+
+Ogni ciclo di clock viene effettuato un fetch, viene resa disponibile l’istruzione e viene incrementato il program counter\\
+
+Andiamoa  vedere l’esecuzione di un’istruzione R: mi servono anche il banco dei registri (con 3 bus da 5 bit ciascuno) e un’ALU (con settare un bit per l’and del pc se il risultato è 0), se ho operazione aritmetica. Inoltre ho il controllo RegWrite per vedere se sto leggendo o scriveno sul banco registri\\
+
+Per le istruzioni di load e store bisogna calcolare un indirizzo di memoria dato da indirizzo e offset, quindi continua a servirci la ALU; abbiamo inoltre bisogno di un segnale di controllo per vedere se stiamo scrivendo o meno\\
+
+Abbiamo bisogno anche di un circuito di memoria dati per l’estensione del segno, per estendere da 16 a 32 bit
+(Salto condizionale)
+
+
+\end{document}

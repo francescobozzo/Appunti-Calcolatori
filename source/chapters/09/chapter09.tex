@@ -12,7 +12,7 @@
 
 \chapter{Esempi e confronti di programmi Assembly}
 Ora andiamo a riprendere alcuni esempi già portati nel capitolo dedicato all'Assembly MIPS e andremo a confrontare le implementazioni proposte con le corrispettive per Assembly x86 e ARM.\\
-Per completezza, specifichiamo che il codice che mostreremo è stato ottenuto con il compilatore \register{gcc}, lievemente modificato affinché risulti più leggibile (principalmente sull'ordine logico delle istruzioni e sulla nomenclatura dei registri).
+Per completezza, specifichiamo che il codice che mostreremo è stato ottenuto con il compilatore \mintinline{batch}{gcc}, lievemente modificato affinché risulti più leggibile (principalmente sull'ordine logico delle istruzioni e sulla nomenclatura dei registri).
 
 \section{Semplici espressioni aritmetico-logiche}
 Cominciamo con delle semplici operazioni aritmetiche, che evidenzieranno come le architetture RISC (MIPS e ARM) permettono di eseguire questo tipo di istruzioni in modo molto naturale, al contrario dell'implementazione leggermente più macchinosa di x86.\\
@@ -204,7 +204,7 @@ L1:
 L2:
 \end{minted}
 
-Implementazione di \register{gcc}:
+Implementazione di \mintinline{batch}{gcc}:
 \begin{minted}[linenos, tabsize = 4]{asm}
 	lw $a2, 0($a1)
 	bne $a2, $a0, L2
@@ -320,7 +320,7 @@ f:
 	jr $ra
 \end{minted}
 
-Implementazione \register{gcc}:
+Implementazione \mintinline{batch}{gcc}:
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 inc:
 	addiu $v0, $a0, 1
@@ -361,7 +361,7 @@ f:
 	ldr pc, [sp], #4
 \end{minted}
 
-Implementazione \register{gcc}:
+Implementazione \mintinline{batch}{gcc}:
 \begin{minted}[linenos, breaklines, tabsize = 4]{arm}
 inc:
 	add r0, r0, #1
@@ -459,7 +459,7 @@ out_ordina:
 	jr $ra
 \end{minted}
 
-Ecco invece l'implementazione, più complessa, che ci presenta il nostro fido \register{gcc}:
+Ecco invece l'implementazione, più complessa, che ci presenta il nostro fido \mintinline{batch}{gcc}:
 
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 sposta:
@@ -571,7 +571,7 @@ out_ordina:
 	ret
 \end{minted}
 
-Implementazione di \register{gcc}:
+Implementazione di \mintinline{batch}{gcc}:
 
 \begin{minted}[linenos, breaklines, tabsize = 4]{gas}
 sposta:
@@ -834,7 +834,7 @@ void copia_stringa(char *d , const char *s){
 \end{minted}
 
 \subsubsection{Implementazione MIPS}
-Abbiamo già discusso l'implementazione MIPS di questa funzione in 6.9, per cui qui riporteremo solamente il codice, generato da \register{gcc}:
+Abbiamo già discusso l'implementazione MIPS di questa funzione in 6.9, per cui qui riporteremo solamente il codice, generato da \mintinline{batch}{gcc}:
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 copia_stringa:
 	lb $v0, 0($a1)
@@ -1042,7 +1042,7 @@ L3:
 \end{minted}
 
 \subsection*{Chiamate in coda ottimizzate}
-Proponiamo ora la traduzione che \register{gcc} esegue attivando il comando -\register{foptimize}-\register{sibling}-\register{calls}, la cui funzione è ottimizzare le chiamate in coda:
+Proponiamo ora la traduzione che \mintinline{batch}{gcc} esegue attivando il comando \mintinline{batch}{-foptimize-sibling-calls}, la cui funzione è ottimizzare le chiamate in coda:
 \subsubsection{Implementazione MIPS}
 
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
