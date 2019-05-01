@@ -14,7 +14,6 @@
 La \emph{toolchain} è la catena di strumenti che permette di tradurre il codice di alto livello in linguaggio macchina, scopriremo in questo capitolo quali sono i suoi componenti e come funzionano.
 
 \section{Introduzione}
-
 Come ben sappiamo non è possibile per il calcolatore comprendere né i linguaggi di alto livello né il linguaggio assembly, nonostante il suo livello molto basso di astrazione, quindi si utilizzano degli strumenti come compilatori ed assemblatori per tradurre i programmi in modo da renderli comprensibili alla macchina.
 
 Eccoci quindi finalmente pronti a discutere di come questa traduzione avviene, partendo con un esempio di traduzione dal C, osserviamo le componenti che entrano in gioco nel processo:
@@ -40,7 +39,6 @@ Quando si utilizza GCC si può invocare la compilazione su un file con diversi p
 Vediamo ora nello specifico le fasi che caratterizzano tutto il processo svolto da GCC.
 
 \section{Processo: dal codice sorgente al file oggetto}
-
 Per comprendere bene il funzionamento di questi processi verrà ora illustrato il procedimento che porta da un file .c ad un eseguibile.
 
 Il primo passo dato un file .c è di invocare su di esso l'istruzione \mintinline{batch}{gcc -S}, chiamando così il \texttt{cc} (compilatore), che traduce il file da linguaggio C ad assembly generando un file .s del tipo esatto (poichè \texttt{cc} riconosce l'architettura per cui sta lavorando).
@@ -69,7 +67,6 @@ Alla fine delle operazioni dell'\texttt{as} si ottiene quindi un file oggetto, c
 \end{itemize}
 
 \section{Processo: dal file oggetto all'eseguibile}
-
 A questo punto non rimane altro che prendere il file oggetto e trasformarlo in eseguibile, questo significa invocare il comando \mintinline{batch}{gcc} senza modificatori, ovvero eseguendo anche l'ultimo passo, quello del linking.
 Il linker \texttt{ld} mette assieme uno o più file oggetto eseguendo le necessarie rilocazioni, generalmente svolge le seguenti operazioni:
 \begin{enumerate}
@@ -81,7 +78,6 @@ Il linker \texttt{ld} mette assieme uno o più file oggetto eseguendo le necessa
 Quindi lo scopo principale dell'\texttt{ld} è quello dieliminare le tabelle dei simboli e di rilocazione sostituendo tutti gli indirizzi relativi e inesistenti con indirizzi assoluti, per fare questo ha bisogno di collegare tra loro più file .o dato che alcuni oggetti definiti in un file potrebbero essere richiamati da un'altro file.
 
 \subsection{Linker e simboli}
-
 I tipi di simboli con cui il linker si trova ad avere a che fare sono tre:
 \begin{itemize}
 	\item simboli locali: (non esportati) sono simobli definiti (e visibili solamente) all'interno del file.
@@ -92,7 +88,6 @@ I tipi di simboli con cui il linker si trova ad avere a che fare sono tre:
 In tutti questi casi il lavoro del linker rimane lo stesso, ovvero di ssociare ad ogni simbolo un'indirizzo assoluto, perché solo in questo modo essi saranno interpretabili dal calcolatore.
 
 \section{Linking puntigliosamente}
-
 Il linking può essere spiegato più precisamente suddividendolo nei tre passi qui elencati.
 \begin{enumerate}
 	\item Disporre in memoria i vari segmenti riordinandoli, ovvero prendendo le parti .text di tutti i file .o linkati ed unendole, facendo la stessa cosa con tutte le sezioni, così da ottenere un unico file .o contenente tutto il codice e strutturalmente ordinato.
@@ -103,7 +98,6 @@ Il linking può essere spiegato più precisamente suddividendolo nei tre passi q
 Il file risultante viene finalmente "incapsulato" in un file eseguibile, che quindi si ritroverà a contenere i vari segmenti (testo, dati, etc.), le informazioni per il caricamento in memoria (indirizzo di caricamento dei segmenti, entry point del programma, etc.) ed altre informazioni aggiuntive (ad esempio per il debugging).
 
 \section{Librerie}
-
 Data la complessità dei programmi al giorno d'oggi si è resa indispensabile la creazione di librerie, ovvero collezioni di file .o contenenti le funzioni standard che si rendono utili praticamente in ogni  programma.
 Questo è un grande vantaggio, invvece di linkare un'enormità di file oggetto basta linkare una singola libreria per avere tutte le funzioni standard, questo però comporta lo svantaggio di portarsi dietro un file relativamente pesante (la libreria standard del C pesa \unit[2,5]{Mb}) quando magari si necessita solamente di poche delle funzioni che contiene, anche in questo caso esiste una soluzione più ottimizzata, le \emph{librerie dinamiche}.
 
@@ -114,7 +108,6 @@ Di fatto esistono due tipi di librerie, ecco spiegato il loro funzionamento.
 \end{itemize}
 
 \subsection{Librerie dinamiche nel dettaglio}
-
 Come funziona precisamente una libreria dinamica?
 
 Nel momento del linking \texttt{ld} inserisce all'interno dell'eseguibile dei riferimenti alle librerie ed alle funzioni usate, ma non inserisce le librerie stesse, in tal modo mantiene l'eseguibile leggiadro (come una puzzetta in piscina); inoltre \texttt{ld} inserisce all'interno dell'eseguibile un riferimento ad un linker dinamico (esempio: \mintinline{batch}{/lib/ld-linux.so.2}) che viene caricato ed eseguito al momento dell'esecuzione passandogli come argomento l'intero programma.
@@ -126,6 +119,40 @@ Lo svantaggio in cui si incorre però è una complicazione notevole del processo
 Esiste tuttavia una soluzione ancora più ottimizzata all'interno della categoria delle librerie dinamiche, questa è il processo di \emph{lazy linking}, che consiste, in una maniera squisitamente informatica, nel rimandare il più possibie le operazioni complesse di linking, così da effettuarle solo se estremamente necessarie, in questo modo se una libreria è non viene mai effettivamente invocata si può addirittura evitare di linkarla.
 La strategia utitlizzata è quella di inserire al posto dell'indirizzo effettivo della funzione l'indirizzo di uno \emph{stub} che solo se verrà invocato andrà a ricercare la funzione ed a compiere il linking con la libreria in modo da poter utilizzare la funzione, tutto questo lavoro viene svolto se e solo se la funzione è effettivamente utilizzata e quindi comporta potenzialmente il risparmio di spazio per il linking della libreria che la contiene, inoltre una volta che una funzione è stata effettivamente linkata essa è già disponibile per tutto il resto del codice, così da non dover ripetere più volte il linking.
 
-%\section{Esempio}
+\section{Esempio finale}
+Procediamo ora illustrando un esempio di linking così da chiarire per bene questo processo.
+L'esempio prevede un programma composto da due file assembly il cui testo è il seguente:\\
+File 1:
+\begin{minted}{asm}
+.comm x,4,4
+...
+.text
+.globl f
+f:
+lw $a0, x($gp)
+jal g
+...
+\end{minted}
+File 2:
+\begin{minted}{asm}
+.comm y,4,4
+...
+.text
+.globl g
+g:
+sw $a1, y($gp)
+jal f
+...
+\end{minted}
+Vediamo ora come vengono tradotti questi due file dall'\texttt{as} che ne ricava due file oggetto.
+\begin{table}[H]
+	\subimport{assets/tables/}{file-oggetto-1.tex}
+	\caption{File oggetto 1}
+\end{table}
+\begin{table}[H]
+	\subimport{assets/tables/}{file-oggetto-2.tex}
+	\caption{File oggetto 2}
+\end{table}
+Ora è il turno della componente \texttt{ld} che dovrà unire i due file.
 
 \end{document}
