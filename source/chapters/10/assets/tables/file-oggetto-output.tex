@@ -16,19 +16,20 @@
 	\begin{tabularx}{\textwidth}{ >{\hsize=.2\textwidth}X >{\hsize=.35\textwidth}X  X
 		}
 		\toprule
-			Sezione & Contenuti & \\\lightrule
-			\textbf{Header} & campo & valore \\\lightrule
+			Sezione & Contenuti & \\
+		\midrule
+			\textbf{Header} & \emph{campo} & \emph{valore} \\\lightrule
 			& text size & $300_{16}$ \\
 			& data size & $50_{16}$ \\
 			& ... & ... \\\lightrule
-			\textbf{text} & indirizzo (rel.) & istruzione \\\lightrule
+			\textbf{.text} & \emph{indirizzo (rel.)} & \emph{istruzione} \\\lightrule
 			& 0x00400000 & lw \$a0, 0x8000(\$gp) \\
 			& 0x00400004 & jal 0x00400100 \\
 			& ... & ... \\
 			& 0x00400100 & sw \$a1, 0x7FE0(\$gp) \\
 			& 0x00400104 & jal 0x00400000 \\
 			& ... & ... \\\lightrule
-			\textbf{data} & indirizzo (rel.) & dato \\
+			\textbf{.data} & \emph{indirizzo (rel.)} & \emph{dato} \\\lightrule
 			& 0x10000000 & x \\
 			& ... & ... \\
 			& 0x10000020 & y \\

@@ -15,24 +15,25 @@
 \begin{document}
 	\begin{tabularx}{\textwidth}{ >{\hsize=.3\textwidth}X >{\hsize=.2\textwidth}X >{\hsize=.25\textwidth}X X }
 		\toprule
-			Sezione & Contenuti & & \\\lightrule
-			\textbf{metadati} & campo & valore &  \\\lightrule
+			Sezione & Contenuti & & \\
+		\midrule
+			\textbf{metadati} & \emph{campo} & \emph{valore} & \\\lightrule
 			& nome & file2 & \\
-			& text size & $200_{16}$ & \\
-			& data size & $30_{16}$ & \\\lightrule
-			\textbf{text} & indirizzo (rel.) & istruzione & \\\lightrule
+			& text size & \(200_{16}\) & \\
+			& data size & \(30_{16}\) & \\\lightrule
+			\textbf{.text} & \emph{indirizzo (rel.)} & \emph{istruzione} & \\\lightrule
 			& 0 & sw \$a1, 0(\$gp) & \\
 			& 4 & jal 0 & \\
 			& 8 & ... & \\
 			& ... & ... & \\\lightrule
-			\textbf{data} & indirizzo (rel.) & simbolo & \\\lightrule
+			\textbf{.data} & \emph{indirizzo (rel.)} & \emph{simbolo} & \\\lightrule
 			& 0 & y & \\
 			& ... & ... & \\\lightrule
-			\textbf{tabella simboli} & simbolo & indirizzo & \\\lightrule
+			\textbf{tabella simboli} & \emph{simbolo} & \emph{indirizzo} & \\\lightrule
 			& y & ... & \\
 			& f & ... & \\
 			& ... & ... & \\\lightrule
-			\textbf{tabella rilocazione} & indirizzo & tipo istruzione & simbolo \\\lightrule
+			\textbf{tabella rilocazione} & \emph{indirizzo} & \emph{tipo istruzione} & \emph{simbolo} \\\lightrule
 			& 0 & sw & y \\
 			& 4 & jal & f \\
 		\bottomrule
