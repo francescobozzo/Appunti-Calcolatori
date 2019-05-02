@@ -77,11 +77,11 @@ Quindi lo scopo principale dell'\texttt{ld} è quello di eliminare le tabelle de
 \subsection{Linker e simboli}
 I tipi di simboli con cui il linker si trova ad avere a che fare sono tre:
 \begin{itemize}
-	\item simboli locali: (non esportati) sono simboli definiti (e visibili solamente) all'interno del file;
-	\item simboli definiti: (defined) associati ad un indirizzo relativo nella tabella dei simboli, tuttavia definiti all'interno del file stesso;
-	\item simboli non definiti: (undefined) presenti nella tabella dei simboli ma dichiarati in un file diverso, quidi presenti appunto solo come undefined.\footnote{Nel caso un simbolo non locale non venga trovato nei file \extension{o} linkati viene generato un errore di linking}.
+	\item i simboli \emph{locali} (\emph{non esportati}) sono simboli definiti (e visibili solamente) all'interno del file;
+	\item i simboli \emph{definiti} (\emph{defined}) sono i simboli associati ad un indirizzo relativo nella tabella dei simboli, tuttavia definiti all'interno del file stesso;
+	\item i simboli \emph{non definiti} (\emph{undefined}) sono quei simboli presenti nella tabella dei simboli ma dichiarati in un file diverso, quidi presenti appunto solo come undefined.\footnote{Nel caso un simbolo non locale non venga trovato nei file \extension{o} linkati viene generato un errore di linking}.
 \end{itemize}
-In tutti questi casi il lavoro del linker rimane lo stesso, ovvero di ssociare ad ogni simbolo un indirizzo assoluto, perché solo in questo modo essi saranno interpretabili dal calcolatore.
+In tutti questi casi il lavoro del linker rimane lo stesso, ovvero di associare ad ogni simbolo un indirizzo assoluto, perché solo in questo modo essi sono interpretabili dal calcolatore.
 
 \section{Linking visto approfonditamente}
 Il linking può essere spiegato più precisamente suddividendolo nei tre passi qui elencati.
@@ -97,8 +97,8 @@ Data la complessità dei programmi al giorno d'oggi si è resa indispensabile la
 Questo è un grande vantaggio, invece di linkare un'enormità di file oggetto basta linkare una singola libreria per avere tutte le funzioni standard, questo però comporta lo svantaggio di portarsi dietro un file relativamente pesante (la libreria standard del C pesa \unit[2,5]{Mb}) quando magari si necessita solamente di poche di tutte le funzioni che contiene.
 Anche in questo caso esiste una soluzione più ottimizzata, le \emph{librerie dinamiche}. A seguire vengono presentate le principali differenze fra librerie statiche e dinamiche.
 \begin{itemize}
-	\item \emph{Librerie statiche (\extension{a})}: sono semplici collezioni di file \extension{o}, il linker \texttt{ld} fa tutto il lavoro di linkaggio sulla libreria intera, il che è svantaggioso su calcolatori dove la memoria è limitata (vedi sistemi embedded), tuttavia la fase di esecuzione risulta molto semplice in quanto tutte le funzioni che serviranno nel programma sono già contenute nell'eseguibile;
-	\item \emph{Librerie dinamiche (\extension{so})}: il vero linking avviene a tempo di caricamento ed esecuzione, ovvero la libreria viene consultata solo a runtime, rendendo così molto più leggero il file eseguibile del programma, molto utile quando la memoria è limitata, tuttavia di implementazione più difficile rispetto alla prassi con librerie statiche.
+	\item \emph{Librerie statiche} (\extension{a}): sono semplici collezioni di file \extension{o}, il linker \texttt{ld} fa tutto il lavoro di linkaggio sulla libreria intera, il che è svantaggioso su calcolatori dove la memoria è limitata (vedi sistemi embedded), tuttavia la fase di esecuzione risulta molto semplice in quanto tutte le funzioni che serviranno nel programma sono già contenute nell'eseguibile;
+	\item \emph{Librerie dinamiche} (\extension{so}): il vero linking avviene a tempo di caricamento ed esecuzione, ovvero la libreria viene consultata solo a runtime, rendendo così molto più leggero il file eseguibile del programma, molto utile quando la memoria è limitata, tuttavia di implementazione più difficile rispetto alla prassi con librerie statiche.
 \end{itemize}
 
 \subsection{Come funziona precisamente una libreria dinamica?}
