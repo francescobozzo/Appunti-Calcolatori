@@ -35,7 +35,7 @@ Il datapath si compone essenzialmente di 5 fasi:
   \item assumendo che il programma sia già stato caricato in memoria (secondo le modalità viste nel capitolo~\ref{ch:tool}), in questa fase viene prelevata l'istruzione da eseguire e viene spacchettata nei vari campi;
   \item i registri interessati all'esecuzione vengono caricati nel \emph{banco dei registri}; se l'istruzione è di tipo R, gli indirizzi dei registri sono contenuti nel corpo dell'istruzione;
   \item a questo punto la ALU esegue i calcoli opportuni, ottenendo il valore (o l’indirizzo) desiderato;
-  \item i risultati ALU vengono utilizzati per salvare (o prelevare) in memoria dati un dato, o per emorizzare un registro;
+  \item i risultati ALU vengono utilizzati per salvare (o prelevare) in memoria dati un dato, o per memorizzare un registro;
   \item si incrementa il program counter per mezzo di una ALU dedicata (di fatto, un addizionatore), e una successiva ALU calcola l’indirizzo verso cui mi dovrò spostare in caso di salti incondizionati;
 \end{enumerate}
 
@@ -45,7 +45,7 @@ Altro esempio: a seconda della tipologia di istruzione il secondo operando della
 Ed è qui che ci viene in soccorso il \emph{multiplexer} che, come già detto in~\ref{subsec:multi}, è un circuito combinatorio che prende in input due segnati e decide quale di essi debba andare in output sulla base di un terzo segnale di controllo (un po' come un vigile che decide quale macchina far passare).
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth,keepaspectratio]{multi}
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{multi}
 	\caption{Schema di un multiplexer}
 \end{figure}
 \paragraph{Altri elementi}
@@ -53,31 +53,39 @@ Oltre ai multiplexer, ci sono altri elementi che concorrono alla soluzione dei p
 E chi stabilisce queste cose, oltre a settare il segnale del selettore dei vari multiplexer?  È presto detto, l’unità di controllo!\\
 
 \section{La control unit}
-La \emph{control unit} funge da vero e proprio "direttore d'orchestra" per il processore, stabilendo il valore \(S\) dei vari multiplexer.
+La \emph{control unit} funge da vero e proprio "direttore d'orchestra" per il processore, stabilendo il valore \(S\) dei vari multiplexer e andando a sciogliere le questioni dei punti di decisione.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{datap_2}
 	\caption{Schema di datapath e control unit}
 \end{figure}
-C’è un MUX prima del PC che prende il primo blocco add del pc come primo operando e il secodno come, be’, secondo; il selettore è SALTA, che decide se stiamo facendo (dritto o storto? Che cazzo fa?)\\
+La figura è molto complessa, andiamo ad analizzarla con ordine.
+\begin{itemize}
+	\item Innanzitutto notiamo il multiplexer prima del pc: questo gestisce la scelta su come viene aggiornato il pc, se secondo il valore del primo o del secodno addizionatore. Per settare il valore \(S\) viene utilizzata una porta AND, il cui primo input arriva direttamente dalla control unit, mentre il secondo viene fornito dalla ALU (\emph{zero}) (come straminchia riconosce se stiamo facendo un salto oppure no?).
+	\item Vediamo un secondo multiplexer che indica se memorizzare nel registro di destinazione un dato da ALU o dalla memoria
+	\item Abbiamo un  ultimo multiplexer che precede il caricamento del secondo operando nell'ALU: dalla control unit arriverà l'indicazione per scegliere di caricare un registro (nelle istruzioni R) o una costante (per quelle I).
+	\item Poi vediamo un segnale per la ALU: esso consiste di un bus di più bit per comunicare all'unità quale operazione eseguire.
+	\item Alla memoria dati invece arrivano i segnali \emph{MemWrite} e \emph{MemRead}, che indicano alla memoria dati  la rispettiva operazione.
+	\item \emph{RegWrite} dice di scrivere il registro (decisamente da approfondire).
+\end{itemize}
 
-Ok allora c’è il blocco che vede se stiamo facendo un operazione di salto che va dentro a un and, e il risultato dell’and va come selettore\\
+Questa è la rappresentazione di MIPS, che è una ISA RISC; inutile dire che gli schemi di funzionamento che stanno alla base di architetture CISC sono incredibilmente di così.
 
-Ce n’è uno anche per il discorso di prendere l’indirizzo di destinazione e per scegliere se andare a leggere o scrivere in memoria\\
+\section{La temporizzazione}
+A questo punto abbiamo moltissimi segnali che viaggiano nel processore, sincronizzati dal clock. Per semplicità assumiamo che tutte le istruzioni vengano eseguite con un ipotetico singolo colpo di clock lungo abbastanza.
 
-Stessa cosa per quanto riguarda la scelta del caricamento di un registro o una costante come secondo operando, sempre gestita da un MUX direttamente gestito dall’unità di controllo\\
+\subsection{Breve riepilogo sulle reti logiche}
+Circuiti come i multiplexer visti prima sono detti \emph{reti combinatorie} e producono un output secondo una funzione statica dell'input, senza memoria dei cambiamenti.\\
+Ma è chiaro che elementi come i registri e le memorie (detti elemtni "di stato") necessitano di tenere traccia dei cambiamenti subiti, e a questo si può ovviare con \emph{reti sequenziali}, dove l'output dipende dalla storia (sequenza) degli input precedenti.\\
+Gli elemnti di stato hanno almeno due ingressi:
+\begin{itemize}
+	\item valore da immettere nello stato;
+	\item clock atto a sincronizzare le transizioni.
+\end{itemize}
 
-Uno va dentro alla ALU, che è un bus di più bit per scegliere il tipo di operazione svolta dall’unità
-Regwrite dice di scrivere il registro (decisamente da approfondire)\\
+\paragraph{Flip-flop}Il \emph{flip-flop D-latch} è l’elemento base per memorizzare un bit, e registri sono di fatto vettori di vettori di 32 di questi circuiti. I dettagli su~\ref{subsec:latch}.
 
-LE ARCHITETTURE CISC SONO MOLTO PIÙ COMPLESSE DI COSÌ\\
-
-A questo punto abbiamo moltissimi segnali che viaggiano nel processore, si manifesta la necessità di sincronizzarli, ed è a questo che serve il CLOCK (assumiamo che tutte le istruzioni vengano eseguite con un singolo colpo di clock lungo abbastanza\\
-
-Reti sequenziali hanno un valore DI STATO, e hanno due ingressi: valori di stato (registri in ingresso) e un clock per sincronizzare le transizioni di stato\\
-
-Il flip-flop d-latch è l’elemento base per memorizzare un bit, e registri sono vettori di flip flop\\
-
+\subsection{Gestione della temporizzazione}
 TEMPORIZZAZIONE: quando faccio una lettura, sono sicuro che quello che sto leggendo è ciò che e stato scritto al ciclo precedente, e che quindi la sequenza delle cose è quella\\
 
 Il tempo T di clock deve essere tale da dare tempo ai dati di attraversare le reti ed è fondamentale perché altrimenti l’output prodotto sarebbe una merda, perché non sapremmo quando leggere il dato e che dato stiamo leggendo; grazie al tempo, possiamo avere indicazioni molto precise\\
