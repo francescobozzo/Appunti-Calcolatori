@@ -45,7 +45,7 @@ Altro esempio: a seconda della tipologia di istruzione il secondo operando della
 Ed è qui che ci viene in soccorso il \emph{multiplexer} che, come già detto in~\ref{subsec:multi}, è un circuito combinatorio che prende in input due segnati e decide quale di essi debba andare in output sulla base di un terzo segnale di controllo (un po' come un vigile che decide quale macchina far passare).
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth,keepaspectratio]{multi}
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{multi}
 	\caption{Schema di un multiplexer}
 \end{figure}
 \paragraph{Altri elementi}
@@ -77,7 +77,7 @@ A questo punto abbiamo moltissimi segnali che viaggiano nel processore, sincroni
 \subsection{Breve riepilogo sulle reti logiche}
 Circuiti come i multiplexer visti prima sono detti \emph{reti combinatorie} e producono un output secondo una funzione statica dell'input, senza memoria dei cambiamenti.\\
 Ma è chiaro che elementi come i registri e le memorie (detti elemtni "di stato") necessitano di tenere traccia dei cambiamenti subiti, e a questo si può ovviare con \emph{reti sequenziali}, dove l'output dipende dalla storia (sequenza) degli input precedenti.\\
-Gli elemnti di stato hanno almeno due ingressi:
+Gli elementi di stato hanno almeno due ingressi:
 \begin{itemize}
 	\item valore da immettere nello stato;
 	\item clock atto a sincronizzare le transizioni.
@@ -86,20 +86,86 @@ Gli elemnti di stato hanno almeno due ingressi:
 \paragraph{Flip-flop}Il \emph{flip-flop D-latch} è l’elemento base per memorizzare un bit, e registri sono di fatto vettori di vettori di 32 di questi circuiti. I dettagli su~\ref{subsec:latch}.
 
 \subsection{Gestione della temporizzazione}
-TEMPORIZZAZIONE: quando faccio una lettura, sono sicuro che quello che sto leggendo è ciò che e stato scritto al ciclo precedente, e che quindi la sequenza delle cose è quella\\
+Avere un clock regolare ci permette di ottenere indicazioni precise sulla sequenza di operazione svolte e avere sempre ragione di quale istruzione è avvenuta prima o dopo di un determinato colpo di clock. La metodologia di temporizzazione ci dà quindi indicazioni precise rispetto alla possibilità di letura/scrittura dei segnali rispetto al clock, e i dati presi dagli elementi di stato sono sempre relativi ai cicli precedenti. Vediamo uno schema di come viene gestita la cosa:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth,keepaspectratio]{clock}
+\end{figure}
+\begin{enumerate}
+	\item l'elemento di stato 1 viene aggiornato a un determinato tempo \(t\);
+	\item il valore passa attraverso a una qualsiasi rete combinatoria;
+	\item il valore arriva all'elemento di stato 2 al tempo \(t + T\).
+\end{enumerate}
+Il tempo \(T\) di clock deve naturalmente essere tale da dare tempo ai valori di attraversare i vari circuiti combinatori; inoltre questa sorta di spiazzamento (si può dire?) del clock ci permette di regolarizzare quelli che altrimenti diventerebbero dei cicli di retroazione assolutamente non predicibili.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth,keepaspectratio]{retroaz}
+\end{figure}
+Se non avessimo una metodologia di temporizzazioneprecisa avremmo che \(s = f(s)\), che risulta una cosa non prevedibile. Grazie alla temporizzazione sensibile al clock possiamo ottenere un andamento del tipo: \(s(t + T) = f(s(t))\), decisamente più regolare ed efficiente per noi.
 
-Il tempo T di clock deve essere tale da dare tempo ai dati di attraversare le reti ed è fondamentale perché altrimenti l’output prodotto sarebbe una merda, perché non sapremmo quando leggere il dato e che dato stiamo leggendo; grazie al tempo, possiamo avere indicazioni molto precise\\
+\section{Elaborazione delle istruzioni}
+Prima di addentrarci nel dettaglio dell'esecuzione di alcuni tipi di istruzioni, passiamo in rassegna le varie componenti che servono alla realizzazione di un datapath:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth,keepaspectratio]{datap_3}
+\end{figure}
+Ricordiamo che il sommatore (o addizionatore) è una ALU specializzata alla sola operazione di incremento del program counter.\\
+A questo punto la fase di fetch, ricordiamolo, prevede il prelievo dell'istruzione dal pc, il trasferimento della stessa agli elementi proposti all'esecuzione e infine l'incremento del program counter.
+\subsection{Istruzioni R}
+Iniziamo con un’istruzione di tipo R, come potrebbe essere
+\begin{minted}[linenos]{asm}
+add $t0, $s1, $s2
+\end{minted}
+la quale, come sappiamo, ha questo tipo di mapping:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth,keepaspectratio]{mappatura.png}
+\end{figure}
+Per effettuare questa operazione ho bisogno di due blocchi funzionali che vano ad aggiungersi ai tre di base che abbiamo visto prima.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{R_ex.png}
+\end{figure}
+\begin{itemize}
+	\item Il primo blocco è il \emph{banco dei registri}, una struttura con 3 bus da 5 bit ciascuno in cui vengono caricati i registri da operare; per decidere se dovrò leggere o scrivere un determinato registro viene impiegato il controllo RegWrite, gestito direttamente dalla control unit.
+	\item Il secondo blocco di cui abbiamo bisogno è la ALU di cui prima abbiamo tanto parlato. Questa presenta due controlli, uno di questi è il bus che arriva dal corpo dell'istruzione e indica qual è l'operazione da svolgere, mentre il secondo è il settaggio \emph{zero} qualora il risultato dell'operazione fosse effettivamente 0; questo valore viene poi mandato alla porta AND che decide il segnale di controllo per il multiplexer preposto alla scelta del blocco d'incremento del program counter.
+\end{itemize}
 
-Andando a rivedere il datapath, abbiamo memoria istruzioni, pc e l’addizionatore\\
+\subsection{Istruzioni di accesso alla memoria}
+Adesso andiamo ad analizzare le seguenti istruzioni sulla memoria:
+\begin{minted}[linenos]{asm}
+lw $t0, offest($t2)
+sw $t0, offest($t2)
+\end{minted}
+Ricordiamo che presentano la seguente mappatura:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth,keepaspectratio]{I.png}
+\end{figure}
+In entrambi i casi avremo bisogno di calcolare l'indirizzo in memoria dato da \register{\$t2} e dallo spiazzamento (register file wtf?), per cui ci servirà nuovamente una ALU.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.65\textwidth,keepaspectratio]{MemAccess.png}
+\end{figure}
+\begin{itemize}
+	\item Naturalmente avremo bisogno di una \emph{memoria dati}, dove eventualmente potremo memorizzare i dati di \mintinline{asm}{sw};
+	\item notiamo inoltre che abbiamo bisogno di due segnali di controllo appositi per indicare se l'operazione da eseguire è di lettura o scrittura;
+	\item in ultimo, osserviamo che l'offest viene memorizzato in un campo a 16 bit, che potrebbe essere necessario estendere a 32 bit replicando per 16 volte il bit di segno: per questo abbiamo bisogno di un blocco funzionale apposito.
+\end{itemize}
 
-Ogni ciclo di clock viene effettuato un fetch, viene resa disponibile l’istruzione e viene incrementato il program counter\\
-
-Andiamoa  vedere l’esecuzione di un’istruzione R: mi servono anche il banco dei registri (con 3 bus da 5 bit ciascuno) e un’ALU (con settare un bit per l’and del pc se il risultato è 0), se ho operazione aritmetica. Inoltre ho il controllo RegWrite per vedere se sto leggendo o scriveno sul banco registri\\
-
-Per le istruzioni di load e store bisogna calcolare un indirizzo di memoria dato da indirizzo e offset, quindi continua a servirci la ALU; abbiamo inoltre bisogno di un segnale di controllo per vedere se stiamo scrivendo o meno\\
-
-Abbiamo bisogno anche di un circuito di memoria dati per l’estensione del segno, per estendere da 16 a 32 bit
-(Salto condizionale)
-
+\subsection{Istruzioni di salto condizionato}
+Andiamo ora a vedere la seguente istruzione:
+\begin{minted}[linenos]{asm}
+beq $t1, $t2, offset
+\end{minted}
+Ovviamente anche qui bisogna sommare l'offset, per cui di nuovo necessitiamo di una ALU, ma osserviamo due cose: sappiamo che il pc viene incrementato di 4 byte ogni ciclo, per cui quando effetuiamo un salto andiamo a riferire l'offset al pc già incrementato; inoltre MIPS shifta automaticamente a sinistra di 2 bit, in modo da ragionare sempre in words ed espandere in numero di indirizzi raggiungibili.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{jump.png}
+\end{figure}
+\begin{itemize}
+	\item Notiamo una prima ALU preposta al calcolo dell'indirizzo di salto da comunicare al program counter;
+	\item La seconda ALU effettua una sottrazione fra u due registri e se il risultato è 0 (e quindi i due sono uguali) lo comunica alla porta AND che successivamente comunica col multiplexer dell'incremento.
+\end{itemize}
 
 \end{document}
