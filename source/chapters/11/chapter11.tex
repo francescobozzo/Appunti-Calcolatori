@@ -61,7 +61,7 @@ La \emph{control unit} funge da vero e proprio "direttore d'orchestra" per il pr
 \end{figure}
 La figura è molto complessa, andiamo ad analizzarla con ordine.
 \begin{itemize}
-	\item Innanzitutto notiamo il multiplexer prima del pc: questo gestisce la scelta su come viene aggiornato il pc, se secondo il valore del primo o del secodno addizionatore. Per settare il valore \(S\) viene utilizzata una porta AND, il cui primo input arriva direttamente dalla control unit, mentre il secondo viene fornito dalla ALU (\emph{zero}) (come straminchia riconosce se stiamo facendo un salto oppure no?).
+	\item Innanzitutto notiamo il multiplexer prima del pc: questo gestisce la scelta su come viene aggiornato il pc, se secondo il valore del primo o del secondo addizionatore. Per settare il valore \(S\) viene utilizzata una porta AND, il cui primo input arriva direttamente dalla control unit, mentre il secondo viene fornito dalla ALU (\emph{zero}).
 	\item Vediamo un secondo multiplexer che indica se memorizzare nel registro di destinazione un dato da ALU o dalla memoria
 	\item Abbiamo un  ultimo multiplexer che precede il caricamento del secondo operando nell'ALU: dalla control unit arriverà l'indicazione per scegliere di caricare un registro (nelle istruzioni R) o una costante (per quelle I).
 	\item Poi vediamo un segnale per la ALU: esso consiste di un bus di più bit per comunicare all'unità quale operazione eseguire.
@@ -69,7 +69,7 @@ La figura è molto complessa, andiamo ad analizzarla con ordine.
 	\item \emph{RegWrite} dice di scrivere il registro (decisamente da approfondire).
 \end{itemize}
 
-Questa è la rappresentazione di MIPS, che è una ISA RISC; inutile dire che gli schemi di funzionamento che stanno alla base di architetture CISC sono incredibilmente di così.
+Questa è la rappresentazione di MIPS, che è una ISA RISC; inutile dire che gli schemi di funzionamento che stanno alla base di architetture CISC sono incredibilmente più complessi di così.
 
 \section{La temporizzazione}
 A questo punto abbiamo moltissimi segnali che viaggiano nel processore, sincronizzati dal clock. Per semplicità assumiamo che tutte le istruzioni vengano eseguite con un ipotetico singolo colpo di clock lungo abbastanza.
@@ -101,7 +101,7 @@ Il tempo \(T\) di clock deve naturalmente essere tale da dare tempo ai valori di
 	\centering
 	\includegraphics[width=0.5\textwidth,keepaspectratio]{retroaz}
 \end{figure}
-Se non avessimo una metodologia di temporizzazioneprecisa avremmo che \(s = f(s)\), che risulta una cosa non prevedibile. Grazie alla temporizzazione sensibile al clock possiamo ottenere un andamento del tipo: \(s(t + T) = f(s(t))\), decisamente più regolare ed efficiente per noi.
+Se non avessimo una metodologia di temporizzazioneprecisa avremmo che \(s = f(s)\), che è un risultato assolutamente non prevedibile. Grazie alla temporizzazione sensibile al clock possiamo ottenere un andamento del tipo: \(s(t + T) = f(s(t))\), decisamente più regolare ed efficiente per noi.
 
 \section{Elaborazione delle istruzioni}
 Prima di addentrarci nel dettaglio dell'esecuzione di alcuni tipi di istruzioni, passiamo in rassegna le varie componenti che servono alla realizzazione di un datapath:
@@ -121,7 +121,7 @@ la quale, come sappiamo, ha questo tipo di mapping:
 	\centering
 	\includegraphics[width=0.5\textwidth,keepaspectratio]{mappatura.png}
 \end{figure}
-Per effettuare questa operazione ho bisogno di due blocchi funzionali che vano ad aggiungersi ai tre di base che abbiamo visto prima.
+Per effettuare questa operazione abbiamo bisogno di due blocchi funzionali che vanno ad aggiungersi ai tre di base che abbiamo visto prima.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{R_ex.png}
@@ -150,7 +150,7 @@ In entrambi i casi avremo bisogno di calcolare l'indirizzo in memoria dato da \r
 \begin{itemize}
 	\item Naturalmente avremo bisogno di una \emph{memoria dati}, dove eventualmente potremo memorizzare i dati di \mintinline{asm}{sw};
 	\item notiamo inoltre che abbiamo bisogno di due segnali di controllo appositi per indicare se l'operazione da eseguire è di lettura o scrittura;
-	\item in ultimo, osserviamo che l'offest viene memorizzato in un campo a 16 bit, che potrebbe essere necessario estendere a 32 bit replicando per 16 volte il bit di segno: per questo abbiamo bisogno di un blocco funzionale apposito.
+	\item in ultimo, osserviamo che l'offset viene memorizzato in un campo a 16 bit che potrebbe essere necessario estendere a 32 bit replicando per 16 volte il bit di segno: per questo abbiamo bisogno di un blocco funzionale apposito.
 \end{itemize}
 
 \subsection{Istruzioni di salto condizionato}
@@ -158,14 +158,14 @@ Andiamo ora a vedere la seguente istruzione:
 \begin{minted}[linenos]{asm}
 beq $t1, $t2, offset
 \end{minted}
-Ovviamente anche qui bisogna sommare l'offset, per cui di nuovo necessitiamo di una ALU, ma osserviamo due cose: sappiamo che il pc viene incrementato di 4 byte ogni ciclo, per cui quando effetuiamo un salto andiamo a riferire l'offset al pc già incrementato; inoltre MIPS shifta automaticamente a sinistra di 2 bit, in modo da ragionare sempre in words ed espandere in numero di indirizzi raggiungibili.
+Ovviamente anche qui bisogna sommare l'offset, per cui di nuovo necessitiamo di una ALU, ma osserviamo due cose: sappiamo che il pc viene incrementato di 4 byte ogni ciclo, per cui quando effettuiamo un salto andiamo a riferire l'offset al pc già incrementato; inoltre MIPS shifta automaticamente a sinistra di 2 bit, in modo da ragionare sempre in words ed espandere in numero di indirizzi raggiungibili.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{jump.png}
 \end{figure}
 \begin{itemize}
 	\item Notiamo una prima ALU preposta al calcolo dell'indirizzo di salto da comunicare al program counter;
-	\item La seconda ALU effettua una sottrazione fra u due registri e se il risultato è 0 (e quindi i due sono uguali) lo comunica alla porta AND che successivamente comunica col multiplexer dell'incremento.
+	\item La seconda ALU effettua una sottrazione fra i due registri e se il risultato è 0 (e quindi i due sono uguali) lo comunica alla porta AND che successivamente comunica col multiplexer dell'incremento.
 \end{itemize}
 
 \end{document}
