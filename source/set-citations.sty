@@ -1,0 +1,82 @@
+% -------------------------------------------------------------------------------------------------------------------- %
+% -------------------------------------------------------------------------------------------------------------------- %
+% tex.stackexchange.com/questions/53377/
+\usepackage{graphicx}
+
+\definecolor{quotemark}{gray}{0.7}
+
+% NOTE da qui puoi cambiare i parametri
+\newcommand\quotescale{3}
+\newcommand\myquotesleft{\makebox(0,0){\scalebox{\quotescale}{\textcolor{quotemark}{``}}}}
+\newcommand\myquotesright{\makebox(0,0){\scalebox{\quotescale}{\textcolor{quotemark}{''}}}}
+\newcommand\quotemargin{0.1\textwidth}
+
+\makeatletter
+% NOTE TODO
+\def\fquote{%
+	\@ifnextchar[{\fquote@i}{\fquote@i[]}%]
+}%
+% NOTE effettua il parsing del primo parametro
+\def\fquote@i[#1]{%
+	\def\tempa{#1}%
+	\@ifnextchar[{\fquote@ii}{\fquote@ii[]}}%
+% NOTE effettua il parsing del secondo parametro
+\def\fquote@ii[#1]{%
+	\def\tempb{#1}%
+	\@ifnextchar[{\fquote@iii}{\fquote@iii[]}}%
+% NOTE effettua il parsing del terzo parametro
+% NOTE disegna le virgolette di apertura
+\def\fquote@iii[#1]{%
+	\def\tempc{#1}%
+	\vspace{1em}%
+	\noindent%
+	% NOTE permette di specificare i margini
+	\begin{list}{}{%
+		\setlength{\leftmargin}{\quotemargin}%
+		\setlength{\rightmargin}{\quotemargin}%
+	}%
+	\item[]%
+	% NOTE posiziona le virgolette sinistre
+	\begin{picture}(0,0)%
+		% NOTE (-15,-20)
+		\put(-15,-5){\myquotesleft}%
+	\end{picture}%
+	% NOTE personalizza il testo della citazione
+	\begingroup\itshape\small%
+}
+
+% NOTE definiscono le virgolette di chiusura
+\def\endfquote{%
+	\endgroup\par%
+	\makebox[0pt][l]{%
+		% NOTE sposta a destra le virgolette
+		\hspace{0.8\textwidth}%
+		% NOTE posiziona le virgolette destre
+		\begin{picture}(0,0)(0,0)%
+			% NOTE (15,25)
+			\put(15,15){\myquotesright}%
+		\end{picture}}%
+	% NOTE controlla se sono stati passati gli argomenti giusti
+	% NOTE; se non passo l'autore non stampa niente
+	\ifx\tempa\empty%
+	\else%
+		\ifx\tempb\empty%
+			% NOTE stampa autore, fonte
+			\hfill\rule{100pt}{0.5pt}\\
+			\mbox{}\hfill\small\tempa%
+		\else
+			\ifx\tempc\empty%
+				% NOTE stampa autore, fonte
+				\hfill\rule{100pt}{0.5pt}\\
+				\mbox{}\hfill\small\tempa,\ \emph{\tempb}%
+			\else%
+				% NOTE stampa autore, fonte, anno
+				\hfill\rule{100pt}{0.5pt}\\
+				\mbox{}\hfill\small\tempa,\ \emph{\tempb},\ \tempc%
+			\fi%
+	\fi%
+	\par%
+	\vspace{0.5em}%
+	\end{list}%
+}%
+\makeatother
