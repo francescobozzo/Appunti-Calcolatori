@@ -19,7 +19,7 @@ Noi in particolare, dopo aver spiegato i vari elementi che concorrono a far funz
 
 \section{Arithmetic-Logic Unit}
 A eccezione di \opcode{j}, tutte le istruzioni MIPS fanno uso di \emph{arithmetic-logic unit} (ALU per gli amici), una rete logica combinatoria abbastanza complessa preposta all'esecuzione di tutti calcoli di cui abbiamo bisogno; sostanzialmente, è un’unione di blocchi fondamentali che fanno operazioni su singoli bit.\\
-Al di là delle operazioni puramente aritmetiche (per le quali lo scopo di ALU è ovvio), viene usato nelle operazioni di accesso alla memoria (\opcode{sw} e \opcode{lw}) per il calcolo degli indirizzi e dalle operazioni di salto condizionato per effettuare i confronti; successivamente, ognuna di queste tre categorie differisce. \\
+Al di là delle operazioni puramente aritmetiche (per le quali lo scopo di ALU è ovvio), viene usato nelle operazioni di accesso alla memoria (\opcode{sw} e \opcode{lw}) per il calcolo degli indirizzi e dalle operazioni di salto condizionato per effettuare i confronti; successivamente, ognuna di queste tre categorie differisce.
 
 \section{Il datapath}
 Il \emph{datapath} è quella parte del processore attraverso cui passano le istruzioni; è letteralmente un percorso da seguire ogniqualvolta si voglia esegire una qualsiasi istruzione.
@@ -36,7 +36,7 @@ Il datapath si compone essenzialmente di 5 fasi:
   \item i registri interessati all'esecuzione vengono caricati nel \emph{banco dei registri}; se l'istruzione è di tipo R, gli indirizzi dei registri sono contenuti nel corpo dell'istruzione;
   \item a questo punto la ALU esegue i calcoli opportuni, ottenendo il valore (o l’indirizzo) desiderato;
   \item i risultati ALU vengono utilizzati per salvare (o prelevare) in memoria dati un dato, o per memorizzare un registro;
-  \item si incrementa il program counter per mezzo di una ALU dedicata (di fatto, un addizionatore), e una successiva ALU calcola l’indirizzo verso cui ci si deve spostare in caso di salti incondizionati.
+  \item si incrementa il \emph{PC} per mezzo di una ALU dedicata (di fatto, un addizionatore), e una successiva ALU calcola l’indirizzo verso cui ci si deve spostare in caso di salti incondizionati.
 \end{enumerate}
 
 \subsection{Il ruolo del multiplexer}
