@@ -4,17 +4,15 @@
 \usepackage{../../style}
 
 \graphicspath{{./assets/images/}}
-\newmintinline{asm}{}
 
 % arara: pdflatex: { synctex: yes, shell: yes }
 % arara: latexmk: { clean: partial }
 \begin{document}
 \chapter{Central Processing Unit}
 
-In questo capitolo andremo ad analizzare come il nostro processore elabora ed esegue le istruzioni che gli arrivano dai programmi Assembly; in particolare ci baseremo ancora su MIPS, in quanto super regolare e particolarmente utile a scopo didattico.\\
-
 \section{Introduzione}
-Per come è stato progettato MIPS, le istruzioni presentano dei tratti comuni; in particolare le prime due fasi del ciclo della CPU (vedi~\ref{subsec:cpu}), ossia il prelievo dell'istruzione e la lettura dei valori dei registri operandi sono comuni a ogni istruzione.\\
+In questo capitolo andremo ad analizzare come il nostro processore elabora ed esegue le istruzioni che gli arrivano dai programmi Assembly; in particolare ci baseremo ancora su MIPS, in quanto super regolare e particolarmente utile a scopo didattico.\\
+Per come è stato progettato MIPS, le istruzioni presentano dei tratti comuni; in particolare le prime due fasi del ciclo della CPU (vedi~\ref{subsec:cpu}): il prelievo dell'istruzione e la lettura dei valori dei registri operandi sono comuni a ogni istruzione.\\
 Noi in particolare, dopo aver spiegato i vari elementi che concorrono a far funzionare tutta la baracca, andremo ad analizzare le istruzioni aritmetico-logiche, quelle di accesso alla memoria e quelle di salti, dal momento che tutte le altre si implementano con tecniche simili.
 
 \section{Arithmetic-Logic Unit}
@@ -34,7 +32,7 @@ Il datapath si compone essenzialmente di 5 fasi:
 \begin{enumerate}
   \item assumendo che il programma sia già stato caricato in memoria (secondo le modalità viste nel capitolo~\ref{ch:tool}), in questa fase viene prelevata l'istruzione da eseguire e viene spacchettata nei vari campi;
   \item i registri interessati all'esecuzione vengono caricati nel \emph{banco dei registri}; se l'istruzione è di tipo R, gli indirizzi dei registri sono contenuti nel corpo dell'istruzione;
-  \item a questo punto la ALU esegue i calcoli opportuni, ottenendo il valore (o l’indirizzo) desiderato;
+  \item a questo punto la ALU esegue i calcoli opportuni, ottenendo il valore (o l'indirizzo) desiderato;
   \item i risultati ALU vengono utilizzati per salvare (o prelevare) in memoria dati un dato, o per memorizzare un registro;
   \item si incrementa il \emph{PC} per mezzo di una ALU dedicata (di fatto, un addizionatore), e una successiva ALU calcola l’indirizzo verso cui ci si deve spostare in caso di salti incondizionati.
 \end{enumerate}
@@ -173,6 +171,161 @@ Dallo schema emergono:
 		\item se l'AND risulta 0, \(\textrm{\emph{PC}}=\textrm{\emph{PC}}+4\);
 		\item se l'AND risulta 1, \(\textrm{\emph{PC}}=\textrm{\emph{PC}}+4+\textrm{ind\_relativo}\), dove \emph{ind\_relativo} è l'indirizzo relativo all'istruzione a cui effettuare il \opcode{beq}.
 	\end{itemize}
+\end{itemize}
+
+\section{Prima progettazione completa di una CPU}
+Dopo aver visto in generale quali sono le principali componenti di una CPU e il loro funzionamento di base, possiamo cimentarci nella progettazione di una CPU completa.\\
+Uno dei prerequisiti fondamentali per la nostra CPU è quello di essere in grado di eseguire ciascuna operazione in un singolo ciclo di clock: risulta perciò impossibile utilizzare una singola unità funzionale più di una volta all'interno di uno stesso ciclo. Proprio per questo motivo, come abbiamo visto, la memoria viene divisa in due: una zona viene dedicata alle istruzioni, l'altra ai dati.\\
+In aggiunta, la nostra CPU dovrà implementare alcune semplici istruzioni aritmetico/logiche (\opcode{add}, \opcode{sub}, \opcode{and}, \opcode{or} e \opcode{slt}), istruzioni di lettura e scrittura in memoria (\opcode{lw} e \opcode{sw}) e istruzioni di salto (condizionato nel caso di \opcode{beq} e non condizionato nel caso di \opcode{j}).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth,keepaspectratio]{schema_complessivo.png}
+	\caption{Schema complessivo di un'unità di elaborazione}
+\end{figure}
+Anche se ne parleremo più approfonditamente, da questa rappresentazione è possibile notare come variano i segnali di controllo in base al tipo di istruzione che viene eseguita. Ad esempio:
+\begin{itemize}
+	\item con istruzioni di tipo R: \(\textrm{\CUflag{ALUSrc}}=1\), \(\textrm{\CUflag{REGwrite}}= 1\), \(\textrm{\CUflag{MemtoReg}}=0\);
+	\item con istruzioni \opcode{lw}: \(\textrm{\CUflag{ALUSrc}}=1\), \(\textrm{\CUflag{REGwrite}}= 1\), \(\textrm{\CUflag{MemtoReg}}=1\).
+\end{itemize}
+
+\subsection{Progettazione dell'unità di controllo della ALU}
+L'\emph{unità di controllo della ALU} è una rete logica combinatoria che ha lo scopo di informare la ALU riguardo al tipo di operazione da eseguire sui dati ricevuti come input. Questo è possibile solamente se viene assegnato ad ogni istruzione un codice univoco (che nella nostra CPU sarà a 4 bit), chiamato \emph{codice di controllo ALU}.
+
+\begin{table}[!h]
+	\centering
+	\subimport{assets/tables/}{codice_controllo_ALU}
+	\caption{Istruzioni con il rispettivo codice di controllo ALU}
+\end{table}
+Definiamo più chiaramente il codice di controllo ALU: esso viene calcolato dall'unità di controllo della ALU attraverso il campo \emph{funct} (vedi~\ref{subsec:campiIstruzione}) e il codice \CUflag{ALUOp} dell'istruzione considerata. Brevemente:
+\begin{itemize}
+	\item \emph{funct}: corrisponde ai 6 bit meno significativi della rappresentazione in binario di un'istruzione MIPS;
+	\item \emph{ALUOp}: consiste in 2 bit che permettono di categorizzare l'istruzione in base al suo tipo. Essa viene generata dall'unità di controllo centrale e assume i seguenti valori:
+	\begin{itemize}
+		\item 00: somma per istruzioni \opcode{lw} e \opcode{sw};
+		\item 01: sottrazione per \opcode{beq};
+		\item 10: operazione di tipo R.
+	\end{itemize}
+\end{itemize}
+Questo processo non è da considerarsi indifferente: in questo modo è possibile utilizzare solo 4 bit per indicare all'ALU quale operazione eseguire, piuttosto che degli 8 bit inzialmente necessari (rispettivamente 6 per il campo \emph{funct} e 2 per il codice di controllo \CUflag{ALUOp}).
+
+A seguire vengono presentate delle tabelle che eplicitano la rappresentazione delle istruzioni considerate sia nella rappresentazioni a 4 bit che a 8:\footnote{I valori dove sono presenti le 'X' non vengono considerati}:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth,keepaspectratio]{riassunto_controllo_ALU.png}
+	\caption{Generazione del codice di controllo ALU}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.80\textwidth,keepaspectratio]{tabella_verita_controllo_ALU.png}
+	\caption{Tabella verità dell'unità di controllo ALU}
+\end{figure}
+Tirando le somme, quello che abbiamo appena visto è un sistema di decodifica e generazione dei comandi detto \emph{a due livelli}:
+\begin{itemize}
+	\item \emph{livello 1}: l'unità di controllo genera i segnali di controllo \CUflag{ALUOp} per l'unità di controllo della ALU;
+	\item \emph{livello 2}: l'unità di controllo ALU genera i segnali di controllo per la ALU.
+\end{itemize}
+
+\subsection{Progettazione dell'unità di controllo principale}
+L'\emph{unità di controllo principale} è una rete combinatoria che prende come input il codice operativo (in termini tecnici \emph{opcode}, vedi~\ref{subsec:campiIstruzione}) dell'istruzione caricata e genera i segnali di controllo appropriati. A seguire un elenco dei principali segnali di controllo e dei loro effetti collaterali:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth,keepaspectratio]{segnali_controllo.png}
+	\caption{Segnali unità di controllo principale}
+\end{figure}
+Elenchiamo ora, per le istruzioni che abbiamo intenzione di implementare, il valore che assumono i segnali di controllo prodotti dall'unità di controllo principale:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.80\textwidth,keepaspectratio]{io_CU.png}
+	\caption{Schema complessivo di I/O di una CU principale}
+\end{figure}
+Lasciamo al lettore un ulteriore schema riassuntivo, in cui rimarchiamo ancora una volta la struttura delle istruzioni MIPS codificate in binario. Si noti che la prima colonna di questa tabella, ossia i 6 bit più significativi, corrispondono all'\emph{opcode}:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.80\textwidth,keepaspectratio]{campi_istruzione.png}
+	\caption{Campi istruzione}
+\end{figure}
+
+\subsection{Esecuzione delle principali istruzioni}
+
+\subsubsection{Istruzione di ADD}
+Per eseguire un'istruzione di somma del tipo \mintinline{asm}{add $t1, $t2, $t3}, occorre:
+\begin{enumerate}
+	\item prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
+	\item leggere \register{\$t2} e \register{\$t3} dal register file;
+	\item attivare la ALU con in input i dati dal register file;
+	\item memorizzare il risultato nel registro destinazione.
+\end{enumerate}
+Si ricordi che l'insieme di tutte queste operazioni vanno eseguite in un unico ciclo di clock.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth,keepaspectratio]{es_add.png}
+	\caption{Esecuzione di ADD sulla CPU}
+\end{figure}
+
+\subsubsection{Istruzione di LW}
+Per eseguire un'istruzione di \opcode{lw} del tipo \mintinline{asm}{lw $t1, offset($t2)}, occorre:
+\begin{enumerate}
+	\item prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
+	\item prelevare \register{\$t2} dal register file;
+	\item sommare \register{\$t2} ai campi offset dell’istruzione (i 16 bit meno significativi);
+	\item l'indirizzo calcolato viene inviato alla memoria dati;
+	\item il dato all'indirizzo calcolato viene prelevato dalla memoria dati e memorizzato in \register{\$t1}.
+\end{enumerate}
+Si ricordi che l'insieme di tutte queste operazioni vanno eseguite in un unico ciclo di clock.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth,keepaspectratio]{es_lw.png}
+	\caption{Esecuzione di LW sulla CPU}
+\end{figure}
+
+\subsubsection{Istruzione di BEQ}
+Per eseguire un'istruzione di \opcode{beq} del tipo \mintinline{asm}{beq $t1, $t2, offset}, occorre:
+\begin{enumerate}
+	\item prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
+	\item prelevare \register{\$t1} e \register{\$t2} dal register file;
+	\item la ALU sottrae \register{\$t1} da \register{\$t2}. Il valore di \(\textrm{\emph{PC}}+4\) viene sommato all’offset (esteso a 32 bit) e shiftato di due volte (per indirizzare word e non in byte);
+	\item il codice di controllo \CUflag{zero} della ALU viene usata per decidere a cosa settare il \emph{PC}.
+\end{enumerate}
+Si ricordi che l'insieme di tutte queste operazioni vanno eseguite in un unico ciclo di clock.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth,keepaspectratio]{es_beq.png}
+	\caption{Esecuzione di BEQ sulla CPU}
+\end{figure}
+
+\subsubsection{Istruzione di J}
+Per eseguire un'istruzione di \opcode{j} (salto incodizionato), occorre:
+\begin{enumerate}
+	\item prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
+	\item sostituire al \register{PC} il nuovo valore così ottenuto:
+	\begin{itemize}
+		\item i quattro bit più significativi del \register{PC} rimangono invariati;
+		\item i bit dal 27 al 2 (inclusi) del \register{PC} sono sostituiti con il campo indirizzo dell'istruzione \opcode{j};
+		\item i due bit meno significativi sono messi a 0 (ragioniamo in word e non in byte).
+	\end{itemize}
+\end{enumerate}
+Si ricordi che l'insieme di tutte queste operazioni vanno eseguite in un unico ciclo di clock.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth,keepaspectratio]{es_j.png}
+	\caption{Esecuzione di J sulla CPU}
+\end{figure}
+
+\subsection*{Conclusione}
+Abbiamo appena visto come realizzare un semplice processore che esegue ciascuna delle istruzioni implementate in un singolo ciclo di clock. Solitamente però, si cerca di evitare un'implementazione di questo tipo, in quanto:
+\begin{itemize}
+	\item a dettare il clock sono le istruzioni più lente (solitamente l'operazione più costosa è quella per accedere alla memoria);
+	\item più aumenta la complessità delle istruzioni da implementare, più la progettazione diventa sempre più complessa (esempio: istruzioni dedicate ai floating point);
+	\item non è possibile fare ottimizzazioni aggressive sulle operazioni che avvengono più frequentemente.
 \end{itemize}
 
 \end{document}

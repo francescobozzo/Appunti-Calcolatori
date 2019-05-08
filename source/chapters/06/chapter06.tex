@@ -138,7 +138,7 @@ Quando si devono codificare parole di 4 byte è importante decidere dove vada il
 	\item se il byte meno significativo è posto per primo, la notazione è detta \emph{little endian} (usata nei processori Intel).
 \end{itemize}
 
-\subsection{Le istruzioni register}
+\subsection{Le istruzioni register}\label{subsec:campiIstruzione}
 Come anticipato, le istruzioni vengono codificate come numeri binari. In particolare, ogni istruzione dovrà essere mappata utilizzando parole di soli 32 bit, ma come viene impostato questo processo?\\
 Prendiamo come esempio l'istruzione di somma \mintinline{asm}{add $t0, $s1, $s2}: avremo bisogno di un codice per l'istruzione di somma e uno per ogni registro; l'operazione sarà scritta nei primi 6 bit e negli ultimi 6, mentre i 20 in bit in mezzo saranno divisi in gruppi da 5 bit ciascuno: i primi tre gruppi ospiteranno i registri, e l'ultimo sarà usato per comandi speciali (come lo shift, che vedremo in seguito).
 \begin{figure}[H]
