@@ -118,10 +118,10 @@ L3:
 \end{minted}
 Tutto questo può però essere semplificato dalla magica istruzione \mintinline{gas}{cmov} (\mintinline{gas}{mov} condizionale) di x86:
 \begin{minted}[linenos, tabsize = 4]{gas}
-leaq (%rdi, %rsi), %rax  # salva in %rax g + h
-subq %rsi, %rax  # salva in %rax
+leaq (%rdi, %rsi), %rax  # salva g + h in %rax
+subq %rdi, %rsi  # salva g - h in %rsi
 cmpq %rcx, %rdx  # i == j
-cmovne %rdi, %rax  # sposta %rdi in %rax se il i è diverso da j
+cmovne %rsi, %rax  # sposta %rsi in %rax se il i è diverso da j
 \end{minted}
 
 \subsubsection{Implementazione ARM}
