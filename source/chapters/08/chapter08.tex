@@ -57,7 +57,7 @@ Lo schema base di un'operazione è il seguente:
 \end{center}
 dove \suffix{<-cond>} ed \suffix{<-s>} sono facoltativi, \register{<rd>} è il registro di destinazione, \register{<rl>} è il registro di sinistra e \register{<r*>} è il registro di destra. Si noti inoltre che \register{<r*>} può essere sia un registro che un valore immediato che un registro su cui si effettuano operazioni di modifica (si veda ~\ref{sec:modifiche}). Tuttavia, a differenza di \emph{MIPS}, \emph{ARM} non ha bisogno di due opcode distinti per definire l'operazione di somma: in \emph{ARM} è possibile utilizzare \opcode{add} sia per sommare due registri, che per sommare un valore immediato ad un registro.
 
-Se il secondo operando è un registro, si possono inserire al termine dell'operazione dei comandi ulteriori che permettono di eseguire operazioni di shift o rotazione sul secondo operando (solo l'avvenimento dell'operazione), ad esempio \opcode{lsl}/\opcode{asl}, \opcode{lsr}, \opcode{asr}, \opcode{ror}, \opcode{rrx} (si veda sempre ~\ref{sec:modifiche}).
+Se il secondo operando è un registro, si possono inserire al termine dell'operazione dei comandi ulteriori che permettono di eseguire operazioni di shifting o rotazione sul secondo operando (che avvengono prima dell'operazione), ad esempio \opcode{lsl}/\opcode{asl}, \opcode{lsr}, \opcode{asr}, \opcode{ror}, \opcode{rrx} (si veda sempre ~\ref{sec:modifiche}).
 
 \subsection*{Le istruzioni più comuni}
 Vediamo ora una lista delle operazioni più comuni:
@@ -75,6 +75,8 @@ Vediamo ora una lista delle operazioni più comuni:
 	\item \opcode{mov}/\opcode{mvn}: \emph{move} equivalente all'omonimo MIPS e \emph{move not}, che sposta il complemento a 1 del registro sorgente (utilizzata per implementare il not).
 \end{itemize}
 \subsection{Possibilli operazioni sull'operando <r*>}\label{sec:modifiche}
+Prima di mostrare le operazioni possibili su <r*> ci teniamo a specificare che queste sono operazioni di shfting e di rotating e vengono applicate al secondo operando prima dello svolgimento dell'operazione descritta dall'istruzione.
+
 Ecco un esempio di un'operazione in varie versioni diverse, per capire meglio tutte le possibilità di modifica offerte da ARM:
 \begin{minted}[linenos, tabsize=4]{asm}
 add r0, r1, #1
@@ -86,8 +88,8 @@ Analizziamo le righe di codice una ad una:
 \begin{enumerate}
 	\item \register{r0} \(=\) \registerOp{r1}{+}{1};
 	\item \register{r0} \(=\) \registerOp{r1}{+}{r2} (e setta dei flag se necessario);
-	\item \register{r0} \(=\) \registerOp{r1}{+}{r2} (esegue la add solo se il flag eq è settato, DOPO l'operazione esegue uno shift a sinistra di 2 del registro r2);
-	\item \register{r0} \(=\) \registerOp{r1}{+}{r2} (esegue la add solo se il flag eq è settato, setta falg se necessario, DOPO l'operazione esegue uno shift a sinistra di r3 del registro r2).
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2} (esegue la add solo se il flag eq è settato, prima dell'operazione esegue uno shift a sinistra di 2 del registro r2);
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2} (esegue la add solo se il flag eq è settato, setta falg se necessario, prima dell'operazione esegue uno shift a sinistra di r3 del registro r2).
 \end{enumerate}
 
 \subsection*{Istruzioni di load/store multiple}
@@ -106,6 +108,8 @@ dove \register{rb} è il registro che contiene la base, \suffix{-cond} è l'even
 Il \suffix{!}, facoltativo anch'esso, serve per rendere definitive le modifiche operate dai suffissi appena elencati, dopo l'operazione.
 
 \section{Modalità di indirizzamento in ARM}
+Introduciamo ora le modalità di indirizzamento in ARM, ricordando che esso è un operazione che rende possibile modificare l'indirizzo indicato dal secondo registro di operazioni come \mintinline{asm}{ldr} e \mintinline{asm}{str}, da notare che le operazioni di indirizzamento sono diverse dalle operazioni di shifting o rotating.
+
 In modo semplificato esistono due metodologie di indirizzamento in ARM, ovvero \(\textrm{base} + \textrm{offset}\) (immediato) o \(\textrm{base} + \textrm{indice}\) (eventualmente scalato). La struttura dell'istruzione è la seguente:
 
 \begin{minted}[tabsize=4, linenos]{asm}
