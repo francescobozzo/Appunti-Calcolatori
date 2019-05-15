@@ -1,4 +1,4 @@
-\documentclass[class=book, crop=false, oneside]{standalone}
+gas\documentclass[class=book, crop=false, oneside]{standalone}
 \usepackage[subpreambles=true]{standalone}
 
 \usepackage{../../style}
@@ -15,7 +15,7 @@
 \section{Introduzione}
 Le CPU \emph{Intel} della famiglia \emph{x86} si basano su un architettura di tipo \emph{CISC}. Esse vengono utilizzate principalmente su laptop, desktop e server, a partire dagli anni Settanta. Un'importante complicazione dell'architettura \emph{Intel} è dettata dal mantenimento della retrocompatibilità: le moderne CPU a 64 bit di ultima generazione sono infatti in grado di eseguire il vecchio codice a 8 bit. A differenza del \emph{MIPS} infatti le istruzioni \emph{Intel} non sono codificate in una singola parola, bensì possono occupare da 8 a 64 bit.
 
-Come già ampiamente trattato nei precendenti capitoli, un'architettura di tipo \emph{CISC} è in grado di offrire un notevole set di istruzioni e un potente meccanismo di indirizzamento. Ciò implica che non sono più solo le singole operazioni di load e store quelle che permettono di accedere alla memoria.
+Come già ampiamente trattato nei precendenti capitoli, un'architettura di tipo \emph{CISC} è in grado di offrire un notevole set di istruzioni e un potente meccanismo di indirizzamento; ciò implica che load e store non sono più le uniche operazioni che permettono di accedere alla memoria.
 
 Per semplicità, in questa dispensa si tratterà l'\emph{ISA} più moderna, chiamata \emph{x86\_64}, nota anche come \emph{amd64}. Essa è caratterizzata da parole a 64 bit e da 16 registri. Fra le varie \emph{ABI} verrà utilizzata quella di Linux, che differisce per qualche aspetto da quella dei sistemi Microsoft e Apple.
 
@@ -32,7 +32,7 @@ Per indicare i registri si antepone un \% al nome del registro, mentre indicare 
 La versione di \emph{Intel} analizzata in questa dispensa è caratterizzata da \(16\) registri a 64 bit \emph{general purpose}. Si possono dividere in:
 \begin{itemize}
 	\item derivanti dall'architettura \(8080\): \register{\%rax} (accumulatore), \register{\%rbx}, \register{\%rcx}, \register{\%rdx};
-	\item derivanti dall'architettura \(8086\): \register{\%rsi} (source index), \register{\%rdi} (destination index), utilizzati per la copia di array;
+	\item derivanti dall'architettura \(8086\): \register{\%rsi} (source index), \register{\%rdi} (destination index), inizialmente concepiti per la copia di array;
 	\item puntatore allo stack frame (base pointer): \register{\%rbp};
 	\item puntatore allo stack pointer: \register{\%rsp};
 	\item introdotti in \emph{x86\_64}: \register{\%r8}, \register{\%r9}, \register{\%r10}, \register{\%r11}, \register{\%r12}, \register{\%r13}, \register{\%r14}, \register{\%r15}.
@@ -52,18 +52,18 @@ Come già ripetuto in molteplici occasioni, le convenzioni di chiamata vengono s
 	\item il passaggio di argomenti si compone di:
 	\begin{itemize}
 		\item i primi \(6\) argomenti nei registri: \register{\%rsi}, \register{\%rdi}, \register{\%rcx}, \register{\%rdx}, \register{\%r8}, \register{\%r9};
-		\item ulteriori argometi possono essere salvati nello stack;
+		\item ulteriori argomenti possono essere salvati nello stack;
 	\end{itemize}
 	\item i valori di ritorno vengono salvati nei registri \register{\%rax} e \register{\%rdx};
 	\item i registri da preservare sono: \register{\%rbp}, \register{\%rbx}, \register{\%r12}, \register{\%r13}, \register{\%r14}, \register{\%r15}.
 \end{itemize}
 
-Esistono due modalità per richiamare una funzione attraverso l'istruzione \mintinline{asm}{call}:
+Esistono due modalità per richiamare una funzione attraverso l'istruzione \mintinline{gas}{call}:
 \begin{itemize}
-	\item \mintinline{asm}{call address}: invoca la subroutine presente all'indirizzo indicato;
-	\item \mintinline{asm}{call *register}: invoca la subroutine presente all'indirizzo contenuto nel registro indicato.
+	\item \mintinline{gas}{call address}: invoca la subroutine presente all'indirizzo indicato;
+	\item \mintinline{gas}{call *register}: invoca la subroutine presente all'indirizzo contenuto nel registro indicato.
 \end{itemize}
-Una caratteristica di \emph{Intel} è quella di salvare automaticamente il \emph{link register} nello stack quando una funzione viene richiamata, facilitando di molto la scrittura di funzioni ricorsive. In maniera analoga, l'istruzione \mintinline{asm}{ret}, che viene utilizzata per terminare una funzione, preleva automaticamente dallo stack l'indirizzo da utilizzare nell'instruction pointer.
+Una caratteristica di \emph{Intel} è quella di salvare automaticamente il \emph{link register} nello stack quando una funzione viene richiamata, facilitando di molto la scrittura di funzioni ricorsive. In maniera analoga, l'istruzione \mintinline{gas}{ret}, che viene utilizzata per terminare una funzione, preleva automaticamente dallo stack l'indirizzo da utilizzare nell'instruction pointer.
 
 \section{Le modalità di indirizzamento}
 Esistono svariate modalità di indirizzamento in \emph{Intel}:
@@ -91,7 +91,7 @@ In generale si può affermare che molte istruzioni si presentano nella forma: \t
 	\item i due operatori non possono contemporaneamente essere indirizzi di memoria;
 	\item non è possibile specificare due operandi e una destinazione diversa.
 \end{itemize}
-Il suffisso\texttt{ <size>}, può essere usato per indicare l’ampiezza in bit degli operandi:
+Il suffisso\texttt{ <size>} può essere usato per indicare l’ampiezza in bit degli operandi:
 \begin{itemize}
 	\item \texttt{b} significa ampiezza di 8 bit (\emph{byte});
 	\item \texttt{w} significa ampiezza di 16 bit (\emph{word});
@@ -99,13 +99,13 @@ Il suffisso\texttt{ <size>}, può essere usato per indicare l’ampiezza in bit 
 	\item \texttt{q} significa ampiezza di 64 bit (\emph{quad word}).
 \end{itemize}
 Esso è opzionale quando uno dei due operandi è un registro, mentre diventa obbligatorio nel caso l'istruzione non presenti nessun registro come operandi.\\
-Un esempio in cui\texttt{ <size> }è obbligatorio: \mintinline{asm}{notl 200(%rbp)}.
+Un esempio in cui\texttt{ <size> }è obbligatorio: \mintinline{gas}{notl 200(%rbp)}.
 
 \section{Alcune istruzioni frequenti}
-A seguire un elenco delle istruzioni aritmetico logiche più frequenti:
+A seguire un elenco delle istruzioni aritmetico-logiche più frequenti:
 \begin{itemize}
 	\item \opcode{mov} per scambiare dati fra memoria e registri e viceversa (la destinazione non può essere un valore immediato);
-	\item \opcode{push} e \opcode{pop} per leggere e salvare dati sullo stack, senza dover modificare lo stack pointer come avviene in \emph{MIPS};
+	\item \opcode{push} e \opcode{pop} per leggere e salvare dati sullo stack, senza dover modificare lo stack pointer come avviene in MIPS;
 	\item \opcode{add} (somma) e \opcode{addc} (somma con carry);
 	\item \opcode{sub} (sottrazione) e \opcode{subc} (sottrazione con carry);
 	\item \opcode{mul} (moltiplicazione con segno) e \opcode{imul} (moltiplicazione senza segno);
@@ -125,19 +125,19 @@ A seguire un elenco delle istruzioni aritmetico logiche più frequenti:
 \end{itemize}
 
 \subsection{Load Effective Address (LEA)}
-Seppur questa istruzione sia stata implementata per calcolare indirizzi (con indirizzamento indiretto) senza effettuare accessi, principalmente viene utilizzata per un secondo scopo. Essa infatti risulta molto utile per effettuare una somma di due registri, salvandone il risultato in un terzo (anche con eventuali shift). Ricordiamo che, mentre in \emph{MIPS} lavorare con tre registri è la normalità, in \emph{Intel} per ciascuna istruzione possono esserne specificati al massimo due.
+Nonostante questa istruzione sia stata implementata per calcolare indirizzi (con indirizzamento indiretto) senza effettuare accessi, viene utilizzata principalmenteper un secondo scopo. Essa infatti risulta molto utile per effettuare una somma di due registri, salvandone il risultato in un terzo (anche con eventuali shift). Ricordiamo che, mentre in MIPS lavorare con tre registri è la normalità, in Intel per ciascuna istruzione possono esserne specificati al massimo due.
 
 Ad esempio:
-\begin{minted}[linenos]{asm}
+\begin{minted}[linenos]{gas}
 lea (%rbx, %rcx), %rax
 \end{minted}
 esegue la somma di \register{\%rbx} e \register{\%rcx} e la salva nel registro \register{\%rax}.
 
-Si noti come nonostante la sintassi sia identica a quella per l'indirizzamento, in questo caso non si sta eseguendo un accesso alla memoria. La stessa sintassi, in un'altra istruzione, avrebbe portato ad accedere al blocco di memoria contenuto in \register{(\%rcx+\%rbx)}.
+Si noti come nonostante la sintassi sia identica a quella per l'indirizzamento, in questo caso non si sta eseguendo un accesso alla memoria. La stessa sintassi, in un'altra istruzione, avrebbe portato ad accedere al blocco di memoria contenuto in \register{(\%rcx + \%rbx)}.
 
 \subsection{Incremento e decremento}
-Come avete potuto notare dalla lista delle istruzioni comuni in \emph{Intel}, sono presenti le istruzioni \mintinline{asm}{inc} e \mintinline{asm}{dec}, che rispettivamente incrementano e decrementano di una unità il valore del registro specificato. Ma per quale motivo non si utilizza la semplice istruzione \mintinline{asm}{add $1, register}?
+Come avete potuto notare dalla lista delle istruzioni comuni in Intel, sono presenti le istruzioni \mintinline{gas}{inc} e \mintinline{gas}{dec}, che rispettivamente incrementano e decrementano di una unità il valore del registro specificato. Ma per quale motivo non si utilizza la semplice istruzione \mintinline{gas}{add $1, register}?
 
-In \emph{Intel} si è visto che le istruzioni possono essere codificate con una sequenza di bit di lunghezza variabile. Utilizzare la funzione di incremento piuttosto che quella di somma significa non dover memorizzare un valore immediato, con il conseguente risparmio di 16 bit.
+In Intel si è visto che le istruzioni possono essere codificate con una sequenza di bit di lunghezza variabile. Utilizzare la funzione di incremento piuttosto che quella di somma significa non dover memorizzare un valore immediato, con il conseguente risparmio di 16 bit.
 
 \end{document}
