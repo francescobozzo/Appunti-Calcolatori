@@ -8,6 +8,7 @@
 \usepackage{style}
 
 \graphicspath{%
+	{./chapters/titlepage/images/}%
 	{./chapters/01/assets/images/}%
 	{./chapters/02/assets/images/}%
 	{./chapters/03/assets/images/}%
@@ -22,16 +23,12 @@
 	{./chapters/12/assets/images/}%
 }
 
-\author{Bozzo Francesco \and Conti Samuele \and Daniotti Filippo}
-\title{Appunti Calcolatori per la PPI}
-\date{\today}
-
 % arara: pdflatex: { shell: yes }
 % arara: latexmk: { clean: partial }
 \begin{document}
 \frontmatter
 
-	\maketitle
+	\import{./chapters/titlepage/}{titlepage}
 	\tableofcontents
 
 \mainmatter
