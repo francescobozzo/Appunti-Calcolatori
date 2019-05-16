@@ -1,0 +1,661 @@
+\documentclass[class=book, crop=false, oneside]{standalone}
+\usepackage[subpreambles=true]{standalone}
+
+\usepackage{../../style}
+
+% arara: pdflatex: { synctex: yes, shell: yes }
+% arara: latexmk: { clean: partial }
+%! arara: clean: { extensions: [sta] }
+\begin{document}
+\chapter{Ulteriori esempi di programmi Assembly}
+Si consideri quest'appendice come un'estensione del capitolo~\ref{ch:asm}; qui illustreremo tutti gli esempi presenti nella dispensa del professor Abeni, dimodoché anche il lettore più curioso possa trovare pane per i suoi denti. Enjoy.
+
+\section{Ordinamento di array}
+Mostriamo ora le diverse traduzioni della seguente funzione \emph{insert sort} scritta in C:
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+void sposta(int v[], int i){
+	int j;
+	int appoggio;
+
+	appoggio = v[i];
+	j = i - 1;
+
+	while((j >= 0) && (v[j] > appoggio)){
+		v[j +	1] = v[j];
+		j = j - 1;
+	}
+
+	v[j + 1]
+}
+
+void ordina(int v[], int n){
+	int i = 1;
+
+	while (i < n){
+		sposta(v, i);
+		i = i + 1;
+	}
+}
+\end{minted}
+
+\subsubsection{Implementazione MIPS}
+Prima versione, "fatta a mano":
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+sposta:
+		# a0 = v, a1 = i
+		# t0 = j * 4, t1 = appoggio
+	sll $t0, $a1, 2
+	add $t2, $a0, $t0	 # t2 = &v[i]
+	lw $t1, 0($t2)	 # appoggio = v[i]
+	addi $t0, $t0, -4
+
+ciclo:
+	slt $t3, $t0, $zero	 # t3 = 1 se j < 0
+	bne $t3, $zero, out	 # salta a out se j < 0
+	add $a2, $a0, $t0	 # t2 = &v[j]
+	lw $t4, 0($t2)	 # t4 = v[j]
+	slt $t3, $t1 , $t4	 # t3=1 se t1<t4 (appoggio < v[j])
+	beq $t3, $zero, out	 # esci se appoggio >= v[j]
+	addi $t5, $t0, 4	 # t5 = (j + 1) * 4
+	add $t2, $a0, $t5	 # t2 = &v[j + 1]
+	sw $t4, 0($t2)
+	addi $t0, $t0, -4
+	j ciclo
+
+out:
+	addi $t5, $t0, 4
+	add $t2, $a0, $t5	 # t2 = &v[j + 1]
+	sw $t1, 0($t2)
+	jr $ra
+
+ordina:
+		# a0 = v, a1 = n
+		# s0 = i
+	addi $sp, $sp, -12
+	sw $s0, 0($sp)
+	sw $ra, 4($sp)
+	sw $a1, 8($sp)
+
+	addi $s0, $zero, 1	 # i = 1
+
+loop_ordina:
+	slt $t0, $s0, $a1	 # t0 = 1 se i < n
+	beq $t0, $zero, out_ordina
+	add $a1, $s0, $zero
+	jal sposta
+	lw $a1, 8($sp)
+	addi $s0, $s0, 1
+	j loop_ordina
+
+out_ordina:
+	lw $s0, 0($sp)
+	lw $ra, 4($sp)
+	addi $sp, $sp, 12
+	jr $ra
+\end{minted}
+
+Ecco invece l'implementazione, più complessa, che ci presenta il nostro fido \mintinline{batch}{gcc}:
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+sposta:
+	sll $v0, $a1, 2
+	addu $v0, $a0, $v0
+	lw $t0, 0($v0)
+	addiu $v0, $a1, -1
+	bltz $v0, L2
+	move $a2, $v0
+	sll $v1, $v0, 2
+	addu $v1, $a0, $v1
+	lw $v1, 0($v1)
+	slt $a3, $t0, $v1
+	beq $a3, $zero, L2
+	sll $a1, $a1, 2
+	addu $a1, $a0, $a1
+	li $t1 , -1	 # 0xffffffffffffffff
+
+L3:
+	addiu $a2, $a2, 1
+	sll $a2, $a2, 2
+	addu $a2, $a0, $a2
+	sw $v1, 0($a2)
+	addiu $v0, $v0, -1
+	beq $v0, $t1, L2
+	move $a2, $v0
+	addiu $a1, $a1, -4
+	lw $v1, 4($a1)
+	slt $a3, $t0, $v1
+	bne $a3, $zero, L3
+
+L2:
+	addiu $v0, $v0, 1
+	sll $v0, $v0, 2
+	addu $a0, $a0, $v0
+	sw $t0, 0($a0)
+	jr $ra
+
+ordina:
+	addiu $sp, $sp, -16
+	sw $ra, 12($sp)
+	sw $s2, 8($sp)
+	sw $s1, 4($sp)
+	sw $s0, 0($sp)
+	move $s1, $a1
+	slt $v0, $a1, 2
+	bne $v0, $zero, L5
+	move $s2, $a0
+	li $s0, 1	 # 0x1
+
+L7:
+	move $a0, $s2
+	move $a1, $s0
+	jal sposta
+	addiu $s0, $s0, 1
+	bne $s0, $s1, L7
+
+L5:
+	lw $ra, 12($sp)
+	lw $s2, 8($sp)
+	lw $s1, 4($sp)
+	lw $s0, 0($sp)
+	addiu $sp, $sp, 16
+	jr $ra
+\end{minted}
+
+\subsubsection{Implementazione x86}
+Ecco una possibile implementazione Intel, sempre artigianale:
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+sposta:
+		# rdi = v, rsi = i
+		# rax = j , r10d = appoggio
+	movq %rsi, %rax
+	movl (%rdi, %rax, 4), %r10d	 # appoggio = v[i]
+	dec %rax
+
+ciclo:
+	cmpq $0, %rax	 # confronta 0 e rax
+	jl out	 # esci se j < 0
+	movl (%rdi, %rax, 4), %r11d	 # metti v[j] in %r11
+	cmpl %r10d , %r11d	 # confronta v[j] e appoggio
+	jle out	 # se v[j] < appoggio, esci
+	movl %r11d, 4(%rdi, %rax  4)
+	dec %rax
+	jmp ciclo
+
+out:
+	movl %r10d, 4(%rdi, %rax, 4)
+	ret
+
+ordina:
+		# rdi = v, rsi = n
+		# rbx = i
+	pushq %rbx
+	movq $1, %rbx
+
+loop_ordina:
+	cmp %rbx , %rsi
+	jle out_ordina
+	pushq %rsi
+	movq %rbx, %rsi
+	call sposta
+	popq %rsi
+	inc %rbx
+	jmp loop_ordina
+
+out_ordina:
+	popq %rbx
+	ret
+\end{minted}
+
+Implementazione di \mintinline{batch}{gcc}:
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+sposta:
+	movslq %esi, %rax
+	leaq 0(%rax, 4 ), %r8
+	movl (%rdi, %rax, 4), %ecx
+	subl $1, %esi
+	js L2
+	movslq %esi, %rdx
+	movl -4(%rdi, %r8), %eax
+	cmpl %eax, %ecx
+	jge L2
+
+L4:
+	movl %eax, 4(%rdi, %rdx, 4)
+	subl $1, %esi
+	cmpl $-1, %esi
+	je L2
+	movslq %esi, %rdx
+	movl (%rdi, %rdx, 4), %eax
+	cmpl %eax, %ecx
+	jl L4
+
+L2:
+	movslq %esi, %rsi
+	movl %ecx, 4(%rdi, %rsi, 4)
+	ret
+
+ordina:
+	cmpl $1, %esi
+	jle L12
+	pushq %r12
+	pushq %rbp
+	pushq %rbx
+	movl %esi, %ebp
+	movq %rdi, %r12
+	movl $1, %ebx
+
+L8:
+	movl %ebx, %esi
+	movq %r12, %rdi
+	call sposta
+	addl $1, %ebx
+	cmpl %ebx, %ebp
+	jne L8
+	popq %rbx
+	popq %rbp
+	popq %r12
+
+L12:
+	ret
+\end{minted}
+
+\subsubsection{Implementazione ARM}
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+sposta:
+	mov r2, r1, asl #2
+	add r3 , r0, r2
+	ldr ip, [r0, r1, asl #2]
+	subs r1, r1, #1
+	bmi L2
+	ldr r2, [r3, #-4]
+	cmp ip, r2
+	bge L2
+
+L3:
+	str r2, [r3], #-4
+	sub r1, r1, #1
+	cmn r1, #1
+	beq L2
+	ldr r2, [r3, #-4]
+	cmp ip, r2
+	blt L3
+
+L2:
+	add r1, r1, #1
+	str ip, [r0, r1, asl #2]
+	bx lr
+
+ordina:
+	cmp r1, #1
+	bxle lr
+	stmfd sp!, {r4, r5, r6, lr}
+	mov r5, r1
+	mov r6, r0
+	mov r4, #1
+
+L8:
+	mov r1, r4
+	mov r0, r6
+	bl sposta
+	add r4, r4, #1
+	cmp r5, r4
+	bne L8
+	ldmfd sp!, {r4, r5, r6, pc}
+\end{minted}
+\section{Funzione \(2^{n}\)}
+
+\subsection*{Via iterativa}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+int potenza_due(int n){
+	if (n == 0){
+		return 1;
+	} else {
+		int ret = 1;
+		int i;
+		for (i=0; i<n; i++){
+			ret = ret * 2;
+		}
+
+		return ret;
+		}
+}
+\end{minted}
+
+\subsubsection{Implementazione MIPS}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+potenza_due:
+	beq $a0, $zero, L4
+	blez $a0, L5
+	move $v1, $zero
+	li $v0, 1	 # 0x1
+
+L3:
+	sll $v0, $v0, 1
+	addiu $v1, $v1, 1
+	bne $v1, $a0, L3
+	jr $ra
+
+L4:
+	li $v0, 1	 # 0x1
+	jr $ra
+
+L5:
+	li $v0, 1	 # 0x1
+	jr $ra
+\end{minted}
+
+\subsubsection{Implementazione x86}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+potenza_due:
+	testl %edi, %edi
+	jle L4
+	movl $0, %edx
+	movl $1, %eax
+
+L3:
+	addl %eax, %eax
+	addl $1, %edx
+	cmpl %edx, %edi
+	jne L3
+	ret
+
+L4:
+	movl $1, %eax
+	ret
+\end{minted}
+
+\subsubsection{Implementazione ARM}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+potenza_due:
+	subs r2, r0, #0
+	ble L4
+	mov r3, #0
+	mov r0, #1
+L3:
+	mov r0, r0, asl #1
+	add r3, r3, #1
+	cmp r2, r3
+	bne L3
+	bx lr
+L4:
+	mov r0, #1
+	bx lr
+\end{minted}
+
+\subsection*{Via ricorsiva}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+int potenza_due (int n){
+	if (n < 1){
+	return 1;
+	} else {
+		return 2 * potenza_due(n - 1);
+	}
+}
+\end{minted}
+
+\subsubsection{Implementazione MIPS}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+potenza_due:
+	blez $a0, L3
+	addiu $sp, $sp, -8
+	sw $ra, 4($sp)
+	addiu $a0, $a0, -1
+	jal potenza_due
+	sll $v0, $v0, 1
+	j L2
+
+L3:
+	li $v0, 1	 # 0x1
+	jr $ra
+
+L2:
+	lw $ra, 4($sp)
+	addiu $sp, $sp, 8
+	jr $ra
+\end{minted}
+
+\subsubsection{Implementazione x86}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+potenza_due:
+	movl $1, %eax
+	testl %edi, %edi
+	jle L6
+	subq $8, %rsp
+	subl $1, %edi
+	call potenza_due
+	addl %eax, %eax
+	addq $8, %rsp
+
+L6:
+	ret
+\end{minted}
+
+\subsubsection{Implementazione ARM}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+potenza_due:
+	cmp r0, #0
+	ble L3
+	stmfd sp!, {r4, lr}
+	sub r0, r0, #1
+	bl potenza_due
+	mov r0, r0, asl #1
+	ldmfd sp!, {r4, pc}
+
+L3:
+	mov r0, #1
+	bx lr
+\end{minted}
+
+\section{Successione di Fibonacci}
+Presentiamo ora l'implementazione di una funzione che calcola l'\(n\)-esimo numero di Fibonacci:
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+int fibonacci(int n){
+	if (n < 2){
+		return 1;
+	} else {
+		return 3 * fibonacci(n - 1) - fibonacci(n - 2);
+	}
+}
+\end{minted}
+
+\subsubsection{Implementazione MIPS}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+fibonacci:
+	addiu $sp, $sp, -16
+	sw $ra, 12($sp)
+	sw $s1, 8($sp)
+	sw $s0, 4($sp)
+	move $s0, $a0
+	slt $v0, $a0, 2
+	bne $v0, $zero, L3
+	addiu $a0, $a0, -1
+	jal fibonacci
+	move $s1, $v0
+	addiu $a0, $s0, -2
+	jal fibonacci
+	sll $v1, $s1, 1
+	addu $s1, $v1, $s1
+	subu $v0, $s1, $v0
+	j L2
+L3:
+	li $v0, 1	 # 0x1
+L2 :
+	lw $ra, 12($sp)
+	lw $s1, 8($sp)
+	lw $s0, 4($sp)
+	addiu $sp, $sp, 16
+	jr $ra
+\end{minted}
+
+\subsubsection{Implementazione x86}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+fibonacci:
+	movl $1, %eax
+	cmpl $1, %edi
+	jle L6
+	pushq %rbp
+	pushq %rbx
+	subq $8, %rsp
+	movl %edi, %ebx
+	leal -1(%rdi), %edi
+	call fibonacci
+	movl %eax, %ebp
+	leal -2(%rbx), %edi
+	call fibonacci
+	leal 0(%rbp, %rbp, 2), %edx
+	subl %eax, %edx
+	movl %edx, %eax
+	addq $8, %rsp
+	popq %rbx
+	popq %rbp
+L6:
+	ret
+\end{minted}
+
+\subsubsection{Implementazione ARM}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+fibonacci:
+	cmp r0, #1
+	ble L3
+	stmfd sp!, {r4, r5, r6, lr}
+	mov r5, r0
+	sub r0, r0, #1
+	bl fibonacci
+	mov r4, r0
+	sub r0, r5, #2
+	bl fibonacci
+	add r4, r4, r4, lsl #1
+	rsb r0, r0, r4
+	ldmfd sp!, {r4, r5, r6, pc}
+L3:
+	mov r0, #1
+	bx lr
+\end{minted}
+
+\section{Serie tail recursive}
+Vediamo ora una funzione che calcola i primi \(n\) numeri naturali, in versione tail recursive:
+\begin{minted}[linenos, breaklines, tabsize = 4]{c}
+int sum(int n, int acc){
+	if (n > 0){
+		return sum(n - 1, acc + n);
+	} else {
+		return acc;
+	}
+}
+\end{minted}
+
+\subsection*{Senza ottimizzazione di chiamate in coda}
+Vediamone inizialmente una traduzione fatta senza l'eliminazione delle chiamate ricorsive:
+\subsubsection{Implementazione MIPS}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+sum:
+	move $v1, $a0
+	move $v0, $a1
+	blez $a0, L5
+	addiu $sp, $sp, -8
+	sw $ra, 4($sp)
+	addiu $a0, $a0, -1
+	addu $a1, $a1 , $v1
+	jal sum
+	lw $ra, 4($sp)
+	addiu $sp, $sp,8
+L5:
+	jr $ra
+\end{minted}
+
+\subsubsection{Implementazione x86}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+sum :
+	movl %esi, %eax
+	testl %edi, %edi
+	jle L6
+	subq $8, %rsp
+	addl %edi, %esi
+	subl $1, %edi
+	call sum
+	addq $8, %rsp
+L6:
+	ret
+\end{minted}
+
+\subsubsection{Implementazione ARM}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+sum:
+	cmp r0, #0
+	ble L3
+	stmfd sp!, {r4, lr}
+	add r1, r0, r1
+	sub r0, r0, #1
+	bl sum
+	ldmfd sp!, {r4, pc}
+L3:
+	mov r0, r1
+	bx lr
+\end{minted}
+
+\subsection*{Chiamate in coda ottimizzate}
+Proponiamo ora la traduzione che \mintinline{batch}{gcc} esegue attivando il comando \mintinline{batch}{-foptimize-sibling-calls}, la cui funzione è ottimizzare le chiamate in coda:
+\subsubsection{Implementazione MIPS}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
+sum:
+	move $v0, $a1
+	blez $a0, L2
+L4:
+	addu $v0, $v0, $a0
+	addiu $a0, $a0, -1
+	bne $a0, $zero, L4
+L2:
+	jr $ra
+\end{minted}
+
+\subsubsection{Implementazione x86}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
+sum:
+	movl %esi, %eax
+	testl %edi , %edi
+	jle L2
+L4:
+	addl %edi, %eax
+	subl $1, %edi
+	jne L4
+L2:
+	ret
+\end{minted}
+
+\subsubsection{Implementazione ARM}
+
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
+sum:
+	cmp r0, #0
+	ble L2
+L4:
+	sub r3, r0, #1
+	add r1, r1, r0
+	mov r0, r3
+	cmp r3, #0
+	bne L4
+L2:
+	mov r0, r1
+	bx lr
+\end{minted}
+
+
+\end{document}

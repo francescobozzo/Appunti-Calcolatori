@@ -659,7 +659,7 @@ L5:
 \end{minted}
 Alcuni compilatori sono in grado di ottimizzare automaticamente il programma in questo modo così da renderlo molto più veloce e leggero, il \mintinline{batch}{gcc} è in grado di aggiustare, ove possibile, questo tipo di procedure con una complessità pari a \emph{O(2)}.
 
-\section{Le stringhe in MIPS}
+\section{Le stringhe in MIPS}\label{sec:mipstring}
 Nel linguaggio C le stringhe erano degli array di caratteri che terminava in \mintinline{c}{'\0'} (\mintinline{c}{NULL} character)
 e, secondo la codifica ASCII, ogni carattere veniva codificato con un byte. Presentiamo qui una funzione che copia una stringa:
 \begin{minted}[linenos, tabsize=4]{c}

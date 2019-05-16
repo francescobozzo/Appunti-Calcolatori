@@ -12,9 +12,9 @@
 \chapter{Toolchain}\label{ch:tool}
 
 \section{Introduzione}
-La \emph{toolchain} è la catena di strumenti che permette di tradurre il codice di alto livello in linguaggio macchina: scopriremo in questo capitolo quali sono i suoi componenti e come funzionano.
+La \emph{toolchain} è la catena di strumenti che permette di tradurre il codice di alto livello in linguaggio macchina: scopriremo in questo capitolo quali sono le sue componenti e come funzionano.
 
-Come ben sappiamo non è possibile per il calcolatore comprendere né i linguaggi di alto livello né il linguaggio assembly, nonostante il suo basso livello di astrazione, quindi si utilizzano degli strumenti come compilatori ed assemblatori per tradurre i programmi in modo da renderli comprensibili alla macchina. È giunto finalmente il momento di scoprire come avviene questa traduzione, partendo con un esempio di traduzione dal C, osserviamo le componenti che entrano in gioco nel processo.
+Come ben sappiamo non è possibile per il calcolatore comprendere né i linguaggi di alto livello né il linguaggio assembly, nonostante il suo basso livello di astrazione, quindi si utilizzano degli strumenti come compilatori ed assemblatori per tradurre i programmi in modo da renderli comprensibili alla macchina; è giunto finalmente il momento di scoprire come avviene questa traduzione. Partendo con un esempio di traduzione dal C, osserviamo le componenti che entrano in gioco nel processo.
 \begin{enumerate}
 	\item \emph{Preprocessore}: gestisce le direttive \# (\mintinline{c}{#include}, \mintinline{c}{#define} etc.) generalmente sostituendo pezzi di codice ed eliminando i commenti;
 	\item \emph{Compilatore}: compila il codice da C ad assembly (da \extension{c} a \extension{s});
@@ -25,23 +25,23 @@ Quando si è ottenuto il file eseguibile questo può essere caricato in memoria 
 Normalmente un driver gestisce tutto questo processo in maniera automatica.
 
 \subsection*{La toolchain GCC}
-Uno degli strumeti pià diffusi per compiere queste operazioni è la toolchain Gnu Compiler Collection (GCC) che può compilare diversi linguaggi e generare linguaggio macchina per varie architetture CPU, MIPS compreso.
+Uno degli strumeti pià diffusi per compiere queste operazioni è la toolchain Gnu Compiler Collection (\mintinline{batch}{gcc}) che può compilare diversi linguaggi e generare linguaggio macchina per varie architetture CPU, MIPS compreso.
 
-GCC lavora in diverse fasi, operate da diversi componenti: compilatore per il C++ (\texttt{cpp}), compilatore per il C (\texttt{cc}), assembler (\texttt{as}) e loader (\texttt{ld}).
-Quando si utilizza GCC si può invocare la compilazione su un file con diversi parametri:
+Il nostro \mintinline{batch}{gcc} lavora in diverse fasi, operate da diversi componenti: compilatore per il C++ (\texttt{cpp}), compilatore per il C (\texttt{cc}), assembler (\texttt{as}) e loader (\texttt{ld}).
+Quando si utilizza \mintinline{batch}{gcc} si può invocare la compilazione su un file con diversi parametri:
 \begin{itemize}
 	\item \mintinline{batch}{gcc -c <file>} si ferma dopo aver invocato \texttt{as} (genera quindi un file oggetto \extension{o});
 	\item \mintinline{batch}{gcc -S <file>} si ferma dopo aver invocato \texttt{cc} (genera quindi un file assembly \extension{s});
 	\item \mintinline{batch}{gcc <file>} invoca tutti i porgrammi necessari.
 \end{itemize}
-Vediamo ora nello specifico le fasi che caratterizzano tutto il processo svolto da GCC.
+Vediamo ora nello specifico le fasi che caratterizzano tutto il processo svolto da \mintinline{batch}{gcc}.
 
 \section{Processo: dal codice sorgente al file oggetto}
-Per comprendere bene il funzionamento di questi processi verrà ora illustrato il procedimento che porta da un file \extension{c} ad un eseguibile.
+Per comprendere bene il funzionamento di questi processi verrà ora illustrato il procedimento che porta da un file \extension{c} a un eseguibile.
 
-Il primo passo, dato un file \extension{c}, è di invocare su di esso l'istruzione \mintinline{batch}{gcc -S}, chiamando così il \texttt{cc} (compilatore), che traduce il file da linguaggio C ad assembly generando un file \extension{s} del tipo esatto (poiché \texttt{cc} riconosce l'architettura per cui sta lavorando).
+Il primo passo, dato un file \extension{c}, è invocare su di esso l'istruzione \mintinline{batch}{gcc -S}, chiamando così il \texttt{cc} (compilatore), che traduce il file da linguaggio C ad assembly generando un file \extension{s} del tipo esatto (poiché \texttt{cc} riconosce l'architettura per cui sta lavorando).
 
-Da notare che spesso il codice assembly generato dal compilatore è migliore di quello che potrebbe scrivere un programmatore, dato che è programmato per effettuare una serie di semplificazioni e migliorie al codice mentre lo traduce, così da renderlo più leggero e più performante (srotolando loop, accorpando variabili, diminuendo l'uso di variabili temporanee...); tuttavia i livelli di ottimizzazione si possono settare tramite l'opzione (facoltativa) \texttt{-o} che permette di indicare uno tra i \(3\) livelli di semplificazione disponibili.
+Da notare che spesso il codice assembly generato dal compilatore è migliore di quello che potrebbe scrivere un programmatore, dato che è programmato per effettuare una serie di semplificazioni e migliorie al codice mentre lo traduce, così da renderlo più leggero e più performante (dispiegando loop, accorpando variabili, diminuendo l'uso di variabili temporanee...); tuttavia i livelli di ottimizzazione si possono settare tramite l'opzione (facoltativa) \texttt{-o} che permette di indicare uno tra i \(3\) livelli di semplificazione disponibili.
 
 Il secondo passo prevede di utilizzare il comando \mintinline{batch}{gcc -c} sul file (può essere invocato sia sul file \extension{c}, rendendo implicito lo svolgimento del primo passo, che sul file \extension{s} ottenuto dallo svolgimento primo passo). Questo significa che viene utilizzato l'assemblatore \texttt{as} per generare un file \extension{o}, ovvero un file oggetto.
 
@@ -51,7 +51,7 @@ Nello specifico \texttt{as} fa molto di più che tradurre da assembly in linguag
 	\item converte le istruzioni assembly in linguaggio macchina;
 	\item converte i numeri da decimale/esadecimale in binario;
 	\item gestisce le label traducendole in indirizzi veri e propri;
-	\item gestisce i salti, se l'indirizzo è troppo lontano e non sta nello spazio dedicato all'operazione \mintinline{asm}{j}, questa va convertita in caricamento della destinazione in un registro ed in seguito in una \mintinline{asm}{jr} al registro stesso;
+	\item gestisce i salti: se l'indirizzo è troppo lontano e non sta nello spazio dedicato all'operazione \mintinline{asm}{j}, questa va convertita in caricamento della destinazione in un registro ed in seguito in una \mintinline{asm}{jr} al registro stesso;
 	\item genera i metadati, informazioni di alto livello che serviranno in seguito al loader per caricare il codice binario.
 \end{itemize}
 
@@ -65,19 +65,19 @@ Alla fine delle operazioni dell'\texttt{as} si ottiene quindi un file oggetto, c
 \end{itemize}
 
 \section{Processo: dal file oggetto all'eseguibile}
-A questo punto non rimane altro che prendere il file oggetto e trasformarlo in eseguibile, questo significa invocare il comando \mintinline{batch}{gcc} senza modificatori, ovvero eseguendo anche l'ultimo passo, quello del linking.
+A questo punto non rimane altro che prendere il file oggetto e trasformarlo in eseguibile: questo significa invocare il comando \mintinline{batch}{gcc} senza modificatori, ovvero eseguendo anche l'ultimo passo, quello del linking.
 Il linker \texttt{ld} mette assieme uno o più file oggetto eseguendo le necessarie rilocazioni. Generalmente svolge le seguenti operazioni:
-\begin{enumerate}
+\begin{itemize}
 	\item decide come codice e dati sono disposti in memoria compattando tra loro le sezioni con funzioni uguali;
 	\item associa indirizzi assoluti a tutti i simboli, risolvendo anche quelli contenuti nella tabella dei somboli, che quindi non sono locali e deve andare a cercare nei file \extension{o} linkati;
-	\item patcha le istruzioni di salto risistemando gli indirizzi, che sono stati modificati dopo lo svolgimento del punto 1. di questo elenco.
-\end{enumerate}
-Quindi lo scopo principale dell'\texttt{ld} è quello di eliminare le tabelle dei simboli e di rilocazione sostituendo tutti gli indirizzi relativi e indefiniti con indirizzi assoluti, per fare questo ha bisogno di collegare tra loro più file \extension{o} dato che alcuni oggetti definiti in un file potrebbero essere richiamati da un altro file.
+	\item patcha le istruzioni di salto risistemando gli indirizzi, che sono stati modificati dopo lo svolgimento del primo punto di questo elenco.
+\end{itemize}
+Quindi lo scopo principale di \texttt{ld} è quello di eliminare le tabelle dei simboli e di rilocazione sostituendo tutti gli indirizzi relativi e indefiniti con indirizzi assoluti, e per fare questo ha bisogno di collegare tra loro più file \extension{o}, dato che alcuni oggetti definiti in un file potrebbero essere richiamati da un altro file.
 
 \subsection{Linker e simboli}
 I tipi di simboli con cui il linker si trova ad avere a che fare sono tre:
 \begin{itemize}
-	\item i simboli \emph{locali} (\emph{non esportati}) sono simboli definiti (e visibili solamente) all'interno del file;
+	\item i simboli \emph{locali} (\emph{non esportati}) sono simboli definiti e visibili solamente all'interno del file;
 	\item i simboli \emph{definiti} (\emph{defined}) sono i simboli associati ad un indirizzo relativo nella tabella dei simboli, tuttavia definiti all'interno del file stesso;
 	\item i simboli \emph{non definiti} (\emph{undefined}) sono quei simboli presenti nella tabella dei simboli ma dichiarati in un file diverso, quidi presenti appunto solo come undefined.\footnote{Nel caso un simbolo non locale non venga trovato nei file \extension{o} linkati viene generato un errore di linking}.
 \end{itemize}
@@ -93,8 +93,8 @@ Il linking può essere spiegato più precisamente suddividendolo nei tre passi q
 Il file risultante viene finalmente "incapsulato" in un file eseguibile, che quindi si ritroverà a contenere i vari segmenti (testo, dati, etc.), le informazioni per il caricamento in memoria (indirizzo di caricamento dei segmenti, entry point del programma, etc.) ed altre informazioni aggiuntive (ad esempio per il debugging).
 
 \section{Librerie}
-Data la complessità dei programmi al giorno d'oggi si è resa indispensabile la creazione di librerie, ovvero collezioni di file \extension{o} contenenti le funzioni standard che si rivelano utili praticamente in ogni  programma.
-Questo è un grande vantaggio, invece di linkare un'enormità di file oggetto basta linkare una singola libreria per avere tutte le funzioni standard, questo però comporta lo svantaggio di portarsi dietro un file relativamente pesante (la libreria standard del C pesa \unit[2,5]{Mb}) quando magari si necessita solamente di poche di tutte le funzioni che contiene.
+Data la complessità dei programmi al giorno d'oggi si è resa indispensabile la creazione di librerie, ovvero collezioni di file \extension{o} contenenti le funzioni standard che si rivelano utili praticamente in ogni programma.
+Questo è un grande vantaggio: invece di linkare un'enormità di file oggetto basta linkare una singola libreria per avere tutte le funzioni standard. Questo però comporta lo svantaggio di portarsi dietro un file relativamente pesante (la libreria standard del C pesa \unit[2,5]{Mb}) quando magari si necessita solamente di poche di tutte le funzioni che contiene.
 Anche in questo caso esiste una soluzione più ottimizzata, le \emph{librerie dinamiche}. A seguire vengono presentate le principali differenze fra librerie statiche e dinamiche.
 \begin{itemize}
 	\item \emph{Librerie statiche} (\extension{a}): sono semplici collezioni di file \extension{o}, il linker \texttt{ld} fa tutto il lavoro di linkaggio sulla libreria intera, il che è svantaggioso su calcolatori dove la memoria è limitata (vedi sistemi embedded), tuttavia la fase di esecuzione risulta molto semplice in quanto tutte le funzioni che serviranno nel programma sono già contenute nell'eseguibile;
@@ -102,13 +102,11 @@ Anche in questo caso esiste una soluzione più ottimizzata, le \emph{librerie di
 \end{itemize}
 
 \subsection{Come funziona precisamente una libreria dinamica?}
-Nel momento del linking \texttt{ld} inserisce all'interno dell'eseguibile dei riferimenti alle librerie ed alle funzioni usate, ma non inserisce le librerie stesse, in tal modo mantiene l'eseguibile leggiadro; inoltre \texttt{ld} inserisce all'interno dell'eseguibile un riferimento ad un linker dinamico (esempio: \mintinline{batch}{/lib/ld-linux.so.2}) che viene caricato ed eseguito al momento dell'esecuzione passandogli come argomento l'intero programma. Sarà proprio questo linker dinamico a caricare ed eseguire le librerie dinamiche ed eseguire solo i linking necessari.
+Nel momento del linking \texttt{ld} inserisce all'interno dell'eseguibile dei riferimenti alle librerie ed alle funzioni usate, ma non inserisce le librerie stesse, mantenendo così l'eseguibile leggiadro; inoltre \texttt{ld} inserisce all'interno dell'eseguibile un riferimento ad un linker dinamico (esempio: \mintinline{batch}{/lib/ld-linux.so.2}) che viene caricato ed eseguito al momento dell'esecuzione passandogli come argomento l'intero programma. Sarà proprio questo linker dinamico a caricare ed eseguire le librerie dinamiche ed eseguire solo i linking necessari.
 
-Come conseguenza dell'implementazione di questa strategia si ha che l'eseguibile risulta di per sé molto più leggero ed inoltre si ottiene una modularizzazione del programma stesso, nel senso che se le librerie vengono aggiornate (rimanendo retrocompatibili) il programma ne utilizzerà in automatico la versione più aggiornata.Lo svantaggio in cui si incorre però è una complicazione notevole del processo di caricamento.
+Come conseguenza dell'implementazione di questa strategia si ha che l'eseguibile risulta di per sé molto più leggero ed inoltre si ottiene una modularizzazione del programma stesso, nel senso che se le librerie vengono aggiornate (rimanendo retrocompatibili) il programma ne utilizzerà in automatico la versione più aggiornata. Lo svantaggio in cui si incorre però è una complicazione notevole del processo di caricamento.
 
-Esiste tuttavia una soluzione ancora più ottimizzata all'interno della categoria delle librerie dinamiche, questa è il processo di \emph{lazy linking}, che consiste, in una maniera squisitamente informatica, nel rimandare il più possibie le operazioni complesse di linking, così da effettuarle solo se estremamente necessarie, in questo modo se una libreria non viene mai effettivamente invocata si può addirittura evitare di linkarla.
-
-La strategia utilizzata è quella di inserire al posto dell'indirizzo effettivo della funzione l'indirizzo di uno \emph{stub} che solo se verrà invocato andrà a ricercare la funzione e a compiere il linking con la libreria in modo da poter utilizzare la funzione. Tutto questo lavoro viene svolto se e solo se la funzione è effettivamente utilizzata e quindi comporta potenzialmente il risparmio di spazio per il linking della libreria che la contiene. Inoltre, una volta che una funzione è stata effettivamente linkata, essa è già disponibile per tutto il resto del programma, così da non dover nemmeno ripetere più volte il lazy linking.
+Esiste tuttavia una soluzione ancora più ottimale all'interno della categoria delle librerie dinamiche: questa è il processo di \emph{lazy linking}, che consiste, in una maniera squisitamente informatica, nel rimandare il più possibie le operazioni complesse di linking, così da effettuarle solo se estremamente necessarie; in questo modo se una libreria non viene mai effettivamente invocata si può addirittura evitare di linkarla. La strategia utilizzata è quella di inserire al posto dell'indirizzo effettivo della funzione l'indirizzo di uno \emph{stub} che solo se verrà invocato andrà a ricercare la funzione e a compiere il linking con la libreria in modo da poter utilizzare la funzione. Tutto questo lavoro viene svolto se e solo se la funzione è effettivamente utilizzata e quindi comporta potenzialmente il risparmio di spazio per il linking della libreria che la contiene. Inoltre, una volta che una funzione è stata effettivamente linkata, essa è già disponibile per tutto il resto del programma, così da non dover nemmeno ripetere più volte il lazy linking.
 
 \section{Esempio finale}
 Procediamo ora illustrando un esempio di linking composto da due file assembly:
@@ -152,14 +150,14 @@ Vediamo ora come vengono tradotti questi due file dall'\texttt{as} che ne ricava
 	\subimport{assets/tables/}{file-oggetto-2.tex}
 	\caption{File oggetto 2}
 \end{table}
-Ora è il turno della componente \texttt{ld} che si occupa di unire i due file. Ricordiamo che per prima cosa il linker deve definire la struttura del file di output e per fare questo sfrutta le intestazioni (i metadati) dei file che riceve in input. Nello specifico è interessato a leggere le dimensioni delle varie sezioni per poter decidere quanta memoria dedicarvi.
+Ora è il turno della componente \texttt{ld}, che si occupa di unire i due file. Ricordiamo che per prima cosa il linker deve definire la struttura del file di output, e per fare questo sfrutta le intestazioni (i metadati) dei file che riceve in input; nello specifico è interessato a leggere le dimensioni delle varie sezioni per poter decidere quanta memoria dedicarvi.
 
-Si deve sapere che in base all'architettura su cui si lavora esistono degli indirizzi di partenza prestabiliti per ogni sezione, nel nostro caso (architettura MIPS) la sezione \extension{text} inizia all'indirizzo \(0x00400000\), l'\texttt{ld} inserirà il text del primo file da \(0x00400000\) a \(0x400100\) e quello del secondo da \(0x00400100\) a \(0x00400300\).
+Si deve sapere che in base all'architettura su cui si lavora esistono degli indirizzi di partenza prestabiliti per ogni sezione: nel nostro caso (architettura MIPS) la sezione \extension{text} inizia all'indirizzo \(0x00400000\); l'\texttt{ld} così inserirà il text del primo file da \(0x00400000\) a \(0x400100\) e quello del secondo da \(0x00400100\) a \(0x00400300\).
 Stessa cosa con la sezione \extension{data} (che in \emph{MIPS} inizia \(0x10000000\)), quella del primo file si troverà nel file di output finale tra \(0x10000000\) e \(0x10000020\) e quella del secondo tra \(0x10000020\) e \(0x10000050\).
 
 In secondo luogo il linker assegna un'indirizzo assoluto ai simboli, nel nostro esempio \(f=0x00400000\) e \(g=0x00400100\), mentre \(x=0x10000000\) e \(y=0x10000020\).
 
-Infine \texttt{ld} patcha tutti gli indirizzi dei simboli tenendo conto che il \register{\$gp} in MIPS punta alla posizione \(0x10008000\) (quindi, ad esempio, l'indirizzo di x diventa \(0x8000\) rispetto al \register{\$gp}). Il linker in questa fase risolve anche gli indirizzi legati alle operazioni di tipo jump, si può vedere facilmente questa operazione nell'esempio sottostante.
+Infine \texttt{ld} patcha tutti gli indirizzi dei simboli tenendo conto che il \register{\$gp} in MIPS punta alla posizione \(0x10008000\) (quindi, ad esempio, l'indirizzo di x diventa \(0x8000\) rispetto al \register{\$gp}). Il linker in questa fase risolve anche gli indirizzi legati alle operazioni di salto incondizionato; si può vedere facilmente questa operazione nell'esempio sottostante.
 
 Ecco finalmente il file che viene dato come output da \texttt{ld}:
 \begin{table}[H]
