@@ -11,16 +11,19 @@
 \chapter{Central Processing Unit}
 
 \section{Introduzione}
-In questo capitolo andremo ad analizzare come il nostro processore elabora ed esegue le istruzioni che gli arrivano dai programmi Assembly; in particolare ci baseremo ancora su MIPS, in quanto super regolare e particolarmente utile a scopo didattico.\\
-Per come è stato progettato MIPS, le istruzioni presentano dei tratti comuni; in particolare le prime due fasi del ciclo della CPU (vedi~\ref{subsec:cpu}): il prelievo dell'istruzione e la lettura dei valori dei registri operandi sono comuni a ogni istruzione.\\
+In questo capitolo andremo ad analizzare come il nostro processore elabora ed esegue le istruzioni che gli arrivano dai programmi Assembly; in particolare ci baseremo ancora su MIPS, in quanto super regolare e particolarmente utile a scopo didattico.
+
+Per come è stato progettato MIPS le istruzioni presentano dei tratti comuni, in particolare le prime due fasi del ciclo della CPU (vedi~\ref{subsec:cpu}), ossia il prelievo dell'istruzione e la lettura dei valori dei registri operandi sono comuni a ogni istruzione.
+
 Noi in particolare, dopo aver spiegato i vari elementi che concorrono a far funzionare tutta la baracca, andremo ad analizzare le istruzioni aritmetico-logiche, quelle di accesso alla memoria e quelle di salto, dal momento che tutte le altre si implementano con tecniche simili.
 
 \section{Arithmetic-Logic Unit}
-A eccezione di \opcode{j}, tutte le istruzioni MIPS fanno uso di \emph{arithmetic-logic unit} (ALU per gli amici), una rete logica combinatoria abbastanza complessa preposta all'esecuzione di tutti calcoli di cui abbiamo bisogno; sostanzialmente, è un’unione di blocchi fondamentali che fanno operazioni su singoli bit.\\
-Al di là delle operazioni puramente aritmetiche (per le quali lo scopo di ALU è ovvio), viene usata nelle operazioni di accesso alla memoria (\opcode{sw} e \opcode{lw}) per il calcolo degli indirizzi e dalle operazioni di salto condizionato per effettuare i confronti; successivamente, ognuna di queste tre categorie differisce.
+A eccezione di \opcode{j}, tutte le istruzioni MIPS fanno uso di \emph{arithmetic-logic unit} (ALU per gli amici), una rete logica combinatoria abbastanza complessa preposta all'esecuzione di tutti calcoli di cui abbiamo bisogno; sostanzialmente, è un’unione di blocchi fondamentali che fanno operazioni su singoli bit.
+
+Al di là delle operazioni puramente aritmetiche (per le quali lo scopo di ALU è ovvio), viene usata nelle operazioni di accesso alla memoria (\opcode{sw} e \opcode{lw}) per il calcolo degli indirizzi e dalle operazioni di salto condizionato per effettuare i confronti; successivamente al passaggio per ALU, ognuna di queste tre categorie d'istruzione differisce.
 
 \section{Il datapath}
-Il \emph{datapath} è quella parte del processore attraverso cui passano le istruzioni; è letteralmente un percorso da seguire ogniqualvolta si voglia esegire una qualsiasi istruzione.
+Il \emph{datapath} è quella parte del processore attraverso cui passano le istruzioni; è letteralmente un percorso da seguire ogniqualvolta si debba eseguire una qualsiasi istruzione.
 
 \subsection{Struttura del datapath}
 \begin{figure}[H]
@@ -28,7 +31,7 @@ Il \emph{datapath} è quella parte del processore attraverso cui passano le istr
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{datap_1}
 	\caption{Schema base del datapath}
 \end{figure}
-Il datapath si compone essenzialmente di 5 fasi:
+Il datapath si compone essenzialmente di 5 parti:
 \begin{enumerate}
   \item Assumendo che il programma sia già stato caricato in memoria (secondo le modalità viste nel capitolo~\ref{ch:tool}), in questa fase viene prelevata l'istruzione da eseguire e viene spacchettata nei vari campi;
   \item I registri interessati all'esecuzione vengono caricati nel \emph{banco dei registri}; se l'istruzione è di tipo R, gli indirizzi dei registri sono contenuti nel corpo dell'istruzione;
@@ -38,16 +41,16 @@ Il datapath si compone essenzialmente di 5 fasi:
 \end{enumerate}
 
 \subsection{Il ruolo del multiplexer}
-La  figura però è incompleta; manca qualcosa che dica ai blocchi cosa fare in caso di punti di decisione (momenti in cui i segnali arrivano da due diverse sorgenti e bisogna sceglierne una), come ad esempio l'incremento del program counter: normalmente, il suo valore proviene dall'addizionatore (e punta quindi alla word successiva a quella appena letta), ma in caso di salto l'indirizzo viene calcolato dallo spiazzamento contenuto nell'istruzione.\footnote{Si ricorda che MIPS offre  solo 16 bit per immagazzinare costanti all'interno di istruzioni immediate. Dunque, attraverso \opcode{beq} risulta necessario utilizzare riferimenti relativi (al \(\textrm{\emph{PC}}+4\)) e non assoluti per poter accedere ad una vasta gamma di indirizzi.} Altro esempio: a seconda della tipologia di istruzione il secondo operando della ALU potrà provenire o dal banco dei registri (per le istruzioni R) o dal codice dell'istruzione stessa (per le istruzioni I).
+La  figura però è incompleta; manca qualcosa che dica ai blocchi cosa fare in caso di punti di decisione (momenti in cui i segnali arrivano da due diverse sorgenti e bisogna sceglierne una), come ad esempio l'incremento del program counter: normalmente, il suo valore proviene dall'addizionatore (e punta quindi alla word successiva a quella appena letta), ma in caso di salto l'indirizzo viene calcolato dallo spiazzamento contenuto nell'istruzione\footnote{Si ricorda che MIPS offre  solo 16 bit per immagazzinare costanti all'interno di istruzioni immediate. Dunque, attraverso \opcode{beq} risulta necessario utilizzare riferimenti relativi (al \(\textrm{\emph{PC}}+4\)) e non assoluti per poter accedere ad una vasta gamma di indirizzi.}. Altro esempio: a seconda della tipologia di istruzione il secondo operando della ALU potrà provenire o dal banco dei registri (per le istruzioni R) o dal codice dell'istruzione stessa (per le istruzioni I).
 
 Ed è qui che ci viene in soccorso il \emph{multiplexer} che, come già detto in~\ref{subsec:multi}, è un circuito combinatorio che prende in input due segnali e decide quale di essi debba andare in output sulla base di un terzo segnale di controllo (un po' come un vigile che decide quale macchina far passare).
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.8\textwidth,keepaspectratio]{multi}
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{muxx}
 	\caption{Schema di un multiplexer}
 \end{figure}
 \paragraph{Altri elementi}
-Oltre ai multiplexer, ci sono altri elementi che concorrono alla soluzione dei punti di decisione. Ad esempio, la ALU viene notificata con un segnale di controllo (nel nostro caso di \(4\) bit) per decidere quale operazione effettuare, il banco dei registri riceve dei flag per decidere se scrivere o meno un registro, la memoria dati ha degli espedienti per decidere se effettuare lettura o scrittura, e simili.\\
+Oltre ai multiplexer, ci sono altri elementi che concorrono alla soluzione dei punti di decisione. Ad esempio, alla ALU viene notificato un segnale di controllo (nel nostro caso di \(4\) bit) per decidere quale operazione effettuare, il banco dei registri riceve dei flag per decidere se scrivere o meno un registro, la memoria dati ha degli espedienti per decidere se effettuare lettura o scrittura, e simili.\\
 Chi stabilisce queste cose, oltre a settare il segnale del selettore dei vari multiplexer? È presto detto, l’unità di controllo!\\
 
 \section{La Control Unit}
@@ -74,7 +77,7 @@ A questo punto abbiamo moltissimi segnali che viaggiano nel processore, sincroni
 
 \subsection{Breve riepilogo sulle reti logiche}
 Circuiti come i multiplexer sono detti \emph{reti combinatorie} e producono un output secondo una funzione statica dell'input, senza memoria dei cambiamenti.\\
-Risulta però chiaro che elementi come i registri e le memorie (detti elementi "di stato") necessitano di tenere traccia dei cambiamenti subiti. In questo caso giungono in nostro soccorso le \emph{reti sequenziali}, dove l'output dipende dalla storia (sequenza) degli input precedenti. Si ha inoltre che gli elementi di stato hanno almeno due ingressi:
+Risulta però chiaro che elementi come i registri e le memorie (detti elementi \emph{"di stato"}) necessitano di tenere traccia dei cambiamenti subiti. In questo caso giungono in nostro soccorso le \emph{reti sequenziali}, dove l'output dipende dalla storia (sequenza) degli input precedenti. Si ha inoltre che gli elementi di stato hanno almeno due ingressi:
 \begin{itemize}
 	\item il valore da immettere nello stato;
 	\item il clock atto a sincronizzare le transizioni.
@@ -99,7 +102,7 @@ Il tempo \(T\) di clock deve naturalmente essere tale da dare tempo ai valori di
 	\centering
 	\includegraphics[width=0.5\textwidth,keepaspectratio]{retroaz}
 \end{figure}
-Se non avessimo una metodologia di temporizzazione precisa avremmo che \(s = f(s)\), che è un risultato assolutamente non prevedibile. Grazie alla temporizzazione sensibile al clock possiamo ottenere un andamento del tipo: \(s(t + T) = f(s(t))\), decisamente più regolare ed efficiente per noi poichè deterministico e non più afflitto da incertezza.
+Se non avessimo una metodologia di temporizzazione precisa avremmo che \(s = f(s)\), che è un risultato assolutamente non prevedibile. Grazie alla temporizzazione sensibile al clock possiamo ottenere un andamento del tipo: \(s(t + T) = f(s(t))\), decisamente più regolare ed efficiente per noi poiché deterministico e non più afflitto da incertezza.
 
 \section{Elaborazione delle istruzioni}
 Prima di addentrarci nel dettaglio dell'esecuzione di alcuni tipi di istruzioni, passiamo in rassegna le varie componenti che servono alla realizzazione di un datapath:
@@ -257,7 +260,7 @@ Per eseguire un'istruzione di somma del tipo \mintinline{asm}{add $t1, $t2, $t3}
 \begin{enumerate}
 	\item Prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
 	\item Leggere \register{\$t2} e \register{\$t3} dal register file;
-	\item Attivare la ALU con in input i dati dal register file;
+	\item Attivare la ALU passando in input i dati dal register file;
 	\item Memorizzare il risultato nel registro destinazione.
 \end{enumerate}
 Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico ciclo di clock.
