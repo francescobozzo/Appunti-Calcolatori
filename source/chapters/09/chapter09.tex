@@ -388,7 +388,7 @@ void copia_stringa(char *d , const char *s){
 \end{minted}
 
 \subsubsection{Implementazione MIPS}
-Abbiamo già discusso l'implementazione MIPS di questa funzione in 6.9, per cui qui riporteremo solamente il codice, generato da \mintinline{batch}{gcc}:
+Abbiamo già discusso l'implementazione MIPS di questa funzione in~\ref{sec:mipstring}, per cui qui riporteremo solamente il codice, generato da \mintinline{batch}{gcc}:
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 copia_stringa:
 	lb $v0, 0($a1)
