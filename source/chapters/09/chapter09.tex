@@ -252,8 +252,8 @@ start:
 	mov r3, #0	 ; inizializza i = 0
 L1:
 	add r3, r3, #1	 ; incrementa i
-	ldr r2 [r1, #4]!	 ; carica a[i]
-	cmp r2, r0	 ; confronta
+	ldr r2 [r1, #4]!	 ; carica k *4 in r2
+	cmp r2, r0	 ; confronta k*4 e a[0] dioboia che senso ha?
 	beq L1	 ; se sono uguali torna al ciclo
 	b L3	 ; altrimenti salta a L3
 L2:
