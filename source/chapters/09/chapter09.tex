@@ -12,19 +12,19 @@
 
 \chapter{Programmi Assembly comparati}\label{ch:asm}
 Ora andiamo a riprendere alcuni esempi già portati nel capitolo dedicato all'Assembly MIPS e andremo a confrontare le implementazioni proposte con le corrispettive per Assembly x86 e ARM.
-
 Per completezza, specifichiamo che il codice che mostreremo è stato ottenuto con il compilatore \mintinline{batch}{gcc}, lievemente modificato affinché risulti più leggibile (principalmente sull'ordine logico delle istruzioni e sulla nomenclatura dei registri).
 
 \section{Semplici espressioni aritmetico-logiche}
 Cominciamo con delle semplici operazioni aritmetiche, che evidenzieranno come le architetture RISC (MIPS e ARM) permettono di eseguire questo tipo di istruzioni in modo molto naturale, al contrario dell'implementazione leggermente più macchinosa di x86.\\
 L'espressione è la seguente:
-\begin{minted}{c}
-f = (g + h) - (i + j);
-\end{minted}
+
+\begin{equation*}
+	f = (g + h) - (i + j);
+\end{equation*}
 
 \subsubsection{Implementazione MIPS}
 In MIPS assumiamo che le variabili \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} vengano mappate nei 4 registri dedicati agli argomenti, rispettivamente \register{\$a0}, \register{\$a1}, \register{\$a2} e \register{\$a3}, e decidiamo di salvare il risultato in \register{\$v0}. A questo punto la conversione Assembly è immediata:
-\begin{minted}{asm}
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 add $a0, $a0, $a1  # memorizza in $a0 g + h
 add $v0, $a2, $a3  # memorizza in $v0 i + j
 sub $v0, $a0, $v0  # memorizza in $v0 (g + h) - (i + j)
@@ -34,7 +34,7 @@ sub $v0, $a0, $v0  # memorizza in $v0 (g + h) - (i + j)
 Siano \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} mappate rispettivamente in \register{\%rdi}, \register{\%rsi}, \register{\%rcx} e \register{\%rdx} e si voglia salvare il risultato in \register{\%rax}.\\
 Il problema di x86 sta nel fatto che le operazioni sono solo a due operandi, con il secondo che funge da destinazione, e quindi non è possibile specificare un diverso registro di destinazione.\\
 Possiamo aggirare questa limitazione sfruttando l'istruzione \mintinline{gas}{lea}: questa infatti ha come argomenti \texttt{<addr>, <dst>} e calcola l'indirizzo \texttt{<addr>} secondo base, spiazzamento e indice shiftato, e salva tutto in \texttt{<dst>}. Sarà quindi sufficiente impostare spiazzamento e shift a 0 per riuscire a sommare agevolmente base (per noi \register{\%rdi}) a indice non shiftato (\register{\%rsi}) e salvarne il risultato in \register{\%rax}.
-\begin{minted}{gas}
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
 leaq (%rdi, %rsi), %rax  # %rax = g + h con il trick visto sopra
 addq %rcx, %rdx          # %rdx = i + j
 subq %rdx, %rax          # %rax = (g + h) - (i + j)
@@ -43,7 +43,7 @@ subq %rdx, %rax          # %rax = (g + h) - (i + j)
 \subsubsection{Implementazione ARM}
 Analogamente a MIPS, anche l'implementazione ARM è molto semplice e naturale, una volta mappate \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} in \register{r0}, \register{r1}, \register{r2} e \register{r3} e decidendo di salvare il tutto in \register{r0}.\\
 Qui vengono usate \mintinline{asm}{adds} e \mintinline{asm}{subs}, che aggiornano i flag, ma usare le normalissime \mintinline{asm}{add} e \mintinline{asm}{sub} non avrebbe cambiato nulla.
-\begin{minted}{arm}
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
 adds r1, r0, r1  ; r1 = g + h
 adds r3, r2, r3  ; r3 = i + j
 subs r0, r1, r3  ; r0 = (g + h) - (i + j)
@@ -57,16 +57,16 @@ a[12] = h + a[8];
 \subsubsection{Implementazione MIPS}
 Come visto in 6.3, in MIPS sarà necessario utilizzare le istruzioni di \mintinline{asm}{lw} e \mintinline{asm}{sw} per accedere all'indirizzo dell'array; inoltre, ricordiamo che  lo shift necessario a ottenere l'indirizzo desiderato andrà sempre moltiplicato per lo spiazzamento di 4 byte, sicché ogni parola risulti lunga 32 bit.\\
 Assumendo quindi che \mintinline{c}{h} stia in \register{\$a0} e l'indirizzo dell'array \mintinline{c}{a} in \register{\$a1} otteniamo:
-\begin{minted}{asm}
+\begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 lw $v0, 32($a1)    # carica in $v0 il contenuto di a shiftato di 4 * 8
 add $a0, $v0, $a0  # salva in $a0 a[8] + h
-sw $a0, 48($a1)    # riponi il contenuto di $a0 nell'indirizzo di a shiftato di 4 * 12
+sw $a0, 48($a1)    # ripone il contenuto di $a0 nell'indirizzo di a shiftato di 4 * 12
 \end{minted}
 
 \subsubsection{Implementazione x86}
 La capacità di accedere direttamente alla memoria grazie a istruzioni come \mintinline{gas}{addl} e \mintinline{gas}{movl} semplifica di molto questa operazione per l'ISA Intel.\\
-Assumendo che  \mintinline{c}{h} stia \register{\%edi} e l'indirizzo di \mintinline{c}{a} in \register{\%rsi},otteniamo:
-\begin{minted}{gas}
+Assumendo che  \mintinline{c}{h} stia \register{\%edi} e l'indirizzo di \mintinline{c}{a} in \register{\%rsi}, otteniamo:
+\begin{minted}[linenos, breaklines, tabsize = 4]{gas}
 addl 32(%rsi), %edi  # %edi = a[8] + h
 movl %edi, 48(%rsi)  # sposta a[8] + h in a[12]
 \end{minted}
@@ -74,12 +74,11 @@ movl %edi, 48(%rsi)  # sposta a[8] + h in a[12]
 \subsubsection{Implementazione ARM}
 La versione ARM è molto simile a quella MIPS.\\
 Assumendo che \mintinline{c}{h} stia in \register{r0} e l'indirizzo di \mintinline{c}{a} in \register{r1}, otteniamo:
-\begin{minted}{arm}
+\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
 ldr r3, [r1, #32]  ; carica a[8] in r3
 add r0, r3, r0     ; salva in r0 a[8] + h
 str r0, [r1, #48]  ; riponi r0 in a[12]
 \end{minted}
-
 
 \section{Blocchi condizionali}
 Vediamo ora la gestione di istruzioni condizionali. Solitamente queste vengono gestite da istruzioni di salti condizionati, ma alcune ISA hanno modalità di gestione decisamente peculiari.
@@ -98,7 +97,7 @@ Utilizzeremo quindi \mintinline{asm}{bne} per operare un confronto fra due regis
 \begin{minted}[linenos, tabsize = 4]{asm}
   bne $a2, $a3, L2   # salta a L2 se $a2 e $a3 sono diversi
   add $v0, $a0, $a1
-  j L3   # salta a L3
+  j L3               # salta a L3
 L2:
   sub $v0, $a0, $a1
 L3:
@@ -109,7 +108,7 @@ Siano \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j
 L'implementazione risulta più complessa rispetto a quella di MIPS, poiché dovremo usare \mintinline{gas}{lea} al posto di \mintinline{gas}{add} e sopratto dovremo affiancare alla \mintinline{gas}{sub} una \mintinline{gas}{mov} per far sì che il risultato vada salvato in \register{\%rax}. Inoltre, è necessaria una \mintinline{gas}{cmpq} per settare i flag e solo dopo possiamo lanciare l'istruzione di salto.
 \begin{minted}[linenos, tabsize = 4]{gas}
   cmpq %rcx, %rdx  # confronta i e j e setta il flag
-  jne L2   # se i != j, salta a L2
+  jne L2           # se i != j, salta a L2
   leaq (%rdi, %rsi), %rax  # salva in %rax g + h
   jmp L3
 L2:
@@ -120,15 +119,15 @@ L3:
 Tutto questo può però essere semplificato dalla magica istruzione \mintinline{gas}{cmov} (\mintinline{gas}{mov} condizionale) di x86:
 \begin{minted}[linenos, tabsize = 4]{gas}
 leaq (%rdi, %rsi), %rax  # salva g + h in %rax
-subq %rdi, %rsi  # salva g - h in %rsi
-cmpq %rcx, %rdx  # i == j
-cmovne %rsi, %rax  # sposta %rsi in %rax se il i è diverso da j
+subq %rdi, %rsi          # salva g - h in %rsi
+cmpq %rcx, %rdx          # i == j
+cmovne %rsi, %rax        # sposta %rsi in %rax se il i è diverso da j
 \end{minted}
 
 \subsubsection{Implementazione ARM}
 L'implementazione ARM ci permette di evitare istruzioni di salto grazie alla sua versione condizionale delle operazioni aritmetiche. Assumendo che \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} vengano mappate rispettivamente in \register{r0}, \register{r1}, \register{r2} e \register{r3} e che il risultato vada in \register{r0}, otteniamo:
 \begin{minted}[linenos]{arm}
-cmp r2, r3   ; setta i flag
+cmp r2, r3         ; setta i flag
 addeq r0, r0, r1   ; se i == j, salva in r0 g + h
 subne r0, r0, r1   ; altrimenti, salva in r0 g - h
 \end{minted}
@@ -146,9 +145,9 @@ if (i < j){
 Assumendo che le variabili vengano mappate come sopra, il codice MIPS non appare troppo diverso, se non per l'utilizzo dell'istruzione \mintinline{asm}{slt}:
 \begin{minted}[linenos, tabsize = 4]{asm}
   slt $a2, $a2, $a3   # setta $a2 se i < j
-  beq $a2, $zero, L2   # se $a2 == 0 (non settato), vai a L2
+  beq $a2, $zero, L2  # se $a2 == 0 (non settato), vai a L2
   add $v0, $a0, $a1
-  j L3   # salta a L3
+  j L3                # salta a L3
 L2:
   sub $v0, $a0, $a1
 L3:
@@ -157,7 +156,7 @@ L3:
 L'implementazione è quasi identitica a quella della condizione di uguaglianza, cambia solamente l'istruzione di salto.
 \begin{minted}[linenos, tabsize = 4]{gas}
   cmpq %rcx, %rdx  # confronta i e j e setta il flag
-  jge L2   # se i < j, salta a L2
+  jge L2           # se i < j, salta a L2
   leaq (%rdi, %rsi), %rax  # salva in %rax g + h
   jmp L3
 L2:
@@ -168,15 +167,15 @@ L3:
 Anche l'implementazione con \mintinline{gas}{cmov} è simile:
 \begin{minted}[linenos, tabsize = 4]{gas}
 leaq (%rdi, %rsi), %rax  # salva in %rax g + h
-subq %rsi, %rax  # salva in %rax
-cmpq %rcx, %rdx  # flag
-cmovge %rdi, %rax  # sposta %rdi in %rax se il i < j
+subq %rsi, %rax          # salva in %rax
+cmpq %rcx, %rdx          # flag
+cmovge %rdi, %rax        # sposta %rdi in %rax se il i < j
 \end{minted}
 
 \subsubsection{Implementazione ARM}
 Ancora una volta, le indicazioni condizionali delle istruzioni ARM ci semplificano la vita:
 \begin{minted}[linenos]{arm}
-cmp r2, r3   ; setta i flag
+cmp r2, r3         ; setta i flag
 addlt r0, r0, r1   ; se i < j, salva in r0 g + h
 subge r0, r0, r1   ; altrimenti, salva in r0 g - h
 \end{minted}
@@ -191,21 +190,21 @@ while (a[i] == k){
 \end{minted}
 
 \subsubsection{Implementazione MIPS}
-In MIPS mappiamo \mintinline{c}{k} in \register{\$a0}, l'indirizzo di \mintinline{c}{a} in\register{\$a1} e \mintinline{c}{i} in \register{\$v0}. Notiamo che per poter operare il confronto \mintinline{c}{a[i]==k} sarà necessario servirsi di un registro temporaneo (\register{\$t0}) di appoggio doe caricare l'elemento del vettore \mintinline{c}{a}; inoltre, poiché lemodalità d'indirizzamento di MIPS sono molto poco potenti, sarà necessario operare lo shift logico a sinistra a ogni ciclo per mantenere la regolarità delle words.
+In MIPS mappiamo \mintinline{c}{k} in \register{\$a0}, l'indirizzo di \mintinline{c}{a} in \register{\$a1} e \mintinline{c}{i} in \register{\$v0}. Notiamo che per poter operare il confronto \mintinline{c}{a[i]==k} sarà necessario servirsi di un registro temporaneo (\register{\$t0}) di appoggio dove caricare l'elemento del vettore \mintinline{c}{a}; inoltre, poiché le modalità d'indirizzamento di MIPS sono molto poco potenti, sarà necessario operare lo shift logico a sinistra a ogni ciclo per mantenere la regolarità delle words.
 \begin{minted}[linenos, tabsize = 4]{asm}
 start:
 	move $v0, $zero	 # i = 0
 L1:
-	sll $t1, $v0, 2	 # salva in $t1 4 * i
-	add $t1, $t1, $a1	 # ottieni l'indirizzo di a[i]
-	lw $t0, 0($t1)	 # carica in $t0 il contenuto di a[i]
-	bne $t0, $a0, L2	 # salta a l2 se a[i] è diverso da k
+	sll $t1, $v0, 2    # salva in $t1 4 * i
+	add $t1, $t1, $a1  # ottieni l'indirizzo di a[i]
+	lw $t0, 0($t1)     # carica in $t0 il contenuto di a[i]
+	bne $t0, $a0, L2   # salta a l2 se a[i] è diverso da k
 	addi $v0, $v0, 1
 	j L1
 L2:
 \end{minted}
 
-L'implementazione di \mintinline{batch}{gcc} è leggermente più complessa e aggira la scarsa potenza sull; indirizzamento di MIPS usando non uno, ma due registri come contatori: \register{\$v0}, contiene \mintinline{c}{i} e \register{\$a1}, che contiene l'elemento successivo dell'array; quest'ultimo registro inoltre viene sempre incrementato di 4, dal momento che ogni elemento dell'array, in quanto \mintinline{c}{int}, ha dimensione 4 byte.
+L'implementazione di \mintinline{batch}{gcc} è leggermente più complessa e aggira la scarsa potenza sull'indirizzamento di MIPS usando non uno, ma due registri come contatori: \register{\$v0}, contiene \mintinline{c}{i} e \register{\$a1}, che contiene l'elemento successivo dell'array; quest'ultimo registro inoltre viene sempre incrementato di 4, dal momento che ogni elemento dell'array, in quanto \mintinline{c}{int}, ha dimensione 4 byte.
 \begin{minted}[linenos, tabsize = 4]{asm}
 start:
 	lw $a2, 0($a1)
@@ -225,42 +224,43 @@ L3:
 
 \subsubsection{Implementazione x86}
 L'implementazione di Intel è più compatta. Mappiamo le variabili come segue: \mintinline{c}{i} in \register{\%rax}, l'indirizzo di base\mintinline{c}{a} in \register{\%rsi} e \mintinline{c}{k} in \register{\%edi}; notiamo che possiamo mappare \mintinline{c}{k} in un registro a 32 bit poiché andrà confrontato con un elemento di un array, che abbiamo detto essere lungo 4 byte.
-
 Notiamo inoltre che la \mintinline{gas}{cmpl} alla riga \(7\) permette di confrontare \mintinline{c}{k} direttamente con un elemento in memoria, senza bisogno di operazioni di load; inoltre la stessa istruzione ci permette di moltiplicare per 4 l'indice in \register{\%rax}, senza bisogno di un ulteriore registro di appoggio.
 \begin{minted}[linenos, tabsize = 4]{gas}
 start:
-	cmpl (%rsi), %edi	 # confronta k e il primo elemento di a
-	jne L2	 # se non sono uguali, vai a L2
-	movq $0, %rax	 # inizializza l'indice
+	cmpl (%rsi), %edi  # confronta k e il primo elemento di a
+	jne L2             # se non sono uguali, vai a L2
+	movq $0, %rax      # inizializza l'indice
 L1:
-	addq $1, %rax	 # incrementa i
-	cmpl %edi, (%rsi, %rax, 4)	 # confronta k con a[i]
-	je L1	 # se k==a[i], torna a L1
-	jmp L3	 # Salto incondizionato a L3
+	addq $1, %rax               # incrementa i
+	cmpl %edi, (%rsi, %rax, 4)  # confronta k con a[i]
+	je L1                       # se k==a[i], torna a L1
+	jmp L3                      # salto incondizionato a L3
 L2:
 	movq $0, %rax
 L3:
 \end{minted}
 
 \subsubsection{Implementazione ARM}
-Assumiamo che le variabili siano mappate in questo modo: \mintinline{c}{k} in \register{r1}, l'indirizzo di \mintinline{c}{a} inizialmente in \register{r0} e \mintinline{c}{i} in \register{\$r0}. Notiamo nella riga 8 l'utilizzo dell'indirizzamento \emph{pre indexing}, che incrementa \register{r1} di 4 prima di accedervi e come siano utilizzati due registri, \register{r3} e \register{r1} per il valore dell'indice e della locazione di memoria cui accedere\footnote{Questa qui gliela chiedo a Iacca perché porcamadonna non capisco dove cazzo vadano a finire le variabili e perché sto ritardatro stia tentando di accedere a un elemento di k del porcodio}.
+Assumiamo che le variabili siano mappate in questo modo: \mintinline{c}{k} in \register{r0}, l'indirizzo di \mintinline{c}{a[]} inizialmente in \register{r1} e \mintinline{c}{i} in \register{r3}. Notiamo nella riga 8 l'utilizzo dell'indirizzamento \emph{pre indexing}, che incrementa \register{r1} di 4 prima di accedervi e come siano utilizzati due registri, \register{r3} e \register{r2} per il valore del contatore e della locazione di memoria cui accedere.
 \begin{minted}[linenos,tabsize = 4]{arm}
 start:
-	ldr r3, [r1]	 ; carica k in r3
-	cmp r0, r3	 ; confronta a[0] e k
-	bne L2	 ; se sono diversi, salta a L2
-	mov r3, #0	 ; inizializza i = 0
+	ldr r3, [r1]  ; carica a[0] in r3
+	cmp r0, r3    ; confronta a[0] e k
+	bne L2        ; se sono diversi, salta a L2
+	mov r3, #0    ; ora r3 contatore: inizializza i = 0
 L1:
-	add r3, r3, #1	 ; incrementa i
-	ldr r2 [r1, #4]!	 ; carica k *4 in r2
-	cmp r2, r0	 ; confronta k*4 e a[0] dioboia che senso ha?
-	beq L1	 ; se sono uguali torna al ciclo
-	b L3	 ; altrimenti salta a L3
+	add r3, r3, #1    ; incrementa i
+	ldr r2 [r1, #4]!  ; carica a[i] in r2
+	cmp r2, r0        ; confronta a[i] con k
+	beq L1            ; se sono uguali torna al ciclo
+	b L3              ; altrimenti salta a L3
 L2:
-	mov r3, #0
+	mov r3, #0  ; setta il contatore a 0
 L3:
-	mov r0, r3	 ;
+	mov r0, r3
 \end{minted}
+
+Si noti che in \texttt{L2} viene settato a 0 il valore del contatore: questa operazione risulta necessaria in quanto se il flusso d'esecuzione arriva a \texttt{L2} sicuramente non si è entrati nel ciclo (e dunque non è avvenuta l'inizializzazione del puntatore).
 
 \section{Invocazione di subroutine}
 \subsection*{Funzioni foglia}
