@@ -20,21 +20,21 @@ Il sistema operativo che utilizzeremo è una qualsiasi distribuzione Linux. A se
 \subsection{Come utilizzare gcc}
 Per compilare il file C "main.c" attraverso gcc nell'eseguibile "main":
 \begin{minted}{batch}
-gcc main.c -o main
+	gcc main.c -o main
 \end{minted}
 mentre per compilare un file C in assembly AT\&T attraverso gcc:
 \begin{minted}{batch}
-gcc -S main.c -o main.s
+	gcc -S main.c -o main.s
 \end{minted}
 
 \subsection{Come utilizzare nasm e ld}
 Per compilare un file Assembly Intel "pluto.asm" nel file oggetto "pluto.o":
 \begin{minted}{batch}
-nasm -felf64 -o pluto.o pluto.asm
+	nasm -felf64 -o pluto.o pluto.asm
 \end{minted}
 e successivamente per linkare il file oggetto e ottenere l'eseguibile "pluto":
 \begin{minted}{batch}
-ld -m elf_i386 -o pluto pluto.o
+	ld -m elf_i386 -o pluto pluto.o
 \end{minted}
 
 \section{Un po' di esempi}

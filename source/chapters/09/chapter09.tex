@@ -2,6 +2,7 @@
 \usepackage[subpreambles=true]{standalone}
 
 \usepackage{../../style}
+\usepackage{../../set-citations}
 
 \graphicspath{{./assets/images/}}
 \newmintinline{asm}{}
@@ -11,6 +12,7 @@
 \begin{document}
 
 \chapter{Programmi Assembly comparati}\label{ch:asm}
+\begin{fquote}[Linus Torvalds]Talk is cheap. Show me the code.\end{fquote}
 Ora andiamo a riprendere alcuni esempi già portati nel capitolo dedicato all'Assembly MIPS e andremo a confrontare le implementazioni proposte con le corrispettive per Assembly x86 e ARM.
 Per completezza, specifichiamo che il codice che mostreremo è stato ottenuto con il compilatore \mintinline{batch}{gcc}, lievemente modificato affinché risulti più leggibile (principalmente sull'ordine logico delle istruzioni e sulla nomenclatura dei registri).
 
@@ -242,6 +244,8 @@ L3:
 
 \subsubsection{Implementazione ARM}
 Assumiamo che le variabili siano mappate in questo modo: \mintinline{c}{k} in \register{r0}, l'indirizzo di \mintinline{c}{a[]} inizialmente in \register{r1} e \mintinline{c}{i} in \register{r3}. Notiamo nella riga 8 l'utilizzo dell'indirizzamento \emph{pre indexing}, che incrementa \register{r1} di 4 prima di accedervi e come siano utilizzati due registri, \register{r3} e \register{r2} per il valore del contatore e della locazione di memoria cui accedere.
+
+Si noti che in \texttt{L2} viene settato a 0 il valore del contatore: questa operazione risulta necessaria in quanto se il flusso d'esecuzione arriva a \texttt{L2} sicuramente non si è entrati nel ciclo (e dunque non è avvenuta l'inizializzazione del puntatore).
 \begin{minted}[linenos,tabsize = 4]{arm}
 start:
 	ldr r3, [r1]  ; carica a[0] in r3
@@ -255,16 +259,17 @@ L1:
 	beq L1            ; se sono uguali torna al ciclo
 	b L3              ; altrimenti salta a L3
 L2:
-	mov r3, #0  ; setta il contatore a 0
+	mov r3, #0   ; setta il contatore a 0
 L3:
 	mov r0, r3
 \end{minted}
 
-Si noti che in \texttt{L2} viene settato a 0 il valore del contatore: questa operazione risulta necessaria in quanto se il flusso d'esecuzione arriva a \texttt{L2} sicuramente non si è entrati nel ciclo (e dunque non è avvenuta l'inizializzazione del puntatore).
+
 
 \section{Invocazione di subroutine}
+I prossimi esempi serviranno ad esaminare le ABI e le convenzioni di chiamata delle tre architetture che stiamo analizzando.
 \subsection*{Funzioni foglia}
-
+Iniziamo con una funzione foglia, ossia una funzione che non chiama alcuna subroutine, che conseguentemente non rende necessario salvare il \texttt{return address register}. Di seguito il codice C.
 \begin{minted}[linenos,tabsize = 4]{c}
 int esempio_foglia(int g, int h, int i, int j){
 	int f;
@@ -274,34 +279,37 @@ int esempio_foglia(int g, int h, int i, int j){
 \end{minted}
 
 \subsubsection{Implementazione MIPS}
+Mappatura: \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} \mintinline{c}{j} in \register{\$a0}, \register{\$a1}, \register{\$a2}, \register{\$a3}, e il valore di ritorno va salvato in \register{\$v0}. Nulla di particolare da segnalare, se non il ritorno implementato con un salto incondizionato all'indirizzo del \texttt{return address register}.
 \begin{minted}[linenos,tabsize = 4]{asm}
 esempio_foglia:
-	addu $a0, $a0, $a1
-	addu $v0, $a2, $a3
-	subu $v0, $a0, $v0
-	jr $ra
+	addu $a0, $a0, $a1	 # somma g + h e salva in a0
+	addu $v0, $a2, $a3	 # somma  i + j  e salva in v0
+	subu $v0, $a0, $v0	 # sottrae a0 a v0
+	jr $ra	             # salto all'indirizzo di ritorno
 \end{minted}
 
 \subsubsection{Implementazione x86}
+L'implementazione Intel è immediata, se si tiene conto del fatto che le variabili verranno mappate nei "registri \register{e}" (\register{\%edi}, \register{\%esi}, \register{\%ecx}, \register{\%edx}) a 32 bit, anziché nei "registri \register{r}" (\register{\%rdi}, \register{\%rsi}, \register{\%rcx}, \register{\%rdx}) offerti da x86-64; questo succede perché i valori che dobbiamo modificare sono di tipo \mintinline{c}{int}, quindi di dimensione appunto 32 bit. Notiamo inoltre l'istruzione \texttt{ret} preposta a restiruire il ritorno della pussygia.
 \begin{minted}[linenos,tabsize = 4]{gas}
 esempio_foglia:
-	leal (%rdi, %rsi), %eax
-	addl %ecx, %edx
-	subl %edx, %eax
+	leal (%rdi, %rsi), %eax	 # salva in eax g + h
+	addl %ecx, %edx	         # salva in edx i + j
+	subl %edx, %eax	         # sottrae le due somme
 	ret
 \end{minted}
 
 \subsubsection{Implementazione ARM}
+Anche l'implementazione ARM è molto semplice. Notiamo l'utilizzo di \texttt{rsb}, che sottrae l'operando di destra a quello centrale, e l'uso di \texttt{bx} (una macro per \mintinline{arm}{move r15, r}) per saltare all'indirizzo contenuto nel link register \texttt{lr}.
 \begin{minted}[linenos,tabsize = 4]{arm}
 esempio_foglia:
-	add r0, r0, r1
-	add r3, r2, r3
-	rsb r0, r3, r0
+	add r0, r0, r1	 ; salva in r0 la somma g + h
+	add r3, r2, r3	 ; salva in r3 la somma i + j
+	rsb r0, r3, r0	 ; salva in r0 il risultato di r0 - r3
 	bx lr
 \end{minted}
 
 \subsection*{Funzioni non foglia}
-
+Com'era lecito aspettarsi, l'implementazione di funzioni non foglia (che invocano altre funzioni) è più complessa. Analizziamo un esempio semplice:
 \begin{minted}[linenos,breaklines, tabsize = 4]{c}
 int inc(int n){
 	return n + 1;
@@ -313,46 +321,48 @@ int f(int x){
 \end{minted}
 
 \subsubsection{Implementazione MIPS}
+La conversione di \mintinline{c}{inc} è banale, \mintinline{c}{f} invece ha notevoli complicazioni; è necessario infatti salvare il contenuto di \register{\$ra} prima di chiamare \mintinline{c}{inc}, e possiamo farlo decrementando di una word (4 byte) lo stack pointer per così salvare \register{\$ra} in \register{\$sp} nello spazio appena creato, per poi recuperarlo (e reincrementare \register{\$sp}) prima del ritorno.
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 inc:
-	addiu $v0, $a0, 1
+	addiu $v0, $a0, 1	   # incrementa
 	jr $ra
 
 f:
-	addiu $sp, $sp, -4
-	sw $ra, 0($sp)
-	jal inc
-	addiu $v0, $v0, -4
-	lw $ra, 0($sp)
-	addiu $sp, $sp, 4
-	jr $ra
+	addiu $sp, $sp, -4	 # decrementa di 4 byte sp
+	sw $ra, 0($sp)	     # salva ra all'indirizzo di sp
+	jal inc	            # chiama inc
+	addiu $v0, $v0, -4	 # sottrae 4 a v0
+	lw $ra, 0($sp)	     # recupera ra
+	addiu $sp, $sp, 4	  # Ripristina lo stack pointer
+	jr $ra	             # ritorna
 \end{minted}
 
-Implementazione \mintinline{batch}{gcc}:
+L'implementazione di \mintinline{batch}{gcc} è ancora diversa, perché l'ABI da noi usata prevede che il record di attivazione sia un multiplo di 8, per cui \register{\$sp} verrà decrementato di 8 bytes; altre ABI avrebbero lavorato ancora diversamente, dal momento che la gestione dello stack è appunto demandata alla \emph{Application Binary Interface} utilizzata.
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 inc:
 	addiu $v0, $a0, 1
 	jr $ra
 
 f:
-	addiu $sp, $sp, -8
-	sw $ra, 4($sp)
+	addiu $sp, $sp, -8	 # sp viene decrementato di 8
+	sw $ra, 4($sp)	     # ra viene salvato in sp shiftato di 4
 	jal inc
 	addiu $v0, $v0, -4
-	lw $ra, 4($sp)
-	addiu $sp, $sp, 8
+	lw $ra, 4($sp)	     # recupero ra
+	addiu $sp, $sp, 8	  # ripristino sp
 	jr $ra
 \end{minted}
 
 \subsubsection{Implementazione x86}
+Fortunatamente per noi, le funzioni \mintinline{gas}{call} e \mintinline{gas}{rec} di x86 gestiscono magistralmente il movimento dello stack pointer e non richiedono alcun intervento extra da parte nostra; inoltre, la sempre fresca \mintinline{gas}{lea} ci regala la libertà di cui abbiamo bisogno per salvare i risultati di una somma in un operando terzo.
 \begin{minted}[linenos, breaklines, tabsize = 4]{gas}
 inc:
-	leal 1(%rdi), %eax
+	leal 1(%rdi), %eax	 # salva rdi + 1 in eax
 	ret
 
 f:
-	call inc
-	subl $4, %eax
+	call inc	           # chiama inc
+	subl $4, %eax	      # sottrae 4 a eax
 	ret
 \end{minted}
 
