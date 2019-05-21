@@ -367,33 +367,21 @@ f:
 \end{minted}
 
 \subsubsection{Implementazione ARM}
-\begin{minted}[linenos, breaklines, tabsize = 4]{arm}
-inc:
-	add r0, r0, 31
-	bx lr
-
-f:
-	str lr, [sp, #-4]!
-	bl inc
-	sub r0, r0 #4
-	ldr pc, [sp], #4
-\end{minted}
-
-Implementazione \mintinline{batch}{gcc}:
+ARM si rivela molto interessante: le sue possibilità di indirizzament \emph{pre indexing} ci consentono di effettuare il decremento dello stack pointer e il salvataggio del link register in una sola riga di codice; inoltre, dal momento che in ARM \register{pc} è un registro referenziabilie come fosse un general purpose, possiamo direttamente prelevare dal il link register dallo stack e caricarlo direttamente nel program counter e, sempre nella stessa riga, reincrementare \register{sp} di 4 grazie all'indirizzamento \emph{post indexing}.
 \begin{minted}[linenos, breaklines, tabsize = 4]{arm}
 inc:
 	add r0, r0, #1
 	bx lr
 
 f:
-	stmfd sp!, {r4, lr}
-	bl inc
-	sub r0, r0 #4
-	ldmfd sp!, {r4, pc}
+	str lr, [sp, #-4]!	 ; decrementa sp di 4 e salva lr
+	bl inc	             ; chiama inc
+	sub r0, r0 #4	      ; sottrae 4 a r0
+	ldr pc, [sp], #4	   ; carica lr in pc e recupera sp
 \end{minted}
 
 \section{Copia stringa}
-Consideriamo ora una funziona che copia un array di caratteri:
+Infine consideriamo una funziona che copia un array di caratteri:
 \begin{minted}[linenos, breaklines, tabsize = 4]{c}
 void copia_stringa(char *d , const char *s){
 	int i = 0;
@@ -408,55 +396,55 @@ void copia_stringa(char *d , const char *s){
 Abbiamo già discusso l'implementazione MIPS di questa funzione in~\ref{sec:mipstring}, per cui qui riporteremo solamente il codice, generato da \mintinline{batch}{gcc}:
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 copia_stringa:
-	lb $v0, 0($a1)
-	sb $v0, 0($a0)
-	beq $v0, $zero, L5
-	move $v0, $zero
+	lb $v0, 0($a1)	     # carica in v0 il contenuto di s[0]
+	sb $v0, 0($a0)	     # salva v0 in d[0]
+	beq $v0, $zero, L5	 # se v0 == 0, salta a L5
+	move $v0, $zero	    # inizializza v0 a 0
 L3:
-	addiu $v0, $v0, 1
-	addu $v1, $a1, $v0
-	lb $v1, 0($v1)
-	addu $a2, $a0, $v0
-	sb $v1, 0($a2)
-	bne $v1, $zero, L3
+	addiu $v0, $v0, 1	  # incrementa il contatore v0
+	addu $v1, $a1, $v0	 # salva v0 + s[0] in v1
+	lb $v1, 0($v1)	     # carica in v1
+	addu $a2, $a0, $v0	 #
+	sb $v1, 0($a2)	     #
+	bne $v1, $zero, L3	 #
 L5:
-	jr $ra
+	jr $ra	             # termina e ritorna
 \end{minted}
 
 \subsubsection{Implementazione x86}
 
 \begin{minted}[linenos, breaklines, tabsize = 4]{gas}
 copia_stringa:
-	movzbl (%rsi), %eax
-	movb %al, (%rdi)
-	testb %al, %al
-	je L1
-	movl $0, %eax
+	movzbl (%rsi), %eax	       #
+	movb %al, (%rdi)           #
+	testb %al, %al             #
+	je L1                      # se uguali, ritorna e termina
+	movl $0, %eax	             # inizializza a 0 eax
 L3 :
-	addl $1, %eax
-	movslq %eax, %rcx
-	movzbl (%rsi, %rcx), %edx
-	movb %dl, (%rdi, %rcx)
-	testb %dl, %dl
-	jne L3
+	addl $1, %eax	             # incrementa il contatore
+	movslq %eax, %rcx 	       #
+	movzbl (%rsi, %rcx), %edx	 #
+	movb %dl, (%rdi, %rcx)	   #
+	testb %dl, %dl	           #
+	jne L3	                   # 
 L1:
 	ret
 \end{minted}
 
 \subsubsection{Implementazione ARM}
-
+Ecco invece il codice ARM; notiamo come i suffissi condizionali  e soprattutto il \emph{pre indexing} vengono sfruttati per snellire un codice in realtà molto simile a quello di MIPS.
 \begin{minted}[linenos, breaklines, tabsize = 4]{arm}
 copia_stringa:
-	ldrb r3, [r1]
-	strb r3, [r0]
-	cmp r3, #0
-	bxeq lr
+	ldrb r3, [r1]	     ; carica s[0] in r3
+	strb r3, [r0]	     ; salva r3 in d[0]
+	cmp r3, #0	        ; r3 è 0?
+	bxeq lr	           ; se sì, ritorna e termina
 L3:
-	ldrb r3, [r1, #1]!
-	strb r3, [r0, #1]!
-	cmp r3, #0
-	bne L3
-	bx lr
+	ldrb r3, [r1, #1]!	 ; carica in r3 il contenuto di s[] incrementato di 1 e salva le modifiche
+	strb r3, [r0, #1]!	 ; salva r3 in d[] incrementato di 1 e salva le modifiche
+	cmp r3, #0	         ; la stringa è terminata?
+	bne L3	             ; se no, torna al ciclo
+	bx lr	              ; altrimenti ritorna e termina
 \end{minted}
 
 
