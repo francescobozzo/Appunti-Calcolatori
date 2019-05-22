@@ -32,10 +32,12 @@ Possiamo distinguere principalmente due tipologie di memoria in base alla modali
 	\end{itemize}
 \end{itemize}
 
-A seguire un elenco di definizioni che utilizzeremo in seguito:
+A seguire un elenco di definizioni che utilizzeremo in seguito.
 \begin{itemize}
 	\item \emph{Tempo di accesso}: è il tempo richiesto per \emph{una} operazione di lettura / scrittura nella memoria;
 	\item \emph{Tempo di ciclo}: è il tempo che intercorre fra l'inizio di due istruzioni consecutive; è composto dal tempo di accesso sommato al tempo per muovere il dato con cui si stava lavorando;
+	\item \emph{Latenza}: è il tempo di acceso ad una singola parola; indica quanto il processore dovrebbe poter aspettare un dato dalla memoria nel caso peggiore;
+	\item \emph{Velocità o "banda"}: velocità di trasferimento massima in FPM; oltre ad essere importante per le operazioni FPM che sono legate all'utilizzo della memoria cache interne ai processori, è significativa per le operazioni in DMA (ossia quando un dispositivo periferico viene collegato alla memoria senza passare per il processore);
 	\item \emph{Accesso casuale}: è quella modalità di accesso in cui non vi è alcun ordine o relazione fra i dati memorizzati; è tipico delle memorie a semiconduttori;
 	\item \emph{Accesso sequenziale}: è quella modalità che presuppone lo scorrimento ordinato di un blocco di dati per accere ad un suo dato; il tempo d'accesso dipende dalla posizione fisica del dato nel supporto (tipicamente nastri e dischi);
 	\item \emph{RAM} (\emph{Random Access Memory}): è una memoria dotata di accesso casuale che permette scrittura e lettura; viene implementata attraverso semiconduttori;
@@ -117,9 +119,25 @@ Si noti che sono stati inseriti due circuiti: \emph{row address latch} e \emph{c
 Solitamente i trasferimenti da/per la memoria avvengono a blocchi piuttosto che per singole celle. Ciò comporta un notevole risparmio di tempo, in quanto sarebbe necessario solo un unico indirizzamento per le righe e colonne. Questo processo viene chiamato \emph{fast page mode} (\emph{FPM}). Si sottolinea che questa modalità è del tutto automatica: l'utente non deve preoccuparsi di gestire questo meccanismo.
 
 \subsubsection{Le DRAM sincrone}
-Le DRAM che sono state affrontate fin'ora sono dette \emph{asincrone}, in quanto non esiste una precisa temporizzazione di accesso, ma la dinamica viene governata dai segnali RSA e CAS. Si noti che questa asincronicità può causare non pochi problemi, soprattutto quando si esegue il refresh della memoria. Una soluzione consiste nell'aggiungere dei buffer di memorizzazione
+Le DRAM che sono state descritte fin'ora sono dette \emph{asincrone}, in quanto non esiste una precisa temporizzazione di accesso: la dinamica viene governata dai segnali \emph{RAS} e \emph{CAS}. Si noti che questa asincronicità può causare non pochi problemi, soprattutto mentre si esegue il refresh della memoria. Una soluzione consiste nell'aggiungere dei buffer di memorizzazione degli ingressi e delle uscite, in maniera tale da riuscire a disaccoppiare la lettura e scrittura dal refresh della memoria, ottenendo automaticamente un accesso FPM pilotato dal clock. Questa implementazione della DRAM viene detta \emph{sincrona}. A seguire un'immagine che contiene uno schema riassuntivo:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,keepaspectratio]{DRAM_sincrona.png}
+	\caption{Organizzazione generale di una DRAM sincrona}
+\end{figure}
 
+Nella prossima immagine è possibile visualizzare un accesso sincrono in FPM:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,keepaspectratio]{FPM.png}
+	\caption{Funzionamento first page mode}
+\end{figure}
+dove il segnale di clock rappresentato è quello della memoria RAM: le operazioni di lettura e scrittura sono sincronizzate col fronte di salita; D0, D1, D2, D3 sono i byte che arrivano in serie; i valori rimanenti sono le linee di controllo.
 
+\subsubsection{Double Data Rate SDRAM (DDR-SDRAM)}
+Un ulteriore miglioramento è effettuato dalla \emph{DDR-SDRAM} (\emph{Double Data Rate SDRAM}): essa permette il trasferimento dei dati sia sul fronte di salita che sul fronte di discesa del clock della memoria. In poche parole ciò permette di raddoppiare le prestazioni rispetto ad una normale SDRAM: seppur la latenza rimane invariata, la banda viene raddoppiata.
+
+Sono ottenute organizzando la memoria in due banchi separati: uno contiene le posizioni pari (a cui si accede durante il fronte di salita), l'altro contiene quelle dispari (a cui si accede durante il fronte di discesa). Locazioni contingue risultano divise fra i due banchi: grazie a qusto è possibile effettuare un accesso in modo interlacciato.
 
 
 \end{document}
