@@ -17,8 +17,8 @@ La \emph{toolchain} è la catena di strumenti che permette di tradurre il codice
 Come ben sappiamo non è possibile per il calcolatore comprendere né i linguaggi di alto livello né il linguaggio assembly, nonostante il suo basso livello di astrazione, quindi si utilizzano degli strumenti come compilatori ed assemblatori per tradurre i programmi in modo da renderli comprensibili alla macchina; è giunto finalmente il momento di scoprire come avviene questa traduzione. Partendo con un esempio di traduzione dal C, osserviamo le componenti che entrano in gioco nel processo.
 \begin{enumerate}
 	\item \emph{Preprocessore}: gestisce le direttive \# (\mintinline{c}{#include}, \mintinline{c}{#define} etc.) generalmente sostituendo pezzi di codice ed eliminando i commenti;
-	\item \emph{Compilatore}: compila il codice da C ad assembly (da \extension{c} a \extension{s});
-	\item \emph{Assembler}: traduce da assembly in linguaggio macchina, da \extension{s} a \extension{o};
+	\item \emph{Compilatore}: compila il codice da C ad assembly (da file \extension{c} a file \extension{s});
+	\item \emph{Assembler}: traduce da assembly in linguaggio macchina, da file \extension{s} a file \extension{o};
 	\item \emph{Linker}: collega tra loro diversi file \extension{o} per linkare al file oggetto del programma le librerie o gli altri file \extension{o} di cui ha bisogno, una volta terminato produce un file eseguibile.
 \end{enumerate}
 Quando si è ottenuto il file eseguibile questo può essere caricato in memoria con una system call ed eseguito.
@@ -32,7 +32,7 @@ Quando si utilizza \mintinline{batch}{gcc} si può invocare la compilazione su u
 \begin{itemize}
 	\item \mintinline{batch}{gcc -c <file>} si ferma dopo aver invocato \texttt{as} (genera quindi un file oggetto \extension{o});
 	\item \mintinline{batch}{gcc -S <file>} si ferma dopo aver invocato \texttt{cc} (genera quindi un file assembly \extension{s});
-	\item \mintinline{batch}{gcc <file>} invoca tutti i porgrammi necessari.
+	\item \mintinline{batch}{gcc <file>} invoca tutti i programmi necessari.
 \end{itemize}
 Vediamo ora nello specifico le fasi che caratterizzano tutto il processo svolto da \mintinline{batch}{gcc}.
 
