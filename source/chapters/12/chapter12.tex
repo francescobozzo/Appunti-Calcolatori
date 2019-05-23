@@ -81,7 +81,7 @@ In secondo luogo abbiamo considerato poche istruzioni, questo implica che non ab
 L'architettura di tipo RISC presenta dei vantaggi sostanziali per quanto riguarda il processo di \emph{pipelining}, i principali sono riassunti nell'elenco sottostante.
 \begin{itemize}
 	\item Tutte le istruzioni hanno la stessa lunghezza. Questo facilita di molto il prelievo (si tratta sempre di una word).
-	\item I codici degli operandi sono in posizione fissa, questo permette di accedervi leggendo il registerfile in parallelo con la decodifica dell’istruzione.
+	\item I codici degli operandi sono in posizione fissa, questo permette di accedervi leggendo il file register in parallelo con la decodifica dell’istruzione.
 	\item Gli operandi residenti in memoria sono possibili solo per \opcode{lw} e \opcode{sw}. Ciò permette di usare la ALU per il calcolo di indirizzi (cosa che non sarebbe possibile se dovessimo usare le ALU in due fasi della stessa istruzione, come è richiesto in ISA più complesse).
 	\item  L’uso di accessi allineati fa sì che gli accessi in memoria avvengano sempre in un ciclo di trasferimento (impegnando un solo stadio della pipeline).
 \end{itemize}
@@ -147,7 +147,7 @@ Come detto in precedenza per meccanismi come l'\emph{untaken branch} e l'impleme
 	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{registri-di-backup.png}
 \end{figure}
-Un'altro aspetto particolare rigardo a qesta componente riguarda le dimensioni che i registri di backup devono avere, queste infatti sono molto variabili e dipendono strettamente da cosa il registro in causa deve memorizzare, il registro IF/ID, per esempio, deve contenere 64 bit, 32 per l’istruzione prelevata dalla memoria ed altri 32 per il contenuto del PC incrementato di 4.
+Un'altro aspetto particolare di questa componente riguarda le dimensioni che i registri di backup devono avere, queste infatti sono molto variabili e dipendono strettamente da cosa il registro in causa deve memorizzare, il registro IF/ID, per esempio, deve contenere 64 bit, 32 per l’istruzione prelevata dalla memoria ed altri 32 per il contenuto del PC incrementato di 4.
 Gli altri tre registri di pipeline contengono rispettivamente 128, 97 e 64 bit.
 
 \section{Esercizio tipo}
