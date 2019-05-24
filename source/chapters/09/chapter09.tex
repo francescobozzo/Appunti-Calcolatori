@@ -27,9 +27,9 @@ L'espressione è la seguente:
 \subsubsection{Implementazione MIPS}
 In MIPS assumiamo che le variabili \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} vengano mappate nei 4 registri dedicati agli argomenti, rispettivamente \register{\$a0}, \register{\$a1}, \register{\$a2} e \register{\$a3}, e decidiamo di salvare il risultato in \register{\$v0}. A questo punto la conversione Assembly è immediata:
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
-add $a0, $a0, $a1  # memorizza in $a0 g + h
-add $v0, $a2, $a3  # memorizza in $v0 i + j
-sub $v0, $a0, $v0  # memorizza in $v0 (g + h) - (i + j)
+add $a0, $a0, $a1  # memorizza g + h in $a0
+add $v0, $a2, $a3  # memorizza i + j in $v0
+sub $v0, $a0, $v0  # memorizza (g + h) - (i + j) in $v0
 \end{minted}
 
 \subsubsection{Implementazione x86}
@@ -57,7 +57,7 @@ Ora invece prenderemo come esempio una semplice istruzione che agisce su un arra
 a[12] = h + a[8];
 \end{minted}
 \subsubsection{Implementazione MIPS}
-Come visto in 6.3, in MIPS sarà necessario utilizzare le istruzioni di \mintinline{asm}{lw} e \mintinline{asm}{sw} per accedere all'indirizzo dell'array; inoltre, ricordiamo che  lo shift necessario a ottenere l'indirizzo desiderato andrà sempre moltiplicato per lo spiazzamento di 4 byte, sicché ogni parola risulti lunga 32 bit.\\
+Come già visto, in MIPS sarà necessario utilizzare le istruzioni di \mintinline{asm}{lw} e \mintinline{asm}{sw} per accedere all'indirizzo dell'array; inoltre, ricordiamo che  lo shift necessario a ottenere l'indirizzo desiderato andrà sempre moltiplicato per lo spiazzamento di 4 byte, sicché ogni parola risulti lunga 32 bit.\\
 Assumendo quindi che \mintinline{c}{h} stia in \register{\$a0} e l'indirizzo dell'array \mintinline{c}{a} in \register{\$a1} otteniamo:
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 lw $v0, 32($a1)    # carica in $v0 il contenuto di a incrementato di 4 * 8
@@ -130,8 +130,8 @@ cmovne %rsi, %rax        # sposta %rsi in %rax se il i è diverso da j
 L'implementazione ARM ci permette di evitare istruzioni di salto grazie alla sua versione condizionale delle operazioni aritmetiche. Assumendo che \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} e \mintinline{c}{j} vengano mappate rispettivamente in \register{r0}, \register{r1}, \register{r2} e \register{r3} e che il risultato vada in \register{r0}, otteniamo:
 \begin{minted}[linenos]{arm}
 cmp r2, r3         ; setta i flag
-addeq r0, r0, r1   ; se i == j, salva in r0 g + h
-subne r0, r0, r1   ; altrimenti, salva in r0 g - h
+addeq r0, r0, r1   ; se i == j, salva g + h in r0
+subne r0, r0, r1   ; altrimenti, salva g - h in r0
 \end{minted}
 
 \subsection*{Condizioni di disuguaglianza}
@@ -159,17 +159,17 @@ L'implementazione è quasi identitica a quella della condizione di uguaglianza, 
 \begin{minted}[linenos, tabsize = 4]{gas}
   cmpq %rcx, %rdx  # confronta i e j e setta il flag
   jge L2           # se i < j, salta a L2
-  leaq (%rdi, %rsi), %rax  # salva in %rax g + h
+  leaq (%rdi, %rsi), %rax  # salva g + h in %rax
   jmp L3
 L2:
   movq %rdi, %rax  # sposta g da %rdi a %rax
-  subq %rsi, %rax  # salva in %rax
+  subq %rsi, %rax  # salva g - h in %rax
 L3:
 \end{minted}
 Anche l'implementazione con \mintinline{gas}{cmov} è simile:
 \begin{minted}[linenos, tabsize = 4]{gas}
-leaq (%rdi, %rsi), %rax  # salva in %rax g + h
-subq %rsi, %rax          # salva in %rax
+leaq (%rdi, %rsi), %rax  # salva g + h in %rax
+subq %rsi, %rax          # salva g - h in %rax
 cmpq %rcx, %rdx          # flag
 cmovge %rdi, %rax        # sposta %rdi in %rax se il i < j
 \end{minted}
@@ -178,8 +178,8 @@ cmovge %rdi, %rax        # sposta %rdi in %rax se il i < j
 Ancora una volta, le indicazioni condizionali delle istruzioni ARM ci semplificano la vita:
 \begin{minted}[linenos]{arm}
 cmp r2, r3         ; setta i flag
-addlt r0, r0, r1   ; se i < j, salva in r0 g + h
-subge r0, r0, r1   ; altrimenti, salva in r0 g - h
+addlt r0, r0, r1   ; se i < j, salva g + h in r0
+subge r0, r0, r1   ; altrimenti, salva g - h in r0
 \end{minted}
 
 \section{Cicli}

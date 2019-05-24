@@ -74,10 +74,11 @@ Vediamo ora una lista delle operazioni più comuni:
 	\item \opcode{ldr}/\opcode{str} sono rispettivamente \emph{load register} e \emph{store register}. Rispecchiano rispettivamente \texttt{lw} e \texttt{sw} dell'assembly MIPS;
 	\item \opcode{mov}/\opcode{mvn}:  equivalente agli omonimi move e move not in MIPS; move not sposta il complemento a 1 del registro sorgente (utilizzata per implementare il not).
 \end{itemize}
-\subsection{Possibilli operazioni sull'operando <r*>}\label{sec:modifiche}
-Prima di mostrare le operazioni possibili su <r*> ci teniamo a specificare che queste sono operazioni di shfting e di rotating e vengono applicate al secondo operando prima dello svolgimento dell'operazione descritta dall'istruzione.
 
-Ecco un esempio di un'operazione in varie versioni diverse, per capire meglio tutte le possibilità di modifica offerte da ARM:
+\subsection{Possibilli operazioni sull'operando <r*>}\label{sec:modifiche}
+Prima di mostrare le operazioni possibili su \texttt{<r*>}, ci teniamo a specificare che queste sono operazioni di shifting e di rotating e vengono applicate al secondo operando prima dello svolgimento dell'operazione descritta dall'istruzione.
+
+Ecco un esempio di un'operazione in diverse versioni, per capire al meglio la potenza di ARM:
 \begin{minted}[linenos, tabsize=4]{arm}
 add r0, r1, #1
 adds r0, r1, r2
@@ -87,9 +88,9 @@ addeqs r0, r1, r2, lsl r3
 Analizziamo le righe di codice una ad una:
 \begin{enumerate}
 	\item \register{r0} \(=\) \registerOp{r1}{+}{1};
-	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: e setta dei flag se necessario;
-	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: esegue la \mintinline{arm}{add} solo se il flag \mintinline{arm}{eq} è settato, prima dell'operazione esegue uno shift (temporaneo) a sinistra di 2 del registro r2;
-	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: esegue la \mintinline{arm}{add} solo se il flag \mintinline{arm}{eq} è settato, setta flag se necessario, prima dell'operazione esegue uno shift (temporaneo) a sinistra di r3 del registro r2.
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2} e setta dei flag se necessario;
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: esegue la somma solo se il flag \mintinline{arm}{eq} è settato, prima dell'operazione esegue uno shift (temporaneo) a sinistra di 2 del registro \register{r2};
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: esegue la somma solo se il flag \mintinline{arm}{eq} è settato, setta flag se necessario, prima dell'operazione esegue uno shift (temporaneo) a sinistra di \register{r3} del registro \register{r2}.
 \end{enumerate}
 
 \subsection*{Istruzioni di load/store multiple}
@@ -105,7 +106,7 @@ dove \register{rb} è il registro che contiene la base, \suffix{-cond} è l'even
 	\item \suffix{db}: \emph{decrement before}, decrementa il registro base prima dell'esecuzione.
 \end{itemize}
 
-Il \suffix{!}, facoltativo anch'esso, serve per rendere definitive le modifiche operate dai suffissi appena elencati, dopo l'operazione.
+Il \suffix{!}, facoltativo anch'esso, serve per rendere definitive le modifiche apportate dai suffissi appena elencati, dopo l'operazione.
 
 \section{Modalità di indirizzamento in ARM}
 Introduciamo ora le modalità d'indirizzamento in ARM, ricordando che si tratta di istruzioni che rendono possibile modificare l'indirizzo indicato dal secondo registro di operazioni come \mintinline{arm}{ldr} e \mintinline{arm}{str}; si tenga presente che le operazioni di indirizzamento sono diverse dalle operazioni di shifting o rotating.
@@ -113,8 +114,8 @@ Introduciamo ora le modalità d'indirizzamento in ARM, ricordando che si tratta 
 In modo semplificato esistono due metodologie di indirizzamento in ARM, ovvero \texttt{base}\(+\)\texttt{offset} (spiazzamento, valore immediato) o \texttt{base}\(+\)\texttt{index} (indice, eventualmente scalato). La struttura dell'istruzione è la seguente:
 
 \begin{minted}[tabsize=4, linenos]{arm}
-ldr rd, rb (offset)           ; base + spiazzamento
-ldr rd, rb (index) [shift]    ; base + indice shiftato
+ldr rd, rb (offset)         ; base + spiazzamento
+ldr rd, rb (index) [shift]  ; base + indice shiftato
 \end{minted}
 dove \register{rd} è il registro destinazione, \register{rb} è il registro contenente l'indirizzo base, \register{offset} è un immediato codificato su 12 bit e \register{index} è un valore in registro, eventualmente shiftato o ruotato.
 
@@ -124,9 +125,8 @@ Una possibilità molto interessante offerta da ARM è l'utilizzo dei meccanismi 
 	\item \emph{pre indexing con offset}: \texttt{[rb, \#i]!}, in questo caso la somma tra \register{rb} e \register{i} viene  effettuata prima dell'indirizzamento, il \register{!} è facoltativo e se è presente finalizza la somma (il valore di \register{rb} dopo l'esecuzione è dato da \registerOp{rb}{+}{i});
 	\item \emph{post indexing con offset}: \texttt{[rb], \#i!}, in questo caso la somma tra \register{rb} e \register{i} viene effettuata dopo l'indirizzamento, il \suffix{!} se è presente finalizza la somma (il valore di \register{rb} dopo l'esecuzione è dato da \registerOp{rb}{+}{i});
 	\item \emph{pre indexing con indice e shift}: \texttt{[rb, ri, shift]!}, in questo caso la somma tra \register{rb} e \register{ri} shiftato (si ricorda che lo shift è facoltativo) viene  effettuata prima dell'indirizzamento, il \suffix{!} se è presente finalizza la somma;
-	\item \emph{post indexing con indice e shift}: \texttt{[rb], ri, shift !}, in questo caso la somma tra \register{rb} e \register{ri} eventualmente shiftato viene effettuata dopo dell'indirizzamento\footnote{\emph{"Il \suffix{!} non fa molto, ma è un lavoro onesto"} \(\sim\)semicit}.
+	\item \emph{post indexing con indice e shift}: \texttt{[rb], ri, shift !}, in questo caso la somma tra \register{rb} e \register{ri} eventualmente shiftato viene effettuata dopo dell'indirizzamento.
 \end{itemize}
-
 Tirando le somme sui metodi di indirizzamento, si può dire che sono senz'altro più potenti di quelli offerti da \emph{MIPS}, soprattutto grazie alla possibilità di aggiornare automaticamente il registro di base, che diventa super comoda quando si devono gestire degli array. Rispetto a x86, invece, ARM ha la limitazione di non poter usare contemporaneamente spiazzamento ed indice.
 
 \end{document}
