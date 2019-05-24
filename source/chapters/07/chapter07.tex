@@ -12,7 +12,7 @@
 \chapter{L'architettura Intel x86}
 
 \section{Introduzione}
-Le CPU \emph{Intel} della famiglia \emph{x86} si basano su un architettura di tipo \emph{CISC}. Esse vengono utilizzate principalmente su laptop, desktop e server, a partire dagli anni Settanta. Un'importante complicazione dell'architettura \emph{Intel} è dettata dal mantenimento della retrocompatibilità: le moderne CPU a 64 bit di ultima generazione sono infatti in grado di eseguire il vecchio codice a 8 bit. A differenza del \emph{MIPS} infatti le istruzioni \emph{Intel} non sono codificate in una singola parola, bensì possono occupare da 8 a 64 bit.
+Le CPU \emph{Intel} della famiglia \emph{x86} si basano su un'architettura di tipo \emph{CISC}. Esse vengono utilizzate principalmente su laptop, desktop e server, a partire dagli anni Settanta. Un'importante complicazione dell'architettura \emph{Intel} è dettata dal mantenimento della retrocompatibilità: le moderne CPU a 64 bit di ultima generazione sono infatti in grado di eseguire il vecchio codice a 8 bit. A differenza del \emph{MIPS} infatti le istruzioni \emph{Intel} non sono codificate in una singola parola, bensì possono occupare da 8 a 64 bit.
 
 Come già ampiamente trattato nei precendenti capitoli, un'architettura di tipo \emph{CISC} è in grado di offrire un notevole set di istruzioni e un potente meccanismo di indirizzamento; ciò implica che load e store non sono più le uniche operazioni che permettono di accedere alla memoria.
 
@@ -46,7 +46,7 @@ Oltre ai registri general purpose, si aggiungono i registri specializzati:
 Si noti che \register{\%rflags} estende \register{\%eflags}, il quale a sua volta estende \register{\%flags}. Alcuni flag contenuti nel registro di flag sono: \register{CF}, \register{ZF}, \register{SF}, \register{OF}, \register{IF}.
 
 \section{Le convenzioni di chiamata}
-Come già ripetuto in molteplici occasioni, le convenzioni di chiamata vengono specificate nell'\emph{ABI}. In particolare, noi utilizzeremo quella di Linux. Principalmente andremo a definire il meccanismo di passaggio di argomenti, di restituzione di valori e i registri da preservare:
+Come già ripetuto in molteplici occasioni, le convenzioni di chiamata vengono specificate nell'\emph{ABI}. In particolare, noi utilizzeremo quella di Linux. Principalmente andremo a definire i meccanismi per il passaggio di argomenti, per la restituzione di valori e quali registri da preservare:
 \begin{itemize}
 	\item il passaggio di argomenti si compone di:
 	\begin{itemize}
@@ -81,7 +81,7 @@ dove:
 	\item \texttt{<displacement>} è una costante a \(8\), \(16\) o \(32\) bit;
 	\item \texttt{<base>} è un registro;
 	\item \texttt{<index>} è un registro;
-	\item \texttt{<scale>} è \(1\), \(2\), \(4\) o \(8\)\footnote{Attenzione: al momento della pubblicazione del nostro elaborato, la dispensa "Piccola introduzione al Linguaggio Assembly e altre Simili Amenità" di Abeni riporta la notazione errata}.
+	\item \texttt{<scale>}\footnote{Attenzione: al momento della pubblicazione del nostro elaborato, la dispensa "Piccola introduzione al Linguaggio Assembly e altre Simili Amenità" di Abeni riporta la notazione errata} è \(1\), \(2\), \(4\) o \(8\).
 \end{itemize}
 
 \section{La sintassi delle istruzioni}
@@ -124,7 +124,7 @@ A seguire un elenco delle istruzioni aritmetico-logiche più frequenti:
 \end{itemize}
 
 \subsection{Load Effective Address (LEA)}
-Nonostante questa istruzione sia stata implementata per calcolare indirizzi (con indirizzamento indiretto) senza effettuare accessi, viene utilizzata principalmenteper un secondo scopo. Essa infatti risulta molto utile per effettuare una somma di due registri, salvandone il risultato in un terzo (anche con eventuali shift). Ricordiamo che, mentre in MIPS lavorare con tre registri è la normalità, in Intel per ciascuna istruzione possono esserne specificati al massimo due.
+Nonostante questa istruzione sia stata implementata per calcolare indirizzi (con indirizzamento indiretto) senza effettuare accessi, viene utilizzata principalmente per un secondo scopo. Essa infatti risulta molto utile per effettuare una somma di due registri, salvandone il risultato in un terzo (anche con eventuali shift). Ricordiamo che, mentre in MIPS lavorare con tre registri è la normalità, in Intel per ciascuna istruzione possono esserne specificati al massimo due.
 
 Ad esempio:
 \begin{minted}[linenos]{gas}

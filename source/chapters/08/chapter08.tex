@@ -13,24 +13,24 @@
 \chapter{L'architettura ARM}
 
 \section{Introduzione}
-L'architettura \emph{ARM} nasce negli anni Ottanta come architettura \emph{RISC} pragmatica, che tenta di migliorare la suddetta architettura implementando delle istruzioni e delle strategie appartenenti ad \emph{Intel}, è proprio questo il suo punto di forza.
+L'architettura \emph{ARM} nasce negli anni Ottanta come architettura \emph{RISC} pragmatica, che tenta di migliorare la suddetta architettura implementando delle istruzioni e delle strategie appartenenti ad \emph{Intel}: è proprio questo il suo punto di forza.
 
 Un'altra caratteristica peculiare dell'\emph{ARM} è la presenza di una modalità \emph{low power}, che limita di molto il consumo di energia restringendo le istruzioni utilizzabili solo a quelle più semplici (e quindi meno costose in termini di risorse). È proprio per questa ragione che l'\emph{ARM} ha avuto un'enorme diffusione come architettura per i dispositivi \emph{mobile} e \emph{wearable} oltre che per i sistemi \emph{embedded}.
 
-Per amor di precisione ci teniamo a specificare che in realtà "architettura ARM" non è una dicitura univoca in quanto esistono più \emph{CPU} \emph{ARM} con \emph{ISA} differenti, per non parlare del numero spropositato di \emph{ABI} anche molto diverse tra loro che si possono trovare per questa architettura.
+Per amor di precisione ci teniamo a specificare che in realtà "architettura ARM" non è una dicitura univoca in quanto esistono più \emph{CPU} \emph{ARM} con \emph{ISA} differenti (per non parlare del numero spropositato di \emph{ABI} anche molto diverse tra loro che si possono trovare per questa architettura).
 
 \section{Registri e relativo utilizzo}
-In ARM i registri sono 16 a 32 bit\footnote{Anche se ultimamente se ne vedono pure a 64 bit... \emph{non ci sono più i registri di una volta}} e sono nominati da \register{r0} a \register{r15} (è scomparso l'orribile simbolo di demarcazione \$) ed alcuni di essi hanno,generalmente, funzioni specifiche, ovvero:
+In ARM ci sono 16 registri a 32 bit e sono nominati da \register{r0} a \register{r15} (da notare che in ARM per indicare un registro non serve un prefisso). Alcuni di essi hanno generalmente funzioni specifiche, ovvero:
 
 \begin{itemize}
 	\item \register{r13}: \emph{stack pointer}, contiene il puntatore allo stack;
-	\item \register{r14}: \emph{link register},che contiene l'indirizzo di ritorno delle subroutine, come \register{\$ra} in MIPS;
-	\item \register{r15}: \emph{program counter}; nei bit più significativi contiene anche dei flags.
+	\item \register{r14}: \emph{link register}, che contiene l'indirizzo di ritorno delle subroutine (come \register{\$ra} in MIPS);
+	\item \register{r15}: \emph{program counter} (nei bit più significativi contiene anche dei flags).
 \end{itemize}
-Nonostante sia molto diffuso, questo standard non è assoluto, e di fatto esistono \emph{ABI} che implementano l'utilizzo dei registri in modo diverso.
+Nonostante sia molto diffuso, questo standard non è assoluto: di fatto esistono \emph{ABI} che implementano l'utilizzo dei registri in modo diverso.
 
 \section{Le convenzioni di chiamata}
-Le convenzioni di chiamata servono per "mettere d'accordo" diversi compilatori/librerie e altre parti del sistema operativo e vengono specificate appositamente dall'\emph{ABI}: sono esse che determinano se passare i parametri solo tramite registri o anche via stack, quali registri preservare, quali registri utilizzare liberamente e come gestire l'indirizzo di ritorno. A seguire ecco cosa stabilisce l'ABI più diffusa del mondo ARM:
+Le convenzioni di chiamata, che vengono specificate appositamente dall'\emph{ABI}, servono per "mettere d'accordo" diversi compilatori/librerie e altre parti del sistema operativo: sono esse che determinano se passare i parametri solo tramite registri o anche via stack, quali registri preservare, quali registri utilizzare liberamente e come gestire l'indirizzo di ritorno. A seguire ecco cosa stabilisce l'ABI più diffusa del mondo ARM:
 \begin{itemize}
 	\item \register{r0}, \register{r1}, \register{r2}, \register{r3}, \register{r12} sono registri temporanei;
 	\item da \register{r4} a \register{r11} sono da preservare, con l'eccezione di \register{r9} che in alcune ABI non viene preservato.
@@ -39,9 +39,9 @@ Le convenzioni di chiamata servono per "mettere d'accordo" diversi compilatori/l
 \section{Le istruzioni ARM}
 Le istruzioni dell'Assembly ARM sono molto simili a quelle del buon vecchio MIPS, tuttavia sono meno regolari in quanto alcune di esse presentano solamente due argomenti; è inoltre notevole il fatto che, nonostante venga classificato come architettura RISC, ARM presenti una lista di istruzioni piuttosto corposa.
 
-Come nel MIPS, le istruzioni a tre argomenti prevedono il primo come destinazione e i successivi come operandi; inoltre l'operando di sinistra dev'essere un registro mentre quello di destra può essere sia un registro che un valore immediato. Da notare che non si possono usare operandi in memoria; per sfruttare questa vedremo in seguito l'utilizzo delle operazioni specifiche \emph{load/store register}.
+Come nel MIPS, le istruzioni a tre argomenti prevedono il primo come destinazione e i successivi come operandi; inoltre l'operando di sinistra dev'essere un registro mentre quello di destra può essere sia un registro che un valore immediato. Da notare che i dati in memoria non possono essere usati direttamente come operandi: risolveremo questo problema in seguito, introducendo delle operazioni specifiche \emph{load/store register}.
 
-Tutte le istruzioni in \emph{ARM} permettono esecuzione condizionale grazie all'inserimento di determinati suffissi al termine del nome identificativo dell'istruzione, che comportano l'esecuzione dell'istruzione stessa solo se i bit del registro di flag corrispondono alla condizione desiderata; qui è riportata una tabella con i principali suffissi ed il loro funzionamento:
+Tutte le istruzioni in \emph{ARM} permettono esecuzione condizionale grazie all'inserimento di determinati suffissi al termine del nome identificativo dell'istruzione: l'esecuzione dell'istruzione stessa avviene solo se i bit del registro di flag corrispondono alla condizione desiderata; qui è riportata una tabella con i principali suffissi ed il loro funzionamento:
 
 \vspace{0.4cm}
 \begin{table}[H]
@@ -70,9 +70,9 @@ Vediamo ora una lista delle operazioni più comuni:
 	\item \opcode{mul}/\opcode{mla} e simili sono per varie forme di moltiplicazione\footnote{Non esistono comandi per la divisione in assembly ARM};
 	\item \opcode{b}/\opcode{bl} rispettivamente \emph{branch} e \emph{branch and link} (da notare che è possibile aggiungere qualsiasi suffisso condizionale);
 	\item \opcode{bx} è implementato solo in alcune CPU, corrisponde a \mintinline{arm}{move r15, r};
-	\item \opcode{cmp} setta i flags comparando due operandi, ma senza risultato; da usarsi prima di salti condizionali. Funzionano similmente anche \opcode{tst} (attraverso un \mintinline{arm}{and}) e \opcode{teq} (attraverso uno \mintinline{arm}{xor});
-	\item \opcode{ldr}/\opcode{str} sono rispettivamente \emph{load register} e \emph{store register}. Rispecchiano rispettivamente \opcode{lw} e \opcode{sw} dell'assembly MIPS;
-	\item \opcode{mov}/\opcode{mvn}: \mintinline{arm}{move} equivalente all'omonimo MIPS e \mintinline{arm}{move not}, che sposta il complemento a 1 del registro sorgente (utilizzata per implementare il \mintinline{arm}{not}).
+	\item \opcode{cmp} setta i flags comparando due operandi, ma senza risultato; da usarsi prima di salti condizionali. Funzionano similmente anche \opcode{tst} (attraverso un and) e \opcode{teq} (attraverso uno xor);
+	\item \opcode{ldr}/\opcode{str} sono rispettivamente \emph{load register} e \emph{store register}. Rispecchiano rispettivamente \texttt{lw} e \texttt{sw} dell'assembly MIPS;
+	\item \opcode{mov}/\opcode{mvn}:  equivalente agli omonimi move e move not in MIPS; move not sposta il complemento a 1 del registro sorgente (utilizzata per implementare il not).
 \end{itemize}
 \subsection{Possibilli operazioni sull'operando <r*>}\label{sec:modifiche}
 Prima di mostrare le operazioni possibili su <r*> ci teniamo a specificare che queste sono operazioni di shfting e di rotating e vengono applicate al secondo operando prima dello svolgimento dell'operazione descritta dall'istruzione.
@@ -88,8 +88,8 @@ Analizziamo le righe di codice una ad una:
 \begin{enumerate}
 	\item \register{r0} \(=\) \registerOp{r1}{+}{1};
 	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: e setta dei flag se necessario;
-	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: esegue la \mintinline{arm}{add} solo se il flag \mintinline{arm}{eq} è settato, prima dell'operazione esegue uno shift a sinistra di 2 del registro r2;
-	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: esegue la \mintinline{arm}{add} solo se il flag \mintinline{arm}{eq} è settato, setta falg se necessario, prima dell'operazione esegue uno shift a sinistra di r3 del registro r2.
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: esegue la \mintinline{arm}{add} solo se il flag \mintinline{arm}{eq} è settato, prima dell'operazione esegue uno shift (temporaneo) a sinistra di 2 del registro r2;
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: esegue la \mintinline{arm}{add} solo se il flag \mintinline{arm}{eq} è settato, setta flag se necessario, prima dell'operazione esegue uno shift (temporaneo) a sinistra di r3 del registro r2.
 \end{enumerate}
 
 \subsection*{Istruzioni di load/store multiple}
@@ -114,7 +114,7 @@ In modo semplificato esistono due metodologie di indirizzamento in ARM, ovvero \
 
 \begin{minted}[tabsize=4, linenos]{arm}
 ldr rd, rb (offset)           ; base + spiazzamento
-ldr rd, rb (index) [shift]   ; base + indice shiftato
+ldr rd, rb (index) [shift]    ; base + indice shiftato
 \end{minted}
 dove \register{rd} è il registro destinazione, \register{rb} è il registro contenente l'indirizzo base, \register{offset} è un immediato codificato su 12 bit e \register{index} è un valore in registro, eventualmente shiftato o ruotato.
 
