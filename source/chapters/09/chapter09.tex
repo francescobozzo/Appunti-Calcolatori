@@ -192,12 +192,12 @@ while (a[i] == k){
 \end{minted}
 
 \subsubsection{Implementazione MIPS}
-In MIPS mappiamo \mintinline{c}{k} in \register{\$a0}, l'indirizzo di \mintinline{c}{a} in \register{\$a1} e \mintinline{c}{i} in \register{\$v0}. Notiamo che per poter operare il confronto \mintinline{c}{a[i]==k} sarà necessario servirsi di un registro temporaneo (\register{\$t0}) di appoggio dove caricare l'elemento del vettore \mintinline{c}{a}; inoltre, poiché le modalità d'indirizzamento di MIPS sono molto poco potenti, sarà necessario operare lo shift logico a sinistra a ogni ciclo per mantenere la regolarità delle words.
+In MIPS mappiamo \mintinline{c}{k} in \register{\$a0}, l'indirizzo di \mintinline{c}{a} in \register{\$a1} e \mintinline{c}{i} in \register{\$v0}. Notiamo che per poter operare il confronto \mintinline{c}{a[i]==k} sarà necessario servirsi di un registro temporaneo \register{\$t0} di appoggio dove caricare l'elemento del vettore \mintinline{c}{a}; inoltre, poiché le modalità d'indirizzamento di MIPS sono molto poco potenti, sarà necessario operare lo shift logico a sinistra a ogni ciclo per mantenere la regolarità delle words.
 \begin{minted}[linenos, tabsize = 4]{asm}
 start:
 	move $v0, $zero	 # i = 0
 L1:
-	sll $t1, $v0, 2    # salva in $t1 4 * i
+	sll $t1, $v0, 2    # salva 4 * i in $t1
 	add $t1, $t1, $a1  # ottieni l'indirizzo di a[i]
 	lw $t0, 0($t1)     # carica in $t0 il contenuto di a[i]
 	bne $t0, $a0, L2   # salta a l2 se a[i] è diverso da k
@@ -207,25 +207,25 @@ L2:
 \end{minted}
 
 L'implementazione di \mintinline{batch}{gcc} è leggermente più complessa e aggira la scarsa potenza sull'indirizzamento di MIPS usando non uno, ma due registri come contatori: \register{\$v0}  contiene \mintinline{c}{i} e \register{\$a1} contiene l'elemento successivo dell'array; quest'ultimo registro inoltre viene sempre incrementato di 4, assumendo che ogni elemento dell'array, in quanto \mintinline{c}{int}, abbia dimensione 4 byte.
-\begin{minted}[linenos, tabsize = 4]{asm}
+\begin{minted}[linenos, tabsize = 4, breaklines]{asm}
 start:
-	lw $a2, 0($a1)	   # carica in a2 il contenuto di a[0]
-	bne $a2, $a0, L2	 # se a[0]==k, salta a L2
-	addi $a1, $a1, 4	 # incrementa a di 4
-	move $v0, $zero	  # inizializza il contatore
+	lw $a2, 0($a1)    # carica in a2 il contenuto di a[0]
+	bne $a2, $a0, L2  # se a[0]==k, salta a L2
+	addi $a1, $a1, 4  # incrementa a di 4
+	move $v0, $zero   # inizializza il contatore
 L1:
-	addi $a1, $a1, 4	 # incrementa a di 4
-	lw $v1, -4($a1)	  # carica in v1 il contenuto di a decrementato di 4
-	addi $v0, $v0, 1	 # incrementa il contatore
-	beq $v1, $a0, L1	 # se il contenuto di a in questa posizione è uguale k torna al ciclo
-	j L3	             # termina
+	addi $a1, $a1, 4  # incrementa a di 4
+	lw $v1, -4($a1)   # carica in v1 il contenuto di a decrementato di 4
+	addi $v0, $v0, 1  # incrementa il contatore
+	beq $v1, $a0, L1  # se il contenuto di a in questa posizione è uguale k torna al ciclo
+	j L3              # termina
 L2:
-	move $v0, $zero	  # inizializza il contatore
+	move $v0, $zero   # inizializza il contatore
 L3:
 \end{minted}
 
 \subsubsection{Implementazione x86}
-L'implementazione di Intel è più compatta. Mappiamo le variabili come segue: \mintinline{c}{i} in \register{\%rax}, l'indirizzo di base\mintinline{c}{a} in \register{\%rsi} e \mintinline{c}{k} in \register{\%edi}; notiamo che possiamo mappare \mintinline{c}{k} in un registro a 32 bit poiché andrà confrontato con un elemento di un array, che abbiamo detto essere lungo 4 byte.
+L'implementazione di Intel è più compatta. Mappiamo le variabili come segue: \mintinline{c}{i} in \register{\%rax}, l'indirizzo di base \mintinline{c}{a} in \register{\%rsi} e \mintinline{c}{k} in \register{\%edi}; notiamo che possiamo mappare \mintinline{c}{k} in un registro a 32 bit poiché andrà confrontato con un elemento di un array, che abbiamo detto essere lungo 4 byte.
 Notiamo inoltre che la \mintinline{gas}{cmpl} alla riga \(7\) permette di confrontare \mintinline{c}{k} direttamente con un elemento in memoria, senza bisogno di operazioni di load; inoltre la stessa istruzione ci permette di moltiplicare per 4 l'indice in \register{\%rax}, senza bisogno di un ulteriore registro di appoggio.
 \begin{minted}[linenos, tabsize = 4]{gas}
 start:
@@ -243,23 +243,23 @@ L3:
 \end{minted}
 
 \subsubsection{Implementazione ARM}
-Assumiamo che le variabili siano mappate in questo modo: \mintinline{c}{k} in \register{r0}, l'indirizzo di \mintinline{c}{a[]} inizialmente in \register{r1} e \mintinline{c}{i} in \register{r3}. Notiamo nella riga 8 l'utilizzo dell'indirizzamento \emph{pre indexing}, che incrementa \register{r1} di 4 prima di accedervi e come siano utilizzati due registri, \register{r3} e \register{r2} per il valore del contatore e della locazione di memoria cui accedere.
+Assumiamo che le variabili siano mappate in questo modo: \mintinline{c}{k} in \register{r0}, l'indirizzo di \mintinline{c}{a[0]} inizialmente in \register{r1} e \mintinline{c}{i} in \register{r3}. Notiamo nella riga 8 l'utilizzo dell'indirizzamento \emph{pre indexing}, che incrementa \register{r1} di 4 prima di accedervi e come siano utilizzati due registri, \register{r3} e \register{r2} per il valore del contatore e della locazione di memoria cui accedere.
 
 Si noti che in \texttt{L2} viene settato a 0 il valore del contatore: questa operazione risulta necessaria in quanto se il flusso d'esecuzione arriva a \texttt{L2} sicuramente non si è entrati nel ciclo (e dunque non è avvenuta l'inizializzazione del puntatore).
 \begin{minted}[linenos,tabsize = 4]{arm}
 start:
-	ldr r3, [r1]  ; carica a[0] in r3
-	cmp r0, r3    ; confronta a[0] e k
-	bne L2        ; se sono diversi, salta a L2
-	mov r3, #0    ; ora r3 contatore: inizializza i = 0
+	ldr r3, [r1]     ; carica a[0] in r3
+	cmp r0, r3       ; confronta a[0] con k
+	bne L2           ; se sono diversi, salta a L2
+	mov r3, #0       ; ora r3 contatore: inizializza i=0
 L1:
-	add r3, r3, #1    ; incrementa i
-	ldr r2 [r1, #4]!  ; carica a[i] in r2
-	cmp r2, r0        ; confronta a[i] con k
-	beq L1            ; se sono uguali torna al ciclo
-	b L3              ; altrimenti salta a L3
+	add r3, r3, #1   ; incrementa i
+	ldr r2 [r1, #4]! ; carica a[i] in r2
+	cmp r2, r0       ; confronta a[i] con k
+	beq L1           ; se sono uguali torna al ciclo
+	b L3             ; altrimenti salta a L3
 L2:
-	mov r3, #0   ; setta il contatore a 0
+	mov r3, #0       ; setta il contatore a 0
 L3:
 	mov r0, r3
 \end{minted}
@@ -282,19 +282,19 @@ int esempio_foglia(int g, int h, int i, int j){
 Mappatura: \mintinline{c}{g}, \mintinline{c}{h}, \mintinline{c}{i} \mintinline{c}{j} in \register{\$a0}, \register{\$a1}, \register{\$a2}, \register{\$a3}, e il valore di ritorno va salvato in \register{\$v0}. Nulla di particolare da segnalare, se non il ritorno implementato con un salto incondizionato all'indirizzo del \texttt{return address register}.
 \begin{minted}[linenos,tabsize = 4]{asm}
 esempio_foglia:
-	addu $a0, $a0, $a1	 # somma g + h e salva in a0
-	addu $v0, $a2, $a3	 # somma  i + j  e salva in v0
-	subu $v0, $a0, $v0	 # sottrae a0 a v0
-	jr $ra	             # salto all'indirizzo di ritorno
+	addu $a0, $a0, $a1  # somma g + h e salva in a0
+	addu $v0, $a2, $a3  # somma  i + j  e salva in v0
+	subu $v0, $a0, $v0  # sottrae a0 a v0
+	jr $ra              # salto all'indirizzo di ritorno
 \end{minted}
 
 \subsubsection{Implementazione x86}
-L'implementazione Intel è immediata, se si tiene conto del fatto che le variabili verranno mappate nei "registri \register{e}" (\register{\%edi}, \register{\%esi}, \register{\%ecx}, \register{\%edx}) a 32 bit, anziché nei "registri \register{r}" (\register{\%rdi}, \register{\%rsi}, \register{\%rcx}, \register{\%rdx}) offerti da x86-64; questo succede perché i valori che dobbiamo modificare sono di tipo \mintinline{c}{int}, quindi di dimensione appunto 32 bit. Notiamo inoltre l'istruzione \texttt{ret} preposta a restiruire il ritorno della pussygia.
+L'implementazione Intel è immediata, se si tiene conto del fatto che le variabili verranno mappate nei "registri \register{e}" (\register{\%edi}, \register{\%esi}, \register{\%ecx}, \register{\%edx}) a 32 bit, anziché nei "registri \register{r}" (\register{\%rdi}, \register{\%rsi}, \register{\%rcx}, \register{\%rdx}) offerti da x86-64; questo succede perché i valori che dobbiamo modificare sono di tipo \mintinline{c}{int}, quindi di dimensione appunto 32 bit. Notiamo inoltre l'istruzione \texttt{ret} preposta a restiruire il ritorno della subroutine.
 \begin{minted}[linenos,tabsize = 4]{gas}
 esempio_foglia:
-	leal (%rdi, %rsi), %eax	 # salva in eax g + h
-	addl %ecx, %edx	         # salva in edx i + j
-	subl %edx, %eax	         # sottrae le due somme
+	leal (%rdi, %rsi), %eax  # salva in eax g + h
+	addl %ecx, %edx          # salva in edx i + j
+	subl %edx, %eax          # sottrae le due somme
 	ret
 \end{minted}
 
@@ -302,9 +302,9 @@ esempio_foglia:
 Anche l'implementazione ARM è molto semplice. Notiamo l'utilizzo di \texttt{rsb}, che sottrae l'operando di destra a quello centrale, e l'uso di \texttt{bx} (una macro per \mintinline{arm}{move r15, r}) per saltare all'indirizzo contenuto nel link register \texttt{lr}.
 \begin{minted}[linenos,tabsize = 4]{arm}
 esempio_foglia:
-	add r0, r0, r1	 ; salva in r0 la somma g + h
-	add r3, r2, r3	 ; salva in r3 la somma i + j
-	rsb r0, r3, r0	 ; salva in r0 il risultato di r0 - r3
+	add r0, r0, r1  ; salva in r0 la somma g + h
+	add r3, r2, r3  ; salva in r3 la somma i + j
+	rsb r0, r3, r0  ; salva in r0 il risultato di r0 - r3
 	bx lr
 \end{minted}
 
@@ -324,17 +324,17 @@ int f(int x){
 La conversione di \mintinline{c}{inc} è banale, \mintinline{c}{f} invece ha notevoli complicazioni; è necessario infatti salvare il contenuto di \register{\$ra} prima di chiamare \mintinline{c}{inc}, e possiamo farlo decrementando di una word (4 byte) lo stack pointer per così salvare \register{\$ra} in \register{\$sp} nello spazio appena creato, per poi recuperarlo (e reincrementare \register{\$sp}) prima del ritorno.
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 inc:
-	addiu $v0, $a0, 1	   # incrementa
+	addiu $v0, $a0, 1   # incrementa
 	jr $ra
 
 f:
-	addiu $sp, $sp, -4	 # decrementa di 4 byte sp
-	sw $ra, 0($sp)	     # salva ra all'indirizzo di sp
+	addiu $sp, $sp, -4  # decrementa di 4 byte sp
+	sw $ra, 0($sp)      # salva ra all'indirizzo di sp
 	jal inc	            # chiama inc
-	addiu $v0, $v0, -4	 # sottrae 4 a v0
-	lw $ra, 0($sp)	     # recupera ra
-	addiu $sp, $sp, 4	  # Ripristina lo stack pointer
-	jr $ra	             # ritorna
+	addiu $v0, $v0, -4  # sottrae 4 a v0
+	lw $ra, 0($sp)      # recupera ra
+	addiu $sp, $sp, 4   # ripristina lo stack pointer
+	jr $ra              # ritorna
 \end{minted}
 
 L'implementazione di \mintinline{batch}{gcc} è ancora diversa, perché l'ABI da noi usata prevede che il record di attivazione sia un multiplo di 8, per cui \register{\$sp} verrà decrementato di 8 bytes; altre ABI avrebbero lavorato ancora diversamente, dal momento che la gestione dello stack è appunto demandata alla \emph{Application Binary Interface} utilizzata.
@@ -344,12 +344,12 @@ inc:
 	jr $ra
 
 f:
-	addiu $sp, $sp, -8	 # sp viene decrementato di 8
-	sw $ra, 4($sp)	     # ra viene salvato in sp shiftato di 4
+	addiu $sp, $sp, -8  # sp viene decrementato di 8
+	sw $ra, 4($sp)      # ra viene salvato in sp shiftato di 4
 	jal inc
 	addiu $v0, $v0, -4
-	lw $ra, 4($sp)	     # recupero ra
-	addiu $sp, $sp, 8	  # ripristino sp
+	lw $ra, 4($sp)      # recupero ra
+	addiu $sp, $sp, 8   # ripristino sp
 	jr $ra
 \end{minted}
 
@@ -361,23 +361,23 @@ inc:
 	ret
 
 f:
-	call inc	           # chiama inc
-	subl $4, %eax	      # sottrae 4 a eax
+	call inc       # chiama inc
+	subl $4, %eax  # sottrae 4 a eax
 	ret
 \end{minted}
 
 \subsubsection{Implementazione ARM}
-ARM si rivela molto interessante: le sue possibilità di indirizzament \emph{pre indexing} ci consentono di effettuare il decremento dello stack pointer e il salvataggio del link register in una sola riga di codice; inoltre, dal momento che in ARM \register{pc} è un registro referenziabilie come fosse un general purpose, possiamo direttamente prelevare dal il link register dallo stack e caricarlo direttamente nel program counter e, sempre nella stessa riga, reincrementare \register{sp} di 4 grazie all'indirizzamento \emph{post indexing}.
+ARM si rivela molto interessante: le sue possibilità di indirizzament \emph{pre indexing} ci consentono di effettuare il decremento dello stack pointer e il salvataggio del link register in una sola riga di codice; inoltre, dal momento che in ARM \register{PC} è un registro referenziabilie come fosse un general purpose, possiamo direttamente prelevare il link register dallo stack e caricarlo direttamente nel program counter e, sempre nella stessa riga, reincrementare \register{SP} di 4 grazie all'indirizzamento \emph{post indexing}.
 \begin{minted}[linenos, breaklines, tabsize = 4]{arm}
 inc:
 	add r0, r0, #1
 	bx lr
 
 f:
-	str lr, [sp, #-4]!	 ; decrementa sp di 4 e salva lr
-	bl inc	             ; chiama inc
-	sub r0, r0 #4	      ; sottrae 4 a r0
-	ldr pc, [sp], #4	   ; carica lr in pc e recupera sp
+	str lr, [sp, #-4]!  ; decrementa SP di 4 e salva lr
+	bl inc              ; chiama inc
+	sub r0, r0 #4       ; sottrae 4 a r0
+	ldr pc, [sp], #4    ; carica lr in PC e recupera SP
 \end{minted}
 
 \section{Copia stringa}
@@ -385,9 +385,8 @@ Infine consideriamo una funziona che copia un array di caratteri:
 \begin{minted}[linenos, breaklines, tabsize = 4]{c}
 void copia_stringa(char *d , const char *s){
 	int i = 0;
-
 	while((d[i] = s[i]) != 0){
-		i+=1;
+		i += 1;
 	}
 }
 \end{minted}
@@ -396,37 +395,37 @@ void copia_stringa(char *d , const char *s){
 Abbiamo già discusso l'implementazione MIPS di questa funzione in~\ref{sec:mipstring}, per cui qui riporteremo solamente il codice, generato da \mintinline{batch}{gcc}:
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 copia_stringa:
-	lb $v0, 0($a1)	     # carica in v0 il contenuto di s[0]
-	sb $v0, 0($a0)	     # salva v0 in d[0]
-	beq $v0, $zero, L5	 # se v0 == 0, salta a L5
-	move $v0, $zero	    # inizializza v0 a 0
+	lb $v0, 0($a1)      # carica in v0 il contenuto di s[0]
+	sb $v0, 0($a0)      # salva v0 in d[0]
+	beq $v0, $zero, L5  # se v0 == 0, salta a L5
+	move $v0, $zero     # inizializza v0 a 0
 L3:
-	addiu $v0, $v0, 1	  # incrementa il contatore v0
-	addu $v1, $a1, $v0	 # salva s[0 + contatore] in v1
-	lb $v1, 0($v1)	     # carica *(s + contatore) in v1
-	addu $a2, $a0, $v0	 # salva d[0 + contatore] in a2
-	sb $v1, 0($a2)	     # ripone v1 in *(d + contatore)
-	bne $v1, $zero, L3	 # se v1 non è il carattere nullo torna al ciclo
+	addiu $v0, $v0, 1   # incrementa il contatore v0
+	addu $v1, $a1, $v0  # salva s[0 + contatore] in v1
+	lb $v1, 0($v1)      # carica *(s + contatore) in v1
+	addu $a2, $a0, $v0  # salva d[0 + contatore] in a2
+	sb $v1, 0($a2)      # ripone v1 in *(d + contatore)
+	bne $v1, $zero, L3  # se v1 non è il carattere nullo torna al ciclo
 L5:
-	jr $ra	             # termina e ritorna
+	jr $ra              # termina e ritorna
 \end{minted}
 
 \subsubsection{Implementazione x86}
 
 \begin{minted}[linenos, breaklines, tabsize = 4]{gas}
 copia_stringa:
-	movzbl (%rsi), %eax	     #
+	movzbl (%rsi), %eax        #
 	movb %al, (%rdi)           #
 	testb %al, %al             #
 	je L1                      # se uguali, ritorna e termina
-	movl $0, %eax	           # inizializza a 0 eax
+	movl $0, %eax              # inizializza a 0 eax
 L3 :
-	addl $1, %eax	            # incrementa il contatore
-	movslq %eax, %rcx 	       #
-	movzbl (%rsi, %rcx), %edx #
-	movb %dl, (%rdi, %rcx)	   #
-	testb %dl, %dl	           #
-	jne L3	                   #
+	addl $1, %eax              # incrementa il contatore
+	movslq %eax, %rcx          #
+	movzbl (%rsi, %rcx), %edx  #
+	movb %dl, (%rdi, %rcx)     #
+	testb %dl, %dl             #
+	jne L3                     #
 L1:
 	ret
 \end{minted}
@@ -435,16 +434,16 @@ L1:
 Ecco invece il codice ARM; notiamo come i suffissi condizionali  e soprattutto il \emph{pre indexing} vengono sfruttati per snellire un codice in realtà molto simile a quello di MIPS.
 \begin{minted}[linenos, breaklines, tabsize = 4]{arm}
 copia_stringa:
-	ldrb r3, [r1]	      ; carica s[0] in r3
-	strb r3, [r0]	      ; salva r3 in d[0]
-	cmp r3, #0	         ; r3 è 0?
-	bxeq lr	            ; se sì, ritorna e termina
+	ldrb r3, [r1]       ; carica s[0] in r3
+	strb r3, [r0]       ; salva r3 in d[0]
+	cmp r3, #0          ; r3 è 0?
+	bxeq lr             ; se sì, ritorna e termina
 L3:
-	ldrb r3, [r1, #1]!	 ; carica in r3 il contenuto di s[] incrementato di 1 e salva le modifiche
-	strb r3, [r0, #1]!	 ; salva r3 in d[] incrementato di 1 e salva le modifiche
-	cmp r3, #0	         ; la stringa è terminata?
-	bne L3	             ; se no, torna al ciclo
-	bx lr	              ; altrimenti ritorna e termina
+	ldrb r3, [r1, #1]!  ; carica in r3 il contenuto di s[] incrementato di 1 e salva le modifiche
+	strb r3, [r0, #1]!  ; salva r3 in d[] incrementato di 1 e salva le modifiche
+	cmp r3, #0          ; la stringa è terminata?
+	bne L3              ; se no, torna al ciclo
+	bx lr               ; altrimenti ritorna e termina
 \end{minted}
 
 
