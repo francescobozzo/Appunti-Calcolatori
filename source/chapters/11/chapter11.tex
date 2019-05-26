@@ -11,9 +11,7 @@
 \chapter{Central Processing Unit}
 
 \section{Introduzione}
-In questo capitolo andremo ad analizzare come il nostro processore elabora ed esegue le istruzioni che gli arrivano dai programmi Assembly; in particolare ci baseremo ancora su MIPS, in quanto super regolare e particolarmente utile a scopo didattico.
-
-Per come è stato progettato MIPS le istruzioni presentano dei tratti comuni, in particolare le prime due fasi del ciclo della CPU (vedi~\ref{subsec:cpu}), ossia il prelievo dell'istruzione e la lettura dei valori dei registri operandi sono comuni a ogni istruzione.
+In questo capitolo andremo ad analizzare come il nostro processore elabora ed esegue le istruzioni che gli arrivano dai programmi Assembly; in particolare ci baseremo ancora su MIPS, in quanto super regolare e particolarmente utile a scopo didattico. Per come è stato progettato MIPS le istruzioni presentano dei tratti comuni, in particolare le prime due fasi del ciclo della CPU (vedi~\ref{subsec:cpu}): il prelievo dell'istruzione e la lettura dei valori dei registri operandi sono comuni a ogni istruzione.
 
 Noi in particolare, dopo aver spiegato i vari elementi che concorrono a far funzionare tutta la baracca, andremo ad analizzare le istruzioni aritmetico-logiche, quelle di accesso alla memoria e quelle di salto, dal momento che tutte le altre si implementano con tecniche simili.
 
@@ -31,7 +29,7 @@ Il \emph{datapath} è quella parte del processore attraverso cui passano le istr
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{datap_1}
 	\caption{Schema base del datapath}
 \end{figure}
-Il datapath si compone essenzialmente di 5 parti:
+Il datapath si compone essenzialmente di 5 parti.
 \begin{enumerate}
   \item Assumendo che il programma sia già stato caricato in memoria (secondo le modalità viste nel capitolo~\ref{ch:tool}), in questa fase viene prelevata l'istruzione da eseguire e viene spacchettata nei vari campi;
   \item I registri interessati all'esecuzione vengono caricati nel \emph{banco dei registri}; se l'istruzione è di tipo R, gli indirizzi dei registri sono contenuti nel corpo dell'istruzione;
@@ -51,7 +49,7 @@ Ed è qui che ci viene in soccorso il \emph{multiplexer} che, come già detto in
 \end{figure}
 \paragraph{Altri elementi}
 Oltre ai multiplexer, ci sono altri elementi che concorrono alla soluzione dei punti di decisione. Ad esempio, alla ALU viene notificato un segnale di controllo (nel nostro caso di \(4\) bit) per decidere quale operazione effettuare, il banco dei registri riceve dei flag per decidere se scrivere o meno un registro, la memoria dati ha degli espedienti per decidere se effettuare lettura o scrittura, e simili.\\
-Chi stabilisce queste cose, oltre a settare il segnale del selettore dei vari multiplexer? È presto detto, l’unità di controllo!\\
+Chi stabilisce queste cose, oltre a settare il segnale del selettore dei vari multiplexer? È presto detto, l’unità di controllo!
 
 \section{La Control Unit}
 La \emph{Control Unit} funge da vero e proprio "direttore d'orchestra" per il processore, stabilendo il valore \(S\) dei vari multiplexer e andando a sciogliere le questioni dei punti di decisione.
@@ -69,11 +67,10 @@ La figura è molto complessa, andiamo ad analizzarla con ordine.
 	\item Alla memoria dati invece arrivano i segnali \emph{MemWrite} e \emph{MemRead}, che indicano alla memoria dati  la rispettiva operazione.
 	\item In base al valore di \emph{RegWrite}, il risultato dell'operazione viene memorizzato nel registro di destinazione.
 \end{itemize}
-
-Questa è la rappresentazione di MIPS, che è una ISA RISC; inutile dire che gli schemi di funzionamento che stanno alla base di architetture CISC sono incredibilmente più complessi di così.
+Questa è la rappresentazione di MIPS, che è una ISA RISC; inutile dire che gli schemi di funzionamento che stanno alla base di architetture CISC sono incredibilmente più complessi.
 
 \section{La temporizzazione}
-A questo punto abbiamo moltissimi segnali che viaggiano nel processore, sincronizzati dal clock. Per semplicità assumiamo che tutte le istruzioni vengano eseguite con un ipotetico singolo colpo di clock lungo abbastanza.
+A questo punto abbiamo moltissimi segnali che viaggiano nel processore, sincronizzati dal clock. Per semplicità assumiamo che ciascuna istruzione venga eseguita durante un ipotetico singolo ciclo di clock, lungo abbastanza.
 
 \subsection{Breve riepilogo sulle reti logiche}
 Circuiti come i multiplexer sono detti \emph{reti combinatorie} e producono un output secondo una funzione statica dell'input, senza memoria dei cambiamenti.\\
@@ -129,7 +126,7 @@ Per effettuare questa operazione abbiamo bisogno di due blocchi funzionali che v
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{R_ex.png}
 \end{figure}
 \begin{itemize}
-	\item Il primo blocco è il \emph{banco dei registri}, una struttura con 3 bus da 5 bit ciascuno in cui vengono caricati i registri da operare; per decidere se dovrò leggere o scrivere un determinato registro viene impiegato il controllo \emph{RegWrite}, gestito direttamente dalla Control Unit.
+	\item Il primo blocco è il \emph{banco dei registri}, una struttura con 3 bus da 5 bit ciascuno in cui vengono caricati i registri da operare; per decidere se si dovranno leggere o scrivere un determinato registro viene impiegato il controllo \emph{RegWrite}, gestito direttamente dalla Control Unit.
 	\item Il secondo blocco di cui abbiamo bisogno è la ALU di cui prima abbiamo tanto parlato. Questa presenta due controlli: uno di questi è il bus che arriva dal corpo dell'istruzione e indica qual è l'operazione da svolgere, mentre il secondo è il settaggio \emph{zero} qualora il risultato dell'operazione fosse effettivamente 0; quest'ultimo valore viene poi mandato alla porta AND che decide il segnale di controllo per il multiplexer preposto alla scelta del blocco d'incremento del \emph{PC}.
 \end{itemize}
 
@@ -172,7 +169,7 @@ Dallo schema emergono:
 	\item una seconda ALU, che effettua una sottrazione fra i due valori in ingresso. Se il risultato è 0 (e quindi i due sono uguali) lo comunica, insieme ad un segnale che indica l'avvenimento di una istruzione di branch, alla porta AND. Il risultato di quest'operazione logica verrà infine inviata al multiplexer che si occupa di selezionare correttamente il valore del nuovo \emph{PC}. In particolare:
 	\begin{itemize}
 		\item se l'AND risulta 0, \(\textrm{\emph{PC}}=\textrm{\emph{PC}}+4\);
-		\item se l'AND risulta 1, \(\textrm{\emph{PC}}=\textrm{\emph{PC}}+4+\textrm{ind\_relativo}\), dove \emph{ind\_relativo} è l'indirizzo relativo all'istruzione a cui effettuare il \opcode{beq}.
+		\item se l'AND risulta 1, \(\textrm{\emph{PC}}=\textrm{\emph{PC}}+4+\textrm{\emph{ind\_relativo}}\), dove \emph{ind\_relativo} è l'indirizzo relativo all'istruzione a cui effettuare il \opcode{beq}.
 	\end{itemize}
 \end{itemize}
 
@@ -188,7 +185,7 @@ In aggiunta, la nostra CPU dovrà implementare alcune semplici istruzioni aritme
 \end{figure}
 Anche se ne parleremo più approfonditamente in futuro, da questa rappresentazione è già possibile notare come varino i segnali di controllo in base al tipo di istruzione che viene eseguita. Ad esempio:
 \begin{itemize}
-	\item con istruzioni di tipo R: \(\textrm{\CUflag{ALUSrc}}=1\), \(\textrm{\CUflag{REGwrite}}= 1\), \(\textrm{\CUflag{MemtoReg}}=0\);
+	\item con istruzioni di tipo R: \(\textrm{\CUflag{ALUSrc}}=0\), \(\textrm{\CUflag{REGwrite}}= 1\), \(\textrm{\CUflag{MemtoReg}}=0\);
 	\item con istruzioni \opcode{lw}: \(\textrm{\CUflag{ALUSrc}}=1\), \(\textrm{\CUflag{REGwrite}}= 1\), \(\textrm{\CUflag{MemtoReg}}=1\).
 \end{itemize}
 
@@ -305,7 +302,7 @@ Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico cicl
 \end{figure}
 
 \subsubsection{Istruzione di J}
-Per eseguire un'istruzione di \opcode{j} (salto incodizionato), occorre:
+Per eseguire un'istruzione di \opcode{j} (salto incondizionato), occorre:
 \begin{enumerate}
 	\item Prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
 	\item Sostituire al \register{PC} il nuovo valore così ottenuto:
@@ -315,8 +312,7 @@ Per eseguire un'istruzione di \opcode{j} (salto incodizionato), occorre:
 		\item i due bit meno significativi sono messi a 0 (ragioniamo in word e non in byte).
 	\end{itemize}
 \end{enumerate}
-Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico ciclo di clock.\\
-In particolare è da sottolineare che per implementare questa istruzione si necessita di alcune componenti hardware specifiche in aggiunta a quelle che abbiamo descritto precedentemente.
+Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico ciclo di clock. In particolare è da sottolineare che per implementare questa istruzione si necessita di alcune componenti hardware specifiche in aggiunta a quelle che abbiamo descritto precedentemente.
 
 \begin{figure}[H]
 	\centering
