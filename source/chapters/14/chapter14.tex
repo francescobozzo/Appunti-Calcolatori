@@ -12,10 +12,7 @@
 \chapter{I/O}
 
 \section{La necessità di comunicare}
-Un calcolatore sarebbe praticamnte inutile se non avesse la possibilità di interfacciarsi e comunicare con l'esterno, ed è proprio di questo che si occupano le periferiche di input/output (da qui in avanti I/O); Questi dispositivi possono essere estremamente diversi tra loro a seconda del compito che sono chiamati a svolgere, tuttavia devono avere delle caratteristiche comuni, ovvero devono essere \emph{espandibili} ed \emph{eterogenei}.
-
-% TODO chiarisci cosa significa di preciso che devono essere eterogeneri
-
+Un calcolatore sarebbe praticamnte inutile se non avesse la possibilità di interfacciarsi e comunicare con l'esterno, ed è proprio di questo che si occupano le periferiche di input/output (da qui in avanti I/O); Questi dispositivi possono essere estremamente \emph{eterogenei} tra loro a seconda del compito che sono chiamati a svolgere\footnote{Si pensi che nella categoria di dispositivi I/O compaiono mouse, penne grafiche, desktop, microfoni e tanti altri ancora.}, tuttavia devono avere una caratteristica comune, devono essere \emph{espandibili}, ovvero ci deve essere la possibilità di aggiuungere (o rimuovere) i dispositivi di I/O.
 
 \subsection*{Tre termini tecnici}
 Chiariamo ora questi termini tecnici definendone precisamente il significato poiché ci torneranno utili nel resto del capitolo.
@@ -41,18 +38,27 @@ Dati questi esempi si possono introdurre le principali caratteristiche secondo c
 \section{Connesione tra processore e periferiche}
 Nonostante le differenze di cui si è parlato nella sezione precedente tutte le periferiche hanno una caratteristica comune, ovvero la modalità di collegamento al processore.
 
+Vediamo ora uno schema, molto semplificato, che rappresenta il modo in cui le periferiche sono collegate al processore:
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\textwidth,keepaspectratio]{schema-periferiche}
+	\caption{Schema del collegamento delle periferiche}
+\end{figure}
+Si nota quindi come ogni periferica non sia collegata direttamente con il processore, la loro comunicazione è intermediata dai controllori I/O e dal bus, che descriveremo in seguito.
+Ciò implica che i dispositivi di I/O "non esistano" per il processore ma vengano rappresentati "virtualmente" come normali locazioni di memoria.
+
 Tutte le connessioni avvengono attraverso strutture di comunicazione dette \emph{bus}, di cui esistono due tipologie:
 \begin{itemize}
-	\item bus processore/memoria: sono specializzati, corti e veloci;
-	\item bus I/O: sono utilizzati per la comunicazione con periferiche generiche, possono essere relativamente lunghi e comunque non si interfacciano direttamente con la memoria, ma richiedono come intermediario un bus processore/memoria o un bus di sistema.
+	\item bus processore/memoria: sono specializzati, corti e molto veloci;
+	\item bus I/O: sono utilizzati per la comunicazione con periferiche generiche, possono essere relativamente lunghi e comunque non si interfacciano direttamente con la memoria, ma richiedono come intermediario un bus processore/memoria o un bus di sistema\footnote{Il bus di sistema è un "bus di alto livello", ovvero un bus dedicato a  mettere in comunicazione tutti gli altri bus del sistema appunto.}.
 \end{itemize}
-Nelle prime semplici architetture avevamo un unico grosso bus parallelo che collegava tutte le componenti, ma per problemi di clock e frequenze ora si usano architetture di comunicazione più complesse fatte di più bus paralleli condivisi e di bus seriali punto/punto.
-% TODO che cosa significa bus di sistema? è un terzo tipo di bus? e cosa sono i bus seriali punto a punto?? inoltre un singolo bus parallelo è parallelo a se stesso?
+Nelle prime semplici architetture avevamo un unico grosso bus parallelo (non seriale) che collegava tutte le componenti, ma per problemi di clock e frequenze ora si usano architetture di comunicazione più complesse fatte di più bus paralleli condivisi e di bus seriali punto/punto\footnote{I bus seriali punto a punto sono bus in cui ogni periferica è collegata direttamente al processore tramite un bus dedicato.}.
+
+Nel caso in cui il processore comunichi con delle periferiche esterne, come anticipato in precedenza, esso in realtà comunica attraverso i controllori I/O, che traducono sia i comandi che i dati da e verso il processore stesso.
 Saranno ora discusse due implementazioni diverse del bus che convivono nei nostri calcolatori: sincrona ed asincrona.
 
 \subsection{Bus sincrono}
-Si tratta di un bus attraverso cui le informazioni vengono trasmesse in modo sincrono, quindi le cmunicazioni sono necessariamente scandite dal segnale di clock, che quindi viene trasmesso in una linea di controllo del bus stesso.
-% TODO Esempio?? chiarisci esempio pag. 9 grazzz
+Si tratta di un bus attraverso cui le informazioni vengono trasmesse in modo sincrono, quindi le cmunicazioni sono necessariamente scandite da un segnale di bus clock (che gira a frequenza molto più bassa di quello del processore), che viene trasmesso in una linea di controllo del bus stesso.
 
 \begin{figure}[H]
 	\centering
@@ -60,10 +66,13 @@ Si tratta di un bus attraverso cui le informazioni vengono trasmesse in modo sin
 	\caption{Schema rappresentativo del ciclo del bus sincrono}
 \end{figure}
 
+In questo esempio si può ossservare come avviene la trasmissione di un dato.
+Nell'\emph{Address and command}, durante il fronte di salita del bus clock, sono trasmessi indirizzo bersaglio e comando da svolgere, sul fronte di discesa del bus clock viene effettivamente trasferito il dato.
+Il trasferimento termina proprio con il temrine del ciclo di clok, in seguito il ciclo ricomincia; ripetendo ancora una volta per maggiore chiarezza, la prima metà del ciclo di bus clock è utilizzata per passare indirizzo ed istruzione da svolgere, la seconda effettivamente per trasmettere il dato.
+
 Riassumendo quindi i punti di forza del bus di tipo sincrono si deve osservare che questo sistema è tanto semplice da implementare quanto veloce, data la presenza esigua di sequenze di controllo, che quindi non appesantisce lo svolgimento delle operazioni di trasmissione dati.
 
-Di contro si può argomentare che è un sistema che dimostra poca robustezza al \emph{drift} del clock; inoltre utilizzando un sistema simile si costringono tutte le periferiche a lavorare alla stessa velocità del clock, ma questo non è sempre possibile.
-% TODO che cosa sarebbe poi questo drift rimane un bel mistero
+Di contro si può argomentare che è un sistema che dimostra poca robustezza al \emph{drift} del clock, ovvero se il dato non si propaga in modo sincrono con il  termine del bus clock e quindi viene trasmesso in modo scorretto; inoltre utilizzando un sistema simile si costringono tutte le periferiche a lavorare alla stessa velocità del clock, ma questo non è sempre possibile.
 
 \subsection{Bus asincrono}
 Per ovviare agli sconvenienti appena discussi è stata sviluppata anche una versione asincrona della tecnologia del bus che sostanzialmente non si appoggia più sul clock per il controllo delle transazioni ma utilizza un protocollo in cui le varie fasi sono determinate da degli \emph{handshake}.

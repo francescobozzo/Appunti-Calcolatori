@@ -260,4 +260,96 @@ Mostriamo qui come esempio \emph{FastMath}, una cache basata su MIPS che dispone
   \includegraphics[width=0.9\textwidth,keepaspectratio]{astmips}
 \end{figure}
 
+\section{Cache associative}
+Le cache a mappatura diretta sono piuttosto semplici da realizzare, tuttavia presentano un problema: se ho spesso bisogno di locazioni di memoria che si mappano sullo stesso blocco, ho cache miss in continuazione.
+Proprio per gestire queste situazioni è nata l'impementazione della cahce completamente associativa, ovvero una cache in cui posso mappare qualsiasi blocco di memoria in qualsiasi blocco di cache.
+
+\subsection{Cache completamente associativa}
+Una cahche completamente associativa è una cache in cui ogni blocco della memoria può essere mappato in un qualsiasi blocco della cache.
+Il problema in cui si incorre utilizzando cache completamente associative è che si deve cercare in tutta la cache il dato (il tag in questo tipo di cache è rappresentato da tutto l’indirizzo del blocco).
+Per effettuare la ricerca in maniera efficiente si deve quindi lanciarla su tutti i blocchi in parallelo.
+
+Per questo motivo ho bisogno di $n$ comparatori (uno per ogni blocco di cache) che operino in parallelo; di conseguenza la complessità di realizzazione cresce proporzionalmente al numero di blocchi ed inoltre il costo HW diventa eccessivamente proibitivo appena si aumenta di poco la dimensione della memoria.
+
+\subsection{Cache set-associativa}
+Le cache set-associative sono un via di mezzo tra le due che abbiamo visto fin ora.
+In sostanza suddividiamo la cache in $n$ blocchi di memoria, ognuno dei quali viene in seguito suddiviso come se fosse una cache a sè stante; fatta questa suddivisione quello che si ottiene è una sorta di scacchiera in cui i blccchi possono essere visti in raggruppamenti di "linee" (righe) e di "vie" (colonne); Alla fine della fiera quello che otteniamo è una combinazione delle due idee: associamo ciascun blocco della memoria periferica a una certa linea e quindi a uno degli $n$ blocchi di quella linea su cui possiamo mappare il blocco di memoria.
+
+Questo rende possibile sfruttare la cache come associativa a livello locale (di linea): all’interno della linea, effettuiamo una ricerca parallela come se avessimo una cache completamente associativa.
+
+Il grande vantaggio è che abbiamo una memoria non troppo costosa, dato che la cache associativa viene implementata su blocchi di dimensioni ridotte, tuttavia si mantiene anche, in parte, il vantaggio della strategia associativa con conseguente abbassamento del \emph{miss rate}.
+
+È ora riportato uno schema con una cache suddivisa in più modi differenti, ma sempre attraverso la strategia di cache set-associativa, come esempio esplicativo; si noti che ogni gruppo Tag-Dato rappresenta una via.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\textwidth,keepaspectratio]{mappatura-set-associativa}
+	\caption{Mappatura set-associativa in varie forme}
+\end{figure}
+
+\section{Mappatura del blocco}
+In una cache a mappatura diretta abbiamo già osservato come un blocco di memoria periferica venga mappato in un blocco di cache deciso dalla formula:
+\begin{equation*}
+	(\textrm{indirizzo blocco}) mod (\textrm{numero blocchi della cache})
+\end{equation*}
+
+In maniera simile in una cache set-associativa un blocco di memoria viene mappato in una \emph{linea} data da:
+\begin{equation*}
+	(\textrm{indirizzo blocco}) mod (\textrm{numero linee della cache})
+\end{equation*}
+Quindi, per trovare il blocco all’interno della linea dobbiamo confrontare, in parallelo, il tag del blocco con tutti i tag dei blocchi di quella linea.
+\\
+\\
+È ora inserito anche uno schema rappresentativo di una cache a 4 vie in cui ogni blocco contiene una word.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{4-vie}
+\end{figure}
+
+Descrizione dello schema:
+I primi due bit dell'indirizzo (a destra) sono utilizzati per indicare, se necessario, quale singolo byte della word prelevare (sono due appunto perchè rappresentano i 4 possibili byte contenuti dal blocco).
+
+Dato che le linee possibili sono 256 i bit che servono per rappresentarle sono 8, per l'appunto sono i bit dal 2 al 9 dell'indirizzo che vengono utilizzati come indicizzatore della linea (sia per la scrittura che per la lettura).
+
+Gli ultimi bit rimanenti vengono utilizzati come tag del blocco; si noti che il tag viene confrontato con tutti e quattro i tag che ritornano dalle 4 vie.
+Se il confronto va a buon fine vuol dire che il dato cercato è presente nella cache ed il mux a 4 ingressi si occupa di trasmetterlo al processore.
+
+\section{Vantaggi dell'associatività}
+Anche in questo caso è chiaro che la tecnologia che abbiamo trattato presenta vantaggi e svantaggi, è dunque giunto il momento di riassumerli e schematizzarli.
+\begin{itemize}
+	\item Vantaggi: aumentando l’associatività abbiamo il grosso vantaggio di diminuire la frequenza di miss e velocizzare il processo di reperimento dei dati.
+	\item Svantaggi: purtroppo con questa implementazione la complessità dell'hardware aumenta in proporzione lineare al numero di blocchi della cache, ed allo stesso modo aumenta il costo.
+\end{itemize}
+
+Esiste inoltre un ulteriore problema che non abbiamo trattato, nelle cache a mappatura diretta quando ho una cache miss sicuramente so chi sostituire: l’unico blocco in cui posso mappare il dato che cerco.
+
+Nelle cache associative ho più scelte, quindi se la linea è piena chi sostituisco?
+
+In tal caso esistono vari approcci possibili, tra cui:
+\begin{itemize}
+	\item FIFO, un immancabile classico;
+	\item LeastRecentlyUsed, un metodo più sofisticato che però richiede una serie di bit in più per caclolare quando è avvenutoo l'ultimo accesso.
+\end{itemize}
+
+Per concludere proponiamo al lettore anche un esempio pratico in cui si nota l'importanza della scelta di un buon meccanismo di cache mapping.
+\begin{wrapfigure}{l}{0.55\textwidth}
+	\centering
+	\includegraphics[width=\linewidth,keepaspectratio]{grafici}
+	\caption{Grafici prestazioni dei due algoritmi Radix e Quick sort}
+\end{wrapfigure}
+Si noti come nel primo grafico sembrerebbe che il Radix sort sia asintoticamente più efficiente del Quick sort, in quanto il suo rapporto
+\begin{equation*}
+	\frac{\textrm{numero di istruzioni}}{\textrm{elemento}}
+\end{equation*}
+scende molto sotto quello del Quick sort.
+
+Tuttavia nel secondo grafico si nota stranamente che il rapporto
+\begin{equation*}
+	\frac{\textrm{numero di cicli di clock}}{\textrm{elemento}}
+\end{equation*}
+del Radix sort rimanga sempre più alto di quello del Quick sort, decretando il Radix sort come algoritmo più lento.
+
+Nel terzo ed ultimo grafico si nota il perché di questa situazione anomala: il Radix sort, per come è implementato, comporta un numero assai maggiore di miss della cache per ogni elemento che tratta e questo lo porta a ripetere perdere molti cicli di clock e quindi a risultare più lento.
+
 \end{document}
