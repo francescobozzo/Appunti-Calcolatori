@@ -15,7 +15,7 @@
 \section{Introduzione}
 Sottolineare quanto il concetto di memoria sia importante e necessario nei dispositivi elettronici del giorno d'oggi risulta abbastanza scontato. D'altra parte, viene fatta subito una precisazione: non esiste un'unica soluzione che permette di ottenere la memoria "perfetta". Esistono infatti diverse implementazioni, ognuna con i suoi compromessi, che variano per costo, prestazioni e capacità.
 
-\section*{Qualche definizione}
+\subsection*{Qualche definizione}
 Possiamo distinguere principalmente due tipologie di memoria in base alla modalità di accesso:
 \begin{itemize}
 	\item \emph{memoria indirizzata direttamente} (memoria principale, memoria cache):
@@ -140,9 +140,9 @@ Un ulteriore miglioramento è effettuato dalla \emph{DDR-SDRAM} (\emph{Double Da
 Sono ottenute organizzando la memoria in due banchi separati: uno contiene le posizioni pari (a cui si accede durante il fronte di salita), l'altro contiene quelle dispari (a cui si accede durante il fronte di discesa). Locazioni contingue risultano divise fra i due banchi: grazie a qusto è possibile effettuare un accesso in modo interlacciato.
 
 \section{Gestione della memoria}
-Andiamo adesso a domandarci quale possa essere il modo migliore di gestire la memoria che abbiamo a disposizione. È preferibile conservare i dati nella memoria RAM? Così facendo possiamo avere dei tempi di accesso ai dati estremamente ridotti, ma di contro la quanità di dati di cui possiamo disporre sarà limitata. Dobbiamo quindi affidare i nostri dati alle memorie periferiche? In questo modo possiamo avere moltissimo spazio dove riporre i nostri dati, ma il tempo necessario a raggiungere di volta in volta quelli che ci servono sarà decisamente maggiore.
+Andiamo adesso a domandarci quale possa essere il modo migliore di gestire la memoria che abbiamo a disposizione. È preferibile conservare i dati nella memoria RAM? Così facendo possiamo avere dei tempi di accesso ai dati estremamente ridotti, ma di contro la quantità di dati di cui possiamo disporre sarà limitata. Dobbiamo quindi affidare i nostri dati alle memorie periferiche? In questo modo possiamo avere moltissimo spazio dove riporre i nostri dati, ma il tempo necessario a raggiungere di volta in volta quelli che ci servono sarà decisamente maggiore.
 
-L'approcio vincente è quello di mantenere i dati archiviati nelle memorie periferiche (dove lo spazio abbonda), e ogniqualvolta siano necessari prelevarli e caricarli sulla RAM; quando questa sarà piena, i dati non più necessari verranno riarchiviati per far spazio a quelli nuovi. In questo modo possiamo avere botte piena e moglie ubriaca, perché possediamo una grande quanitiyà di dati archiviati e possiamo accedere alla maggior parte di questi in modo veloce. Andiamo a formalizzare quanto appena detto nei due seguenti \emph{principî di località}.
+L'approccio vincente è quello di mantenere i dati archiviati nelle memorie periferiche (dove lo spazio abbonda), e ogniqualvolta siano necessari prelevarli e caricarli sulla RAM; quando questa sarà piena, i dati non più necessari verranno riarchiviati per far spazio a quelli nuovi. In questo modo possiamo avere botte piena e moglie ubriaca, perché possediamo una grande quantità di dati archiviati e possiamo accedere alla maggior parte di questi in modo veloce. Andiamo a formalizzare quanto appena detto nei due seguenti \emph{principî di località}.
 \begin{itemize}
   \item \emph{Principio di località temporale}: questo principio dice che se faccio uso di un dato in memoria è molto probabile che nel breve periodo dovrò servirmene di nuovo. Ad esempio, se ci troviamo all'interno di un ciclo, dovrò accedere alle stesse zone di memoria ad ogni iterazione.
   \item \emph{Principio di località spaziale}: questo principio dice invece che quando accedo a una locazione di memoria è molto probabile che io debba accedere anche a zone a lei adiacenti (o contigue); questo per esempio succede ogni volta che dobbiamo lavorare per gli array, che sono ordinati per word successive.
@@ -154,7 +154,7 @@ Osserviamo la seguente tabella:
   \centering
   \includegraphics[width=\textwidth,keepaspectratio]{tabella_polli.png}
 \end{figure}
-Al di là dei dati un po' desueti\footnote{Verrebbe quasi da dire che fanno ridere i polli, in effetti}, si può facilmente intuire quale sarà la gerarchia delle memorie: quelle più veloci ma costose saranno vicine al processore e gli forniranno i dati da elaborare, mentre invece quelle più lente (ma pi1u capienti) staranno lontane e fungeranno da archivio.
+Al di là dei dati un po' desueti\footnote{Verrebbe quasi da dire che fanno ridere i polli, in effetti}, si può facilmente intuire quale sarà la gerarchia delle memorie: quelle più veloci ma costose saranno vicine al processore e gli forniranno i dati da elaborare, mentre invece quelle più lente (ma più capienti) staranno lontane e fungeranno da archivio.
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth,keepaspectratio]{strut-ger.png}
@@ -165,19 +165,19 @@ Al di là dei dati un po' desueti\footnote{Verrebbe quasi da dire che fanno ride
 %TODO: aggiungere questa subsec al blocco di definiioni iniziale?
 Forniamo ora una breve carrellata di definizioni utili alla prossima sezione.
 \begin{itemize}
-  \item \emph{Blocco}: unità minima dell'informazione che può essere presente o assente in un blocco superiore a quello di riferimento.
+  \item \emph{Blocco}: unità minima dell'informazione che può essere presente o assente in un livello superiore a quello di riferimento.
   \item \emph{Hit rate}: frequenza di successo, ossia il rapporto tra il numero di accessi al livello superiore in cui trovo il dato e il numero di quelli in cui non lo trovo.
   \item \emph{Miss rate}: \(1 - \textrm{\emph{hit rate}}\), frequenza degli insuccessi.
   \item \emph{Hit time}: tempo che occorre a leggere il dato una volta individuato il blocco al livello superiore.
   \item \emph{Miss penalty}: tempo che occorre ad accedere al dato se non trovo il blocco al livello superiore.
 \end{itemize}
 \section{La cache}
-La cache(dal francese \emph{caché}, "nascosto") è una memoria molto vicina al processore e invisibile al programmatore; dopo essere stata sperimentata negli anni '70 è diventata parte della progettazione di ogni tipo di calcolatore.
+La cache (dal francese \emph{caché}, "nascosto") è una memoria molto vicina al processore e invisibile al programmatore; dopo essere stata sperimentata negli anni '70 è diventata parte della progettazione di ogni tipo di calcolatore.
 
 \subsection{Funzionamento}
 A questo punto è lecito domandarsi come si faccia noi a sapere se un determinato dato è nella cache e dove eventualmente cercarlo.
 
-La cache è costruita con un sistema detto \emph{a mappatura diretta}: ad ogni indirizzo in memoria corrisponde una precisa locazione di cache. Un sistema efficiente per realizzare questa mappatura potrebbe essere questo: l'indirizzo cache dove viene mappato il blocco in memoria \(\equiv\) indirizzo del blocco  \(\pmod{\textrm{numero totale di blocchi in cache}}\).
+La cache è costruita con un sistema detto \emph{a mappatura diretta}: ad ogni indirizzo in memoria corrisponde una precisa locazione di cache. Un sistema efficiente per realizzare questa mappatura potrebbe essere questo: l'indirizzo cache dove viene mappato in questo modo: \emph{blocco in memoria} \(\equiv\) \emph{indirizzo del blocco}  \(\pmod{\textrm{\emph{numero totale di blocchi in cache}}}\).
 
 Qualora il numero di blocchi in cache fosse potenza di due, sarà necessario usare i suoi bit meno significativi dell'indirizzo in memoria. Quanti bit meno significativi bisogna prendere, di preciso? La risposta è in questa formula:
 \begin{equation*}
@@ -230,7 +230,7 @@ Il blocco di cache cercato è quindi il numero \(11\).
 \end{figure}
 
 \subsection{La ricerca di un compromesso}
-A questo punto risulta evidente che avere blocchi di cache molto grandi ci permette di sfruttare ampiamente il princpio della località spaziale, dal momento che disporrò di molto spazio in cui riporre gruppi di dati anche di dimensioni importanti; perché non si ricorre sempre a una soluzione di questo tipo, allora? Perché innanzitutto avere blocchi molto grandi porta a dei costi di gestione molto alti (di fatto di volta in volta ci troviamo a spostare molti byte), ma soprattutto perché a parità di dimensioni avere meno blocchi diminuisce l'efficacia della località temporale. Per questo motivo è molto importante trovare un buon compromesso tra numero di blocchi e dimensione degli stessi, in fase di progettazione.
+A questo punto risulta evidente che avere blocchi di cache molto grandi ci permette di sfruttare ampiamente il principio della località spaziale, dal momento che disporrò di molto spazio in cui riporre gruppi di dati anche di dimensioni importanti; perché non si ricorre sempre a una soluzione di questo tipo, allora? Perché innanzitutto avere blocchi molto grandi porta a dei costi di gestione molto alti (di fatto di volta in volta ci troviamo a spostare molti byte), ma soprattutto perché a parità di dimensioni avere meno blocchi diminuisce l'efficacia della località temporale. Per questo motivo è molto importante trovare un buon compromesso tra numero di blocchi e dimensione degli stessi, in fase di progettazione.
 
 La figura sottostante mostra come varia la frequenza delle miss (asse \(y\)) in relazione a diverse dimensioni di cache (le varie linee) e in numeri di blocchi (asse \(x\)). Osserviamo che le migliori prestazioni le abbiamo sempre per valori equilibrati, e che la maggior differenza la osserviamo per dimensioni di cache più piccole.
 \begin{figure}[H]
