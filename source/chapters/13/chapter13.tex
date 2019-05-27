@@ -161,8 +161,10 @@ Al di là dei dati un po' desueti\footnote{Verrebbe quasi da dire che fanno ride
   \caption Struttura gerarchica delle memorie
 \end{figure}
 
+\section{La cache}
+La cache (dal francese \emph{caché}, participio passato del verbo \emph{cacehr}, "nascondere") è una memoria molto vicina al processore e invisibile al programmatore; dopo essere stata sperimentata negli anni '70 è diventata parte della progettazione di ogni tipo di calcolatore.
+
 \subsection*{Altre definizioni}
-%TODO: aggiungere questa subsec al blocco di definiioni iniziale?
 Forniamo ora una breve carrellata di definizioni utili alla prossima sezione.
 \begin{itemize}
   \item \emph{Blocco}: unità minima dell'informazione che può essere presente o assente in un livello superiore a quello di riferimento.
@@ -171,15 +173,13 @@ Forniamo ora una breve carrellata di definizioni utili alla prossima sezione.
   \item \emph{Hit time}: tempo che occorre a leggere il dato una volta individuato il blocco al livello superiore.
   \item \emph{Miss penalty}: tempo che occorre ad accedere al dato se non trovo il blocco al livello superiore.
 \end{itemize}
-\section{La cache}
-La cache (dal francese \emph{caché}, "nascosto") è una memoria molto vicina al processore e invisibile al programmatore; dopo essere stata sperimentata negli anni '70 è diventata parte della progettazione di ogni tipo di calcolatore.
 
 \subsection{Funzionamento}
-A questo punto è lecito domandarsi come si faccia noi a sapere se un determinato dato è nella cache e dove eventualmente cercarlo.
+ Ma noi come si fa a sapere se un determinato dato è nella cache e dove eventualmente cercarlo?
 
-La cache è costruita con un sistema detto \emph{a mappatura diretta}: ad ogni indirizzo in memoria corrisponde una precisa locazione di cache. Un sistema efficiente per realizzare questa mappatura potrebbe essere questo: l'indirizzo cache dove viene mappato in questo modo: \emph{blocco in memoria} \(\equiv\) \emph{indirizzo del blocco}  \(\pmod{\textrm{\emph{numero totale di blocchi in cache}}}\).
+Un sistema interessante per gestire la cache potrebbe essere quello detto \emph{a mappatura diretta}: ad ogni indirizzo in memoria corrisponde una precisa locazione di cache; l'indirizzo in cache viene normalmente mappato in questo modo: \emph{indirizzo del blocco in cache} \(\equiv\) \emph{indirizzo in memoria del blocco}  \(\pmod{\textrm{\emph{numero totale di blocchi in cache}}}\).
 
-Qualora il numero di blocchi in cache fosse potenza di due, sarà necessario usare i suoi bit meno significativi dell'indirizzo in memoria. Quanti bit meno significativi bisogna prendere, di preciso? La risposta è in questa formula:
+Qualora il numero di blocchi in cache fosse potenza di due sarà sufficiente usare i suoi bit meno significativi dell'indirizzo in memoria. Quanti bit meno significativi bisogna prendere, di preciso? La risposta è in questa formula:
 \begin{equation*}
   \textrm{Cache address}=\log_2 \textrm{cache dimension}
 \end{equation*}
@@ -210,7 +210,7 @@ Si analizzi attentamente la seguente immagine, tenendo presente che \(n=10\) e \
 \subsubsection{Il calcolo degli indirizzi}
 Mostriamo con un esempio come calcolare a quale blocco di cache corrisponde un determinato indirizzo in memoria.
 
-Supponiamo di avere una cache con \(64\) blocchi di \(16\) byte ciascuno e di voler trovare a quale blocco cache corrisponde l'indirizzo 1200 in byte. ricordiamo che ogni blocco è identificato da
+Supponiamo di avere una cache con \(64\) blocchi di \(16\) byte ciascuno e di voler trovare a quale blocco cache corrisponde l'indirizzo 1200 in byte. ricordiamo che l'indirizzo di ogni blocco è identificato da
 \begin{equation*}
   \textrm{Indirizzo blocco}\pmod{\textrm{numero di blocchi della cache}}
 \end{equation*}
@@ -220,7 +220,7 @@ con \(\textrm{Indirizzo blocco}\) così definito:
 \end{equation*}
 \begin{itemize}
   \item Calcoliamo l'indirizzo del blocco: \(\frac{1200}{16}=75\)
-  \item A questo punto calcoliamo il blocco nella cache corrispondente: \(75\pmod{16}=11\)
+  \item A questo punto calcoliamo 'indirizzo del blocco nella cache corrispondente: \(75\pmod{16}=11\)
 \end{itemize}
 Il blocco di cache cercato è quindi il numero \(11\).
 \begin{figure}[H]
