@@ -41,7 +41,7 @@ Il datapath si compone essenzialmente di 5 parti.
 \end{enumerate}
 
 \subsection{Il ruolo del multiplexer}
-La  figura però è incompleta; manca qualcosa che dica ai blocchi cosa fare in caso di punti di decisione (momenti in cui i segnali arrivano da due diverse sorgenti e bisogna sceglierne una), come ad esempio l'incremento del program counter: normalmente, il suo valore proviene dall'addizionatore (e punta quindi alla word successiva a quella appena letta), ma in caso di salto l'indirizzo viene calcolato dallo spiazzamento contenuto nell'istruzione\footnote{Si ricorda che MIPS offre  solo 16 bit per immagazzinare costanti all'interno di istruzioni immediate. Dunque, attraverso \opcode{beq} risulta necessario utilizzare riferimenti relativi (al \(\textrm{\emph{PC}}+4\)) e non assoluti per poter accedere ad una vasta gamma di indirizzi.}. Altro esempio: a seconda della tipologia di istruzione il secondo operando della ALU potrà provenire o dal banco dei registri (per le istruzioni R) o dal codice dell'istruzione stessa (per le istruzioni I).
+La  figura però è incompleta; manca qualcosa che dica ai blocchi cosa fare in caso di punti di decisione (momenti in cui i segnali arrivano da due diverse sorgenti e bisogna sceglierne una), come ad esempio l'incremento del program counter: normalmente, il suo valore proviene dall'addizionatore (e punta quindi alla word successiva a quella appena letta), ma in caso di salto l'indirizzo viene calcolato dallo spiazzamento contenuto nell'istruzione\footnote{Si ricordi che MIPS offre solo 16 bit per immagazzinare costanti all'interno di istruzioni immediate. Dunque, attraverso \opcode{beq} risulta necessario utilizzare riferimenti relativi (al \(\textrm{\emph{PC}}+4\)) e non assoluti per poter accedere ad una vasta gamma di indirizzi.}. Altro esempio: a seconda della tipologia di istruzione il secondo operando della ALU potrà provenire o dal banco dei registri (per le istruzioni R) o dal codice dell'istruzione stessa (per le istruzioni I).
 
 Ed è qui che ci viene in soccorso il \emph{multiplexer} che, come già detto in~\ref{subsec:multi}, è un circuito combinatorio che prende in input due segnali e decide quale di essi debba andare in output sulla base di un terzo segnale di controllo (un po' come un vigile che decide quale macchina far passare).
 \begin{figure}[H]
@@ -211,7 +211,7 @@ Definiamo più chiaramente il codice di controllo ALU: esso viene calcolato dall
 \end{itemize}
 Questo processo non è da considerarsi indifferente: in questo modo è possibile utilizzare solo 4 bit per indicare all'ALU quale operazione eseguire, piuttosto che degli 8 bit inzialmente necessari (rispettivamente 6 per il campo \emph{funct} e 2 per il codice di controllo \CUflag{ALUOp}).
 
-A seguire vengono presentate delle tabelle che esplicitano la rappresentazione delle istruzioni considerate sia nella rappresentazioni a 4 bit che a 8\footnote{I valori dove sono presenti le 'X' non vengono considerati}.
+A seguire vengono presentate delle tabelle che esplicitano la rappresentazione delle istruzioni considerate sia nella rappresentazioni a 4 bit che a 8\footnote{I valori dove sono presenti le 'X' non vengono considerati.}.
 
 \begin{figure}[H]
 	\centering

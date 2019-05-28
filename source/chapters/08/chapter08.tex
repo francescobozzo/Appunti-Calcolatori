@@ -69,7 +69,7 @@ Vediamo ora una lista delle operazioni più comuni:
 	\item \opcode{sub}/\opcode{sbc}: rispettivamente sottrazione e sottrazione con riporto;
 	\item \opcode{rsb}/\opcode{rsc}: \emph{reverse sub/reverse sub with carry} che permettono una sottrazione invertendo il primo ed il secondo operando. In questo modo risulta possibile sottrarre un registro ad un numero;
 	\item \opcode{and}/\opcode{orr}/\opcode{eor}/\opcode{bic}: operazioni booleane bit a bit. Si noti che \mintinline{arm}{bic r0, r1, r} calcola \(\register{r0} = (\register{r1} \textrm{ and } (\textrm{not } \register{r}))\);
-	\item \opcode{mul}/\opcode{mla} e simili sono per varie forme di moltiplicazione\footnote{Non esistono comandi per la divisione in assembly ARM};
+	\item \opcode{mul}/\opcode{mla} e simili sono per varie forme di moltiplicazione\footnote{Non esistono comandi per la divisione in assembly ARM.};
 	\item \opcode{b}/\opcode{bl} rispettivamente \emph{branch} e \emph{branch and link} (da notare che è possibile aggiungere qualsiasi suffisso condizionale);
 	\item \opcode{bx} è implementato solo in alcune CPU, corrisponde a \mintinline{arm}{move r15, r};
 	\item \opcode{cmp} setta i flags comparando due operandi, ma senza risultato; da usarsi prima di salti condizionali. Funzionano similmente anche \opcode{tst} (attraverso un and) e \opcode{teq} (attraverso uno xor);

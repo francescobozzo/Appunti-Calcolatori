@@ -57,7 +57,7 @@ Alla fine delle operazioni dell'\texttt{as} si ottiene quindi un file oggetto, c
 \begin{itemize}
 	\item \emph{header}: contiene dati come le posizioni di altri dati all'interno del file (segmenti, tabelle, etc.);
 	\item \emph{segmenti}: principalmente testo (codice) e dati (variablili globali);
-	\item \emph{tabella di rilocazione}: comprende tutti i simboli\footnote{I simboli sono stringhe come etichette, nomi di funzioni e variabili che implicitamente rappresentano indirizzi} con indirizzo relativo alla posizione nell'area \texttt{.data} e tipo di istruzione;
+	\item \emph{tabella di rilocazione}: comprende tutti i simboli\footnote{I simboli sono stringhe come etichette, nomi di funzioni e variabili che implicitamente rappresentano indirizzi.} con indirizzo relativo alla posizione nell'area \texttt{.data} e tipo di istruzione;
 	\item \emph{tabella dei simboli}: contiene tutti i simboli che non sono contenuti all'interno del file oggetto stesso (undefined) ma saranno dedotti da file esterni e quindi saranno noti solo una volta che il linker avrà svolto il suo compito di collegamento tra file, ma contiene anche i simboli definiti con il relativo indirizzo assoluto;
 	\item altre informazioni (ad esempio per il debugging).
 \end{itemize}
@@ -77,7 +77,7 @@ I tipi di simboli con cui il linker si trova ad avere a che fare sono tre:
 \begin{itemize}
 	\item i simboli \emph{locali} (\emph{non esportati}) sono simboli definiti e visibili solamente all'interno del file;
 	\item i simboli \emph{definiti} (\emph{defined}) sono i simboli associati ad un indirizzo relativo nella tabella dei simboli, tuttavia definiti all'interno del file stesso;
-	\item i simboli \emph{non definiti} (\emph{undefined}) sono quei simboli presenti nella tabella dei simboli ma dichiarati in un file diverso, quidi presenti appunto solo come undefined.\footnote{Nel caso un simbolo non locale non venga trovato nei file \extension{o} linkati viene generato un errore di linking}
+	\item i simboli \emph{non definiti} (\emph{undefined}) sono quei simboli presenti nella tabella dei simboli ma dichiarati in un file diverso, quidi presenti appunto solo come undefined.\footnote{Nel caso un simbolo non locale non venga trovato nei file \extension{o} linkati viene generato un errore di linking.}
 \end{itemize}
 In tutti questi casi, il lavoro del linker rimane lo stesso, ovvero quello di associare ad ogni simbolo un indirizzo assoluto, perché solo in questo modo essi sono interpretabili dal calcolatore.
 
