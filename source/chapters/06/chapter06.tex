@@ -60,9 +60,8 @@ Esistono però alcune eccezioni: ad esempio \mintinline{batch}{gcc}, l'assembler
 
 \section{I registri}
 
-\subsection*{Cosa sono}
-
-Fino ad ora abbiamo considerato gli operandi come fossero normali variabili, ma in realtà questi altro non sono che dei \emph{registri}, ossia delle particolari locazioni di memoria interne al processore che possono essere reperite molto rapidamente, in un solo colpo di clock.\\
+\subsection*{Cosa sono i registri}
+Fino ad ora abbiamo considerato gli operandi come fossero normali variabili, ma in realtà questi altro non sono che dei \emph{registri}, ossia delle particolari locazioni di memoria interne al processore che possono essere reperite molto rapidamente, in un solo colpo di clock.
 
 MIPS possiede 32 registri, ciascuno di 32 bit, per cui ogniqualvolta si debba eseguire delle operazioni è necessario caricare i dati dalla RAM con un'operazione di \emph{load}. Questo processo può apparire dispendioso ed è lecito domandarsi come mai non ci si possa dotare di più registri più capienti, e la risposta è espressa dal secondo principio di progettazione.
 
@@ -135,7 +134,7 @@ Per dare un altro esempio, è molto conveniente implementare un registro zero (\
 Prima di indicare come vengono codificate le istruzioni, ricordiamo che 1 byte è agevolmente rappresentabile con due cifre esadecimali (essendo composto da 8 bit e sapendo che ogni cifra esadecimale corrisponde a 4 bit). Ad esempio, \(1001 1101_{2}\) diventa \(9D_{16}\). Inoltre, quando si scrive in esadecimale, si usa di solito precedere la scrittura con \texttt{0x}. Ad esempio: \texttt{0xEA01BD1C}.
 
 Quando si devono codificare parole di 4 byte è importante decidere dove vada il byte più significativo:
-\begin{itemize}[nolistsep]
+\begin{itemize}
 	\item se il byte più significativo è posto per primo, la notazione è detta \emph{big endian} (usata nei processori Motorola e protocolli internet).
 	\item se il byte meno significativo è posto per primo, la notazione è detta \emph{little endian} (usata nei processori Intel).
 \end{itemize}
@@ -357,7 +356,7 @@ ESCI:
 \end{minted}
 Un'ulteriore utilità di queste istruzioni può essere espressa utilizzando i vettori: supponiamo di volere controllare se un indice (\register{\$s1}) è fuori dal limite di un array (\([0, \text{\register{\$t2}}]\)).
 \begin{minted}[linenos, breaklines]{asm}
-sltu $t0, $s1, $t2
+sltu $t0, $s1, $t2  # importante l'uso dell'unsigned
 beq $t0, $zero, FUORI_LIMITE
 \end{minted}
 Infatti, se \register{\$s1} è maggiore di \register{\$t2}, ovviamente avremo 0 in \register{\$t0}. D'altra parte, se \register{\$s1} è negativo, interpretato come unsigned, sarà maggiore di \register{\$t2} (che ha il bit più significativo a 0, essendo \register{\$t2} necessariamente un numero positivo).
@@ -452,8 +451,10 @@ Oltre ai registri, il MIPS mette a disposizione dell'utente l'istruzione \emph{j
 Alla fine della procedura sarà così sufficiente compiere il salto \mintinline{asm}{jr $ra} per riprendere lo svolgimento del programma principale da dove lo si era interrotto.
 
 \subsection{Gestione della memoria in MIPS}
-Abbiamo già visto come i dati utilizzati da un programma in MIPS debbano essere caricati nei registri affinché il calcolatore possa usarli, ma cosa succede quando la memoria dei registri non basta?\\
-In questo caso si utilizza lo stratagemma dello stack (esatto, proprio il buon vecchio stack, la nostra struttura dati di tipo LIFO preferita) implementato nella memoria del calcolatore; in MIPS vi si caricano i dati a partire da una posizione nota che viene puntata dal registro dedicato \register{\$fp} (\emph{frame pointer}, che indica quindi la base dello stack).\\
+Abbiamo già visto come i dati utilizzati da un programma in MIPS debbano essere caricati nei registri affinché il calcolatore possa usarli, ma cosa succede quando la memoria dei registri non basta?
+
+In questo caso si utilizza lo stratagemma dello stack (esatto, proprio il buon vecchio stack, la nostra struttura dati di tipo LIFO preferita) implementato nella memoria del calcolatore; in MIPS vi si caricano i dati a partire da una posizione nota che viene puntata dal registro dedicato \register{\$fp} (\emph{frame pointer}, che indica quindi la base dello stack).
+
 Viene utilizzato poi il registro \register{\$sp} per puntare alla testa dello stack (dove vengono inseriti i nuovi elementi).
 I dati vengono caricati nello stack tramite operazioni di \emph{push} ed, una volta utilizzati, eliminati tramite una operazione di \emph{pop}.\\
 All'interno di questa struttura dati si possono salvare variabili locali di procedure come anche registri che sarà necessario ripristinare in seguito.\\
@@ -469,8 +470,10 @@ int esempio(int g, int h, int i, int j){
 }
 \end{minted}
 
-Quando chiamiamo una procedura in MIPS per prima cosa il compilatore sceglie un’etichetta associata all’indirizzo di entrata della procedura (in questo caso \emph{esempio}); in fase di collegamento l'etichetta è collegata ad un indirizzo.\\
-La prima operazione è quella di salvare in memoria tutti i registri che la procedura sovrascriverà, in modo da poterli ripristinare in seguito; tale fase è chiamata \emph{prologo} e potrebbe richiedere di allocare nello stack anche spazio per le variabili locali (in caso di spazio insufficiente nei registri).\\
+Quando chiamiamo una procedura in MIPS per prima cosa il compilatore sceglie un’etichetta associata all’indirizzo di entrata della procedura (in questo caso \emph{esempio}); in fase di collegamento l'etichetta è collegata ad un indirizzo.
+
+La prima operazione è quella di salvare in memoria tutti i registri che la procedura sovrascriverà, in modo da poterli ripristinare in seguito; tale fase è chiamata \emph{prologo} e potrebbe richiedere di allocare nello stack anche spazio per le variabili locali (in caso di spazio insufficiente nei registri).
+
 Nell'esempio supponiamo, con lo scopo di osservare il metodo di salvataggio di un registro, di dover tenere in memoria i valori di \register{\$s0}, \register{\$t1} e \register{\$t0}.
 
 \begin{minted}[linenos, tabsize = 4]{asm}
@@ -485,8 +488,8 @@ ESEMPIO:
 
 	# fine del prologo, inizio della procedura effettiva
 	# si suppone che g,h,i,j siano già salvate nei registri $a...
-	add $t0, $a0, $a1  # $t0="g"+"h"
-	add $t1, $a2, $a3  # $t1="i"+"j"
+	add $t0, $a0, $a1  # $t0=g+h"
+	add $t1, $a2, $a3  # $t1=i+j
 	sub $s0, $t0, $t1  # $s0=(g+h)-(i+j)
 
 	# imposto il valore di ritorno
@@ -696,8 +699,7 @@ COPIA_STRINGA:
 \subsubsection{Loop}
 A questo punto procediamo all'implementazione del ciclo \emph{while} che eseguirà la copia di \mintinline{c}{s[i]} in \mintinline{c}{d[i]}. Iniziamo mettendo l'indirizzo di \mintinline{c}{s[i]} nel registro \register{\$t1}.\\
 (Nota: \mintinline{c}{&s[i] = s + i}, non \mintinline{c}{s + i * 4}).\\
-A questo punto carichiamo \mintinline{c}{s[i]}
-in \register{\$t2} e salviamolo in \mintinline{c}{d[i]}.
+A questo punto carichiamo \mintinline{c}{s[i]} in \register{\$t2} e salviamolo in \mintinline{c}{d[i]}.
 \begin{minted}[linenos, tabsize=4, firstnumber=5]{asm}
 L1:
 	add $t1, $s0, $a1  # inizio loop

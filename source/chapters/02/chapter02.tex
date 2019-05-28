@@ -29,10 +29,10 @@ Un computer memorizza (e manipola) solo sequenze di 0 e 1 (sequenze di bit); anc
 
 \subsection{Interpretazione delle informazioni} In seguito le sequenze di bit che i computer elaborano/memorizzano possono essere interpretate in tantissimi modi diversi, tra cui numeri, caratteri, suoni, immagini, istruzioni e molti altri. Alla base di tutte le interpretazioni che si possono dare alle stringhe di simboli (che nel caso del computer sono proprio i due stati del bit) sta il concetto di codifica. La \emph{codifica} è appunto uno schema, una legge, un \emph{mapping} che permette prima di tradurre, poi di interpretare stringhe di simboli.
 
-Nell’ambito dell’IT le codifiche sono fortemente caratterizzate dalla lunghezza (dal numero di bit) delle “parole” elementari della codifica. Ad esempio, per rappresentare tutti i caratteri (tabella ASCII estesa) utilizziamo  8 bit [256 caratteri]. Si osservi che essendo i \emph{transistor} sistemi bistabili la base 2 (con cifre 0 e 1) è perfetta per rappresentare la codifica dei dati memorizzati/elaborati da essi.
+Nell’ambito dell’IT le codifiche sono fortemente caratterizzate dalla lunghezza (dal numero di bit) delle “parole” elementari della codifica. Ad esempio, per rappresentare tutti i caratteri (tabella ASCII estesa) utilizziamo  8 bit (256 caratteri). Si osservi che essendo i \emph{transistor} sistemi bistabili la base 2 (con cifre 0 e 1) è perfetta per rappresentare la codifica dei dati memorizzati/elaborati da essi.
 
 \section{I numeri}
-Limitiamoci al caso dei numeri per spiegare il concetto di \emph{codifica}. Ricordiamo che i metodi di rappresentazione numerica che studiamo sono posizionali, ovvero il peso di ogni cifra varia in base alla posizione che essa occupa. In generale se una base è composta da \(B\) elementi essa ha B cifre (da 0 a \(B\)) utilizzate per scrivere ogni numero. Questa formula ci restituisce il valore di ogni numero scritto in una qualsiasi base \(B\):
+Limitiamoci al caso dei numeri per spiegare il concetto di \emph{codifica}. Ricordiamo che i metodi di rappresentazione numerica che studiamo sono posizionali, ovvero il peso di ogni cifra varia in base alla posizione che essa occupa. In generale se una base è composta da \(B\) elementi essa ha \(B\) cifre (da 0 a \(B\)) utilizzate per scrivere ogni numero. Questa formula ci restituisce il valore di ogni numero scritto in una qualsiasi base \(B\):
 \begin{equation*}
 	c_{i} c_{i-1} c_{i-2}... c_{0}=c_{i}\cdot B^{i}+...+c_{0}\cdot B^{0}
 \end{equation*}
@@ -89,12 +89,12 @@ Si noti che quando è presente un 1 si riscrive il numero (nella posizione corri
 \subsection{Gli interi}
 Finora abbiamo visto come si codificano solo i numeri naturali, ma esistono metodi di codifica che permettono di rappresentare anche i numeri negativi (quindi l’insieme degli interi). Le tecniche più comuni sono: modulo e segno, complemento a 1 (\emph{CA1}) e complemento a 2 (\emph{CA2}).
 
-\paragraph*{Codifica con Modulo e Segno:}
-si usano \(k-1\) bit per rappresentare il valore assoluto (modulo) del numero  ed un bit per codificare il segno (0 per i positivi, 1 per i negativi). In questo modo con k bit si possono codificare valori tra \(-2^{k-1}+1\) e \(+2^{k-1}-1\).\\
+\paragraph*{Codifica con Modulo e Segno}
+Si usano \(k-1\) bit per rappresentare il valore assoluto (modulo) del numero  ed un bit per codificare il segno (0 per i positivi, 1 per i negativi). In questo modo con k bit si possono codificare valori tra \(-2^{k-1}+1\) e \(+2^{k-1}-1\).\\
 \emph{NB}: esistono due codifiche per lo \(0\), \(-0\) e \(+0\), e questo è un spreco.
 
-\paragraph*{Codifica in Complemento a 1:}
-L'idea alla base è semplice: il primo bit indica sempre il segno e per ottenere l'opposto di un numero positivo si invertono tutti gli 0 in 1 e gli 1 in 0 (e lo stesso si fa per ottenere l’opposto di un numero negativo). Si hanno ancora due rappresentazioni per \(+0\) e \(-0\) (rispettivamente, utilizzando 4 bit, \(0000\) e \(1111\)). È più facile da sommare rispetto al modulo e segno ma solo se il bit significativo non dà riporto.\\
+\paragraph*{Codifica in Complemento a 1}
+Il primo bit indica sempre il segno e per ottenere l'opposto di un numero positivo si invertono tutti gli 0 in 1 e gli 1 in 0 (e lo stesso si fa per ottenere l’opposto di un numero negativo). Si hanno ancora due rappresentazioni per \(+0\) e \(-0\) (rispettivamente, utilizzando 4 bit, \(0000\) e \(1111\)). È più facile da sommare rispetto al modulo e segno ma solo se il bit significativo non dà riporto.\\
 Quando si sommano due numeri in \emph{CA1}:
 \begin{itemize}[noitemsep]
 	\item si deve verificare che i riporti delle prime due cifre significative siano uguali, altrimenti il numero che si ottiene non è rappresentabile in CA1 su k bit.
@@ -115,7 +115,7 @@ L'utilizzo della codifica \emph{CA2} permette di eseguire somme algebriche senza
 
 Diamo subito un esempio: supponiamo di voler eseguire \(-64-8\) utilizzando il \emph{CA2} e \(k=7\) bit. Ricordiamo che:
 \begin{align*}
--64=1000000_{2}=\overline{1000000}+1=0111111+1=1000000 \text{ in \emph{CA2;}}\\
+-64=1000000_{2}=\overline{1000000}+1=0111111+1=1000000 \text{ in \emph{CA2}}\\
 -8=0001000_{2}=\overline{0001000}+1=1110111+1=1111000 \text{ in \emph{CA2}}
 \end{align*}
 A questo punto eseguiamo la somma algebrica:
@@ -150,7 +150,7 @@ Quando eseguiamo delle operazioni sui numeri in base 2 su \(k\) bit, stiamo lavo
 \subsection{I reali}
 Non è sempre semplice codificare un numero reale \(\alpha \in \mathbb{R}\), poiché di questo insieme fanno parte i numeri cosiddetti \emph{irrazionali}, che presentano infinite cifre non periodiche dopo la virgola (si pensi ad esempio a \(\pi=3,14159...\), o \(e=2.71828...\), o ancora \(\sqrt{2}=1.41421...\)). Alcuni numeri non possono quindi essere rappresentati con un numero finito di bit, per cui ne rappresenteremo solo un'approssimazione, e per farlo abbiamo sviluppato due metodi: la rappresentazione a \emph{virgola fissa} (\emph{fixed point}) e quella a \emph{virgola mobile} (\emph{floating point}).
 
-\subsubsection{Codifica in virgola fissa} Questo sistema di codifica prevede che, posto un numero $k$ di bit per la rappresentazione del numero, si impieghino $k-f$ bit per rappresentarne la parte intera, e i restanti $f$ bit per rappresentarne la parte razionale:
+\subsubsection{Codifica in virgola fissa} Questo sistema di codifica prevede che, posto un numero \(k\) di bit per la rappresentazione del numero, si impieghino \(k-f\) bit per rappresentarne la parte intera, e i restanti \(f\) bit per rappresentarne la parte razionale:
 \begin{equation*}
 	\overbrace{\underbrace{c_{k-1}c_{k-2}\cdots c_{f}}_\text{$k-f$}\underbrace{\cdot c_{f-1}\cdots c_{0}}_\text{$f$}}^\text{$k$}
 \end{equation*}
@@ -159,7 +159,7 @@ Possiamo scrivere una formula generale più compatta. Supponiamo di voler conver
  	x_{10}=\sum_{i=0}^{k-1} c_{i}B^{i-f}=\sum_{i=0}^{k-1} c_{i}B^{i}\cdot B^{-f}=(\sum_{i=0}^{k-1} c_{i}B^{i})\cdot B^{-f}
  \end{equation*}
 Detta in altri termini, convertiamo il numero da base 10 come se non avesse la virgola e poi moltiplichiamo per \(B^{-f}\). Presentiamo vantaggi e svantaggi di questo tipo di codifica:
-\begin{itemize}
+\begin{itemize}[noitemsep]
 	\item le operazioni si possono svolgere senza alcuna differenza, se non l'accortezza di scalare il risultato;
 	\item il peso per la CPU è ridotto;
 	\item non ci sono errori di approssimazione, \emph{se il valore è rappresentabile};
