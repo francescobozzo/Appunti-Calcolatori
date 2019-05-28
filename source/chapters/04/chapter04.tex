@@ -17,8 +17,7 @@ Come ben sappiamo, a differenza di \emph{ENIAC}, i computer moderni si compongon
 	\item \emph{basso} (negato); viene solitamente associato alla massa (tensione vicina a 0). Si indica con \(0\).
 \end{itemize}
 Nel passaggio da un livello all'altro si presenta lo stato \emph{transitorio}, in cui la tensione assume valori intermedi fra zero e Vdd.\\
-In particolare, per trasformare alcuni valori logici in ingresso in altri valori logici in uscita, vengono utilizzati i \emph{circuiti logici}, costituiti dalle \emph{porte logiche}.\\
-I circuiti logici si differenziano principalmente in:
+In particolare, per trasformare alcuni valori logici in ingresso in altri valori logici in uscita, vengono utilizzati i \emph{circuiti logici}, costituiti dalle \emph{porte logiche}. I circuiti logici si differenziano principalmente in:
 \begin{itemize}
 	\item \emph{reti combinatorie}: l'uscita dipende unicamente dal valore di ingresso (non sono dotati di memoria).
 	\item \emph{reti sequenziali}: l'uscita dipende dal valore di ingresso e dalla storia degli ingressi precedenti (sono dotati di memoria, detta "stato" della rete).
@@ -97,7 +96,7 @@ Si ricorda inoltre che è possibile combinare fra loro diverse porte logiche:
 
 \section{Alcuni circuiti degni di nota}
 \subsection*{Decoder}
-L'ingresso del \emph{decoder} svolge il ruolo di selettore: ricevendo in input il valore \(n\), si accenderà l'\(n\)-esima uscita. A seguire l'implementazione di un decoder a 3 bit:
+L'ingresso del \emph{decoder} svolge il ruolo di selettore: ricevendo in input il valore \(n\) (codificato in binario), si accenderà l'\(n\)-esima uscita. A seguire l'implementazione di un decoder a 3 bit:
 \begin{figure}[H]
 	\centering
 	\subimport{assets/figures/}{decoder3bit.tex}
@@ -179,7 +178,6 @@ Ma, considerando che i segnali non si propagano in tempo nullo, ciò potrebbe ca
 \end{figure}
 Il difetto principale di un latch R-S è quello di avere uno stato indecidibile: l'uscita non può essere nota con certezza quando entrambi gli ingressi sono a 1.
 
-Una soluzione è implementata attraverso \emph{latch} tipo \emph{D}: gli ingressi al circuito sono ottenuti da un'unica variabile (di cui si fa il negato). Altrimenti, attraverso circuiti \emph{flip-flop master-slave} è possibile ottenere che l’uscita del circuito commuti esattamente al termine dell’impulso di clock.\\
-In particolare, i latch di tipo D vengono utilizzati per implementare i registri della CPU.
+Una soluzione è implementata attraverso \emph{latch} tipo \emph{D}: gli ingressi al circuito sono ottenuti da un'unica variabile (di cui si fa il negato). Altrimenti, attraverso circuiti \emph{flip-flop master-slave} è possibile ottenere che l’uscita del circuito commuti esattamente al termine dell’impulso di clock. In particolare, i latch di tipo D vengono utilizzati per implementare i registri della CPU.
 
 \end{document}

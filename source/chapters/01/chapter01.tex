@@ -9,8 +9,7 @@
 % arara: pdflatex: { synctex: yes, shell: yes }
 % arara: latexmk: { clean: partial }
 \begin{document}
-\chapter{Introduzione ai calcolatori}\begin{fquote}[Federico Faggin][2017]Noi che depositeremo in un computer non solo le nostre conoscenze, ma anche memorie, ricordi, emozioni. Addirittura la nostra consapevolezza. E così potremo vivere in eterno. Un'idea non solo assurda, sbagliata, ma che può portare a sviluppi pericolosi: se pensiamo di essere macchine, ci comporteremo come macchine.
- \end{fquote}
+\chapter{Introduzione ai calcolatori}\begin{fquote}[Federico Faggin][2017]Noi che depositeremo in un computer non solo le nostre conoscenze, ma anche memorie, ricordi, emozioni. Addirittura la nostra consapevolezza. E così potremo vivere in eterno. Un'idea non solo assurda, sbagliata, ma che può portare a sviluppi pericolosi: se pensiamo di essere macchine, ci comporteremo come macchine.\end{fquote}
 
 \section{Un po' di storia dell'informatica}
 
@@ -41,12 +40,11 @@ Per ovvi motivi, ogni tipologia di calcolatore è meglio adatta per differenti s
 Ottenere delle buone prestazioni senza eccedere in prezzo e potenza è ciò che decreta il successo commerciale di un prodotto.
 
 \section{Le prestazioni dei calcolatori}
-
 Un buon programmatore, oltre a saper utilizzare degli efficienti paradigmi, deve comprendere la gerarchia di memoria e il concetto di parallelismo; conoscere a fondo il calcolatore è fondamentale.
 Fino a qualche tempo fa, le prestazioni di qualsiasi calcolatore erano in balia della disponibilità di memoria.
 Al giorno d'oggi invece risulta un problema risolto, tranne per qualche criticità per le applicazioni embedded.
 Ecco una lista degli elementi che influenzano le prestazioni del calcolatore e il loro ruolo:
-\begin{itemize}[noitemsep]
+\begin{itemize}
 	\item \emph{algoritmi}: determinano il numero di istruzioni di alto livello e di operazioni di I/O;
 	\item \emph{linguaggi di programmazione, compilatori e architetture}: determinano il numero di istruzioni macchina per ogni istruzione di basso livello;
 	\item \emph{processore e sistema di memoria}: determina quanto velocemente è possibile eseguire ciascuna istruzione;
@@ -57,11 +55,10 @@ Ecco una lista degli elementi che influenzano le prestazioni del calcolatore e i
 
 \paragraph*{La memoria}
 \`{E} possibile classificare la memoria in:
-\begin{itemize}[noitemsep]
+\begin{itemize}
 	\item \emph{volatile}: è costituita da vari banchi di (tipicamente) \(8\) chip di \emph{RAM} dinamica. \`{E} dominata dalle \emph{DRAM};
 	\item \emph{permanente}: è costituita da memorie flash (es. \emph{SSD}), dischi rigidi e CD/DVD.
 \end{itemize}
-
 La prima viene utilizzata per memorizzare dati e programmi mentre vengono eseguiti (per questo motivo viene chiamata anche \emph{memoria principale}): allo spegnimento i dati vengono persi.
 La seconda viene usata per memorizzare grandi quantità di dati e programmi fra esecuzioni diverse.
 
@@ -70,7 +67,7 @@ Il principio di funzionamento dell'hard disk è di magnetizzare delle particelle
 \begin{itemize}[noitemsep]
 	\item i dischi sono organizzati in strutture sovrapposte (cilindri);
 	\item le particelle vengono lette da un dispositivo meccanico (testina) che si sposta radialmente su un braccio (in grado di fare movimenti angolari);
-	\item questa componente rallenta i tempi di accesso ma aumenta al densità di memorizzazione (è possibile arrivare facilmente ai Terabyte).
+	\item questa componente rallenta i tempi di accesso ma aumenta la densità di memorizzazione (è possibile arrivare facilmente ai TeraByte).
 \end{itemize}
 Diversamente dai dischi rigidi elettromeccanici, la memorizzazione su una memoria flash avviene intrappolando una carica elettrica in maniera permanente.
 
@@ -79,21 +76,21 @@ Nei dischi riscrivibili è inoltre presente un particolare substrato che, se ris
 
 \paragraph*{Il processore}
 La \emph{CPU} è l'unità centrale di ogni calcolatore. Si compone principalmente di:
-\begin{itemize}[noitemsep]
+\begin{itemize}
 	\item \emph{datapath}: esegue operazioni aritmetiche sui dati;
 	\item \emph{control unit}: impartisce ordini al datapath, alla memoria e alle componenti I/O, sulla base di quanto stabilito dal programma.
 \end{itemize}
 Ciascun processore dispone di un'\acrfull{isa}, ossia un'interfaccia che permette di utilizzarlo senza conoscerne i dettagli.
 Questa, assieme all'ulteriore interfaccia del sistema operativo, forma l'interfaccia binaria delle applicazioni \acrfull{abi}.
 Ciò permette allo sviluppatore di svincolarsi dal livello hardware sottostante, secondo il principio di \emph{astrazione}. Esistono due diversi tipi di architetture \acrshort{isa}:
-\begin{itemize}[noitemsep]
-	\item \acrshort{risc}: offre un numero ridotto di istruzioni, rivolta soprattutto a sistemi embedded.
+\begin{itemize}
+	\item \acrshort{risc}: offre un numero ridotto di istruzioni, rivolta soprattutto a sistemi embedded;
 	\item \acrshort{cisc}: permette di usufruire di un maggior numero di istruzioni, rivolta prevalentemente ai personal computer.
 \end{itemize}
 
 \subsection{Software di sistema}
 Le principali funzioni che deve svolgere un \emph{sistema operativo}:
-\begin{itemize}[noitemsep]
+\begin{itemize}
 	\item gestione delle operazioni di I/O;
 	\item allocazione della memoria;
 	\item consentire e regolare il multitasking.
@@ -123,8 +120,7 @@ L'immagine viene rappresentata da una matrice di pixel: ciascuno di essi ha asso
 Questa immagine viene memorizzata in un \emph{frame buffer}, una RAM che viene aggiornata fino a \(100\) volte al secondo.
 
 \subsection{Misurazione delle prestazioni}
-I moderni processori sono costruiti usando un segnale periodico che ne sincronizza le operazioni.
-Il \emph{ciclo di clock} è l'intervallo di tempo che intercorre tra due colpi di clock. La frequenza è definita come \(\frac{1}{\text{ciclo di clock}}\). Il ciclo di clock è misurato in secondi, la frequenza in Hertz. Il tempo d'esecuzione di un programma dipende da tre fattori:
+I moderni processori sono costruiti usando un segnale periodico che ne sincronizza le operazioni. Il \emph{periodo di clock} (detto anche ciclo di clock) è l'intervallo di tempo che intercorre tra due colpi di clock. La frequenza è definita come \(\frac{1}{\text{periodo di clock}}\). Il periodo di clock è misurato in secondi, la frequenza in Hertz. Il tempo d'esecuzione di un programma dipende da tre fattori:
 \begin{itemize}[nolistsep]
 	\item il numero di istruzioni dell'algoritmo.
 	\item i cicli di clock per istruzione (\emph{CPI}).
