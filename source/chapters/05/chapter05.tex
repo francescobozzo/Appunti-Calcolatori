@@ -2,6 +2,7 @@
 \usepackage[subpreambles=true]{standalone}
 
 \usepackage{../../style}
+\usepackage{../../set-citations}
 
 \graphicspath{{./assets/images/}}
 
@@ -9,7 +10,8 @@
 % arara: latexmk: { clean: partial }
 %! arara: clean: { extensions: [sta] }
 \begin{document}
-\chapter{Introduzione al linguaggio Assembly}
+\chapter{Introduzione al linguaggio Assembly}\begin{fquote}[Craig Bruce]It's hardware that makes a machine fast. It's software that makes a fast machine slow.
+ \end{fquote}
 
 \section{Perché esiste Assembly}
 

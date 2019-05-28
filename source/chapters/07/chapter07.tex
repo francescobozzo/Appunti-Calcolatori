@@ -2,6 +2,7 @@
 \usepackage[subpreambles=true]{standalone}
 
 \usepackage{../../style}
+\usepackage{../../set-citations}
 
 \graphicspath{{./assets/images/}}
 
@@ -9,7 +10,8 @@
 % arara: latexmk: { clean: partial }
 %! arara: clean: { extensions: [sta] }
 \begin{document}
-\chapter{L'architettura Intel x86}
+\chapter{L'architettura Intel x86}\begin{fquote}[Anonymous]"Do you program in Assembly?", she asked. "NOP", he said.
+ \end{fquote}
 
 \section{Introduzione}
 Le CPU \emph{Intel} della famiglia \emph{x86} si basano su un'architettura di tipo \emph{CISC}. Esse vengono utilizzate principalmente su laptop, desktop e server, a partire dagli anni Settanta. Un'importante complicazione dell'architettura \emph{Intel} è dettata dal mantenimento della retrocompatibilità: le moderne CPU a 64 bit di ultima generazione sono infatti in grado di eseguire il vecchio codice a 8 bit. A differenza del \emph{MIPS} infatti le istruzioni \emph{Intel} non sono codificate in una singola parola, bensì possono occupare da 8 a 64 bit.

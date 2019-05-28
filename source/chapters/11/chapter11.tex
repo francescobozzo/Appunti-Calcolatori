@@ -2,13 +2,15 @@
 \usepackage[subpreambles=true]{standalone}
 
 \usepackage{../../style}
+\usepackage{../../set-citations}
 
 \graphicspath{{./assets/images/}}
 
 % arara: pdflatex: { synctex: yes, shell: yes }
 % arara: latexmk: { clean: partial }
 \begin{document}
-\chapter{Central Processing Unit}
+\chapter{Central Processing Unit}\begin{fquote}[John Lasseter]Computers don't create computer animation any more than a pencil creates pencil animation. What creates computer animation is the artist.
+ \end{fquote}
 
 \section{Introduzione}
 In questo capitolo andremo ad analizzare come il nostro processore elabora ed esegue le istruzioni che gli arrivano dai programmi Assembly; in particolare ci baseremo ancora su MIPS, in quanto super regolare e particolarmente utile a scopo didattico. Per come è stato progettato MIPS le istruzioni presentano dei tratti comuni, in particolare le prime due fasi del ciclo della CPU (vedi~\ref{subsec:cpu}): il prelievo dell'istruzione e la lettura dei valori dei registri operandi sono comuni a ogni istruzione.

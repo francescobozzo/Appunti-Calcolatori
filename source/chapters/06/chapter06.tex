@@ -2,6 +2,7 @@
 \usepackage[subpreambles=true]{standalone}
 
 \usepackage{../../style}
+\usepackage{../../set-citations}
 
 \graphicspath{{./assets/images/}}
 \newmintinline{asm}{}
@@ -10,7 +11,8 @@
 % arara: latexmk: { clean: partial }
 %! arara: clean: { extensions: [sta] }
 \begin{document}
-\chapter{L'architettura MIPS}
+\chapter{L'architettura MIPS}\begin{fquote}[Jeff Duntemann][Assembly Language Step-by-Step: Programming with DOS and Linux]Assembly programmers are the only programmers who can truly claim to be the masters, and that's a truth worth meditating on.
+ \end{fquote}
 
 Dopo la breve introduzione del precedente capitolo, affronteremo ora lo studio dell'architettura \emph{MIPS}; iniziamo con questa perché, seppur non molto diffusa, è molto simile ad altre architetture che vedremo in seguito (soprattutto ARM), ed è quindi propedeutica.
 
