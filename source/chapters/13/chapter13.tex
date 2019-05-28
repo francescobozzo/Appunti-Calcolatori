@@ -35,11 +35,11 @@ Possiamo distinguere principalmente due tipologie di memoria in base alla modali
 A seguire un elenco di definizioni che utilizzeremo in seguito.
 \begin{itemize}
 	\item \emph{Tempo di accesso}: è il tempo richiesto per \emph{una} operazione di lettura / scrittura nella memoria;
-	\item \emph{Tempo di ciclo}: è il tempo che intercorre fra l'inizio di due istruzioni consecutive; è composto dal tempo di accesso sommato al tempo per muovere il dato con cui si stava lavorando;
+	\item \emph{Tempo di ciclo}: è il tempo che intercorre fra l'inizio di due istruzioni consecutive; è composto dal tempo di accesso sommato al tempo di transito del dato con cui si lavora;
 	\item \emph{Latenza}: è il tempo di acceso ad una singola parola; indica quanto il processore dovrebbe poter aspettare un dato dalla memoria nel caso peggiore;
-	\item \emph{Velocità o "banda"}: velocità di trasferimento massima in FPM; oltre ad essere importante per le operazioni FPM che sono legate all'utilizzo della memoria cache interne ai processori, è significativa per le operazioni in DMA (ossia quando un dispositivo periferico viene collegato alla memoria senza passare per il processore);
+	\item \emph{Velocità o "banda"}: velocità di trasferimento massima in FPM\footnote{Fast Page Mode, per la definizione si guardi la sezione ~\ref{sec:FPM}.}; oltre ad essere importante per le operazioni FPM che sono legate all'utilizzo della memoria cache interne ai processori, è significativa per le operazioni in DMA (ossia quando un dispositivo periferico viene collegato alla memoria senza passare per il processore);
 	\item \emph{Accesso casuale}: è quella modalità di accesso in cui non vi è alcun ordine o relazione fra i dati memorizzati; è tipico delle memorie a semiconduttori;
-	\item \emph{Accesso sequenziale}: è quella modalità che presuppone lo scorrimento ordinato di un blocco di dati per accere ad un suo dato; il tempo d'accesso dipende dalla posizione fisica del dato nel supporto (tipicamente nastri e dischi);
+	\item \emph{Accesso sequenziale}: è quella modalità che presuppone lo scorrimento ordinato di un blocco di dati per accedere ad un suo dato; il tempo d'accesso dipende dalla posizione fisica del dato nel supporto (tipicamente nastri e dischi);
 	\item \emph{RAM} (\emph{Random Access Memory}): è una memoria dotata di accesso casuale che permette scrittura e lettura; viene implementata attraverso semiconduttori;
 	\item \emph{ROM} (\emph{Read Only Memory}): è una memoria a semiconduttori che prevede solo un accesso in lettura; esistono implementazioni sia attraverso accesso casuale che sequenziale
 \end{itemize}
@@ -60,7 +60,7 @@ Esistono principalmente 3 bus che permettono di far comunicare il processore con
 \end{itemize}
 Si noti che il \emph{MAR} è stato rappresentato da una freccia unidirezionale: dopo aver definito l'indirizzo di memoria su cui lavorare, infatti il processore non si aspetta il risultato. Vengono gestiti diversamente i bus di controllo e \emph{MDR}, i quali sono rappresentati con una freccia bidirezionale, in quanto sia la memoria che la CPU possono occupare il ruolo di mittente del messaggio.
 
-Una memoria \emph{RAM} a semiconduttori principalmente memorizza singoli bit, memorizzati normalmente in gruppi di byte e/o word per motivi di efficienza. La memoria non necessariamente deve essere strutturata singolarmente: è possibile che sia suddivisa in diversi blocchi, al fine di favorire il parallelismo (si noti comunque che la dimensione complessiva della memoria non varia se presa in un unico blocco o se separata. Si ricorda che l'organizzazione di una memoria influenza il numero di pin di I/O del circuito integrato: più saranno, più aumenterà il costo.
+Una memoria \emph{RAM} a semiconduttori principalmente immagazzina singoli bit, memorizzati normalmente in gruppi di byte e/o word per motivi di efficienza. La memoria non necessariamente deve essere strutturata monoliticamente: è possibile che sia suddivisa in diversi blocchi, al fine di favorire il parallelismo (si noti comunque che la dimensione complessiva della memoria non varia se presa in un unico blocco o se separata. Si ricorda che l'organizzazione di una memoria influenza il numero di pin di I/O del circuito integrato: più saranno, più aumenterà il costo.
 
 \subsubsection{Organizzazione dei bit in un banco di memoria 16x8}
 \begin{figure}[H]
@@ -89,7 +89,7 @@ Il funzionamento che sta alla base di una cella di SRAM è quello del flip flop 
 \end{figure}
 
 Nell'immagine, \(\textrm{T}_1\) e \(\textrm{T}_2\) sono due transistor\footnote{Attraverso gli ultimi ritrovati dell'ingeneria, è possibile realizzare dei transistor nell'ordine di grandezza dei nanometri}: in base al variare della tensione nel loro \emph{gate} (ossia il collegamento inferiore) permettono o meno il passaggio di corrente fra i rami laterali. Il funzionamento ricorda molto quello di un interruttore: se il gate ha ua tensione pari a Vdd, allora il circuito viene chiuso, altrimenti rimane aperto. Si noti che se la linea della word è bassa, allora gli interruttori \(\textrm{T}_1\) e \(\textrm{T}_2\) sono aperti: il consumo è praticamente nullo.\\
-Dunque, nel caso venga chiuso il circuito, è possibile effettuare delle operazioni di lettura e di scrittura (gestite dal \emph{Sense/Write circuit}). Invece, nel caso in cui il circuito venisse aperto, la corrente circola solamente all'interno del latch a doppio NOT. La presenza di due NOT, permette di rinforzare il risultato e ridurre il tasso di errore, in quanto si vuole controllare la coerenza delle informazioni sia col segnale \emph{b} che col segnale \emph{b'} (si ricorda che \emph{b} contiene il segnale asserito, mentre \emph{b'} contiene il segnale negato: \emph{b}\(= NOT\)\emph{b'}).
+Dunque, nel caso venga chiuso il circuito, è possibile effettuare delle operazioni di lettura e di scrittura (gestite dal \emph{Sense/Write circuit}). Invece, nel caso in cui il circuito venisse aperto, la corrente circola solamente all'interno del latch a doppio NOT. La presenza di due NOT, permette di rinforzare il risultato e ridurre il tasso di errore, in quanto si vuole controllare la coerenza delle informazioni sia col segnale \emph{b} che col segnale \emph{b'} (si ricorda che \emph{b} contiene il segnale asserito, mentre \emph{b'} contiene il segnale negato: \emph{b}\(=\)\emph{\(\overline{b'}\)}.
 
 \subsection{Le DRAM}
 Le \emph{DRAM}, ossia le RAM dinamiche, sono le memorie più diffuse nei computer. Sono dotate di costi molto contenuti e di un'elevatissima densità, dovuta al fatto di dover impiegare un solo componente per ogni singola cella di memoria. Il concetto che sta alla base della DRAM è un circuito RC (la resistenza è quella data dal filo): la capacità di memorizzazione viene ottenuta attraverso la carica di un condensatore. Presentano però un difetto, che comporta consumi molto elevati: la cella di memoria necessita di un refresh continuo, altrimenti il proprio contenuto svanisce a causa delle correnti parassite.
@@ -100,7 +100,9 @@ Le \emph{DRAM}, ossia le RAM dinamiche, sono le memorie più diffuse nei compute
 	\caption{DRAM: memorizzazione di un bit}
 \end{figure}
 
-Nell'immagine \(\textrm{T}\) è un transistor: svolge una funzione di interruttore, in quanto permette collegare o meno il circuito RC alla bit line e alla word line. Se il circuito viene chiuso il condensatore viene caricato, altrimenti si scarica (ricordiamo che il processo di carica/scarica di un condensatore è esponenziale). Si ricorda che se non viene attivata la bit line o la word line, allora il circuito RC è scollegato, con la conseguente scarica del condensatore a causa della resistenza applicata. Dunque, se si vuole mantenere in memoria il dato 1, c'è la necessità di continuare a scrivere 1 nella cella di memoria ad ogni intervallo \(t_0\), altrimenti la scarica del condensatore annullerebbe il valore. Se il valore che si vuole memorizzare è 0, basta semplicemente lasciare disattivato il circuito (attenzione ad avergli lasciato il tempo necessario affinché si scarichi). Dunque per "refreshare" la memoria basta fare un ciclo di lettura: questo processo viene eseguito da un circuito di refresh, in maniera tale che l'utente non si debba programmare di questo meccanismo.
+Nell'immagine \(\textrm{T}\) è un transistor: svolge una funzione di interruttore, in quanto permette collegare o meno il circuito RC alla bit line e alla word line. Se il circuito viene chiuso il condensatore viene caricato, altrimenti si scarica (ricordiamo che il processo di carica/scarica di un condensatore è esponenziale). Si ricorda che se non viene attivata la bit line o la word line, allora il circuito RC è scollegato, con la conseguente scarica del condensatore a causa della resistenza applicata. Dunque, se si vuole mantenere in memoria il dato 1, c'è la necessità di continuare a scrivere 1 nella cella di memoria ad ogni intervallo \(t_0\), altrimenti la scarica del condensatore annullerebbe il valore. Se il valore che si vuole memorizzare è 0, basta semplicemente lasciare disattivato il circuito (attenzione ad avergli lasciato il tempo necessario affinché si scarichi). Dunque per "refreshare" la memoria basta fare un ciclo di lettura: questo processo viene eseguito da un circuito di refresh, in maniera tale che l'utente non si debba preoccupare di questo meccanismo.
+
+Si noti che nelle memorie DRAM non è implementato il latch a doppio NOT.
 
 Solitamente si può considerare un condensatore scarico nel momento in cui la tensione ai suoi capi è inferiore a \(\frac{\textrm{Vdd}}{2}\). Vediamo nelle seguenti immagini dei grafici di carica e scarica del consensatore.
 
@@ -115,7 +117,7 @@ Facciamo un salto indietro di astrazione. L'immagine rappresenta l'organizzazion
 \end{figure}
 Si noti che sono stati inseriti due circuiti: \emph{row address latch} e \emph{column address latch}, che rispettivamente ricevono in input i codici di controllo \emph{\(\overline{RAS}\)} e \emph{\(\overline{CAS}\)}. Queste due linee di controllo permettono di decidere, in base al loro input, se è possibile accedere ad una riga/colonna.
 
-\subsubsection{Fast Page Mode (FPM)}
+\subsubsection{Fast Page Mode (FPM)}\label{sec:FPM}
 Solitamente i trasferimenti da/per la memoria avvengono a blocchi piuttosto che per singole celle. Ciò comporta un notevole risparmio di tempo, in quanto sarebbe necessario solo un unico indirizzamento per le righe e colonne. Questo processo viene chiamato \emph{fast page mode} (\emph{FPM}). Si sottolinea che questa modalità è del tutto automatica: l'utente non deve preoccuparsi di gestire questo meccanismo.
 
 \subsubsection{Le DRAM sincrone}
@@ -130,7 +132,7 @@ Nella prossima immagine è possibile visualizzare un accesso sincrono in FPM:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{FPM.png}
-	\caption{Funzionamento first page mode}
+	\caption{Funzionamento fast page mode}
 \end{figure}
 dove il segnale di clock rappresentato è quello della memoria RAM: le operazioni di lettura e scrittura sono sincronizzate col fronte di salita; D0, D1, D2, D3 sono i byte che arrivano in serie; i valori rimanenti sono le linee di controllo.
 
@@ -168,7 +170,7 @@ La cache (dal francese \emph{caché}, participio passato del verbo \emph{cacehr}
 Forniamo ora una breve carrellata di definizioni cui bisogna prendere familiarità per affrontare la seguente sezione.
 \begin{itemize}
   \item \emph{Blocco}: unità minima dell'informazione che può essere presente o assente in un livello superiore a quello di riferimento.
-  \item \emph{Hit rate}: frequenza di successo, ossia il rapporto tra il numero di accessi al livello superiore in cui trovo il dato e il numero di quelli in cui non lo trovo.
+  \item \emph{Hit rate}: frequenza di successo, ossia il rapporto tra il numero di accessi al livello superiore in cui trovo il dato e il numero totale di accessi che compio.
   \item \emph{Miss rate}: \(1 - \textrm{\emph{hit rate}}\), frequenza degli insuccessi.
   \item \emph{Hit time}: tempo che occorre a leggere il dato una volta individuato il blocco al livello superiore.
   \item \emph{Miss penalty}: tempo che occorre ad accedere al dato se non trovo il blocco al livello superiore.
