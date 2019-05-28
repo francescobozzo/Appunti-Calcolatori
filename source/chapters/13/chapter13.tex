@@ -165,7 +165,7 @@ Al di là dei dati un po' desueti\footnote{Verrebbe quasi da dire che fanno ride
 La cache (dal francese \emph{caché}, participio passato del verbo \emph{cacehr}, "nascondere") è una memoria molto vicina al processore e invisibile al programmatore; dopo essere stata sperimentata negli anni '70 è diventata parte della progettazione di ogni tipo di calcolatore.
 
 \subsection*{Altre definizioni}
-Forniamo ora una breve carrellata di definizioni utili alla prossima sezione.
+Forniamo ora una breve carrellata di definizioni cui bisogna prendere familiarità per affrontare la seguente sezione.
 \begin{itemize}
   \item \emph{Blocco}: unità minima dell'informazione che può essere presente o assente in un livello superiore a quello di riferimento.
   \item \emph{Hit rate}: frequenza di successo, ossia il rapporto tra il numero di accessi al livello superiore in cui trovo il dato e il numero di quelli in cui non lo trovo.
@@ -189,7 +189,7 @@ Se per esempio abbiamo una cache di 8 parole dobbiamo prendere i 3 bit meno sign
   \includegraphics[width=0.8\textwidth,keepaspectratio]{logad.png}
   \caption Esempio di mappatura da memoria a cache
 \end{figure}
-Dal momento che molte parole in memoria possono ritrovarsi mappate nel medesimo blocco di cache sarà necessario ricorrere a dei \emph{tag} identificativi; i bit non utilizzati per l'indirizzamento adempiscono egregiamente allo scopo. L'ultimo elemento che vediamo è un cosiddetto \emph{bit di validità}, che ci dice se quello che in un dato momento abbiamo memorizzato in un blocco di cache sia valido o meno.
+Dal momento che molte parole in memoria possono ritrovarsi mappate nel medesimo blocco di cache sarà necessario ricorrere a dei \emph{tag} identificativi; i bit non utilizzati per l'indirizzamento adempiscono egregiamente allo scopo. L'ultimo elemento che vediamo è un cosiddetto \emph{bit di validità}, fornito dal gestore della cache (quindi non prelevato dall'indirizzo del blocco) che ci dice se quello che in un dato momento abbiamo memorizzato in un blocco di cache sia valido o meno.
 
 \subsection{La cache in MIPS}
 Adesso mostriamo un esempio di come viene gestita la cache in Assembly MIPS. Assumiamo le seguenti informazioni:
@@ -240,17 +240,17 @@ La figura sottostante mostra come varia la frequenza delle miss (asse \(y\)) in 
 
 \subsection{Gestione delle miss}
 Fintantoché non avviene una miss il funzionamento di una CPU con pipeline non viene influenzato dalla presenza della cache, ma quando una di queste viene riscontrata è necessario bloccare temporaneamente il flusso della pipeline e gestire il trasferimento dei dati dalla memoria principale alla cache. Vediamo come viene gestita una miss sulla memoria istruzioni.
-\begin{itemize}
+\begin{enumerate}
   \item Inizialmente bisogna raddrizzare il program counter; ricordiamo che questo viene incrementato di \(4\) all'inizio di ogni istruzione, quindi l'eventuale miss sarà su \(PC-4\), e questo sarà infatti il valore che dobbiamo inviare alla memoria.
   \item Dobbiamo inviare alla memoria il comando di eseguire una lettura ed attenderne il completamento.
   \item A questo punto dobbiamo scrivere il dato proveniente dalla memoria in cache e aggiornarne i tag.
   \item Infine possiamo rieseguire il fetch e trovare adesso l'istruzione in cache al posto giusto.
-\end{itemize}
+\end{enumerate}
 
 \subsection{Scritture}
-Se gli accessi in lettura avvengono con la logica precedente, quelli in scrittura sono più delicati e potrebbero causare problemi di consistenza (cosa vuol dire? to be asked).
+Se gli accessi in lettura avvengono con la logica precedente, quelli in scrittura sono più delicati e potrebbero causare problemi di consistenza, ossia potrei avere situazioni in cui si genera un disallineamento tra i dati presenti in memoria e quelli presenti nella memoria principale.
 \begin{itemize}
-  \item Un sistema che possiamo adoperare per arginare questo problema è il cosiddetto \emph{write-through}, che consiste nel fatto che ogni scrittura viene effettuata direttamente in memoria principale, a prescindere dal fatto che ci sia o meno una miss. In questo modo avrò cache e memoria sempre aggiornati, ma ben si capisce che si tratta di un'operazione costosa; un buona aggiunta potrebbe essere un buffer di scrittura, una sorta di "coda" dove tutte le scritture vengono messe in attesa.
+  \item Un sistema che possiamo adoperare per arginare questo problema è il cosiddetto \emph{write-through}, che consiste nel fatto che ogni scrittura viene effettuata direttamente in memoria principale, a prescindere dal fatto che ci sia o meno una miss. In questo modo avrò cache e memoria sempre aggiornati, ma ben si capisce che si tratta di un'operazione costosa; un buona aggiunta potrebbe essere un buffer di scrittura, una sorta di "coda" dove tutte le scritture vengono messe in attesa, che ci permette quindi di accorpare il maggior numero di operazioni possibile e mantenere cache e memoria sempre allineate.
   \item Una seconda soluzione potrebbe essere la cosiddetta \emph{write-back}: se il blocco richiesto è già presente in cache allora ogni scrittura verrà fatta solo localmente e la cache viene aggioranta solo quando si cambia il blocco di riferimento (oppure quando un secondo processore tenta di accedere allo stesso blocco); chiaramente questa soluzione è pensata in situazioni molto affollate, quanto il processore non riesce a processare in mofo efficiente le molte scritture richieste.
 \end{itemize}
 
@@ -259,6 +259,10 @@ Mostriamo qui come esempio \emph{FastMath}, una cache basata su MIPS che dispone
   \centering
   \includegraphics[width=0.9\textwidth,keepaspectratio]{astmips}
 \end{figure}
+\begin{itemize}
+  \item Notiamo in basso a sinistra una porta AND: questa prenderà in input il bit di validità e il tag del blocco selezionato, e il risultato in output determinerà se avremo conseguito una \emph{hit} oppure no.
+  \item Infine osserviamo un multiplexer in cui confluiscono tutte le \(16\) parole del blocco; per determinare quale word debba andare in output viene impiegato come segnale di controllo un offset dall'indirizzo del blocco di cache.
+\end{itemize}
 
 \section{Cache associative}
 Le cache a mappatura diretta sono piuttosto semplici da realizzare, tuttavia presentano un problema: se ho spesso bisogno di locazioni di memoria che si mappano sullo stesso blocco, ho cache miss in continuazione.
