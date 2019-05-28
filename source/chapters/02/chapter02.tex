@@ -183,7 +183,7 @@ Lo standard più comunemente utilizzato è l'IEEE 754 che, nei numeri \emph{floa
 
 
 Il bit di segno ha la funzione che già conosciamo, mentre il campo \(E\) può contenere valori compresi tra 0 e 255 (se non si tratta di un \emph{float} a precisione singola i valori sono compresi tra 0 e \(2^{e-1}-1\))% ($-2^{e-1}+1 < E \le 2^{e-1}-1$)
-; questi ultimi due valori vengono utilizzati per funzioni speciali, mentre i valori da 1 a 254 compresi codificano l'\emph{esponente effettivo dei calcoli}, che diremo \emph{exp}\footnote{La notazione \emph{exp} è stata introdotta da noi autori della dispensa perchè ci è sembrata più chiara ed agile di quella utilizzata nelle slides, chiediamo venia se questo genererà confusione.}, in questo modo:
+; questi ultimi due valori vengono utilizzati per funzioni speciali, mentre i valori da 1 a 254 compresi codificano l'\emph{esponente effettivo dei calcoli}, che diremo \emph{exp}\footnote{La notazione \emph{exp} è stata introdotta da noi autori della dispensa perché ci è sembrata più chiara ed agile di quella utilizzata nelle slides, chiediamo venia se questo genererà confusione.}, in questo modo:
 \begin{equation*}
 	exp=E-(2^{e-1}-1)
 \end{equation*}

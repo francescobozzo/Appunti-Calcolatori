@@ -13,7 +13,7 @@
  \end{fquote}
 
 \section{Introduzione}
-Sottolineare quanto il concetto di memoria sia importante e necessario nei dispositivi elettronici del giorno d'oggi risulta abbastanza scontato. D'altra parte, viene fatta subito una precisazione: non esiste un'unica soluzione che permette di ottenere la memoria "perfetta". Esistono infatti diverse implementazioni, ognuna con i suoi compromessi, che variano per costo, prestazioni e capacità.
+Sottolineare quanto il concetto di memoria sia importante e necessario nei dispositivi elettronici del giorno d'oggi risulta abbastanza scontato. D'altra parte, viene fatta subito una precisazione: non esiste un'unica soluzione che permette di ottenere la memoria "perfetta"; esistono infatti diverse implementazioni, ognuna con i suoi compromessi, che variano per costo, prestazioni e capacità.
 
 \subsection*{Qualche definizione}
 Possiamo distinguere principalmente due tipologie di memoria in base alla modalità di accesso:
@@ -37,7 +37,7 @@ A seguire un elenco di definizioni che utilizzeremo in seguito.
 	\item \emph{Tempo di accesso}: è il tempo richiesto per \emph{una} operazione di lettura / scrittura nella memoria;
 	\item \emph{Tempo di ciclo}: è il tempo che intercorre fra l'inizio di due istruzioni consecutive; è composto dal tempo di accesso sommato al tempo di transito del dato con cui si lavora;
 	\item \emph{Latenza}: è il tempo di acceso ad una singola parola; indica quanto il processore dovrebbe poter aspettare un dato dalla memoria nel caso peggiore;
-	\item \emph{Velocità o "banda"}: velocità di trasferimento massima in FPM\footnote{Fast Page Mode, per la definizione si guardi la sezione ~\ref{sec:FPM}.}; oltre ad essere importante per le operazioni FPM che sono legate all'utilizzo della memoria cache interne ai processori, è significativa per le operazioni in DMA (ossia quando un dispositivo periferico viene collegato alla memoria senza passare per il processore);
+	\item \emph{Velocità o "banda"}: velocità di trasferimento massima in FPM\footnote{Fast Page Mode, per la definizione si guardi la sezione~\ref{sec:FPM}.}; oltre ad essere importante per le operazioni FPM che sono legate all'utilizzo della memoria cache interne ai processori, è significativa per le operazioni in DMA (ossia quando un dispositivo periferico viene collegato alla memoria senza passare per il processore);
 	\item \emph{Accesso casuale}: è quella modalità di accesso in cui non vi è alcun ordine o relazione fra i dati memorizzati; è tipico delle memorie a semiconduttori;
 	\item \emph{Accesso sequenziale}: è quella modalità che presuppone lo scorrimento ordinato di un blocco di dati per accedere ad un suo dato; il tempo d'accesso dipende dalla posizione fisica del dato nel supporto (tipicamente nastri e dischi);
 	\item \emph{RAM} (\emph{Random Access Memory}): è una memoria dotata di accesso casuale che permette scrittura e lettura; viene implementata attraverso semiconduttori;
@@ -60,7 +60,7 @@ Esistono principalmente 3 bus che permettono di far comunicare il processore con
 \end{itemize}
 Si noti che il \emph{MAR} è stato rappresentato da una freccia unidirezionale: dopo aver definito l'indirizzo di memoria su cui lavorare, infatti il processore non si aspetta il risultato. Vengono gestiti diversamente i bus di controllo e \emph{MDR}, i quali sono rappresentati con una freccia bidirezionale, in quanto sia la memoria che la CPU possono occupare il ruolo di mittente del messaggio.
 
-Una memoria \emph{RAM} a semiconduttori principalmente immagazzina singoli bit, memorizzati normalmente in gruppi di byte e/o word per motivi di efficienza. La memoria non necessariamente deve essere strutturata monoliticamente: è possibile che sia suddivisa in diversi blocchi, al fine di favorire il parallelismo (si noti comunque che la dimensione complessiva della memoria non varia se presa in un unico blocco o se separata. Si ricorda che l'organizzazione di una memoria influenza il numero di pin di I/O del circuito integrato: più saranno, più aumenterà il costo.
+Una memoria \emph{RAM} a semiconduttori principalmente immagazzina singoli bit, memorizzati normalmente in gruppi di byte e/o word per motivi di efficienza. La memoria non necessariamente deve essere strutturata monoliticamente: è possibile che sia suddivisa in diversi blocchi, al fine di favorire il parallelismo; si noti comunque che la dimensione complessiva della memoria non varia se presa in un unico blocco o se separata. Si ricorda che l'organizzazione di una memoria influenza il numero di pin di I/O del circuito integrato: più saranno, più aumenterà il costo.
 
 \subsubsection{Organizzazione dei bit in un banco di memoria 16x8}
 \begin{figure}[H]
@@ -72,7 +72,7 @@ Il caso presentato descrive il funzionamento di un banco di memoria formato da 1
 \begin{enumerate}
 	\item In base alla riga da selezionare, l'\emph{address decoder} genera un 1 nell'uscita della riga corrispondente;
 	\item Avviene un meccanismo simile anche per le colonne, attraverso il \emph{circuit select}, che decide se abilitare ciascuna colonna;
-	\item Ogni colonna è gestita da un \emph{Sense/Write circuit} che riceve in input due linee di controllo: una definisce se eseguire l'operazione di lettura o scrittura (\emph{\(\textrm{R/}\overline{W}\)}) mentre l'altra (\emph{CS}) definisce se attivare o meno la colonna. Nel caso di una read, legge il valore contenuto nel bus della colonna (1 byte nel nostro esempio), altrimenti, nel caso di write, fa circolare il valore che si vuole scrivere nel bus della colonna. Per avere certezza dell'integrità dei dati, viene propagato sia il dato stesso che si vuole scrivere, che il suo negato. Ad esempio, nella colonna 0, \(b_0\) contiene il dato asserito, mentre \(b'_0\) contiene il dato negato;
+	\item Ogni colonna è gestita da un \emph{Sense/Write circuit} che riceve in input due linee di controllo: una definisce se eseguire l'operazione di lettura o scrittura (\emph{\(\textrm{R/}\overline{W}\)}) mentre l'altra (\emph{CS}) definisce se attivare o meno la colonna. Nel caso di una read, legge il valore contenuto nel bus della colonna (1 byte nel nostro esempio), altrimenti, nel caso di write, fa circolare il valore che si vuole scrivere nel bus della colonna. Per avere certezza dell'integrità dei dati viene propagato sia il dato stesso che si vuole scrivere che il suo negato. Ad esempio, nella colonna 0, \(b_0\) contiene il dato asserito, mentre \(b'_0\) contiene il dato negato;
 	\item In base a com'è stata implementata la memoria (\emph{SRAM} o \emph{DRAM}), viene attivata la cella selezionata dalla colonna e dalla riga designata: su di essa verrà eseguita l'operazione di lettura/scrittura richiesta.
 \end{enumerate}
 
@@ -88,11 +88,12 @@ Il funzionamento che sta alla base di una cella di SRAM è quello del flip flop 
 	\caption{SRAM: memorizzazione di un bit}
 \end{figure}
 
-Nell'immagine, \(\textrm{T}_1\) e \(\textrm{T}_2\) sono due transistor\footnote{Attraverso gli ultimi ritrovati dell'ingegneria, è possibile realizzare dei transistor nell'ordine di grandezza dei nanometri.}: in base al variare della tensione nel loro \emph{gate} (ossia il collegamento inferiore) permettono o meno il passaggio di corrente fra i rami laterali. Il funzionamento ricorda molto quello di un interruttore: se il gate ha ua tensione pari a Vdd, allora il circuito viene chiuso, altrimenti rimane aperto. Si noti che se la linea della word è bassa, allora gli interruttori \(\textrm{T}_1\) e \(\textrm{T}_2\) sono aperti: il consumo è praticamente nullo.\\
-Dunque, nel caso venga chiuso il circuito, è possibile effettuare delle operazioni di lettura e di scrittura (gestite dal \emph{Sense/Write circuit}). Invece, nel caso in cui il circuito venisse aperto, la corrente circola solamente all'interno del latch a doppio NOT. La presenza di due NOT, permette di rinforzare il risultato e ridurre il tasso di errore, in quanto si vuole controllare la coerenza delle informazioni sia col segnale \emph{b} che col segnale \emph{b'} (si ricorda che \emph{b} contiene il segnale asserito, mentre \emph{b'} contiene il segnale negato: \emph{b}\(=\)\emph{\(\overline{b'}\)}.
+Nell'immagine, \(\textrm{T}_1\) e \(\textrm{T}_2\) sono due transistor\footnote{Attraverso gli ultimi ritrovati dell'ingegneria, è possibile realizzare dei transistor nell'ordine di grandezza dei nanometri.}: in base al variare della tensione nel loro \emph{gate} (ossia il collegamento inferiore) permettono o meno il passaggio di corrente fra i rami laterali. Il funzionamento ricorda molto quello di un interruttore: se il gate ha ua tensione pari a Vdd, allora il circuito viene chiuso, altrimenti rimane aperto. Si noti che se la linea della word è bassa, allora gli interruttori \(\textrm{T}_1\) e \(\textrm{T}_2\) sono aperti e il consumo è praticamente nullo.
+
+Dunque, nel caso venga chiuso il circuito, è possibile effettuare delle operazioni di lettura e di scrittura (gestite dal \emph{Sense/Write circuit}). Invece, nel caso in cui il circuito venisse aperto, la corrente circola solamente all'interno del latch a doppio NOT. La presenza di due NOT permette di rinforzare il risultato e ridurre il tasso di errore, in quanto si vuole controllare la coerenza delle informazioni sia col segnale \emph{b} che col segnale \emph{b'} (si ricorda che \emph{b} contiene il segnale asserito, mentre \emph{b'} contiene il segnale negato: \emph{b}\(=\)\emph{\(\overline{b'}\)}.
 
 \subsection{Le DRAM}
-Le \emph{DRAM}, ossia le RAM dinamiche, sono le memorie più diffuse nei computer. Sono dotate di costi molto contenuti e di un'elevatissima densità, dovuta al fatto di dover impiegare un solo componente per ogni singola cella di memoria. Il concetto che sta alla base della DRAM è un circuito RC (la resistenza è quella data dal filo): la capacità di memorizzazione viene ottenuta attraverso la carica di un condensatore. Presentano però un difetto, che comporta consumi molto elevati: la cella di memoria necessita di un refresh continuo, altrimenti il proprio contenuto svanisce a causa delle correnti parassite.
+Le \emph{DRAM}, ossia le RAM dinamiche, sono le memorie più diffuse nei computer. Sono dotate di costi molto contenuti e di un'elevatissima densità, dovuta al fatto di dover impiegare un solo componente per ogni singola cella di memoria. Il concetto che sta alla base della DRAM è un circuito RC (la resistenza è quella data dal filo): la capacità di memorizzazione viene ottenuta attraverso la carica di un condensatore. Presentano però un difetto che comporta consumi molto elevati: la cella di memoria necessita di un refresh continuo, altrimenti il proprio contenuto svanisce a causa delle correnti parassite.
 
 \begin{figure}[H]
 	\centering
@@ -109,7 +110,7 @@ Solitamente si può considerare un condensatore scarico nel momento in cui la te
 % TODO grafici di carica e scarica del condensatore
 
 \subsubsection{La multiplazione dei indirizzi}
-Facciamo un salto indietro di astrazione. L'immagine rappresenta l'organizzazione di una DRAM. A è l'indirizzo con cui si inidicizza un dato in memoria: dalla posizione 20 a 9 definisce il valore da dare in input al decoder delle righe, dalla posizione 8 alla 0 definisce il valore da dare al decoder delle colonne. Questa DRAM è caratterizzata da 4096 (\(2^{12}\), dove 12 rappresenta il numeri di bit di A per indirizzare la riga) righe e 512 (\(2^9\), dove 9 rappresenta il numero di bit di A per indirizzare la colonna) colonne:
+Facciamo un salto indietro di astrazione. L'immagine rappresenta l'organizzazione di una DRAM. \(A\) è l'indirizzo con cui si inidicizza un dato in memoria: dalla posizione 20 a 9 definisce il valore da dare in input al decoder delle righe, dalla posizione 8 alla 0 definisce il valore da dare al decoder delle colonne. Questa DRAM è caratterizzata da 4096 (\(2^{12}\), dove 12 rappresenta il numeri di bit di A per indirizzare la riga) righe e 512 (\(2^9\), dove 9 rappresenta il numero di bit di A per indirizzare la colonna) colonne:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{organizzazione_generale.png}
@@ -137,7 +138,7 @@ Nella prossima immagine è possibile visualizzare un accesso sincrono in FPM:
 dove il segnale di clock rappresentato è quello della memoria RAM: le operazioni di lettura e scrittura sono sincronizzate col fronte di salita; D0, D1, D2, D3 sono i byte che arrivano in serie; i valori rimanenti sono le linee di controllo.
 
 \subsubsection{Double Data Rate SDRAM (DDR-SDRAM)}
-Un ulteriore miglioramento è effettuato dalla \emph{DDR-SDRAM} (\emph{Double Data Rate SDRAM}): essa permette il trasferimento dei dati sia sul fronte di salita che sul fronte di discesa del clock della memoria. In poche parole ciò permette di raddoppiare le prestazioni rispetto ad una normale SDRAM: seppur la latenza rimane invariata, la banda viene raddoppiata.
+Un ulteriore miglioramento è effettuato dalla \emph{DDR-SDRAM} (\emph{Double Data Rate SDRAM}): essa permette il trasferimento dei dati sia sul fronte di salita che sul fronte di discesa del clock della memoria. In poche parole ciò permette di raddoppiare le prestazioni rispetto ad una normale SDRAM, e nonostante la latenza rimanga invariata, la banda viene raddoppiata.
 
 Sono ottenute organizzando la memoria in due banchi separati: uno contiene le posizioni pari (a cui si accede durante il fronte di salita), l'altro contiene quelle dispari (a cui si accede durante il fronte di discesa). Locazioni contingue risultano divise fra i due banchi: grazie a qusto è possibile effettuare un accesso in modo interlacciato.
 
@@ -200,7 +201,7 @@ Adesso mostriamo un esempio di come viene gestita la cache in Assembly MIPS. Ass
   \item gli indirizzi sono vettori di 32 bit, naturalmente;
   \item la cache seguirà il criterio della mappatura diretta prima descritto;
   \item la cache avrà dimensione \(2^{n}\) blocchi, di cui \(n\) bit usati per l'indice di ogni blocco;
-  \item il blocco di cache sarà composto di \(2^{m}\) parole, ossia \(2^{m+2}\) bit;
+  \item il blocco di cache sarà composto di \(2^{m}\) parole, ossia \(2^{m+2}\) bit\footnote{La ragione di quel \(m + 2\) è naturalmente nel fatto che le parole sono sempre linee di 4 bytes, per cui il loro numero va sempre moltiplicato per \(4\), ossia \(2^{2}\); vediamo i \(2\) bit riservati a questo offset anche nell'immagine sottostante.};
   \item la dimensione del \emph{tag} sarà di \(32-(n+m+2)\) bit.
 \end{itemize}
 Si analizzi attentamente la seguente immagine, tenendo presente che \(n=10\) e \(m=0\), quindi la dimensione del \emph{tag} è di \(20\) bit.
@@ -269,7 +270,7 @@ Mostriamo qui come esempio \emph{FastMath}, una cache basata su MIPS che dispone
 
 \section{Cache associative}
 Le cache a mappatura diretta sono piuttosto semplici da realizzare, tuttavia presentano un problema: se ho spesso bisogno di locazioni di memoria che si mappano sullo stesso blocco di cache\footnote{Ricordiamo che questo significa che tali blocchi sono congrui in modulo \(n\).}, ho cache miss in continuazione.
-Proprio per gestire queste situazioni è nata l'implementazione della cache completamente associativa, ovvero una cache in cui posso mappare qualsiasi blocco di memoria in qualsiasi blocco di cache.
+Proprio per gestire queste situazioni è nata l'implementazione della cache completamente associativa.
 
 \subsection{Cache completamente associativa}
 Una cache completamente associativa è una cache in cui ogni blocco della memoria può essere mappato in un qualsiasi blocco della cache.
@@ -279,14 +280,14 @@ Per effettuare la ricerca in maniera efficiente si deve quindi lanciarla su tutt
 Per questo motivo ho bisogno di $n$ comparatori (uno per ogni blocco di cache) che operino in parallelo; di conseguenza la complessità di realizzazione cresce proporzionalmente al numero di blocchi ed inoltre il costo HW diventa proibitivo appena si aumenta di poco la dimensione della memoria.
 
 \subsection{Cache set-associativa}
-Le cache set-associative sono un via di mezzo tra le due che abbiamo visto fin ora.
-In sostanza suddividiamo la cache in $n$ partizioni di memoria, ognuna delle quali viene in seguito suddivisa come se fosse una cache a sè stante; fatta questa suddivisione quello che si ottiene è una sorta di scacchiera in cui i blocchi possono essere visti in raggruppamenti di "linee" (righe) e di "vie" (colonne).
+Le cache set-associative sono un via di mezzo tra le due che abbiamo visto finora.
+In sostanza suddividiamo la cache in $n$ partizioni di memoria, ognuna delle quali viene in seguito suddivisa come se fosse una cache a sé   stante; fatta questa suddivisione quello che si ottiene è una sorta di scacchiera in cui i blocchi possono essere visti in raggruppamenti di "linee" (righe) e di "vie" (colonne).
 
 Alla fine della fiera quello che otteniamo è una combinazione delle due diverse cache: associamo ciascun blocco della memoria periferica a una certa linea e quindi questo può essere inserito in uno qualsiasi degli \(\frac{n}{linee}\) blocchi di quella linea su cui possiamo mappare il blocco di memoria.
 
-Questo rende possibile sfruttare la cache come associativa a livello locale (di linea): all’interno della linea, effettuiamo una ricerca parallela come se avessimo una cache completamente associativa.
+Questo rende possibile sfruttare la cache come associativa a livello locale (di linea): all’interno della linea effettuiamo una ricerca parallela come se avessimo una cache completamente associativa.
 
-Il grande vantaggio è che abbiamo una memoria non troppo costosa, dato che la cache associativa viene implementata su blocchi di dimensioni ridotte, tuttavia si mantiene anche, in parte, il vantaggio della strategia associativa con conseguente abbassamento del \emph{miss rate}.
+Il grande vantaggio è che abbiamo una memoria non troppo costosa, dato che la cache associativa viene implementata su blocchi di dimensioni ridotte; tuttavia si mantiene anche (almeno parzialmente) il vantaggio della strategia associativa con conseguente abbassamento del \emph{miss rate}.
 
 È ora riportato uno schema con una cache suddivisa in più modi differenti, ma sempre attraverso la strategia di cache set-associativa, come esempio esplicativo; si noti che ogni gruppo Tag-Dato rappresenta una via.
 
@@ -299,12 +300,12 @@ Il grande vantaggio è che abbiamo una memoria non troppo costosa, dato che la c
 \section{Mappatura del blocco}
 In una cache a mappatura diretta abbiamo già osservato come un blocco di memoria periferica venga mappato in un blocco di cache deciso dalla formula:
 \begin{equation*}
-	(\textrm{indirizzo blocco}) mod (\textrm{numero blocchi della cache})
+	\textrm{indirizzo blocco} \pmod{\textrm{numero blocchi della cache}}
 \end{equation*}
 
 In maniera simile in una cache set-associativa un blocco di memoria viene mappato in una \emph{linea} data da:
 \begin{equation*}
-	(\textrm{indirizzo blocco}) mod (\textrm{numero linee della cache})
+	\textrm{indirizzo blocco} \pmod{\textrm{numero linee della cache}}
 \end{equation*}
 Quindi, per trovare il blocco all’interno della linea dobbiamo confrontare, in parallelo, il tag del blocco con tutti i tag dei blocchi di quella linea.
 \\
@@ -321,7 +322,7 @@ I primi due bit dell'indirizzo (a destra) sono utilizzati per indicare, se neces
 
 Dato che le linee possibili sono 256 i bit che servono per rappresentarle sono 8, per l'appunto sono i bit dal 2 al 9 dell'indirizzo che vengono utilizzati come indicizzatore della linea (sia per la scrittura che per la lettura).
 
-Gli ultimi bit rimanenti vengono utilizzati come tag del blocco; si noti che il tag viene confrontato con tutti e quattro i tag che ritornano dalle 4 vie.
+I bit rimanenti vengono utilizzati come tag del blocco; si noti che il tag viene confrontato con tutti e quattro i tag che ritornano dalle 4 vie.
 Se il confronto va a buon fine vuol dire che il dato cercato è presente nella cache ed il mux a 4 ingressi si occupa di trasmetterlo al processore.
 
 \section{Vantaggi dell'associatività}
@@ -338,13 +339,13 @@ Nelle cache associative ho più scelte, quindi se la linea è piena chi sostitui
 In tal caso esistono vari approcci possibili, tra cui:
 \begin{itemize}
 	\item FIFO, un immancabile classico;
-	\item LeastRecentlyUsed, un metodo più sofisticato che però richiede una serie di bit in più per caclolare quando è avvenutoo l'ultimo accesso.
+	\item LeastRecentlyUsed, un metodo più sofisticato che però richiede una serie di bit in più per calcolare quando è avvenutoo l'ultimo accesso.
 \end{itemize}
 
 Per concludere proponiamo al lettore anche un esempio pratico in cui si nota l'importanza della scelta di un buon meccanismo di cache mapping.
 \begin{wrapfigure}{l}{0.55\textwidth}
 	\centering
-	\includegraphics[width=\linewidth,keepaspectratio]{grafici}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{grafici}
 	\caption{Grafici prestazioni dei due algoritmi Radix e Quick sort}
 \end{wrapfigure}
 Si noti come nel primo grafico sembrerebbe che il Radix sort sia asintoticamente più efficiente del Quick sort, in quanto il suo rapporto

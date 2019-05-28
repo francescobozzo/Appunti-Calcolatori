@@ -206,7 +206,7 @@ Quindi complessivamente l'impatto del polling in percentuale è \[12*10^{3}/500*
 
 Il numero di volte al secondo che occorre fare cicli di attesa per non perdere dati è \[\frac{8\textrm{MB/s}}{16\textrm{B}} = 500*10^{3} \textrm{polls/sec}\]
 Questo implica che il numero di cicli di clock al secondo dedicati al polling siano \[ 500*10^{3}*400 = 200*10^{6} \textrm{clocks/sec}\]
-In percentuale quindi il peso di questo meccanismo è di \(200*10^{6}/500*10^{6}=40\%\) il che è inaccettabile, anche perchè come nel primo esempio questo prezzo in risorse viene pagato sempre.
+In percentuale quindi il peso di questo meccanismo è di \(200*10^{6}/500*10^{6}=40\%\) il che è inaccettabile, anche perché come nel primo esempio questo prezzo in risorse viene pagato sempre.
 
 \subsection{Considerazioni finali sul polling}
 L’attesa attiva è un meccanismo che fa perdere tempo al processore dedicando cicli macchina a letture inutili, di conseguenza il polling può essere usato quando le operazioni di I/O avvengono con velocità di trasferimento predeterminata (es. applicazioni di controllo) e comunque il processore ha poco altro da fare.
@@ -261,7 +261,7 @@ Nel dettaglio il bit interrupt enable serve per indicare se è abilitato il mecc
 \subsection{Considerazioni finali sull'interrupt driven I/O}
 Nonostante la complessità di questo meccanismo è facile osservare che in caso di trasferimenti di grandi moli di dati esso risulti  molto più efficiente del polling, dimostriamolo riprendendo l'esempio dell'hard disk fatto in precedeza:
 
-\paragraph{Esempio 2: Hard disk} Supponiamo che un interrupt costi 500 cicli di clock, poichè è plausibile che costi di più del polling.
+\paragraph{Esempio 2: Hard disk} Supponiamo che un interrupt costi 500 cicli di clock, poiché è plausibile che costi di più del polling.
 Se le interruzioni venissero generate alla frequenza di polling avremmo che \[\frac{\textrm{Disk Interrupts}}{\textrm{sec}}=\frac{8 \textrm{MB/s}}{16\textrm{B}}=500*10^{3}\frac{\textrm{interrupts}}{\textrm{sec}}\] e quindi \[\frac{\textrm{Disk Polling Clocks}}{\textrm{sec}}=500*10^3{3}*500=250*10^{6} \frac{\textrm{clocks}}{\textrm{sec}}\] Di conseguenza la percentuale di utilizzo del processore sarebbe \(250*10^{6}/500*10^{6}= 50\%\). Sembrerebbe che non ci sia guadagno, anzi.
 
 Tuttavia se l’hard disk è attivo solo per il 5\% del tempo, gli interrupt generati saranno il 5\% e la spesa di processore sarà: \(5\% * 50\%=2.5\%\).
