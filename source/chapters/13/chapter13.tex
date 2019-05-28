@@ -88,7 +88,7 @@ Il funzionamento che sta alla base di una cella di SRAM è quello del flip flop 
 	\caption{SRAM: memorizzazione di un bit}
 \end{figure}
 
-Nell'immagine, \(\textrm{T}_1\) e \(\textrm{T}_2\) sono due transistor\footnote{Attraverso gli ultimi ritrovati dell'ingeneria, è possibile realizzare dei transistor nell'ordine di grandezza dei nanometri}: in base al variare della tensione nel loro \emph{gate} (ossia il collegamento inferiore) permettono o meno il passaggio di corrente fra i rami laterali. Il funzionamento ricorda molto quello di un interruttore: se il gate ha ua tensione pari a Vdd, allora il circuito viene chiuso, altrimenti rimane aperto. Si noti che se la linea della word è bassa, allora gli interruttori \(\textrm{T}_1\) e \(\textrm{T}_2\) sono aperti: il consumo è praticamente nullo.\\
+Nell'immagine, \(\textrm{T}_1\) e \(\textrm{T}_2\) sono due transistor\footnote{Attraverso gli ultimi ritrovati dell'ingegneria, è possibile realizzare dei transistor nell'ordine di grandezza dei nanometri.}: in base al variare della tensione nel loro \emph{gate} (ossia il collegamento inferiore) permettono o meno il passaggio di corrente fra i rami laterali. Il funzionamento ricorda molto quello di un interruttore: se il gate ha ua tensione pari a Vdd, allora il circuito viene chiuso, altrimenti rimane aperto. Si noti che se la linea della word è bassa, allora gli interruttori \(\textrm{T}_1\) e \(\textrm{T}_2\) sono aperti: il consumo è praticamente nullo.\\
 Dunque, nel caso venga chiuso il circuito, è possibile effettuare delle operazioni di lettura e di scrittura (gestite dal \emph{Sense/Write circuit}). Invece, nel caso in cui il circuito venisse aperto, la corrente circola solamente all'interno del latch a doppio NOT. La presenza di due NOT, permette di rinforzare il risultato e ridurre il tasso di errore, in quanto si vuole controllare la coerenza delle informazioni sia col segnale \emph{b} che col segnale \emph{b'} (si ricorda che \emph{b} contiene il segnale asserito, mentre \emph{b'} contiene il segnale negato: \emph{b}\(=\)\emph{\(\overline{b'}\)}.
 
 \subsection{Le DRAM}
@@ -156,7 +156,7 @@ Osserviamo la seguente tabella:
   \centering
   \includegraphics[width=\textwidth,keepaspectratio]{tabella_polli.png}
 \end{figure}
-Al di là dei dati un po' desueti\footnote{Verrebbe quasi da dire che fanno ridere i polli, in effetti}, si può facilmente intuire quale sarà la gerarchia delle memorie: quelle più veloci ma costose saranno vicine al processore e gli forniranno i dati da elaborare, mentre invece quelle più lente (ma più capienti) staranno lontane e fungeranno da archivio.
+Al di là dei dati un po' desueti\footnote{Verrebbe quasi da dire che fanno ridere i polli, in effetti.}, si può facilmente intuire quale sarà la gerarchia delle memorie: quelle più veloci ma costose saranno vicine al processore e gli forniranno i dati da elaborare, mentre invece quelle più lente (ma più capienti) staranno lontane e fungeranno da archivio.
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth,keepaspectratio]{strut-ger.png}

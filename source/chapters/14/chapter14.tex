@@ -9,7 +9,8 @@
 % arara: latexmk: { clean: partial }
 %! arara: clean: { extensions: [sta] }
 \begin{document}
-\chapter{I/O}
+\chapter{I/O}\begin{fquote}[Elayne Boosler]I am thankful the most important key in history was invented. It's not the key to your house, your car, your boat, your safety deposit box, your bike lock or your private community. It's the key to order, sanity, and peace of mind. The key is "Delete".
+ \end{fquote}
 
 \section{La necessità di comunicare}
 Un calcolatore sarebbe praticamente inutile se non avesse la possibilità di interfacciarsi e comunicare con l'esterno, ed è proprio di questo che si occupano le periferiche di input/output (da qui in avanti I/O); Questi dispositivi possono essere estremamente \emph{eterogenei} tra loro a seconda del compito che sono chiamati a svolgere\footnote{Si pensi che nella categoria di dispositivi I/O compaiono mouse, penne grafiche, desktop, microfoni e tanti altri ancora.}, tuttavia devono avere una caratteristica comune, devono essere \emph{espandibili}, ovvero ci deve essere la possibilità di aggiungere (o rimuovere) i dispositivi di I/O.
@@ -270,7 +271,7 @@ Tutto questo proprio grazie al fatto che con il meccanismo di interrupt l’over
 \section{Eccezioni}
 Le interrupts che abbiamo appena visto vanno inserite in una classe più grande di eventi detti eccezioni.
 
-Un eccezione consiste nel trasferimento del controllo del programma per l'avveramento di una condizione appunto eccezionale\footnote{da intendere qui come "fuori dalla norma"}.
+Un eccezione consiste nel trasferimento del controllo del programma per l'avveramento di una condizione appunto eccezionale\footnote{Da intendere qui come "fuori dalla norma".}.
 Per la gestione di questi eventi il sistema effettua delle azioni specifiche, come registrare il punto di interruzione e salvare lo stato, ed in seguito, a eccezione finita, riprendere dal punto immediatamente successivo al punto di interruzione.
 
 \begin{figure}[H]
