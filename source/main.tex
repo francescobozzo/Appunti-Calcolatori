@@ -7,6 +7,7 @@
 
 \usepackage{style}
 \usepackage{set-citations}
+\usepackage{geometry}
 
 \graphicspath{%
 	{./chapters/titlepage/images/}%
@@ -52,7 +53,9 @@
 	\import{./chapters/14/}{chapter14}
 
 	\appendix
+	\newgeometry{left = 1.7cm, right=1.7cm}
 	\import{./chapters/Appendice_A/}{Appendice_A}
+	\restoregeometry
 	\import{./chapters/Appendice_B/}{Appendice_B}
 	\import{./chapters/Appendice_C/}{Appendice_C}
 \backmatter

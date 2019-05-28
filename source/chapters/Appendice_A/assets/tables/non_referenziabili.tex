@@ -17,13 +17,13 @@
 % arara: pdflatex
 % arara: latexmk: { clean: partial }
 \begin{document}
-	\begin{tabularx}{\textwidth}{ >{\hsize=.1\textwidth}X >{\hsize=.1\textwidth}X >{\hsize=.4\textwidth}X X }
-		\toprule
-			Nome & Numero & Utilizzo \\
-		\midrule
-			\register{\$pc} & / & Program Counter \\\lightrule
-			\register{\$hi} & / & Risultato di moltiplicazione e divisione (\(32\) bit più significativi)\\\lightrule
-			\register{\$lo} & / & Risultato di moltiplicazione e divisione (\(32\) bit meno significativi) \\
-		\bottomrule
-	\end{tabularx}
+\begin{tabularx}{\textwidth}{ >{\hsize=.1\textwidth}X >{\hsize=.1\textwidth}X >{\hsize=.4\textwidth}X X }
+	\toprule
+		Nome & Numero & Utilizzo \\
+	\midrule
+		\register{\$pc} & / & Program Counter \\\lightrule
+		\register{\$hi} & / & Risultato di moltiplicazione e divisione (\(32\) bit più significativi)\\\lightrule
+		\register{\$lo} & / & Risultato di moltiplicazione e divisione (\(32\) bit meno significativi) \\
+	\bottomrule
+\end{tabularx}
 \end{document}

@@ -72,7 +72,6 @@ Il principio di funzionamento dell'hard disk è di magnetizzare delle particelle
 	\item le particelle vengono lette da un dispositivo meccanico (testina) che si sposta radialmente su un braccio (in grado di fare movimenti angolari);
 	\item questa componente rallenta i tempi di accesso ma aumenta al densità di memorizzazione (è possibile arrivare facilmente ai Terabyte).
 \end{itemize}
-
 Diversamente dai dischi rigidi elettromeccanici, la memorizzazione su una memoria flash avviene intrappolando una carica elettrica in maniera permanente.
 
 I dischi ottici funzionano sul principio di riflessione della luce: viene emesso un raggio laser che viene riflesso dai rilievi, nel caso bit \(1\), e assorbito dalle buche, nel caso bit \(0\).
@@ -86,9 +85,7 @@ La \emph{CPU} è l'unità centrale di ogni calcolatore. Si compone principalment
 \end{itemize}
 Ciascun processore dispone di un'\acrfull{isa}, ossia un'interfaccia che permette di utilizzarlo senza conoscerne i dettagli.
 Questa, assieme all'ulteriore interfaccia del sistema operativo, forma l'interfaccia binaria delle applicazioni \acrfull{abi}.
-Ciò permette allo sviluppatore di svincolarsi dal livello hardware sottostante, secondo il principio di \emph{astrazione}.
-
-Esistono due diversi tipi di architetture \acrshort{isa}:
+Ciò permette allo sviluppatore di svincolarsi dal livello hardware sottostante, secondo il principio di \emph{astrazione}. Esistono due diversi tipi di architetture \acrshort{isa}:
 \begin{itemize}[noitemsep]
 	\item \acrshort{risc}: offre un numero ridotto di istruzioni, rivolta soprattutto a sistemi embedded.
 	\item \acrshort{cisc}: permette di usufruire di un maggior numero di istruzioni, rivolta prevalentemente ai personal computer.
@@ -101,7 +98,6 @@ Le principali funzioni che deve svolgere un \emph{sistema operativo}:
 	\item allocazione della memoria;
 	\item consentire e regolare il multitasking.
 \end{itemize}
-
 Il \emph{compilatore} traduce da linguaggio di alto livello a linguaggio macchina. Ogni istruzione di quest'ultimo è costituita da una determinata sequenza di \emph{bit}, ossia l'unità di base dell'informazione (\(0\) o \(1\)).
 L'utilità del compilatore consiste nel facilitare il lavoro del programmatore: non è più necessario implementare il software in codice binario, bensì è possibile utilizzare un linguaggio di programmazione più vicino al linguaggio naturale.
 Il primo linguaggio sviluppato per questo scopo è stato l'\emph{Assembly}.
@@ -111,7 +107,6 @@ Il software che traduce l'assembly in codice binario si chiama \emph{Assembler}.
 	\item traduzione del linguaggio ad alto livello in linguaggio Assembly, per via del compilatore;
 	\item traduzione del linguaggio Assembly in linguaggio macchina, attraverso l'assemblatore.
 \end{enumerate}
-
 Spesso fanno eccezione alcuni compilatori che trasformano direttamente il linguaggio ad alto livello in codice macchina.
 
 \subsection{Periferiche di I/O}
@@ -128,12 +123,8 @@ L'immagine viene rappresentata da una matrice di pixel: ciascuno di essi ha asso
 Questa immagine viene memorizzata in un \emph{frame buffer}, una RAM che viene aggiornata fino a \(100\) volte al secondo.
 
 \subsection{Misurazione delle prestazioni}
-
 I moderni processori sono costruiti usando un segnale periodico che ne sincronizza le operazioni.
-Il \emph{ciclo di clock} è l'intervallo di tempo che intercorre tra due colpi di clock. La frequenza è definita come \(\frac{1}{\text{ciclo di clock}}\).
-Il ciclo di clock è misurato in secondi, la frequenza in Hertz.
-
-Il tempo d'esecuzione di un programma dipende da tre fattori:
+Il \emph{ciclo di clock} è l'intervallo di tempo che intercorre tra due colpi di clock. La frequenza è definita come \(\frac{1}{\text{ciclo di clock}}\). Il ciclo di clock è misurato in secondi, la frequenza in Hertz. Il tempo d'esecuzione di un programma dipende da tre fattori:
 \begin{itemize}[nolistsep]
 	\item il numero di istruzioni dell'algoritmo.
 	\item i cicli di clock per istruzione (\emph{CPI}).
@@ -167,7 +158,6 @@ Dagli anni Ottanta ad oggi, la frequenza media dei processori è incrementata di
 \begin{equation*}
 \text{Potenza} = \text{capacità} \cdot \text{tensione}^2 \cdot \text{frequenza di commutazione}
 \end{equation*}
-
 dove il valore della frequenza di commutazione è strettamente legato alla frequenza di clock del processore.
 
 Incrementare la frequenza senza eccedere in consumi è stato permesso grazie un abbassamento della tensione di alimentazione (termine quadratico, quindi il più influente) da \unit[5]{V} ad un minimo di \unit[1.2]{V}.
