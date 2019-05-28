@@ -177,15 +177,16 @@ Forniamo ora una breve carrellata di definizioni cui bisogna prendere familiarit
 \end{itemize}
 
 \subsection{Funzionamento}
- Ma noi come si fa a sapere se un determinato dato è nella cache e dove eventualmente cercarlo?
+Ma noi come si fa a sapere se un determinato dato è nella cache e dove eventualmente cercarlo?
 
 Un sistema interessante per gestire la cache potrebbe essere quello detto \emph{a mappatura diretta}: ad ogni indirizzo in memoria corrisponde una precisa locazione di cache; l'indirizzo in cache viene normalmente mappato in questo modo: \emph{indirizzo del blocco in cache} \(\equiv\) \emph{indirizzo in memoria del blocco}  \(\pmod{\textrm{\emph{numero totale di blocchi in cache}}}\).
 
-Qualora il numero di blocchi in cache fosse potenza di due sarà sufficiente usare i suoi bit meno significativi dell'indirizzo in memoria. Quanti bit meno significativi bisogna prendere, di preciso? La risposta è in questa formula:
+Qualora il numero di blocchi in cache fosse potenza di due sarà sufficiente usare i bit meno significativi del loro indirizzo in memoria. Quanti bit meno significativi bisogna prendere, di preciso? La risposta è in questa formula:
 \begin{equation*}
   \textrm{Cache address}=\log_2 \textrm{cache dimension}
 \end{equation*}
 Se per esempio abbiamo una cache di 8 parole dobbiamo prendere i 3 bit meno significativi dell'indirizzo in memoria, come illustrato dalla seguente immagine.
+Si noti che l'operazione di modulo e di logaritmo restituiscono lo stesso risultato, sono perfettamente equivalenti.
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth,keepaspectratio]{logad.png}
@@ -250,10 +251,10 @@ Fintantoché non avviene una miss il funzionamento di una CPU con pipeline non v
 \end{enumerate}
 
 \subsection{Scritture}
-Se gli accessi in lettura avvengono con la logica precedente, quelli in scrittura sono più delicati e potrebbero causare problemi di consistenza, ossia potrei avere situazioni in cui si genera un disallineamento tra i dati presenti in memoria e quelli presenti nella memoria principale.
+Se gli accessi in lettura avvengono con la logica precedente, quelli in scrittura sono più delicati e potrebbero causare problemi di consistenza, ossia potrei avere situazioni in cui si genera un disallineamento tra i dati presenti in cache e quelli presenti nella memoria principale.
 \begin{itemize}
-  \item Un sistema che possiamo adoperare per arginare questo problema è il cosiddetto \emph{write-through}, che consiste nel fatto che ogni scrittura viene effettuata direttamente in memoria principale, a prescindere dal fatto che ci sia o meno una miss. In questo modo avrò cache e memoria sempre aggiornati, ma ben si capisce che si tratta di un'operazione costosa; un buona aggiunta potrebbe essere un buffer di scrittura, una sorta di "coda" dove tutte le scritture vengono messe in attesa, che ci permette quindi di accorpare il maggior numero di operazioni possibile e mantenere cache e memoria sempre allineate.
-  \item Una seconda soluzione potrebbe essere la cosiddetta \emph{write-back}: se il blocco richiesto è già presente in cache allora ogni scrittura verrà fatta solo localmente e la cache viene aggioranta solo quando si cambia il blocco di riferimento (oppure quando un secondo processore tenta di accedere allo stesso blocco); chiaramente questa soluzione è pensata in situazioni molto affollate, quanto il processore non riesce a processare in mofo efficiente le molte scritture richieste.
+  \item Un sistema che possiamo adoperare per arginare questo problema è il cosiddetto \emph{write-through}, che consiste nel fatto che ogni scrittura viene effettuata direttamente in memoria principale, a prescindere dal fatto che ci sia o meno una miss. In questo modo avrò cache e memoria sempre aggiornati, ma ben si capisce che si tratta di un'operazione costosa; una buona aggiunta potrebbe essere un buffer di scrittura, una sorta di "coda" dove tutte le scritture vengono messe in attesa, che ci permette quindi di accorpare il maggior numero di operazioni possibile e mantenere cache e memoria sempre allineate.
+  \item Una seconda soluzione potrebbe essere la cosiddetta \emph{write-back}: se il blocco richiesto è già presente in cache allora ogni scrittura verrà fatta solo localmente e la memoria principale viene aggiornata solo quando si cambia il blocco di riferimento (oppure quando un secondo processore tenta di accedere allo stesso blocco); chiaramente questa soluzione è pensata in situazioni molto affollate, quanto il processore non riesce a processare in modo efficiente le molte scritture richieste.
 \end{itemize}
 
 Mostriamo qui come esempio \emph{FastMath}, una cache basata su MIPS che dispone di una cache di \(16K\) con \(16\) parole per blocco e la possibiltà di lavorare sia in \emph{write-through} che in \emph{write-back}.
@@ -267,19 +268,21 @@ Mostriamo qui come esempio \emph{FastMath}, una cache basata su MIPS che dispone
 \end{itemize}
 
 \section{Cache associative}
-Le cache a mappatura diretta sono piuttosto semplici da realizzare, tuttavia presentano un problema: se ho spesso bisogno di locazioni di memoria che si mappano sullo stesso blocco, ho cache miss in continuazione.
-Proprio per gestire queste situazioni è nata l'impementazione della cahce completamente associativa, ovvero una cache in cui posso mappare qualsiasi blocco di memoria in qualsiasi blocco di cache.
+Le cache a mappatura diretta sono piuttosto semplici da realizzare, tuttavia presentano un problema: se ho spesso bisogno di locazioni di memoria che si mappano sullo stesso blocco di cache\footnote{Ricordiamo che questo significa che tali blocchi sono congrui in modulo \(n\).}, ho cache miss in continuazione.
+Proprio per gestire queste situazioni è nata l'implementazione della cache completamente associativa, ovvero una cache in cui posso mappare qualsiasi blocco di memoria in qualsiasi blocco di cache.
 
 \subsection{Cache completamente associativa}
-Una cahche completamente associativa è una cache in cui ogni blocco della memoria può essere mappato in un qualsiasi blocco della cache.
+Una cache completamente associativa è una cache in cui ogni blocco della memoria può essere mappato in un qualsiasi blocco della cache.
 Il problema in cui si incorre utilizzando cache completamente associative è che si deve cercare in tutta la cache il dato (il tag in questo tipo di cache è rappresentato da tutto l’indirizzo del blocco).
 Per effettuare la ricerca in maniera efficiente si deve quindi lanciarla su tutti i blocchi in parallelo.
 
-Per questo motivo ho bisogno di $n$ comparatori (uno per ogni blocco di cache) che operino in parallelo; di conseguenza la complessità di realizzazione cresce proporzionalmente al numero di blocchi ed inoltre il costo HW diventa eccessivamente proibitivo appena si aumenta di poco la dimensione della memoria.
+Per questo motivo ho bisogno di $n$ comparatori (uno per ogni blocco di cache) che operino in parallelo; di conseguenza la complessità di realizzazione cresce proporzionalmente al numero di blocchi ed inoltre il costo HW diventa proibitivo appena si aumenta di poco la dimensione della memoria.
 
 \subsection{Cache set-associativa}
 Le cache set-associative sono un via di mezzo tra le due che abbiamo visto fin ora.
-In sostanza suddividiamo la cache in $n$ blocchi di memoria, ognuno dei quali viene in seguito suddiviso come se fosse una cache a sè stante; fatta questa suddivisione quello che si ottiene è una sorta di scacchiera in cui i blccchi possono essere visti in raggruppamenti di "linee" (righe) e di "vie" (colonne); Alla fine della fiera quello che otteniamo è una combinazione delle due idee: associamo ciascun blocco della memoria periferica a una certa linea e quindi a uno degli $n$ blocchi di quella linea su cui possiamo mappare il blocco di memoria.
+In sostanza suddividiamo la cache in $n$ partizioni di memoria, ognuna delle quali viene in seguito suddivisa come se fosse una cache a sè stante; fatta questa suddivisione quello che si ottiene è una sorta di scacchiera in cui i blocchi possono essere visti in raggruppamenti di "linee" (righe) e di "vie" (colonne).
+
+Alla fine della fiera quello che otteniamo è una combinazione delle due diverse cache: associamo ciascun blocco della memoria periferica a una certa linea e quindi questo può essere inserito in uno qualsiasi degli \(\frac{n}{linee}\) blocchi di quella linea su cui possiamo mappare il blocco di memoria.
 
 Questo rende possibile sfruttare la cache come associativa a livello locale (di linea): all’interno della linea, effettuiamo una ricerca parallela come se avessimo una cache completamente associativa.
 
