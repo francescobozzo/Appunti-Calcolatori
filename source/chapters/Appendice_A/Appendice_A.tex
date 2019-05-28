@@ -7,6 +7,8 @@
 % arara: latexmk: { clean: partial }
 %! arara: clean: { extensions: [sta] }
 \begin{document}
+\newgeometry{left=2cm, right= 2cm}
+
 \chapter{Istruzioni e registri MIPS}
 \section*{Istruzioni di movimento dati dell'Assembly MIPS}
 \begin{table}[H]
@@ -50,4 +52,5 @@
 	\subimport{assets/tables/}{non_referenziabili.tex}
 \end{table}
 
+\restoregeometry
 \end{document}
