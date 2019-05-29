@@ -17,11 +17,9 @@ Ora andiamo a riprendere alcuni esempi già portati nel capitolo dedicato all'As
 Per completezza, specifichiamo che il codice che mostreremo è stato ottenuto con il compilatore \mintinline{batch}{gcc}, lievemente modificato affinché risulti più leggibile (principalmente sull'ordine logico delle istruzioni e sulla nomenclatura dei registri).
 
 \section{Semplici espressioni aritmetico-logiche}
-Cominciamo con delle semplici operazioni aritmetiche, che evidenzieranno come le architetture RISC (MIPS e ARM) permettono di eseguire questo tipo di istruzioni in modo molto naturale, al contrario dell'implementazione leggermente più macchinosa di x86.\\
-L'espressione è la seguente:
-
+Cominciamo con delle semplici operazioni aritmetiche, che evidenzieranno come le architetture RISC (MIPS e ARM) permettono di eseguire questo tipo di istruzioni in modo molto naturale, al contrario dell'implementazione leggermente più macchinosa di x86. L'espressione è la seguente:
 \begin{equation*}
-	f = (g + h) - (i + j);
+	f = (g + h) - (i + j)
 \end{equation*}
 
 \subsubsection{Implementazione MIPS}
@@ -195,7 +193,7 @@ while (a[i] == k){
 In MIPS mappiamo \mintinline{c}{k} in \register{\$a0}, l'indirizzo di \mintinline{c}{a} in \register{\$a1} e \mintinline{c}{i} in \register{\$v0}. Notiamo che per poter operare il confronto \mintinline{c}{a[i]==k} sarà necessario servirsi di un registro temporaneo \register{\$t0} di appoggio dove caricare l'elemento del vettore \mintinline{c}{a}; inoltre, poiché le modalità d'indirizzamento di MIPS sono molto poco potenti, sarà necessario operare lo shift logico a sinistra a ogni ciclo per mantenere la regolarità delle words.
 \begin{minted}[linenos, tabsize = 4]{asm}
 start:
-	move $v0, $zero	 # i = 0
+	move $v0, $zero    # i = 0
 L1:
 	sll $t1, $v0, 2    # salva 4 * i in $t1
 	add $t1, $t1, $a1  # ottieni l'indirizzo di a[i]
@@ -206,7 +204,7 @@ L1:
 L2:
 \end{minted}
 
-L'implementazione di \mintinline{batch}{gcc} è leggermente più complessa e aggira la scarsa potenza sull'indirizzamento di MIPS usando non uno, ma due registri come contatori: \register{\$v0}  contiene \mintinline{c}{i} e \register{\$a1} contiene l'elemento successivo dell'array; quest'ultimo registro inoltre viene sempre incrementato di 4, assumendo che ogni elemento dell'array, in quanto \mintinline{c}{int}, abbia dimensione 4 byte.
+L'implementazione di \mintinline{batch}{gcc} è leggermente più complessa e aggira la scarsa potenza sull'indirizzamento di MIPS usando non uno, ma due registri come contatori: \register{\$v0}  contiene \mintinline{c}{i} e \register{\$a1} contiene il contatore perl'elemento successivo dell'array; quest'ultimo registro inoltre viene sempre incrementato di 4, assumendo che ogni elemento dell'array, in quanto \mintinline{c}{int}, abbia dimensione 4 byte.
 \begin{minted}[linenos, tabsize = 4, breaklines]{asm}
 start:
 	lw $a2, 0($a1)    # carica in a2 il contenuto di a[0]
@@ -289,7 +287,7 @@ esempio_foglia:
 \end{minted}
 
 \subsubsection{Implementazione x86}
-L'implementazione Intel è immediata, se si tiene conto del fatto che le variabili verranno mappate nei "registri \register{e}" (\register{\%edi}, \register{\%esi}, \register{\%ecx}, \register{\%edx}) a 32 bit, anziché nei "registri \register{r}" (\register{\%rdi}, \register{\%rsi}, \register{\%rcx}, \register{\%rdx}) offerti da x86-64; questo succede perché i valori che dobbiamo modificare sono di tipo \mintinline{c}{int}, quindi di dimensione appunto 32 bit. Notiamo inoltre l'istruzione \texttt{ret} preposta a restiruire il ritorno della subroutine.
+L'implementazione Intel è immediata, se si tiene conto del fatto che le variabili verranno mappate nei "registri \register{e}" (\register{\%edi}, \register{\%esi}, \register{\%ecx}, \register{\%edx}) a 32 bit, anziché nei "registri \register{r}" (\register{\%rdi}, \register{\%rsi}, \register{\%rcx}, \register{\%rdx}) offerti da x86-64; questo succede perché i valori che dobbiamo modificare sono di tipo \mintinline{c}{int}, quindi di dimensione appunto 32 bit. Notiamo inoltre l'istruzione \texttt{ret} preposta a restituire il ritorno della subroutine.
 \begin{minted}[linenos,tabsize = 4]{gas}
 esempio_foglia:
 	leal (%rdi, %rsi), %eax  # salva in eax g + h
@@ -330,7 +328,7 @@ inc:
 f:
 	addiu $sp, $sp, -4  # decrementa di 4 byte sp
 	sw $ra, 0($sp)      # salva ra all'indirizzo di sp
-	jal inc	            # chiama inc
+	jal inc             # chiama inc
 	addiu $v0, $v0, -4  # sottrae 4 a v0
 	lw $ra, 0($sp)      # recupera ra
 	addiu $sp, $sp, 4   # ripristina lo stack pointer
@@ -345,7 +343,7 @@ inc:
 
 f:
 	addiu $sp, $sp, -8  # sp viene decrementato di 8
-	sw $ra, 4($sp)      # ra viene salvato in sp shiftato di 4
+	sw $ra, 4($sp)      # ra viene salvato in sp con offset di 4
 	jal inc
 	addiu $v0, $v0, -4
 	lw $ra, 4($sp)      # recupero ra
@@ -357,12 +355,12 @@ f:
 Fortunatamente per noi, le funzioni \mintinline{gas}{call} e \mintinline{gas}{rec} di x86 gestiscono magistralmente il movimento dello stack pointer e non richiedono alcun intervento extra da parte nostra; inoltre, la sempre fresca \mintinline{gas}{lea} ci regala la libertà di cui abbiamo bisogno per salvare i risultati di una somma in un operando terzo.
 \begin{minted}[linenos, breaklines, tabsize = 4]{gas}
 inc:
-	leal 1(%rdi), %eax	 # salva rdi + 1 in eax
+	leal 1(%rdi), %eax  # salva rdi + 1 in eax
 	ret
 
 f:
-	call inc       # chiama inc
-	subl $4, %eax  # sottrae 4 a eax
+	call inc            # chiama inc
+	subl $4, %eax       # sottrae 4 a eax
 	ret
 \end{minted}
 
@@ -414,18 +412,18 @@ L5:
 
 \begin{minted}[linenos, breaklines, tabsize = 4]{gas}
 copia_stringa:
-	movzbl (%rsi), %eax        #
-	movb %al, (%rdi)           #
-	testb %al, %al             #
+	movzbl (%rsi), %eax
+	movb %al, (%rdi)
+	testb %al, %al
 	je L1                      # se uguali, ritorna e termina
 	movl $0, %eax              # inizializza a 0 eax
-L3 :
+L3:
 	addl $1, %eax              # incrementa il contatore
-	movslq %eax, %rcx          #
-	movzbl (%rsi, %rcx), %edx  #
-	movb %dl, (%rdi, %rcx)     #
-	testb %dl, %dl             #
-	jne L3                     #
+	movslq %eax, %rcx
+	movzbl (%rsi, %rcx), %edx
+	movb %dl, (%rdi, %rcx)
+	testb %dl, %dl
+	jne L3
 L1:
 	ret
 \end{minted}

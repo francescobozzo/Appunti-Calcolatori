@@ -59,7 +59,7 @@ _start:
 	mov eax, 1    # sys call close
 	int 80h
 \end{minted}
-Da notare che se non si inserisce l’ultima sys call (return 0) verrà prodotto un errore di segmentation fault.
+Da notare che se non si inserisce l’ultima sys call (\mintinline{batch}{return 0}) verrà prodotto un errore di segmentation fault.
 
 \subsection{Stampa di una stringa di lunghezza variabile}
 \begin{minted}[linenos, breaklines, tabsize = 4]{gas}

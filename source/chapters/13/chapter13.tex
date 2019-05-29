@@ -296,7 +296,7 @@ Il grande vantaggio è che abbiamo una memoria non troppo costosa, dato che la c
 
 È ora riportato uno schema con una cache suddivisa in più modi differenti, ma sempre attraverso la strategia di cache set-associativa, come esempio esplicativo; si noti che ogni gruppo Tag-Dato rappresenta una via.
 
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{mappatura-set-associativa}
 	\caption{Mappatura set-associativa in varie forme}
@@ -341,7 +341,7 @@ Quindi, per trovare il blocco all’interno della linea dobbiamo confrontare, in
 
 È ora inserito anche uno schema rappresentativo di una cache a 4 vie in cui ogni blocco contiene una word.
 
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{4-vie}
 \end{figure}
@@ -376,20 +376,20 @@ Per concludere proponiamo al lettore anche un esempio pratico in cui si nota l'i
 \begin{wrapfigure}{l}{0.55\textwidth}
 	\centering
 	\includegraphics[width=0.7\linewidth,keepaspectratio]{grafici}
-	\caption{Grafici prestazioni dei due algoritmi Radix e Quick sort}
+	\caption{Grafici prestazioni dei due algoritmi radix e quick sort}
 \end{wrapfigure}
-Si noti come nel primo grafico sembrerebbe che il Radix sort sia asintoticamente più efficiente del Quick sort, in quanto il suo rapporto
+Si noti come nel primo grafico sembrerebbe che il radix sort sia asintoticamente più efficiente del quick sort, in quanto il suo rapporto
 \begin{equation*}
 	\frac{\textrm{numero di istruzioni}}{\textrm{elemento}}
 \end{equation*}
-scende molto sotto quello del Quick sort.
+scende molto sotto quello del quick sort.
 
 Tuttavia nel secondo grafico si nota stranamente che il rapporto
 \begin{equation*}
 	\frac{\textrm{numero di cicli di clock}}{\textrm{elemento}}
 \end{equation*}
-del Radix sort rimanga sempre più alto di quello del Quick sort, decretando il Radix sort come algoritmo più lento.
+del radix sort rimanga sempre più alto di quello del quick sort, decretando il radix sort come algoritmo più lento.
 
-Nel terzo ed ultimo grafico si nota il perché di questa situazione anomala: il Radix sort, per come è implementato, comporta un numero assai maggiore di miss della cache per ogni elemento che tratta e questo lo porta a ripetere perdere molti cicli di clock e quindi a risultare più lento.
+Nel terzo ed ultimo grafico si nota il perché di questa situazione anomala: il radix sort, per come è implementato, comporta un numero assai maggiore di miss della cache per ogni elemento che tratta e questo lo porta a ripetere perdere molti cicli di clock e quindi a risultare più lento.
 
 \end{document}

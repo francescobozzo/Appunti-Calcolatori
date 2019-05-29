@@ -32,7 +32,7 @@ Tornando al caro vecchio MIPS, ricordiamo brevemente quali sono le fasi per l'es
 	\item accesso ad un operando nella memoria dati (nel caso di \opcode{lw} o \opcode{sw});
 	\item scrittura del risultato in un registro (\emph{writeback}).
 \end{enumerate}
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=.5\textwidth,keepaspectratio]{istruzione.png}
 	\caption{IF sta per instruction fetch, ID per instruction decode, EX per execution, MEM per accesso alla memoria dati e WB per \emph{writeback}}
@@ -57,7 +57,7 @@ Inoltre il tempo dedicato ad ogni singola fase del processo di esecuzione è def
 Questo tuttavia implica che anche le fasi con durata inferiore verranno eseguite in un tempo di \unit[200]{ps} ed anche che la durata dell'esecuzione di una singola istruzione nella nostra pipeline è di \((tempo.singola.fase)*(numero.fasi)=200ps\cdot 5=1000ps\).
 
 Osserviamo quindi un diagramma temporale per sequenza istruzioni in cui si confronta lo svolgimento di operazioni con il metodo standard e attraverso l'implementazione della pipeline.
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{esecuzione-operazioni-confronto.png}
 	\caption{Il grafico in alto raffigura la normale esecuzione di un programma, il grafico sotto invece rappresenta lo svolgimento dello stesso con il meccanismo della pipeline; si noti che la fase reg è forzatamente fatta durare 200ps, ed inoltre si noti di quanto è ridotta la durata del programma.}
@@ -90,8 +90,8 @@ In condizioni normali una pipeline permette di eseguire un'istruzione per ciclo 
 \end{itemize}
 Osserviamo quindi come vengono a verificarsi queste condizioni critiche e quali sono le soluzioni più comuni adottate per risolverle.
 
-\subsection{Hazard strtturale}
-Una condizione di hazard strutturale è una condizione che si verifica qundo l'architettura dell’elaboratore rende impossibile l’esecuzione di alcune sequenze di istruzioni in pipeline. Ad esempio, se si disponesse di un'unica memoria, non si potrebbe nello stesso ciclo di clock caricare istruzioni e memorizzare (o prelevare) operandi dalla memoria: è proprio per questa ragione che la memoria dati è separata dalla memoria istruzioni.
+\subsection{Hazard strutturale}
+Una condizione di hazard strutturale è una condizione che si verifica quando l'architettura dell’elaboratore rende impossibile l’esecuzione di alcune sequenze di istruzioni in pipeline. Ad esempio, se si disponesse di un'unica memoria, non si potrebbe nello stesso ciclo di clock caricare istruzioni e memorizzare (o prelevare) operandi dalla memoria: è proprio per questa ragione che la memoria dati è separata dalla memoria istruzioni.
 
 \subsection{Hazard sui dati}
 Per spiegare questo hazard ricorriamo al seguente esempio di codice MIPS:
@@ -105,7 +105,7 @@ Esistono dei metodi per evitare queste tre intere fasi di attesa: il più sempli
 
 Quella appena descritta è una delle operazioni che compilatori come il \texttt{gcc} compiono nella fase di traduzione da linguaggio ad alto livello ad Assembly. Una soluzione ancora più efficiente è quella dell'\emph{operand forwarding} (detto anche propagazione o bypass): questa in casi come questo prevede di rendere il contenuto del registro \register{\$s0} disponibile per l'operazione successiva ancora prima che questo sia effettivamente salvato nel registro stesso, dato che quel valore sarà già noto dalla fase "execute".
 Si osservi lo schema riportato qui sotto per una maggiore comprensione del meccanismo di propagazione.
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=.8\textwidth,keepaspectratio]{propagazione.png}
 \end{figure}
