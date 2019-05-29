@@ -83,7 +83,7 @@ Risulta però chiaro che elementi come i registri e le memorie (detti elementi \
 \end{itemize}
 
 \paragraph{Flip-flop}
-Il \emph{flip-flop D-latch} è l’elemento base per memorizzare un bit, e registri sono di fatto vettori di vettori di 32 di questi circuiti (rivedi~\ref{subsec:latch} per maggiori dettagli).
+Il \emph{flip-flop D-latch} è l’elemento base per memorizzare un bit, e registri sono di fatto vettori di 32 di questi circuiti (rivedi~\ref{subsec:latch} per maggiori dettagli).
 
 \subsection{Gestione della temporizzazione}
 Avere un clock regolare ci permette di ottenere indicazioni precise sulla sequenza di operazioni svolte e avere sempre ragione di quale istruzione è avvenuta prima o dopo di un determinato colpo di clock. La metodologia di temporizzazione ci dà quindi indicazioni precise rispetto alla possibilità di lettura/scrittura dei segnali rispetto al clock, e i dati presi dagli elementi di stato sono sempre relativi ai cicli precedenti. Vediamo uno schema di come viene gestita la cosa:
@@ -304,7 +304,7 @@ Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico cicl
 \end{figure}
 
 \subsubsection{Istruzione di J}
-Per eseguire un'istruzione di \opcode{j} (salto incondizionato), occorre:
+Prima di tutto bisogna sottolineare il fatto che l'istruzione \opcode{j} viene implementata in MIPS con una struttura molto particolare: i 6 bit più significativi costituiscono l'opcode, mentre gli ulteriori 26 bit rimanenti sono dedicati a memorizzare l'indirizzo. Per eseguire un'istruzione di \opcode{j} (salto incondizionato), occorre:
 \begin{enumerate}
 	\item Prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
 	\item Sostituire al \register{PC} il nuovo valore così ottenuto:
