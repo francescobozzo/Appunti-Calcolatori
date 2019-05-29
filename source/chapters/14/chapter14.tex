@@ -124,25 +124,18 @@ Inoltre è evidente che per implementare le funzionalità appena elencate il SO 
 Il sistema operativo impartisce comandi alle varie periferiche fornendo sulle relative linee di bus alcune "parole" di controllo attraverso due metodi possibili:
 \begin{itemize}
 	\item scrivendo/leggendo in particolari locazioni di memoria (memory mapped I/O);
-	\item tramite alcune istruzioni speciali dedicate all’I/O.
+	\item tramite alcune istruzioni speciali dedicate all'I/O.
 \end{itemize}
-
 Per chiarire questo meccanismo conviene procedere tramite un esempio:
-memorizzando una particolare parola in una locazione di memoria associata al dispositivo il sistema di memoria ignora la scrittura, mentre il controllore di I/O intercetta l’indirizzo \emph{particolare} e trasmette il dato al dispositivo sotto forma di comando.
+memorizzando una particolare parola in una locazione di memoria associata al dispositivo il sistema di memoria ignora la scrittura, mentre il controllore di I/O intercetta l'indirizzo \emph{particolare} e trasmette il dato al dispositivo sotto forma di comando.
 
-Queste particolari locazioni di memoria sono inaccessibili ai programmi utente ma solo il sistema operativo può operarvi, esso viene invocato tramite una chiamata di sistema, la quale fa commutare il processore in modalità kernel e rende quindi possibile la scrittura in tali locazioni.
-Inoltre la periferica stessa può usare queste locazioni per trasmettere dati o pre-segnalare il suo stato; ad esempio può richiedere la stampa di un carattere a terminale e a stampa finita un particolare bit di un registro di stato mappato in memoria verrà aggiornato.
+Queste particolari locazioni di memoria sono inaccessibili ai programmi utente ma solo il sistema operativo può operarvi. Esso viene invocato tramite una chiamata di sistema, la quale fa commutare il processore in modalità kernel e rende quindi possibile la scrittura in tali locazioni. Inoltre la periferica stessa può usare queste locazioni per trasmettere dati o pre-segnalare il suo stato; ad esempio può richiedere la stampa di un carattere a terminale e a stampa finita un particolare bit di un registro di stato mappato in memoria verrà aggiornato.
 
 \subsection{Come trasmettere/ricevere dati}
-Esistono principalmente due meccanismi diferenti per il trasferimento dei dati, il polling e le interruzioni di programma.
-Descriviamo in prima battuta il più semplice dei due, il polling.
+Esistono principalmente due meccanismi diferenti per il trasferimento dei dati, il polling e le interruzioni di programma. Descriviamo in prima battuta il più semplice dei due: il polling.
 
 \section{Polling}
-Detta anche modalità di \emph{attesa attiva} sostanzialmente consiste nell'inviare un comando di lettura/scrittura alla periferica e poi iniziare un ciclo di attesa monitorando il bit di stato per sapere quando il dato è pronto.
-
-Di seguito è riportata l'implementazione in assembly MIPS di un ciclo di lettura input da tasitera e in seguito di stampa del dato.
-
-È di seguito inserita un'immagine rappresentante il controllo del terminale nel simulatore SPIM.
+Detta anche modalità di \emph{attesa attiva}, sostanzialmente consiste nell'inviare un comando di lettura/scrittura alla periferica e poi iniziare un ciclo di attesa monitorando il bit di stato per sapere quando il dato è pronto. Di seguito è riportata l'implementazione in assembly MIPS di un ciclo di lettura input da tasitera e in seguito di stampa del dato. È di seguito inserita un'immagine rappresentante il controllo del terminale nel simulatore SPIM.
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{SPIM1}
@@ -150,119 +143,120 @@ Di seguito è riportata l'implementazione in assembly MIPS di un ciclo di lettur
 \end{figure}
 
 Le due parole di memoria 0xffff0000 ed 0xffff0004 sono riservate al SO.
-La prima è il Receiver control, ovvero viene utilizzata per contenere il bit che segnala la presenza di un nuovo dato in ingresso (ready) e quello per stabilire se l'interrupt è abilitato (vedremo in seguito cosa significa).
-La seconda è il Receiver data che conterrà gli effettivi dati forniti in input.
+La prima è il \emph{receiver control}, ovvero viene utilizzata per contenere il bit che segnala la presenza di un nuovo dato in ingresso (ready) e quello per stabilire se l'interrupt è abilitato (vedremo in seguito cosa significa). La seconda è il \emph{receiver data} che conterrà gli effettivi dati forniti in input.
 
-Ora che abbiamo chiarito l'utilizzo di queste due parole in memoria possiamo osservare anche degli esempi di implementazione in MIPS di polling.
+Ora che abbiamo chiarito l'utilizzo di queste due parole in memoria, possiamo osservare anche degli esempi di implementazione in MIPS di polling.
 
-Esempio 1: Input, lettura dalla tastiera in \$v0
+Esempio 1: Input, lettura dalla tastiera in \register{\$v0}.
 \begin{minted}{asm}
-	lui $t0, 0xffff #0xffff0000
+	lui $t0, 0xffff         # 0xffff0000
 Waitloop:
-	lw $t1, 0($t0) #control
+	lw $t1, 0($t0)          # control
 	andi $t1,$t1,0x0001
 	beq $t1,$zero, Waitloop
-	lw $v0, 4($t0) #data
+	lw $v0, 4($t0)          # data
 \end{minted}
-Analizziamo ora il significato del codice:
-l'operazione load upper immediate carica nei bit più significativi del registro t0 ffff, così che esso contenga l'indirizzo del Receiver control.
-La lw carica in t1 il Receiver control.
-Se è presente il bit ready significa che il dato è pronto e quindi viene caricato in memoria (in \register{\$v0} il carattere effettivamente pigiato, che si trova in 0xffff0004.
-Nel caso il bit ready non sia presente il beq farà ripetere il waitloop.
+Analizziamo ora il significato del codice: l'operazione load upper immediate carica nei bit più significativi del registro \register{t0} il valore \(0xffff\), così che esso contenga l'indirizzo del Receiver control. La \opcode{lw} carica in \register{\$t1} il receiver control. Se è presente il bit ready significa che il dato è pronto e quindi viene caricato in memoria (in \register{\$v0} il carattere effettivamente premuto, che si trova in \(0xffff0004\). Nel caso il bit ready non sia presente il beq farà ripetere il waitloop.
 
-Esempio 2: Output, stampa del dato da \$a0
+Esempio 2: Output, stampa del dato da \register{\$a0}.
 \begin{minted}{asm}
-	lui $t0, 0xffff #0xffff0000
+	lui $t0, 0xffff         # 0xffff0000
 Waitloop:
-	lw $t1, 8($t0) #control
+	lw $t1, 8($t0)          # control
 	andi $t1,$t1,0x0001
 	beq $t1,$zero, Waitloop
-	sw $a0, 12($t0) #data
+	sw $a0, 12($t0)         # data
 \end{minted}
-Nel secondo esempio cambiano solamente le aree di memoria in cui si compie la verifica dato che l'area dedicata alla lettura da tastiera è diversa da quella dedicata alla scrittura su video.
-Nonostante ciò il procedimento è simmetrico a quello del primo waitloop osservato.
+Nel secondo esempio cambiano solamente le aree di memoria in cui si compie la verifica: l'area dedicata alla lettura da tastiera è infatti diversa da quella dedicata alla scrittura su video. Nonostante ciò, il procedimento è simmetrico a quello del primo waitloop osservato.
 
-Osserviamo ora l'aspetto del costo in termini di risorse del meccanismo del polling con i seguenti esempi:
-Consideriamo un processore a 500Mhz e supponiamo che occorrano 400 cicli di clock per un’operazione di polling. Qual è il costo percentuale di questo meccanismo?
+Osserviamo ora l'aspetto del costo in termini di risorse del meccanismo del polling con i seguenti esempi: consideriamo un processore a \unit[500]{Mhz} e supponiamo che occorrano 400 cicli di clock per un'operazione di polling. Qual è il costo percentuale di questo meccanismo?
 
-\paragraph{Esempio 1: Mouse} Per non perdere movimenti da parte dell’utente occorre acquisire il dato 30 volte al secondo.
-
-Per stimare l'impatto del polling sul processore si deve calcolare il numero di clock al secondo spesi per il polling stesso, ovvero \(30*400 = 12000\) clocks/sec.
-Ora che abbiamo il numero di clock spesi per il polling ci basta calcolare a che percentuale di utilizzo del processore corrispondono, ricordando che 500Mhz significa \(500*10^{6}\) clocks/sec.
-Quindi complessivamente l'impatto del polling in percentuale è \[12*10^{3}/500*10^{6}=0.002\%\]
-
+\paragraph{Esempio 1: Mouse} Per non perdere movimenti da parte dell'utente occorre acquisire il dato 30 volte al secondo. Per stimare l'impatto del polling sul processore si deve calcolare il numero di clock al secondo spesi per il polling stesso, ovvero \(30\cdot 400 = 12000\) clocks/sec. Ora che abbiamo il numero di clock spesi per il polling ci basta calcolare a che percentuale di utilizzo del processore corrispondono, ricordando che 500Mhz significa \(500*10^{6}\) clocks/sec. Quindi complessivamente l'impatto del polling in percentuale è:
+\begin{equation*}
+	\frac{12\cdot 10^3}{500\cdot 10^6}=0.002\%
+\end{equation*}
 È chiaro quindi che in questo caso l'impatto del polling è trascurabile, si noti tuttavia che questo overhead viene pagato sempre, sia che avvenga il trasferimento, sia che non avvenga.
 
-\paragraph{Esempio 2: Hard disk} I dati vengono trasferiti in blocchi di 16 byte ad una velocità di 8MB/s senza la possibilità di perdite.
+\paragraph{Esempio 2: Hard disk} I dati vengono trasferiti in blocchi di 16 byte ad una velocità di \unit{8}{MB/s} senza la possibilità di perdite.
 
-Il numero di volte al secondo che occorre fare cicli di attesa per non perdere dati è \[\frac{8\textrm{MB/s}}{16\textrm{B}} = 500*10^{3} \textrm{polls/sec}\]
-Questo implica che il numero di cicli di clock al secondo dedicati al polling siano \[ 500*10^{3}*400 = 200*10^{6} \textrm{clocks/sec}\]
-In percentuale quindi il peso di questo meccanismo è di \(200*10^{6}/500*10^{6}=40\%\) il che è inaccettabile, anche perché come nel primo esempio questo prezzo in risorse viene pagato sempre.
+Il numero di volte al secondo che occorre fare cicli di attesa per non perdere dati è:
+\begin{equation*}
+	\frac{8\textrm{MB/s}}{16\textrm{B}} = 500*10^{3} \textrm{polls/sec}
+\end{equation*}
+Questo implica che il numero di cicli di clock al secondo dedicati al polling sono:
+\begin{equation*}
+	500*10^{3}*400 = 200*10^{6} \textrm{clocks/sec}
+\end{equation*}
+In percentuale quindi il peso di questo meccanismo è di \(\frac{200*10^6}{500*10^6=40\%}\) il che è inaccettabile, anche perché come nel primo esempio questo prezzo in risorse viene pagato sempre.
 
 \subsection{Considerazioni finali sul polling}
-L’attesa attiva è un meccanismo che fa perdere tempo al processore dedicando cicli macchina a letture inutili, di conseguenza il polling può essere usato quando le operazioni di I/O avvengono con velocità di trasferimento predeterminata (es. applicazioni di controllo) e comunque il processore ha poco altro da fare.
+L'attesa attiva è un meccanismo che fa perdere tempo al processore dedicando cicli macchina a letture inutili, di conseguenza il polling può essere usato quando le operazioni di I/O avvengono con velocità di trasferimento predeterminata (es. applicazioni di controllo) e comunque il processore ha poco altro da fare.
 
 Sicuramente se i dati vengono trasferiti con elevati \emph{bitrate}\footnote{Indica la quantità di dati che possono essere trasferiti, su un canale di comunicazione in un dato intervallo di tempo.} il ciclo di attesa attiva dura poco, in altri casi lo spreco derivante dal polling è inaccettabile e per questo motivo è stato inventato il sistema di I/O a interruzione di programma.
 
 Osserviamo ora uno schema esemplificativo tratto dal simulatore SPIM per l'assembly MIPS.
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.8\textwidth,keepaspectratio]{SPIM}
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{SPIM}
 	\caption{Organizzazione memoria SPIM (MIPS)}
 \end{figure}
-
 La parte più in alto in questa rappresentazione della memoria è quella che contiene il kernel code e le parole riservate.
 
 Il kernel code è la traduzione in linguaggio macchina del SO (che ricordiamo essere un programma esso stesso); all'interno di questa sezione si trovano inoltre le parole di memoria riservare all I/O; è quindi ora chiaro cosa si intendeva quando si è detto che il processore vede solo virtualmente le periferiche, che fisicamente dal suo punto di vista altro non sono che dati.
 
 \section{Input ad interruzione di programma}
-Conosciuto anche con il nome di interrupt driven I/O funziona tramite il sollevamento di interruzioni.
+L'input ad interruzione di programma, conosciuto anche con il nome di \emph{interrupt driven I/O} funziona tramite il sollevamento di interruzioni.
 
-Un’interruzione I/O è un segnale usato per indicare al processore che la periferica è pronta ad eseguire il trasferimento richiesto.
-Occorre tuttavia un modo per segnalare al processore quale periferica richiede l’interruzione e per gestire il fatto che le interruzioni I/O sono sempre asincrone rispetto all’esecuzione delle istruzioni.
+Un'interruzione I/O è un segnale usato per indicare al processore che la periferica è pronta ad eseguire il trasferimento richiesto.
+Occorre tuttavia un modo per segnalare al processore quale periferica richiede l'interruzione e per gestire il fatto che le interruzioni I/O sono sempre asincrone rispetto all'esecuzione delle istruzioni.
 
-Non esistono particolari istruzioni assembly per eseguire le interruzioni, queste possono presentarsi mentre una qualsiasi istruzione viene eseguita, ma si deve comunque dare modo di terminare l’esecuzione dell’istruzione corrente prima di passare alla gestione dell'interruzione.
-In tal senso il programmatore può decidere di posticipare l’esecuzione dell’interruzione a un momento più conveniente programmando sezioni non interrompibili nel codice del kernel, inoltre può classificare le interruzioni secondo grado di priorità.
+Non esistono particolari istruzioni Assembly per eseguire le interruzioni, queste possono presentarsi mentre una qualsiasi istruzione viene eseguita, ma si deve comunque dare modo di terminare l'esecuzione dell'istruzione corrente prima di passare alla gestione dell'interruzione. In tal senso il programmatore può decidere di posticipare l'esecuzione dell'interruzione a un momento più conveniente programmando sezioni non interrompibili nel codice del kernel, inoltre può classificare le interruzioni secondo grado di priorità.
 
-Il maggiore vantaggio che deriva dall'utilizzo di questa strategia è che non occorre interrompere l’esecuzione del programma se non quando il dato può essere effettivamente riferito in memoria.
+Il maggiore vantaggio che deriva dall'utilizzo di questa strategia è che non occorre interrompere l'esecuzione del programma se non quando il dato può essere effettivamente riferito in memoria.
 
-Guardando invece il lato negativo occorre un hardware speciale per permettere ai dispositivi di I/O di generare un’interruzione, rilevare l’interruzione, salvare lo stato del processore per eseguire una particolare routine di servizio (Interrupt Service Routine, ISR) e poi riprendere dal punto dove si era interrotto.
+Guardando invece il lato negativo, occorre un hardware speciale per permettere ai dispositivi di I/O di generare un'interruzione, rilevare l'interruzione, salvare lo stato del processore per eseguire una particolare routine di servizio (Interrupt Service Routine, ISR) e poi riprendere dal punto dove si era interrotto.
 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{input-a-interruzione}
 	\caption{Meccanismo di input ad interruzione}
 \end{figure}
-
-È ora presentato un'esempio di implementazione di gestione dell'I/O tramite interrupt in SPIM.
+È ora presentato un esempio di implementazione di gestione dell'I/O tramite interrupt in SPIM.
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{SPIM2}
 	\caption{Esempio controllo terminale SPIM}
 \end{figure}
+In questo esempio si nota come vi sia ancora, come nel polling, una parola dedicata alla segnalazione della presenza di dati da scrivere, il receiver control (\(0xffff0000\)); la parola succcessiva viene utilizzata per memorizzare effettivamente il dato disponibile, il receiver data (\(0xffff0004\)).
 
-In questo esempio si nota come vi sia ancora, come nel polling, una parola dedicata alla segnalazione della presenza di dati da scrivere, il Receiver control (0xffff0000); la parola succcessiva viene utilizzata per memorizzare effettivamente il dato disponibile, il Receiver data (0xffff0004).
-
-La periferica indica con un’interruzione, che viene lanciata da una circuiteria di controllo del bit ready, che ha un nuovo carattere dalla tastiera nell’opportuno registro di ricezione.
+La periferica indica con un'interruzione, che viene lanciata da una circuiteria di controllo del bit ready, che ha un nuovo carattere dalla tastiera nell'opportuno registro di ricezione.
 
 Il processo utente viene interrotto trasferendo il controllo a una ISR che copia il dato in memoria utente. Contemporaneamente con la lettura il bit ready viene resettato.
 
-Nel dettaglio il bit interrupt enable serve per indicare se è abilitato il meccanismo di interrupt.
+Nel dettaglio il bit \emph{interrupt enable} serve per indicare se è abilitato il meccanismo di interrupt.
 
 \subsection{Considerazioni finali sull'interrupt driven I/O}
 Nonostante la complessità di questo meccanismo è facile osservare che in caso di trasferimenti di grandi moli di dati esso risulti  molto più efficiente del polling, dimostriamolo riprendendo l'esempio dell'hard disk fatto in precedeza:
 
-\paragraph{Esempio 2: Hard disk} Supponiamo che un interrupt costi 500 cicli di clock, poiché è plausibile che costi di più del polling.
-Se le interruzioni venissero generate alla frequenza di polling avremmo che \[\frac{\textrm{Disk Interrupts}}{\textrm{sec}}=\frac{8 \textrm{MB/s}}{16\textrm{B}}=500*10^{3}\frac{\textrm{interrupts}}{\textrm{sec}}\] e quindi \[\frac{\textrm{Disk Polling Clocks}}{\textrm{sec}}=500*10^3{3}*500=250*10^{6} \frac{\textrm{clocks}}{\textrm{sec}}\] Di conseguenza la percentuale di utilizzo del processore sarebbe \(250*10^{6}/500*10^{6}= 50\%\). Sembrerebbe che non ci sia guadagno, anzi.
+\paragraph{Esempio 2: Hard disk} Supponiamo che un interrupt costi 500 cicli di clock, poiché è plausibile che costi di più del polling. Se le interruzioni venissero generate alla frequenza di polling avremmo che:
 
-Tuttavia se l’hard disk è attivo solo per il 5\% del tempo, gli interrupt generati saranno il 5\% e la spesa di processore sarà: \(5\% * 50\%=2.5\%\).
+\begin{equation*}
+	\frac{\textrm{Disk Interrupts}}{\textrm{sec}}=\frac{8 \textrm{MB/s}}{16\textrm{B}}=500\cdot 10^{3}\textrm{interrupts}/\textrm{sec}
+\end{equation*}
+e quindi
+\begin{equation*}
+	\frac{\textrm{Disk Polling Clocks}}{\textrm{sec}}=500\cdot 10^3{3}\cdot 500=250\cdot 10^6 \textrm{clocks}/\textrm{sec}
+\end{equation*}
+Di conseguenza la percentuale di utilizzo del processore sarebbe \(250\cdot 10^6/500\cdot 10^6= 50\%\). Sembrerebbe che non ci sia guadagno, anzi.
 
-Tutto questo proprio grazie al fatto che con il meccanismo di interrupt l’overhead si paga solo quando vengono effettivamente generate richieste.
+Tuttavia se l'hard disk è attivo solo per il 5\% del tempo, gli interrupt generati saranno il 5\% e la spesa di processore sarà: \(5\% \cdot 50\%=2.5\%\).
+
+Tutto questo proprio grazie al fatto che con il meccanismo di interrupt l'overhead si paga solo quando vengono effettivamente generate richieste.
 
 \section{Eccezioni}
 Le interrupts che abbiamo appena visto vanno inserite in una classe più grande di eventi detti eccezioni.
 
-Un eccezione consiste nel trasferimento del controllo del programma per l'avveramento di una condizione appunto eccezionale\footnote{Da intendere qui come "fuori dalla norma".}.
+Un'eccezione consiste nel trasferimento del controllo del programma per l'avveramento di una condizione appunto eccezionale\footnote{Da intendere qui come "fuori dalla norma".}.
 Per la gestione di questi eventi il sistema effettua delle azioni specifiche, come registrare il punto di interruzione e salvare lo stato, ed in seguito, a eccezione finita, riprendere dal punto immediatamente successivo al punto di interruzione.
 
 \begin{figure}[!h]
@@ -270,64 +264,57 @@ Per la gestione di questi eventi il sistema effettua delle azioni specifiche, co
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{schema-eccezioni}
 	\caption{Schema processo delle eccezioni}
 \end{figure}
-
 Esistono due tipi di eccezioni:
-\paragraph{Interrupts} Sono causate da eventi esterni (I/O) e quindi sono asincrone; possono essere gestite nello spazio tra due istruzioni semplicemente sospendendo il programma e riprendendo, dopo la gestione, dal punto in cui era stato interrotto.
-\paragraph{Traps} Sono causate da eventi \emph{interni} al programma come condizioni eccezionali (es. arithmetic overflow), errori (es. hardware malfunction) o fault (es. page fault).
-Esse sono sincrone all’esecuzione del programma.
-Vengono gestite da un \emph{traphandler}, da notare che spesso è possibile riprovare ad eseguire l’istruzione che ha causato l’eccezione o abortire il programma.
+\begin{itemize}
+	\item \emph{interrupts}: sono causate da eventi esterni (I/O) e quindi sono asincrone; possono essere gestite nello spazio tra due istruzioni semplicemente sospendendo il programma e riprendendo, dopo la gestione, dal punto in cui era stato interrotto.
+	\item \emph{traps}: sono causate da eventi \emph{interni} al programma come condizioni eccezionali (es. arithmetic overflow), errori (es. hardware malfunction) o fault (es. page fault). Esse sono sincrone all'esecuzione del programma. Vengono gestite da un \emph{traphandler} (da notare che spesso è possibile riprovare ad eseguire l'istruzione che ha causato l'eccezione o abortire il programma).
+\end{itemize}
 
 \subsection{Supporto del MIPS per la gestione di eccezioni}
 La componenete che registra le informazioni necessarie alla gestione delle eccezioni in MIPS è il coprocessore 0, che utilizza dei registri a lui dedicati.
 
-Quando si presenta un'eccezione in MIPS il registro EPC (registro 14) punta all’indirizzo successivo all’istruzione in esecuzione quando l’eccezione è avvenuta, mentre il registro di stato (registro 12) fa da maschera di abilitazione trap/interrupt.
+Quando si presenta un'eccezione in MIPS il registro EPC (registro 14) punta all'indirizzo successivo all'istruzione in esecuzione quando l'eccezione è avvenuta, mentre il registro di stato (registro 12) fa da maschera di abilitazione trap/interrupt.
 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{registro-maschera}
 	\caption{Registro maschera}
 \end{figure}
-
 In seguito una breve spiegazione dei campi di questo registro.
 \begin{itemize}
-	\item IntrMask:  1 bit per ognuno dei 6 livelli di eccezioni hardware e 2 livelli software abilitabili.
-	\item User mode: 0 se quando l’eccezione è avvenuta il sistema era in modo supervisore, 1 se era in modo utente.
-	\item Excp level: settato a 1 (eccezioni disabilitate) mentre si stà gestendo un’eccezione, tipicamente resettata dopo che l’ISR ha terminato.
-	\item Intr enable: 1 se si sta utilizzando il meccanismo delle interrupt, 0 altrimenti.
+	\item \emph{IntrMask}:  1 bit per ognuno dei 6 livelli di eccezioni hardware e 2 livelli software abilitabili.
+	\item \emph{User mode}: 0 se quando l'eccezione è avvenuta il sistema era in modo supervisore, 1 se era in modo utente.
+	\item \emph{Excp level}: settato a 1 (eccezioni disabilitate) mentre si stà gestendo un'eccezione, tipicamente resettata dopo che l'ISR ha terminato.
+	\item \emph{Intr enable}: 1 se si sta utilizzando il meccanismo delle interrupt, 0 altrimenti.
 \end{itemize}
-
-Il registro BadVAddr (registro 8) contiene l'indirizzo di memoria che ha causato un errore di memoria.
-Infine il registro cause (registro 13) contiene il tipo dell’eccezione ed i bit pendenti.
+Il registro \emph{BadVAddr} (registro 8) contiene l'indirizzo di memoria che ha causato un errore di memoria. Infine il registro \emph{cause} (registro 13) contiene il tipo dell'eccezione ed i bit pendenti.
 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{registro-cause}
 	\caption{Registro cause}
 \end{figure}
-
 In particolare sono importanti i campi:
 \begin{itemize}
-	\item \textbf{code}, che codifica i motivi dell'eccezione;
-	\item \textbf{pending}, utilizzato per gestire casi in cui avvengono una o più eccezioni mentre venivano risolte altre eccezzioni.
+	\item \emph{code}: codifica i motivi dell'eccezione;
+	\item \emph{pending}: gestisce i casi in cui avvengono una o più eccezioni mentre venivano risolte altre eccezzioni.
 \end{itemize}
 
 \subsection{Modifiche al processore per gestire le eccezioni}
 Per implementare il complesso meccanismo di gestione delle eccezioni il processore deve essere munito di queste nuove componenti:
 \begin{itemize}
-	\item segnali di controllo per scrivere EPC (EPCWrite), Cause (CauseWrite) e Status;
-	\item hardware per registrare il tipo di interruzione in Cause;
+	\item segnali di controllo per scrivere \emph{EPC} (\emph{EPCWrite}), \emph{Cause} (\emph{CauseWrite}) e \emph{Status};
+	\item hardware per registrare il tipo di interruzione in \emph{Cause};
 	\item modifiche alla macchina a stati in modo che:
 	\begin{itemize}
-		\item l’indirizzo del gestore dell’interruzione, 0x80000180  possa essere caricato in PC (altro ramo nel multiplexer);
-		\item Sia salvato l’indirizzo della prossima istruzione da eseguire a ISR terminato in EPC.
+		\item l'indirizzo del gestore dell'interruzione, \(0x80000180\) possa essere caricato in PC (altro ramo nel multiplexer);
+		\item sia salvato l'indirizzo della prossima istruzione da eseguire a \emph{ISR} terminato in \emph{EPC}.
 	\end{itemize}
 \end{itemize}
-
-Ed ecco infine un'immagine del processore con dattapath modificato per supportare la gestione delle eccezioni.
-
+Ed ecco infine un'immagine del processore con datapath modificato per supportare la gestione delle eccezioni.
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.9\textwidth,keepaspectratio]{final-datapath}
+	\includegraphics[width=\textwidth,keepaspectratio]{final-datapath}
 \end{figure}
 
 \end{document}
