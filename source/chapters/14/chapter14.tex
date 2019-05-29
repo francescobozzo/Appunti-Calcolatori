@@ -14,21 +14,21 @@
  \end{fquote}
 
 \section{La necessità di comunicare}
-Un calcolatore sarebbe praticamente inutile se non avesse la possibilità di interfacciarsi e comunicare con l'esterno, ed è proprio di questo che si occupano le periferiche di input/output (da qui in avanti I/O); questi dispositivi possono essere estremamente \emph{eterogenei} tra loro e si diversificano a seconda del compito che sono chiamati a svolgere\footnote{Si pensi che nella categoria di dispositivi I/O compaiono mouse, penne grafiche, desktop, microfoni e tanti altri ancora.}. Ttuttavia devono avere una caratteristica comune,:devono essere \emph{espandibili}, ovvero ci deve essere la possibilità di aggiungere o rimuovere i dispositivi di I/O.
+Un calcolatore sarebbe praticamente inutile se non avesse la possibilità di interfacciarsi e comunicare con l'esterno, ed è proprio di questo che si occupano le periferiche di input/output (da qui in avanti I/O); questi dispositivi possono essere estremamente \emph{eterogenei} tra loro e si diversificano a seconda del compito che sono chiamati a svolgere\footnote{Si pensi che nella categoria di dispositivi I/O compaiono mouse, penne grafiche, desktop, microfoni e tanti altri ancora.}. Tuttavia devono avere una caratteristica comune: devono essere \emph{espandibili}, ovvero ci deve essere la possibilità di aggiungere o rimuovere i dispositivi di I/O.
 
 \subsection*{Tre termini tecnici}
 Chiariamo ora questi termini tecnici definendone precisamente il significato poiché ci torneranno utili nel resto del capitolo.
-\paragraph{Transizione di I/O} Invio indirizzo e spedizione o ricezione dei dati.
-\paragraph{Input} Trasferimento di dati da una periferica verso la memoria dove il processore può leggerla.
-\paragraph{Output} Trasferimento di dati dalla memoria ad un dispositivo.
-
+\begin{itemize}
+	\item \emph{Transizione di I/O}: invio indirizzo e spedizione o ricezione dei dati.
+	\item \emph{Input}: trasferimento di dati da una periferica verso la memoria dove il processore può leggerla.
+	\item \emph{Output}: trasferimento di dati dalla memoria ad un dispositivo.
+\end{itemize}
 Data l'enorme varietà di compiti che assolvono le periferiche di I/O a  seconda del tipo di applicazione, posso essere interessato a diverse prestazioni:
 \begin{itemize}
 	\item in alcuni casi la cosa più importante è il tempo di accesso/risposta (latenza), ad esempio quando si tratta di tastiere o mouse;
 	\item in altri casi la caratteristica di spicco deve essere il throughput, vedi i sistemi di streaming;
-  \item infine esistono molti altri casi meno comuni che necessitano di caratteristiche dedicate ad esempio un sistema bancario può avere la necessità di massimizzare il numero di file di piccole dimensioni su cui opera contemporaneamente.
+	\item infine esistono molti altri casi meno comuni che necessitano di caratteristiche dedicate (ad esempio un sistema bancario può avere la necessità di massimizzare il numero di file di piccole dimensioni su cui opera contemporaneamente).
 \end{itemize}
-
 Dati questi esempi si possono introdurre le principali caratteristiche secondo cui vengono suddivise le suddette periferiche: operazioni possibili (R e/o W), \emph{partner} (uomo o macchina) e velocità di trasferimento; in seguito viene riportata un tabella riassuntiva delle maggiori classi di dispositivi di questo tipo.
 
 \begin{figure}[!h]
@@ -38,9 +38,7 @@ Dati questi esempi si possono introdurre le principali caratteristiche secondo c
 \end{figure}
 
 \section{Connesione tra processore e periferiche}
-Nonostante le differenze di cui si è parlato nella sezione precedente tutte le periferiche hanno una caratteristica comune, ovvero la modalità di collegamento al processore.
-
-Vediamo ora uno schema, molto semplificato, che rappresenta il modo in cui le periferiche sono collegate al processore:
+Nonostante le differenze di cui si è parlato nella sezione precedente, tutte le periferiche hanno una caratteristica comune: la modalità di collegamento al processore. Vediamo ora uno schema, molto semplificato, che rappresenta il modo in cui le periferiche sono collegate al processore:
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{schema-periferiche}
@@ -49,15 +47,15 @@ Vediamo ora uno schema, molto semplificato, che rappresenta il modo in cui le pe
 Si noti quindi come ogni periferica non è collegata direttamente con il processore, la loro comunicazione è intermediata dai controllori I/O e dal bus, che descriveremo in seguito.
 Ciò implica che i dispositivi di I/O "non esistano" per il processore ma vengano rappresentati "virtualmente" come normali locazioni di memoria.
 
-Tutte le connessioni avvengono attraverso strutture di comunicazione dette \emph{bus}, di cui esistono due tipologie:
+Tutte le connessioni avvengono attraverso strutture di comunicazione dette \emph{bus}. Ne esistono principalmente due tipologie:
 \begin{itemize}
-	\item bus processore/memoria: sono specializzati, corti e molto veloci;
-	\item bus I/O: sono utilizzati per la comunicazione con periferiche generiche, possono essere relativamente lunghi e comunque non si interfacciano direttamente con la memoria, ma richiedono come intermediario un bus processore/memoria o un bus di sistema\footnote{Il bus di sistema è un "bus di alto livello", ovvero un bus dedicato a  mettere in comunicazione tutti gli altri bus del sistema appunto.}.
+	\item \emph{bus processore/memoria}: sono specializzati, corti e molto veloci;
+	\item \emph{bus I/O}: sono utilizzati per la comunicazione con periferiche generiche, possono essere relativamente lunghi e comunque non si interfacciano direttamente con la memoria, ma richiedono come intermediario un bus processore/memoria o un bus di sistema\footnote{Il bus di sistema è un "bus di alto livello", ovvero un bus dedicato a  mettere in comunicazione tutti gli altri bus del sistema appunto.}.
 \end{itemize}
 Nelle prime semplici architetture avevamo un unico grosso bus parallelo (non seriale) che collegava tutte le componenti, ma per problemi di clock e frequenze ora si usano architetture di comunicazione più complesse fatte di più bus paralleli condivisi e di bus seriali punto/punto\footnote{I bus seriali punto a punto sono bus in cui ogni periferica è collegata direttamente al processore tramite un bus dedicato.}.
 
 Nel caso in cui il processore comunichi con delle periferiche esterne, come anticipato in precedenza, esso in realtà comunica attraverso i controllori I/O, che traducono sia i comandi che i dati da e verso il processore stesso.
-Saranno ora discusse due implementazioni diverse del bus che convivono nei nostri calcolatori: sincrona ed asincrona.
+Saranno ora discusse due implementazioni diverse del bus che convivono nei nostri calcolatori: \emph{sincrona} ed \emph{asincrona}.
 
 \subsection{Bus sincrono}
 Si tratta di un bus attraverso cui le informazioni vengono trasmesse in modo sincrono, quindi le comunicazioni sono necessariamente scandite da un segnale di bus clock (che gira a frequenza molto più bassa di quello del processore), che viene trasmesso in una linea di controllo del bus stesso.
@@ -68,11 +66,10 @@ Si tratta di un bus attraverso cui le informazioni vengono trasmesse in modo sin
 	\caption{Schema rappresentativo del ciclo del bus sincrono}
 \end{figure}
 
-In questo esempio si può osservare come avviene la trasmissione di un dato.
-Nell'\emph{Address and command}, durante il fronte di salita del bus clock, sono trasmessi indirizzo bersaglio e comando da svolgere, sul fronte di discesa del bus clock viene effettivamente trasferito il dato.
-Il trasferimento termina proprio con il termine del ciclo di clok, in seguito il ciclo ricomincia; ripetendo ancora una volta per maggiore chiarezza, la prima metà del ciclo di bus clock è utilizzata per passare indirizzo ed istruzione da svolgere, la seconda effettivamente per trasmettere il dato.
+In questo esempio si può osservare come avviene la trasmissione di un dato. Nell'\emph{Address and command}, durante il fronte di salita del bus clock, sono trasmessi indirizzo bersaglio e comando da svolgere, sul fronte di discesa del bus clock viene effettivamente trasferito il dato.
+Il trasferimento termina proprio con il termine del ciclo di clock, in seguito il ciclo ricomincia; ripetendo ancora una volta per maggiore chiarezza, la prima metà del ciclo di bus clock è utilizzata per passare l'indirizzo e l'istruzione da svolgere, la seconda effettivamente per trasmettere il dato.
 
-Riassumendo quindi i punti di forza del bus di tipo sincrono si deve osservare che questo sistema è tanto semplice da implementare quanto veloce, data la presenza esigua di sequenze di controllo, che quindi non appesantisce lo svolgimento delle operazioni di trasmissione dati.
+Riassumendo quindi i punti di forza del bus di tipo sincrono, si deve osservare che questo sistema è tanto semplice da implementare quanto veloce, data la presenza esigua di sequenze di controllo, che quindi non appesantisce lo svolgimento delle operazioni di trasmissione dati.
 
 Di contro si può argomentare che è un sistema che dimostra poca robustezza al \emph{drift} del clock, ovvero se il dato non si propaga in modo sincrono con il  termine del bus clock e quindi viene trasmesso in modo scorretto; inoltre utilizzando un sistema simile si costringono tutte le periferiche a lavorare alla stessa velocità del clock, ma questo non è sempre possibile.
 
@@ -82,29 +79,26 @@ Per ovviare agli sconvenienti appena discussi è stata sviluppata anche una vers
 Questo cambio di stratagemma libera dalla limitazione del tempo scandito dal clock ma comporta la creazione di apposite linee di controllo per segnalare inizio e fine delle transazioni;
 nonostante questa complicazione il bus asincrono garantisce un grande vantaggio, ovvero permette di collegare periferiche a velocità diversa.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{bus-asincrono}
 	\caption{Schema rappresentativo del ciclo del bus asincrono}
 \end{figure}
-
-Dall'esempio qui riportato si osserva che in ogni transizione una parte riveste il ruolo del master, richiedendo delle operazioni, mentre l'altra parte fa da slave, eseguendo i comandi.
+Dall'esempio qui riportato si osserva che in ogni transizione una parte riveste il ruolo del \emph{master}, richiedendo delle operazioni, mentre l'altra parte fa da \emph{slave}, eseguendo i comandi.
 Si nota quindi che esistono due linee di controllo dedicate (la master ready e la slave ready), che servono per trasmettere ai due componenti i segnali che indicano ad uno dei due che l'altro è pronto ed ha terminato la corretta trasmissione dei dati.
 
-Riassumendo ora i punti di forza del bus asincrono si noti che è un meccanismo che permette di avere un sistema robusto rispetto agli eventuali ritardi, di una periferica rispetto ad un'altra o al processore, e che consente di comunicare con periferiche di tipo diverso.
+Riassumendo ora i punti di forza del bus asincrono, si noti che è un meccanismo che permette di avere un sistema robusto rispetto agli eventuali ritardi di una periferica rispetto ad un'altra o al processore e che consente di comunicare con periferiche di tipo diverso.
 
-Viceversa osservando i fattori negativi si deve indicare che risulta più lento del bus sincrono data la necessità di inviare e ricevere diversi segnali di controllo ed inoltre, aumentando la complessità del trasferimento I/O, aumenta anche la complessità della circuiteria che sta alla base.
+Viceversa, osservando i fattori negativi, si deve indicare che risulta più lento del bus sincrono data la necessità di inviare e ricevere diversi segnali di controllo ed inoltre, aumentando la complessità del trasferimento I/O, aumenta anche la complessità della circuiteria che sta alla base.
 
-In conclusione dando uno sguardo alla realtà si scopre che spesso si usano tecnologie ibride di bus, in cui c’è un segnale di clock ma che rimangono prevalentemente asincrone.
+In conclusione, dando uno sguardo alla realtà, si scopre che spesso si usano tecnologie ibride di bus, in cui c'è un segnale di clock ma che rimangono prevalentemente asincrone.
 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{tecnologie-asincrone}
 	\caption{Principali tecnologie asincrone}
 \end{figure}
-
-Qui è ripotato un esempio di implementazione reale di questo schema. L'esempio riguarda l'ormai vetusta architettura dell' x86.
-Notiamo che esiste una componente dedicata alla comunicazione con tutte le periferiche, detto hub dell'I/O; Questo hub comunica poi in seguito con l'hub della memoria che si occupa di gestire le comunicazioni tra processore e memoria centrale oltre che interpretare le comunicazioni che arrivano apputno dall'hub dell'I/O.
+Qui è ripotato un esempio di implementazione reale di questo schema. L'esempio riguarda l'ormai vetusta architettura dell'x86. Notiamo che esiste una componente dedicata alla comunicazione con tutte le periferiche, detto hub dell'I/O; Questo hub comunica poi in seguito con l'hub della memoria che si occupa di gestire le comunicazioni tra processore e memoria centrale oltre che interpretare le comunicazioni che arrivano apputno dall'hub dell'I/O.
 Nei calcolatori moderni tutte queste componenti tendono ad essere inglobate nel processore stesso.
 \begin{figure}[!h]
 	\centering
@@ -113,16 +107,12 @@ Nei calcolatori moderni tutte queste componenti tendono ad essere inglobate nel 
 \end{figure}
 
 \section{Gestione delle periferiche da parte del SO}
-Ora che abbiamo chiarito qual è il tramite fisico attraverso cui i sistemi operativi comunicano con le periferiche rimangono i seguenti interrogativi aperti: come trasformare una richiesta di I/O in un comando per la periferica? E come trasferire i dati?
-
-Di questi problemi si fa carico il sistema operativo (da qui in avanti SO), dato che è la parte di software dedicata alla gestione diretta del processore e delle sue risorse, quindi anche dei sistemi di I/O.
-
-Il SO deve fornire queste funzionalità per la gestione dell'I/O:
+Ora che abbiamo chiarito qual è il tramite fisico attraverso cui i sistemi operativi comunicano con le periferiche, rimangono ancora aperti i seguenti interrogativi: come trasformare una richiesta di I/O in un comando per la periferica? E come trasferire i dati? Di questi problemi si fa carico il sistema operativo (da qui in avanti SO), dato che è la parte di software dedicata alla gestione diretta del processore e delle sue risorse, quindi anche dei sistemi di I/O. Il SO deve fornire queste funzionalità per la gestione dell'I/O:
 \begin{itemize}
 	\item garantire che un dato utente abbia accesso ai dispositivi di I/O cui ha i permessi per accedere;
-	\item fornire comandi di alto livello per gestire le operazioni di basso livello, trasferimento dati nello specifico;
+	\item fornire dei comandi di alto livello per gestire le operazioni di basso livello, trasferimento dati nello specifico;
 	\item gestire le interruzioni generate dai dispositivi di I/O (in maniera simile a quanto avviene con le eccezioni generate nei programmi);
-	\item ripartire l’accesso a ciascun dispositivo in maniera equa tra i vari programmi che lo richiedono.
+	\item ripartire l'accesso a ciascun dispositivo in maniera equa tra i vari programmi che lo richiedono.
 \end{itemize}
 È chiaro quindi, guardando il terzo punto, che i trasferimenti dati hanno un impatto sulle funzionalità del SO e di conseguenza vengono eseguite in una particolare modalità del processore, la modalità kernel.
 
