@@ -10,7 +10,7 @@
 % arara: latexmk: { clean: partial }
 \begin{document}
 \chapter{La gerarchia di memoria}\begin{fquote}[Burks, Goldstine, Von Neumann][1946]Idealmente si desidererebbe una memoria indefinitamente grande, in cui ogni particolare parola risulti immediatamente disponibile.
- \end{fquote}
+\end{fquote}
 
 \section{Introduzione}
 Sottolineare quanto il concetto di memoria sia importante e necessario nei dispositivi elettronici del giorno d'oggi risulta abbastanza scontato. D'altra parte, viene fatta subito una precisazione: non esiste un'unica soluzione che permette di ottenere la memoria "perfetta"; esistono infatti diverse implementazioni, ognuna con i suoi compromessi, che variano per costo, prestazioni e capacità.
@@ -281,14 +281,16 @@ Per questo motivo ho bisogno di $n$ comparatori (uno per ogni blocco di cache) c
 
 \subsection{Cache set-associativa}
 Le cache set-associative sono un via di mezzo tra le due che abbiamo visto finora.
-In una cache set-associativa, composta da $n$ blocchi totali, tutti i blocchi vengono suddivisi in un determinato numero di gruppi, che vengono chiamati linee; ogni gruppo di conseguenza contiene un numero pari a \(\frac{n}{linee}\) di blocchi, che chiameremo vie.
+In una cache set-associativa, composta da $n$ blocchi totali, tutti i blocchi vengono suddivisi in un determinato numero di gruppi, che vengono chiamati linee; ogni gruppo di conseguenza contiene un numero pari a \(\frac{n}{\textrm{numero di linee}}\) di blocchi, che chiameremo vie.
 
 Fatta questa suddivisione quello che si ottiene è una sorta di scacchiera in cui i blocchi possono essere visti in raggruppamenti di "linee" (righe) e di "vie" (colonne).
 
-Alla fine della fiera quello che otteniamo è una combinazione delle due diverse cache: mappiamo direttamente (vedi ~\ref{sec:direttamente}) ciascun blocco della memoria periferica in una certa linea e quindi questo può essere inserito in uno qualsiasi degli \(\frac{n}{linee}\) in maniera associativa.
+Riusciamo quindi ad ottenere una combinazione delle due diverse cache: mappiamo ciascun blocco della memoria periferica in una certa linea direttamente (vedi ~\ref{sec:direttamente}), in seguito questo può essere inserito in una qualsiasi delle vie in maniera associativa.
 
-In pratica la cache set-associativa lavora a mappatura diretta sulle linee ed in maniera completamente associativa sulle vie (all'interno di una stessa linea).
-Quando si va a cercare un blocco quindi se ne calcola la linea in cui è mappato direttamente ed in seguito, all'interno di questa linea, si effettua una ricerca parallela su tutte le vie (come nelle cache associative).
+% un giorno potrebbe servire
+%Ribadiamo per chiarezza che la cache set-associativa %lavora a mappatura diretta sulle linee ed in maniera %completamente associativa sulle vie (all'interno di una %stessa linea).
+
+Quando si va a cercare un blocco quindi se ne calcola la linea in cui è mappato direttamente ed in seguito, all'interno di questa linea, si effettua una ricerca parallela su tutte le vie (come nelle cache completamente associative).
 
 Il grande vantaggio è che abbiamo una memoria non troppo costosa, dato che la cache associativa viene implementata su blocchi di dimensioni ridotte; tuttavia si mantiene anche (almeno parzialmente) il vantaggio della strategia associativa con conseguente abbassamento del \emph{miss rate}.
 
