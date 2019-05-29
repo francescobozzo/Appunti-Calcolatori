@@ -204,7 +204,7 @@ L1:
 L2:
 \end{minted}
 
-L'implementazione di \mintinline{batch}{gcc} è leggermente più complessa e aggira la scarsa potenza sull'indirizzamento di MIPS usando non uno, ma due registri come contatori: \register{\$v0}  contiene \mintinline{c}{i} e \register{\$a1} contiene l'elemento successivo dell'array; quest'ultimo registro inoltre viene sempre incrementato di 4, assumendo che ogni elemento dell'array, in quanto \mintinline{c}{int}, abbia dimensione 4 byte.
+L'implementazione di \mintinline{batch}{gcc} è leggermente più complessa e aggira la scarsa potenza sull'indirizzamento di MIPS usando non uno, ma due registri come contatori: \register{\$v0}  contiene \mintinline{c}{i} e \register{\$a1} contiene il contatore perl'elemento successivo dell'array; quest'ultimo registro inoltre viene sempre incrementato di 4, assumendo che ogni elemento dell'array, in quanto \mintinline{c}{int}, abbia dimensione 4 byte.
 \begin{minted}[linenos, tabsize = 4, breaklines]{asm}
 start:
 	lw $a2, 0($a1)    # carica in a2 il contenuto di a[0]
@@ -287,7 +287,7 @@ esempio_foglia:
 \end{minted}
 
 \subsubsection{Implementazione x86}
-L'implementazione Intel è immediata, se si tiene conto del fatto che le variabili verranno mappate nei "registri \register{e}" (\register{\%edi}, \register{\%esi}, \register{\%ecx}, \register{\%edx}) a 32 bit, anziché nei "registri \register{r}" (\register{\%rdi}, \register{\%rsi}, \register{\%rcx}, \register{\%rdx}) offerti da x86-64; questo succede perché i valori che dobbiamo modificare sono di tipo \mintinline{c}{int}, quindi di dimensione appunto 32 bit. Notiamo inoltre l'istruzione \texttt{ret} preposta a restiruire il ritorno della subroutine.
+L'implementazione Intel è immediata, se si tiene conto del fatto che le variabili verranno mappate nei "registri \register{e}" (\register{\%edi}, \register{\%esi}, \register{\%ecx}, \register{\%edx}) a 32 bit, anziché nei "registri \register{r}" (\register{\%rdi}, \register{\%rsi}, \register{\%rcx}, \register{\%rdx}) offerti da x86-64; questo succede perché i valori che dobbiamo modificare sono di tipo \mintinline{c}{int}, quindi di dimensione appunto 32 bit. Notiamo inoltre l'istruzione \texttt{ret} preposta a restituire il ritorno della subroutine.
 \begin{minted}[linenos,tabsize = 4]{gas}
 esempio_foglia:
 	leal (%rdi, %rsi), %eax  # salva in eax g + h
@@ -343,7 +343,7 @@ inc:
 
 f:
 	addiu $sp, $sp, -8  # sp viene decrementato di 8
-	sw $ra, 4($sp)      # ra viene salvato in sp shiftato di 4
+	sw $ra, 4($sp)      # ra viene salvato in sp con offset di 4
 	jal inc
 	addiu $v0, $v0, -4
 	lw $ra, 4($sp)      # recupero ra
@@ -417,7 +417,7 @@ copia_stringa:
 	testb %al, %al
 	je L1                      # se uguali, ritorna e termina
 	movl $0, %eax              # inizializza a 0 eax
-L3 :
+L3:
 	addl $1, %eax              # incrementa il contatore
 	movslq %eax, %rcx
 	movzbl (%rsi, %rcx), %edx
