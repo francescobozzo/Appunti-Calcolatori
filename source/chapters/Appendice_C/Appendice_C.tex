@@ -46,41 +46,41 @@ sposta:
 		# a0 = v, a1 = i
 		# t0 = j * 4, t1 = appoggio
 	sll $t0, $a1, 2
-	add $t2, $a0, $t0	 # t2 = &v[i]
-	lw $t1, 0($t2)	 # appoggio = v[i]
+	add $t2, $a0, $t0  # t2 = &v[i]
+	lw $t1, 0($t2)     # appoggio = v[i]
 	addi $t0, $t0, -4
 
 ciclo:
-	slt $t3, $t0, $zero	 # t3 = 1 se j < 0
-	bne $t3, $zero, out	 # salta a out se j < 0
-	add $a2, $a0, $t0	 # t2 = &v[j]
-	lw $t4, 0($t2)	 # t4 = v[j]
-	slt $t3, $t1 , $t4	 # t3=1 se t1<t4 (appoggio < v[j])
-	beq $t3, $zero, out	 # esci se appoggio >= v[j]
-	addi $t5, $t0, 4	 # t5 = (j + 1) * 4
-	add $t2, $a0, $t5	 # t2 = &v[j + 1]
+	slt $t3, $t0, $zero  # t3 = 1 se j < 0
+	bne $t3, $zero, out  # salta a out se j < 0
+	add $a2, $a0, $t0    # t2 = &v[j]
+	lw $t4, 0($t2)       # t4 = v[j]
+	slt $t3, $t1 , $t4   # t3=1 se t1<t4 (appoggio < v[j])
+	beq $t3, $zero, out  # esci se appoggio >= v[j]
+	addi $t5, $t0, 4     # t5 = (j + 1) * 4
+	add $t2, $a0, $t5    # t2 = &v[j + 1]
 	sw $t4, 0($t2)
 	addi $t0, $t0, -4
 	j ciclo
 
 out:
 	addi $t5, $t0, 4
-	add $t2, $a0, $t5	 # t2 = &v[j + 1]
+	add $t2, $a0, $t5    # t2 = &v[j + 1]
 	sw $t1, 0($t2)
 	jr $ra
 
 ordina:
-		# a0 = v, a1 = n
-		# s0 = i
+	# a0 = v, a1 = n
+	# s0 = i
 	addi $sp, $sp, -12
 	sw $s0, 0($sp)
 	sw $ra, 4($sp)
 	sw $a1, 8($sp)
 
-	addi $s0, $zero, 1	 # i = 1
+	addi $s0, $zero, 1  # i = 1
 
 loop_ordina:
-	slt $t0, $s0, $a1	 # t0 = 1 se i < n
+	slt $t0, $s0, $a1   # t0 = 1 se i < n
 	beq $t0, $zero, out_ordina
 	add $a1, $s0, $zero
 	jal sposta
@@ -112,7 +112,7 @@ sposta:
 	beq $a3, $zero, L2
 	sll $a1, $a1, 2
 	addu $a1, $a0, $a1
-	li $t1 , -1	 # 0xffffffffffffffff
+	li $t1 , -1   # 0xffffffffffffffff
 
 L3:
 	addiu $a2, $a2, 1
@@ -173,11 +173,11 @@ sposta:
 	dec %rax
 
 ciclo:
-	cmpq $0, %rax	 # confronta 0 e rax
-	jl out	 # esci se j < 0
-	movl (%rdi, %rax, 4), %r11d	 # metti v[j] in %r11
-	cmpl %r10d , %r11d	 # confronta v[j] e appoggio
-	jle out	 # se v[j] < appoggio, esci
+	cmpq $0, %rax                # confronta 0 e rax
+	jl out                       # esci se j < 0
+	movl (%rdi, %rax, 4), %r11d  # metti v[j] in %r11
+	cmpl %r10d , %r11d           # confronta v[j] e appoggio
+	jle out                      # se v[j] < appoggio, esci
 	movl %r11d, 4(%rdi, %rax  4)
 	dec %rax
 	jmp ciclo
@@ -187,8 +187,8 @@ out:
 	ret
 
 ordina:
-		# rdi = v, rsi = n
-		# rbx = i
+	# rdi = v, rsi = n
+	# rbx = i
 	pushq %rbx
 	movq $1, %rbx
 
@@ -331,7 +331,7 @@ potenza_due:
 	beq $a0, $zero, L4
 	blez $a0, L5
 	move $v1, $zero
-	li $v0, 1	 # 0x1
+	li $v0, 1  # 0x1
 
 L3:
 	sll $v0, $v0, 1
@@ -340,11 +340,11 @@ L3:
 	jr $ra
 
 L4:
-	li $v0, 1	 # 0x1
+	li $v0, 1  # 0x1
 	jr $ra
 
 L5:
-	li $v0, 1	 # 0x1
+	li $v0, 1  # 0x1
 	jr $ra
 \end{minted}
 
@@ -413,7 +413,7 @@ potenza_due:
 	j L2
 
 L3:
-	li $v0, 1	 # 0x1
+	li $v0, 1  # 0x1
 	jr $ra
 
 L2:
@@ -656,6 +656,5 @@ L2:
 	mov r0, r1
 	bx lr
 \end{minted}
-
 
 \end{document}
