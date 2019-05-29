@@ -2,6 +2,7 @@
 \usepackage[subpreambles=true]{standalone}
 
 \usepackage{../../style}
+\usepackage{../../set-citations}
 
 \graphicspath{{./assets/images/}}
 
@@ -13,7 +14,7 @@
  \end{fquote}
 
 \section{La necessità di comunicare}
-Un calcolatore sarebbe praticamente inutile se non avesse la possibilità di interfacciarsi e comunicare con l'esterno, ed è proprio di questo che si occupano le periferiche di input/output (da qui in avanti I/O); Questi dispositivi possono essere estremamente \emph{eterogenei} tra loro a seconda del compito che sono chiamati a svolgere\footnote{Si pensi che nella categoria di dispositivi I/O compaiono mouse, penne grafiche, desktop, microfoni e tanti altri ancora.}, tuttavia devono avere una caratteristica comune, devono essere \emph{espandibili}, ovvero ci deve essere la possibilità di aggiungere (o rimuovere) i dispositivi di I/O.
+Un calcolatore sarebbe praticamente inutile se non avesse la possibilità di interfacciarsi e comunicare con l'esterno, ed è proprio di questo che si occupano le periferiche di input/output (da qui in avanti I/O); questi dispositivi possono essere estremamente \emph{eterogenei} tra loro e si diversificano a seconda del compito che sono chiamati a svolgere\footnote{Si pensi che nella categoria di dispositivi I/O compaiono mouse, penne grafiche, desktop, microfoni e tanti altri ancora.}. Ttuttavia devono avere una caratteristica comune,:devono essere \emph{espandibili}, ovvero ci deve essere la possibilità di aggiungere o rimuovere i dispositivi di I/O.
 
 \subsection*{Tre termini tecnici}
 Chiariamo ora questi termini tecnici definendone precisamente il significato poiché ci torneranno utili nel resto del capitolo.
@@ -23,14 +24,14 @@ Chiariamo ora questi termini tecnici definendone precisamente il significato poi
 
 Data l'enorme varietà di compiti che assolvono le periferiche di I/O a  seconda del tipo di applicazione, posso essere interessato a diverse prestazioni:
 \begin{itemize}
-	\item in alcuni casi ad la cosa più importante è il tempo di accesso/risposta (latenza), ad esempio quando si tratta di tasitere o mouse;
+	\item in alcuni casi la cosa più importante è il tempo di accesso/risposta (latenza), ad esempio quando si tratta di tastiere o mouse;
 	\item in altri casi la caratteristica di spicco deve essere il throughput, vedi i sistemi di streaming;
-	\item infine esistono molti altri casi meno comuni che necessitano di caratteristiche dedicate, ad esempio un sistema bancario può avere la necessità di massimizzare il numero di file di piccole dimensioni su cui opera contemporaneamente.
+  \item infine esistono molti altri casi meno comuni che necessitano di caratteristiche dedicate ad esempio un sistema bancario può avere la necessità di massimizzare il numero di file di piccole dimensioni su cui opera contemporaneamente.
 \end{itemize}
 
 Dati questi esempi si possono introdurre le principali caratteristiche secondo cui vengono suddivise le suddette periferiche: operazioni possibili (R e/o W), \emph{partner} (uomo o macchina) e velocità di trasferimento; in seguito viene riportata un tabella riassuntiva delle maggiori classi di dispositivi di questo tipo.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{classificazione-periferiche}
 	\caption{Classificazione delle periferiche}
@@ -40,7 +41,7 @@ Dati questi esempi si possono introdurre le principali caratteristiche secondo c
 Nonostante le differenze di cui si è parlato nella sezione precedente tutte le periferiche hanno una caratteristica comune, ovvero la modalità di collegamento al processore.
 
 Vediamo ora uno schema, molto semplificato, che rappresenta il modo in cui le periferiche sono collegate al processore:
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{schema-periferiche}
 	\caption{Schema del collegamento delle periferiche}
@@ -96,7 +97,7 @@ Viceversa osservando i fattori negativi si deve indicare che risulta più lento 
 
 In conclusione dando uno sguardo alla realtà si scopre che spesso si usano tecnologie ibride di bus, in cui c’è un segnale di clock ma che rimangono prevalentemente asincrone.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{tecnologie-asincrone}
 	\caption{Principali tecnologie asincrone}
@@ -105,7 +106,7 @@ In conclusione dando uno sguardo alla realtà si scopre che spesso si usano tecn
 Qui è ripotato un esempio di implementazione reale di questo schema. L'esempio riguarda l'ormai vetusta architettura dell' x86.
 Notiamo che esiste una componente dedicata alla comunicazione con tutte le periferiche, detto hub dell'I/O; Questo hub comunica poi in seguito con l'hub della memoria che si occupa di gestire le comunicazioni tra processore e memoria centrale oltre che interpretare le comunicazioni che arrivano apputno dall'hub dell'I/O.
 Nei calcolatori moderni tutte queste componenti tendono ad essere inglobate nel processore stesso.
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{esempio-x86}
 	\caption{Schema collegamenti bus in x86}
@@ -152,7 +153,7 @@ Detta anche modalità di \emph{attesa attiva} sostanzialmente consiste nell'invi
 Di seguito è riportata l'implementazione in assembly MIPS di un ciclo di lettura input da tasitera e in seguito di stampa del dato.
 
 È di seguito inserita un'immagine rappresentante il controllo del terminale nel simulatore SPIM.
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{SPIM1}
 	\caption{Controllo del terminale in SPIM (INPUT)}
@@ -214,7 +215,7 @@ L’attesa attiva è un meccanismo che fa perdere tempo al processore dedicando 
 Sicuramente se i dati vengono trasferiti con elevati \emph{bitrate}\footnote{Indica la quantità di dati che possono essere trasferiti, su un canale di comunicazione in un dato intervallo di tempo.} il ciclo di attesa attiva dura poco, in altri casi lo spreco derivante dal polling è inaccettabile e per questo motivo è stato inventato il sistema di I/O a interruzione di programma.
 
 Osserviamo ora uno schema esemplificativo tratto dal simulatore SPIM per l'assembly MIPS.
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{SPIM}
 	\caption{Organizzazione memoria SPIM (MIPS)}
@@ -237,14 +238,14 @@ Il maggiore vantaggio che deriva dall'utilizzo di questa strategia è che non oc
 
 Guardando invece il lato negativo occorre un hardware speciale per permettere ai dispositivi di I/O di generare un’interruzione, rilevare l’interruzione, salvare lo stato del processore per eseguire una particolare routine di servizio (Interrupt Service Routine, ISR) e poi riprendere dal punto dove si era interrotto.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{input-a-interruzione}
 	\caption{Meccanismo di input ad interruzione}
 \end{figure}
 
 È ora presentato un'esempio di implementazione di gestione dell'I/O tramite interrupt in SPIM.
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{SPIM2}
 	\caption{Esempio controllo terminale SPIM}
@@ -274,7 +275,7 @@ Le interrupts che abbiamo appena visto vanno inserite in una classe più grande 
 Un eccezione consiste nel trasferimento del controllo del programma per l'avveramento di una condizione appunto eccezionale\footnote{Da intendere qui come "fuori dalla norma".}.
 Per la gestione di questi eventi il sistema effettua delle azioni specifiche, come registrare il punto di interruzione e salvare lo stato, ed in seguito, a eccezione finita, riprendere dal punto immediatamente successivo al punto di interruzione.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{schema-eccezioni}
 	\caption{Schema processo delle eccezioni}
@@ -291,7 +292,7 @@ La componenete che registra le informazioni necessarie alla gestione delle eccez
 
 Quando si presenta un'eccezione in MIPS il registro EPC (registro 14) punta all’indirizzo successivo all’istruzione in esecuzione quando l’eccezione è avvenuta, mentre il registro di stato (registro 12) fa da maschera di abilitazione trap/interrupt.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{registro-maschera}
 	\caption{Registro maschera}
@@ -308,7 +309,7 @@ In seguito una breve spiegazione dei campi di questo registro.
 Il registro BadVAddr (registro 8) contiene l'indirizzo di memoria che ha causato un errore di memoria.
 Infine il registro cause (registro 13) contiene il tipo dell’eccezione ed i bit pendenti.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{registro-cause}
 	\caption{Registro cause}
@@ -334,7 +335,7 @@ Per implementare il complesso meccanismo di gestione delle eccezioni il processo
 
 Ed ecco infine un'immagine del processore con dattapath modificato per supportare la gestione delle eccezioni.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{final-datapath}
 \end{figure}
