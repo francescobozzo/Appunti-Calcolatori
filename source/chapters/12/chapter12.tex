@@ -54,7 +54,7 @@ Naturalmente i tempi necessari per l'esecuzione di queste operazioni non sono ug
 Si noti che l'istruzione più lenta di tutte è la \texttt{load word}\footnote{Si noti anche che questa è l'unica istruzione che esegue effettivamente tutte le 5 fasi descritte in precedenza.}; di conseguenza il tempo di clock viene definito in base ad essa.
 
 Inoltre il tempo dedicato ad ogni singola fase del processo di esecuzione è definito in base al tempo della fase con durata massima, ovvero nel nostro caso \unit[200]{ps}, per rendere possibile il partizionamento in fasi della stessa durata (altrimenti il parallelismo non sarebbe possibile).
-Questo tuttavia implica che anche le fasi con durata inferiore verranno eseguite in un tempo di \unit[200]{ps} ed anche che la durata dell'esecuzione di una singola istruzione nella nostra pipeline è di \((tempo.singola.fase)*(numero.fasi)=200ps\cdot 5=1000ps\).
+Questo tuttavia implica che anche le fasi con durata inferiore verranno eseguite in un tempo di \unit[200]{ps} ed anche che la durata dell'esecuzione di una singola istruzione nella nostra pipeline è di \((\textrm{tempo singola fase})*(\textrm{numero fasi})=200ps\cdot 5=1000ps\).
 
 Osserviamo quindi un diagramma temporale per sequenza istruzioni in cui si confronta lo svolgimento di operazioni con il metodo standard e attraverso l'implementazione della pipeline.
 \begin{figure}[!h]
@@ -70,7 +70,7 @@ La teoria prevede che per avere una stima delle prestazioni della CPU una volta 
 \end{equation*}
 Quindi teoricamente, secondo questa formula, nel nostro caso ci si aspetta un miglioramento delle prestazioni di un fattore 5; tuttavia si può notare che il tempo per eseguire 3 istruzioni passa da \unit[2400]{ps} a \unit[1400]{ps}, generando quindi un miglioramento di un fattore \(1.7\).
 
-Le cause di questa discrepanza sono principalmente due: in primis si deve sottolineare che per ottenere una prestazione 5 volte più alta il tempo di clock dovrebbe essere uguale a quelo di una singola fase del ciclo, ovvero \(\frac{800}{5}=\) \unit[160]{ps}, mentre nella realtà non possiamo scendere sotto ai \unit[200]{ps} poiché ci sono delle fasi che hanno tale durata e quindi impongono un limite minimo alla durata di una fase. In secondo luogo abbiamo considerato poche istruzioni, e questo implica che non abbiamo fatto in tempo a distribuire il costo di "avvio" e di "terminazione" della pipeline (i due periodi in cui la pipeline non è completamente a regime); il miglioramento si osserva meglio quando il numero di istruzioni è ben più alto del numero delle fasi della pipeline.
+Le cause di questa discrepanza sono principalmente due: in primis si deve sottolineare che per ottenere una prestazione 5 volte più alta il tempo di clock dovrebbe essere uguale a quelo di una singola fase del ciclo, ovvero \(\frac{800}{5}=\) \unit[160]{ps}, mentre nella realtà non possiamo scendere sotto ai \unit[200]{ps} poiché ci sono delle fasi che hanno tale durata e quindi impongono un limite minimo alla durata di una fase. In secondo luogo abbiamo considerato poche istruzioni e questo implica che non abbiamo fatto in tempo a distribuire il costo di "avvio" e di "terminazione" della pipeline (i due periodi in cui la pipeline non è completamente a regime); il miglioramento si osserva meglio quando il numero di istruzioni è ben più alto del numero delle fasi della pipeline.
 
 \section{Vantaggi del RISC}
 L'architettura di tipo RISC presenta dei vantaggi sostanziali per quanto riguarda il processo di \emph{pipelining}, i principali sono riassunti nell'elenco sottostante.
@@ -113,7 +113,7 @@ Si osservi lo schema riportato qui sotto per una maggiore comprensione del mecca
 \subsection{Hazard sul controllo}
 Questo tipo di hazard riguarda nello specifico le operazioni di salto condizionato, che generano problemi in quanto prima dell'effettivo termine della loro esecuzione non si può sapere quale sarà l'istruzione sucessiva. Se la pipeline è composta da tante fasi il tempo che si aspetterebbe prima di sapere come procedere potrebbe diventare eccessivo.
 
-Per il resto del capitolo consideriamo di avere un circuito molto sofisticato che ci permette di calcolare l’indirizzo di salto già al secondo stadio (ID); tuttavia questo non basta poiché dobbiamo lasciare la pipeline in stallo per almeno una fase prima di sapere qual è l'istruzione successiva. Esistono \emph{tre tipi di soluzione} all'hazard sul controll, e sono riportate in seguito in ordine di complessità.
+Per il resto del capitolo consideriamo di avere un circuito molto sofisticato che ci permette di calcolare l’indirizzo di salto già al secondo stadio (ID); tuttavia questo non basta poiché dobbiamo lasciare la pipeline in stallo per almeno una fase prima di sapere qual è l'istruzione successiva. Esistono \emph{tre tipi di soluzione} all'hazard sul controllo, e sono riportate in seguito in ordine di complessità.
 
 \begin{enumerate}
 	\item Il primo approccio prevede di risistemare l'ordine delle istruzioni (come si farebbe per risolvere un hazard sui dati) facendo eseguire subito dopo il branch delle istruzioni indipendenti dal salto stesso, che quindi dovrebbero essere eseguite indifferentemente; questo metodo è molto comodo, ma purtroppo non è sempre applicabile.
