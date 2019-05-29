@@ -186,7 +186,7 @@ Questo implica che il numero di cicli di clock al secondo dedicati al polling so
 \begin{equation*}
 	500\cdot10^{3}\cdot400 = 200\cdot10^{6} \textrm{clocks/sec}
 \end{equation*}
-In percentuale quindi il peso di questo meccanismo è di \(\frac{200\cdot10^6}{500\cdot10^6=40\%}\) il che è inaccettabile, anche perché, come nel primo esempio, questo prezzo in risorse viene pagato sempre.
+In percentuale quindi il peso di questo meccanismo è di \(\frac{200\cdot10^6}{500\cdot10^6}=40\%\) il che è inaccettabile, anche perché, come nel primo esempio, questo prezzo in risorse viene pagato sempre.
 
 \subsection{Considerazioni finali sul polling}
 L'attesa attiva è un meccanismo che fa perdere tempo al processore dedicando cicli macchina a letture inutili, di conseguenza il polling può essere usato quando le operazioni di I/O avvengono con velocità di trasferimento predeterminata (ad esempio applicazioni di controllo) e comunque il processore ha poco altro da fare.
@@ -202,6 +202,8 @@ Osserviamo ora uno schema esemplificativo tratto dal simulatore SPIM per l'assem
 La parte più in alto in questa rappresentazione della memoria è quella che contiene il kernel code e le parole riservate.
 
 Il kernel code è la traduzione in linguaggio macchina del SO (che ricordiamo essere un programma esso stesso); all'interno di questa sezione si trovano inoltre le parole di memoria riservare all I/O. È quindi ora chiaro cosa si intendeva quando si è detto che il processore vede solo virtualmente le periferiche, che fisicamente dal suo punto di vista altro non sono che dati.
+
+Passiamo ora alla descrizione del secondo meccanismo di trasferimento dei dati: l'input ad interruzione di programma.
 
 \section{Input ad interruzione di programma}
 L'input ad interruzione di programma (conosciuto anche con il nome di \emph{interrupt driven I/O}) funziona tramite il sollevamento di interruzioni.
@@ -235,7 +237,7 @@ Il processo utente viene interrotto trasferendo il controllo a una ISR che copia
 Nel dettaglio il bit \emph{interrupt enable} serve per indicare se è abilitato il meccanismo di interrupt.
 
 \subsection{Considerazioni finali sull'interrupt driven I/O}
-Nonostante la complessità di questo meccanismo è facile osservare che in caso di trasferimenti di grandi moli di dati esso risulti  molto più efficiente del polling, dimostriamolo riprendendo l'esempio dell'hard disk fatto in precedeza:
+Nonostante la complessità di questo meccanismo è facile osservare che in caso di trasferimenti di grandi moli di dati esso risulti  molto più efficiente del polling, dimostriamolo riprendendo l'esempio dell'hard disk fatto in precedenza:
 
 \paragraph{Esempio 2: Hard disk} Supponiamo che un interrupt costi 500 cicli di clock, poiché è plausibile che costi di più del polling. Se le interruzioni venissero generate alla frequenza di polling avremmo che:
 
