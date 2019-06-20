@@ -221,7 +221,7 @@ con l'indirizzo del blocco definito come segue:
 \end{equation*}
 \begin{itemize}
 	\item Calcoliamo l'indirizzo del blocco: \(\frac{1200}{16}=75\)
-	\item A questo punto calcoliamo l'indirizzo del blocco nella cache corrispondente: \(75\pmod{16}=11\)
+	\item A questo punto calcoliamo l'indirizzo del blocco nella cache corrispondente: \(75\pmod{64}=11\)
 \end{itemize}
 Il blocco di cache cercato è quindi il numero \(11\).
 
@@ -278,7 +278,7 @@ Una cache completamente associativa è una cache in cui ogni blocco della memori
 Per questo motivo ho bisogno di $n$ comparatori (uno per ogni blocco di cache) che operino in parallelo; di conseguenza la complessità di realizzazione cresce proporzionalmente al numero di blocchi ed inoltre il costo HW diventa proibitivo appena si aumenta di poco la dimensione della memoria.
 
 \subsection{Cache set-associativa}
-Le cache set-associative sono un via di mezzo tra le due che abbiamo visto finora.
+Le cache set-associative sono una via di mezzo tra le due che abbiamo visto finora.
 In una cache set-associativa, composta da $n$ blocchi totali, tutti i blocchi vengono suddivisi in un determinato numero di gruppi, che vengono chiamati linee; ogni gruppo di conseguenza contiene un numero pari a \(\frac{n}{\textrm{numero di linee}}\) di blocchi, che chiameremo vie.
 
 Fatta questa suddivisione quello che si ottiene è una sorta di scacchiera in cui i blocchi possono essere visti in raggruppamenti di "linee" (righe) e di "vie" (colonne).
@@ -300,8 +300,8 @@ Il grande vantaggio è che abbiamo una memoria non troppo costosa, dato che la c
 	\caption{Mappatura set-associativa in varie forme}
 \end{figure}
 
-Inseriamo ora un ulteriore esempio esplicativo di come viene mappata una cache set-associativa. Immaginiamo di avere una cache di dimensioni \unit{1}{MByte}, composta da blocchi di grandezza 4 byte.
-Ora, con un rapido calcolo, indoviniamo il numero di blocchi presenti:
+Inseriamo ora un ulteriore esempio esplicativo di come viene mappata una cache set-associativa. Immaginiamo di avere una cache di dimensioni \unit{1}{KByte}, composta da blocchi di grandezza 4 byte.
+Ora, con un rapido calcolo, troviamo il numero di blocchi presenti:
 \begin{equation*}
 	\textrm{Numero di blocchi} = \frac{\textrm{Dimensioni memoria}}{\textrm{Dimensioni blocco}} = \frac{1024}{4} = 256
 \end{equation*}
@@ -363,7 +363,7 @@ Nelle cache associative ho più scelte, quindi se la linea è piena chi sostitui
 In tal caso esistono vari approcci possibili, tra cui:
 \begin{itemize}
 	\item FIFO, un immancabile classico;
-	\item LeastRecentlyUsed, un metodo più sofisticato che però richiede una serie di bit in più per calcolare quando è avvenutoo l'ultimo accesso.
+	\item LeastRecentlyUsed, un metodo più sofisticato che però richiede una serie di bit in più per calcolare quando è avvenuto l'ultimo accesso.
 \end{itemize}
 
 Per concludere proponiamo al lettore anche un esempio pratico in cui si nota l'importanza della scelta di un buon meccanismo di cache mapping.
