@@ -47,7 +47,7 @@ A seguire un elenco di definizioni che utilizzeremo in seguito.
 \section{La memoria principale}
 \subsection{Le RAM}
 Con la seguente immagine descriviamo come avviene la connessione logica fra memoria RAM e CPU:
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{relazione_cpu_ram.png}
 	\caption{Modello della relazioni logiche fra CPU e RAM}
@@ -63,7 +63,7 @@ Si noti che il \emph{MAR} è stato rappresentato da una freccia unidirezionale: 
 Una memoria \emph{RAM} a semiconduttori principalmente immagazzina singoli bit, memorizzati normalmente in gruppi di byte e/o word per motivi di efficienza. La memoria non necessariamente deve essere strutturata monoliticamente: è possibile che sia suddivisa in diversi blocchi, al fine di favorire il parallelismo; si noti comunque che la dimensione complessiva della memoria non varia se presa in un unico blocco o se separata. Si ricorda che l'organizzazione di una memoria influenza il numero di pin di I/O del circuito integrato: più saranno, più aumenterà il costo.
 
 \subsubsection{Organizzazione dei bit in un banco di memoria 16x8}
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{organizzazione.png}
 	\caption{Organizzazione di un banco di memoria 16x8}
@@ -76,13 +76,13 @@ Il caso presentato descrive il funzionamento di un banco di memoria formato da 1
 	\item In base a com'è stata implementata la memoria (\emph{SRAM} o \emph{DRAM}), viene attivata la cella selezionata dalla colonna e dalla riga designata: su di essa verrà eseguita l'operazione di lettura/scrittura richiesta.
 \end{enumerate}
 
-Nelle prossime sezioni affronteremo come varia l'implementazione di ciascuna cella di memoria da \emph{SRAM} a \emph{DRAM}.
+Nelle prossime sezioni affronteremo le diverse implementazioni di cella di memoria: \emph{SRAM} e \emph{DRAM}.
 
 \subsection{Le SRAM}
 Le \emph{SRAM}, ossia le RAM statiche, sono delle memorie in cui i bit possono essere mantenuti indefinitivamente (posto il fatto che non manchi l'alimentazione). Seppur abbiano tempi di accesso molto ridotti (nell'ordine di pochi nanosecondi) e consumino poca corrente, il loro costo è molto elevato: per ciascuna cella di memorizzazione vengono impiegati molteplici componenti.
 Il funzionamento che sta alla base di una cella di SRAM è quello del flip flop (in particolare ai latch tipo D).
 
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{cella_SRAM.png}
 	\caption{SRAM: memorizzazione di un bit}
@@ -90,24 +90,24 @@ Il funzionamento che sta alla base di una cella di SRAM è quello del flip flop 
 
 Nell'immagine, \(\textrm{T}_1\) e \(\textrm{T}_2\) sono due transistor\footnote{Attraverso gli ultimi ritrovati dell'ingegneria, è possibile realizzare dei transistor nell'ordine di grandezza dei nanometri.}: in base al variare della tensione nel loro \emph{gate} (ossia il collegamento inferiore) permettono o meno il passaggio di corrente fra i rami laterali. Il funzionamento ricorda molto quello di un interruttore: se il gate ha ua tensione pari a Vdd, allora il circuito viene chiuso, altrimenti rimane aperto. Si noti che se la linea della word è bassa, allora gli interruttori \(\textrm{T}_1\) e \(\textrm{T}_2\) sono aperti e il consumo è praticamente nullo.
 
-Dunque, nel caso venga chiuso il circuito, è possibile effettuare delle operazioni di lettura e di scrittura (gestite dal \emph{Sense/Write circuit}). Invece, nel caso in cui il circuito venisse aperto, la corrente circola solamente all'interno del latch a doppio NOT. La presenza di due NOT permette di rinforzare il risultato e ridurre il tasso di errore, in quanto si vuole controllare la coerenza delle informazioni sia col segnale \emph{b} che col segnale \emph{b'} (si ricorda che \emph{b} contiene il segnale asserito, mentre \emph{b'} contiene il segnale negato: \emph{b}\(=\)\emph{\(\overline{b'}\)}.
+Dunque, nel caso venga chiuso il circuito, è possibile effettuare delle operazioni di lettura e di scrittura (gestite dal \emph{Sense/Write circuit}). Invece, nel caso in cui il circuito venisse aperto, la corrente circola solamente all'interno del latch a doppio NOT. La presenza di due NOT permette di rinforzare il risultato e ridurre il tasso di errore, in quanto si vuole controllare la coerenza delle informazioni sia col segnale \emph{b} che col segnale \emph{b'} (si ricorda che \emph{b} contiene il segnale asserito, mentre \emph{b'} contiene il segnale negato: \emph{b}\(=\)\emph{\(\overline{b'}\)}).
 
 \subsection{Le DRAM}
-Le \emph{DRAM}, ossia le RAM dinamiche, sono le memorie più diffuse nei computer. Sono dotate di costi molto contenuti e di un'elevatissima densità, dovuta al fatto di dover impiegare un solo componente per ogni singola cella di memoria. Il concetto che sta alla base della DRAM è un circuito RC (la resistenza è quella data dal filo): la capacità di memorizzazione viene ottenuta attraverso la carica di un condensatore. Presentano però un difetto che comporta consumi molto elevati: la cella di memoria necessita di un refresh continuo, altrimenti il proprio contenuto svanisce a causa delle correnti parassite.
+Le \emph{DRAM}, ossia le RAM dinamiche, sono le memorie più diffuse nei computer. Sono dotate di costi molto contenuti e di un'elevatissima densità, dovuta al fatto di dover impiegare un solo componente per ogni singola cella di memoria. Il concetto che sta alla base della DRAM è un circuito RC (la resistenza è quella data dal filo): la capacità di memorizzazione viene ottenuta attraverso la carica di un condensatore. Presentano però un difetto che comporta consumi molto elevati: la cella di memoria necessita di un refresh continuo, altrimenti il proprio contenuto svanisce a causa delle correnti parassite e per la scarica del condensatore.
 
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{cella_DRAM.png}
 	\caption{DRAM: memorizzazione di un bit}
 \end{figure}
 
-Nell'immagine \(\textrm{T}\) è un transistor: svolge una funzione di interruttore, in quanto permette collegare o meno il circuito RC alla bit line e alla word line. Se il circuito viene chiuso il condensatore viene caricato, altrimenti si scarica (ricordiamo che il processo di carica/scarica di un condensatore è esponenziale). Si ricorda che se non viene attivata la bit line o la word line, allora il circuito RC è scollegato, con la conseguente scarica del condensatore a causa della resistenza applicata. Dunque, se si vuole mantenere in memoria il dato 1, c'è la necessità di continuare a scrivere 1 nella cella di memoria ad ogni intervallo \(t_0\), altrimenti la scarica del condensatore annullerebbe il valore. Se il valore che si vuole memorizzare è 0, basta semplicemente lasciare disattivato il circuito (attenzione ad avergli lasciato il tempo necessario affinché si scarichi). Dunque per "refreshare" la memoria basta fare un ciclo di lettura: questo processo viene eseguito da un circuito di refresh, in maniera tale che l'utente non si debba preoccupare di questo meccanismo.\\
+Nell'immagine \(\textrm{T}\) è un transistor: svolge una funzione di interruttore, in quanto permette di collegare o meno il circuito RC alla bit line e alla word line. Se il circuito viene chiuso il condensatore viene caricato, altrimenti si scarica (ricordiamo che il processo di carica/scarica di un condensatore è esponenziale). Si ricorda che se non viene attivata la bit line o la word line, allora il circuito RC è scollegato, con la conseguente scarica del condensatore a causa della resistenza applicata. Dunque, se si vuole mantenere in memoria il dato 1, c'è la necessità di continuare a scrivere 1 nella cella di memoria ad ogni intervallo \(t_0\), altrimenti la scarica del condensatore annullerebbe il valore. Se il valore che si vuole memorizzare è 0, basta semplicemente lasciare disattivato il circuito (attenzione ad avergli lasciato il tempo necessario affinché si scarichi). Dunque per "refreshare" la memoria basta fare un ciclo di lettura: questo processo viene eseguito da un circuito di refresh, in maniera tale che l'utente non si debba preoccupare di questo meccanismo.\\
 Si noti che nelle memorie DRAM non è implementato il latch a doppio NOT.\\
 Solitamente si può considerare un condensatore scarico nel momento in cui la tensione ai suoi capi è inferiore a \(\frac{\textrm{Vdd}}{2}\). In particolare è proprio questo il compito del circuito \emph{sense amplifier}, il quale determina lo stato asserito o negato del dato memorizzato in base alla soglia \(\frac{\textrm{Vdd}}{2}\).
 
 \subsubsection{La multiplazione degli indirizzi}
 Facciamo un salto indietro di astrazione. L'immagine rappresenta l'organizzazione di una DRAM. \(A\) è l'indirizzo con cui si indicizza un dato in memoria: dalla posizione 20 a 9 definisce il valore da dare in input al decoder delle righe, dalla posizione 8 alla 0 definisce il valore da dare al decoder delle colonne. Questa DRAM è caratterizzata da 4096 (\(2^{12}\), dove 12 rappresenta il numeri di bit di A per indirizzare la riga) righe e 512 (\(2^9\), dove 9 rappresenta il numero di bit di A per indirizzare la colonna) colonne:
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{organizzazione_generale.png}
 	\caption{Organizzazione generale di una memoria}
@@ -118,15 +118,15 @@ Si noti che sono stati inseriti due circuiti: \emph{row address latch} e \emph{c
 Solitamente i trasferimenti da/per la memoria avvengono a blocchi piuttosto che per singole celle. Ciò comporta un notevole risparmio di tempo, in quanto sarebbe necessario solo un unico indirizzamento per le righe e colonne. Questo processo viene chiamato \emph{fast page mode} (\emph{FPM}). Si sottolinea che questa modalità è del tutto automatica: l'utente non deve preoccuparsi di gestire questo meccanismo.
 
 \subsubsection{Le DRAM sincrone}
-Le DRAM che sono state descritte fin'ora sono dette \emph{asincrone}, in quanto non esiste una precisa temporizzazione di accesso: la dinamica viene governata dai segnali \emph{RAS} e \emph{CAS}. Si noti che questa asincronicità può causare non pochi problemi, soprattutto mentre si esegue il refresh della memoria. Una soluzione consiste nell'aggiungere dei buffer di memorizzazione degli ingressi e delle uscite, in maniera tale da riuscire a disaccoppiare la lettura e scrittura dal refresh della memoria, ottenendo automaticamente un accesso FPM pilotato dal clock. Questa implementazione della DRAM viene detta \emph{sincrona}. A seguire un'immagine che contiene uno schema riassuntivo:
-\begin{figure}[!h]
+Le DRAM che sono state descritte fin'ora sono dette \emph{asincrone}, in quanto non esiste una precisa temporizzazione di accesso: la dinamica viene governata dai segnali \emph{\(\overline{RAS}\)} e \emph{\(\overline{CAS}\)}. Si noti che questa asincronicità può causare non pochi problemi, soprattutto mentre si esegue il refresh della memoria. Una soluzione consiste nell'aggiungere dei buffer di memorizzazione degli ingressi e delle uscite, in maniera tale da riuscire a disaccoppiare la lettura e scrittura dal refresh della memoria, ottenendo automaticamente un accesso FPM pilotato dal clock. Questa implementazione della DRAM viene detta \emph{sincrona}. A seguire un'immagine che contiene uno schema riassuntivo:
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{DRAM_sincrona.png}
 	\caption{Organizzazione generale di una DRAM sincrona}
 \end{figure}
 
 Nella prossima immagine è possibile visualizzare un accesso sincrono in FPM:
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{FPM.png}
 	\caption{Funzionamento fast page mode}
@@ -136,7 +136,7 @@ dove il segnale di clock rappresentato è quello della memoria RAM: le operazion
 \subsubsection{Double Data Rate SDRAM (DDR-SDRAM)}
 Un ulteriore miglioramento è effettuato dalla \emph{DDR-SDRAM} (\emph{Double Data Rate SDRAM}): essa permette il trasferimento dei dati sia sul fronte di salita che sul fronte di discesa del clock della memoria. In poche parole ciò permette di raddoppiare le prestazioni rispetto ad una normale SDRAM, e nonostante la latenza rimanga invariata, la banda viene raddoppiata.
 
-Sono ottenute organizzando la memoria in due banchi separati: uno contiene le posizioni pari (a cui si accede durante il fronte di salita), l'altro contiene quelle dispari (a cui si accede durante il fronte di discesa). Locazioni contingue risultano divise fra i due banchi: grazie a qusto è possibile effettuare un accesso in modo interlacciato.
+Sono ottenute organizzando la memoria in due banchi separati: uno contiene le posizioni pari (a cui si accede durante il fronte di salita), l'altro contiene quelle dispari (a cui si accede durante il fronte di discesa). Locazioni contingue risultano divise fra i due banchi: grazie a questo è possibile effettuare un accesso in modo interlacciato.
 
 \section{Gestione della memoria}
 Andiamo adesso a domandarci quale possa essere il modo migliore di gestire la memoria che abbiamo a disposizione. È preferibile conservare i dati nella memoria RAM? Così facendo possiamo avere dei tempi di accesso ai dati estremamente ridotti, ma di contro la quantità di dati di cui possiamo disporre sarà limitata. Dobbiamo quindi affidare i nostri dati alle memorie periferiche? In questo modo possiamo avere moltissimo spazio dove riporre i nostri dati, ma il tempo necessario a raggiungere di volta in volta quelli che ci servono sarà decisamente maggiore.
@@ -149,12 +149,12 @@ L'approccio vincente è quello di mantenere i dati archiviati nelle memorie peri
 
 \subsection{Struttura della gerarchia}
 Osserviamo la seguente tabella:
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{tabella_polli.png}
 \end{figure}
 Al di là dei dati un po' desueti\footnote{Verrebbe quasi da dire che fanno ridere i polli, in effetti.}, si può facilmente intuire quale sarà la gerarchia delle memorie: quelle più veloci ma costose saranno vicine al processore e gli forniranno i dati da elaborare, mentre invece quelle più lente (ma più capienti) staranno lontane e fungeranno da archivio.
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.6\textwidth,keepaspectratio]{strut-ger.png}
 	\caption{Struttura gerarchica delle memorie}
@@ -174,9 +174,13 @@ Forniamo ora una breve carrellata di definizioni cui bisogna prendere familiarit
 \end{itemize}
 
 \subsection{Cache a mappatura diretta}\label{sec:direttamente}
-Ma noi come si fa a sapere se un determinato dato è nella cache e dove eventualmente cercarlo?
+Ma come si può sapere se un determinato dato è nella cache? Com'è è possibile eventualmente cercarlo?
 
-Un sistema interessante per gestire la cache potrebbe essere quello detto \emph{a mappatura diretta}: ad ogni indirizzo in memoria corrisponde una precisa locazione di cache; l'indirizzo in cache viene normalmente mappato in questo modo: \emph{indirizzo del blocco in cache} \(\equiv\) \emph{indirizzo in memoria del blocco}  \(\pmod{\textrm{\emph{numero totale di blocchi in cache}}}\).
+Un sistema interessante per gestire la cache potrebbe essere quello detto \emph{a mappatura diretta}: ad ogni indirizzo in memoria corrisponde una precisa locazione di cache; l'indirizzo in cache viene normalmente mappato come segue:
+
+\begin{equation*}
+	\textrm{indirizzo in cache} \equiv \textrm{indirizzo in memoria}  \pmod{\textrm{numero blocchi cache}}
+\end{equation*}
 
 Qualora il numero di blocchi in cache fosse potenza di due sarà sufficiente usare i bit meno significativi del loro indirizzo in memoria. Quanti bit meno significativi bisogna prendere, di preciso? La risposta è in questa formula:
 \begin{equation*}
@@ -184,7 +188,7 @@ Qualora il numero di blocchi in cache fosse potenza di due sarà sufficiente usa
 \end{equation*}
 Se per esempio abbiamo una cache di 8 parole dobbiamo prendere i 3 bit meno significativi dell'indirizzo in memoria, come illustrato dalla seguente immagine.
 Si noti che l'operazione di modulo e di logaritmo restituiscono lo stesso risultato, sono perfettamente equivalenti.
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{logad.png}
 	\caption{Esempio di mappatura da memoria a cache}
@@ -202,7 +206,7 @@ Adesso mostriamo un esempio di come viene gestita la cache in Assembly MIPS. Ass
 \end{itemize}
 Si analizzi attentamente la seguente immagine, tenendo presente che \(n=10\) e \(m=0\), quindi la dimensione del \emph{tag} è di \(20\) bit.
 
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{mipscache.png}
 	\caption{Schema risoluzione indirizzo}
@@ -225,7 +229,7 @@ con l'indirizzo del blocco definito come segue:
 \end{itemize}
 Il blocco di cache cercato è quindi il numero \(11\).
 
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{addressex.png}
 	\caption{Esempio di calcolo blocco}
@@ -235,7 +239,7 @@ Il blocco di cache cercato è quindi il numero \(11\).
 A questo punto risulta evidente che avere blocchi di cache molto grandi ci permette di sfruttare ampiamente il principio della località spaziale, dal momento che disporrò di molto spazio in cui riporre gruppi di dati anche di dimensioni importanti; perché non si ricorre sempre a una soluzione di questo tipo, allora? Perché innanzitutto avere blocchi molto grandi porta a dei costi di gestione molto alti (di fatto di volta in volta ci troviamo a spostare molti byte), ma soprattutto perché a parità di dimensioni avere meno blocchi diminuisce l'efficacia della località temporale. Per questo motivo è molto importante trovare un buon compromesso tra numero di blocchi e dimensione degli stessi, in fase di progettazione.
 
 La figura sottostante mostra come varia la frequenza delle miss (asse \(y\)) in relazione a diverse dimensioni di cache (le varie linee) e in numeri di blocchi (asse \(x\)). Osserviamo che le migliori prestazioni le abbiamo sempre per valori equilibrati, e che la maggior differenza la osserviamo per dimensioni di cache più piccole.
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{missfreq.png}
 \end{figure}
@@ -255,10 +259,9 @@ Se gli accessi in lettura avvengono con la logica precedente, quelli in scrittur
 	\item Un sistema che possiamo adoperare per arginare questo problema è il cosiddetto \emph{write-through}, che consiste nel fatto che ogni scrittura viene effettuata direttamente in memoria principale, a prescindere dal fatto che ci sia o meno una miss. In questo modo avrò cache e memoria sempre aggiornati, ma ben si capisce che si tratta di un'operazione costosa; una buona aggiunta potrebbe essere un buffer di scrittura, una sorta di "coda" dove tutte le scritture vengono messe in attesa, che ci permette quindi di accorpare il maggior numero di operazioni possibile e mantenere cache e memoria sempre allineate.
 	\item Una seconda soluzione potrebbe essere la cosiddetta \emph{write-back}: se il blocco richiesto è già presente in cache allora ogni scrittura verrà fatta solo localmente e la memoria principale viene aggiornata solo quando si cambia il blocco di riferimento (oppure quando un secondo processore tenta di accedere allo stesso blocco); chiaramente questa soluzione è pensata in situazioni molto affollate, quanto il processore non riesce a processare in modo efficiente le molte scritture richieste.
 \end{itemize}
+Riportiamo come esempio \emph{FastMath}, una cache basata su MIPS che dispone di una cache di \(16K\) con \(16\) parole per blocco e la possibilità di lavorare sia in \emph{write-through} che in \emph{write-back}.
 
-Mostriamo qui come esempio \emph{FastMath}, una cache basata su MIPS che dispone di una cache di \(16K\) con \(16\) parole per blocco e la possibiltà di lavorare sia in \emph{write-through} che in \emph{write-back}.
-
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{astmips}
 \end{figure}
@@ -294,7 +297,7 @@ Il grande vantaggio è che abbiamo una memoria non troppo costosa, dato che la c
 
 È ora riportato uno schema con una cache suddivisa in più modi differenti, ma sempre attraverso la strategia di cache set-associativa, come esempio esplicativo; si noti che ogni gruppo Tag-Dato rappresenta una via.
 
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{mappatura-set-associativa}
 	\caption{Mappatura set-associativa in varie forme}
@@ -305,12 +308,12 @@ Ora, con un rapido calcolo, troviamo il numero di blocchi presenti:
 \begin{equation*}
 	\textrm{Numero di blocchi} = \frac{\textrm{Dimensioni memoria}}{\textrm{Dimensioni blocco}} = \frac{1024}{4} = 256
 \end{equation*}
-Supponiamo ora di volerla sfruttare tramite un implementazione set-associativa e di voler ottenere 4 vie, questo significa che il numero delle linee presenti sarà:
+Supponiamo ora di volerla sfruttare tramite un'implementazione set-associativa e di voler ottenere 4 vie, questo significa che il numero delle linee presenti sarà:
 \begin{equation*}
 	\frac{\textrm{Numero di blocchi}}{\textrm{Numero di vie}} = \frac{256}{4} = 64 \textrm{ linee}
 \end{equation*}
 Graficamente la nostra cache sarà quindi rappresentata da una scacchiera con 4 colonne, le vie, e 64 righe, le linee, la vediamo rappresentata qui sotto:
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.5\textwidth, keepaspectratio]{esempio-associativa}
 \end{figure}
@@ -336,7 +339,7 @@ Quindi, per trovare il blocco all’interno della linea dobbiamo confrontare, in
 
 È ora inserito anche uno schema rappresentativo di una cache a 4 vie in cui ogni blocco contiene una word.
 
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{4-vie}
 \end{figure}
@@ -355,17 +358,11 @@ Anche in questo caso è chiaro che la tecnologia che abbiamo trattato presenta v
 	\item Vantaggi: aumentando l’associatività abbiamo il grosso vantaggio di diminuire la frequenza di miss e velocizzare il processo di reperimento dei dati.
 	\item Svantaggi: purtroppo con questa implementazione la complessità dell'hardware aumenta in proporzione lineare al numero di blocchi della cache, ed allo stesso modo aumenta il costo.
 \end{itemize}
-
-Esiste inoltre un ulteriore problema che non abbiamo trattato, nelle cache a mappatura diretta quando ho una cache miss sicuramente so chi sostituire: l’unico blocco in cui posso mappare il dato che cerco.
-
-Nelle cache associative ho più scelte, quindi se la linea è piena chi sostituisco?
-
-In tal caso esistono vari approcci possibili, tra cui:
+Esiste inoltre un ulteriore problema che non abbiamo trattato: nelle cache a mappatura diretta, nel momento in cui si riscontra una cache miss, sicuramente è possibile conoscere chi sostituire, ossia l’unico blocco in cui è possibile mappare il dato che cerco. Nelle cache associative invece ci sono più scelte, quindi se la linea è piena chi bisogna sostituire? In tal caso esistono vari approcci possibili, tra cui:
 \begin{itemize}
-	\item FIFO, un immancabile classico;
-	\item LeastRecentlyUsed, un metodo più sofisticato che però richiede una serie di bit in più per calcolare quando è avvenuto l'ultimo accesso.
+	\item \emph{FIFO}, un immancabile classico;
+	\item \emph{LeastRecentlyUsed}, un metodo più sofisticato che però richiede una serie di bit in più per calcolare quando è avvenuto l'ultimo accesso.
 \end{itemize}
-
 Per concludere proponiamo al lettore anche un esempio pratico in cui si nota l'importanza della scelta di un buon meccanismo di cache mapping.
 \begin{wrapfigure}{l}{0.55\textwidth}
 	\centering

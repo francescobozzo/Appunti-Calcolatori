@@ -32,7 +32,7 @@ Tornando al caro vecchio MIPS, ricordiamo brevemente quali sono le fasi per l'es
 	\item accesso ad un operando nella memoria dati (nel caso di \opcode{lw} o \opcode{sw});
 	\item scrittura del risultato in un registro (\emph{writeback}).
 \end{enumerate}
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.5\textwidth,keepaspectratio]{istruzione.png}
 	\caption{IF sta per instruction fetch, ID per instruction decode, EX per execution, MEM per accesso alla memoria dati e WB per \emph{writeback}}
@@ -50,6 +50,7 @@ Naturalmente i tempi necessari per l'esecuzione di queste operazioni non sono ug
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{tabella-tempi-operazioni.png}
+	\caption{Tempi d'esecuzione per ciascuna fase (nel nostro esempio)}
 \end{figure}
 Si noti che l'istruzione più lenta di tutte è la \texttt{load word}\footnote{Si noti anche che questa è l'unica istruzione che esegue effettivamente tutte le 5 fasi descritte in precedenza.}; di conseguenza il tempo di clock viene definito in base ad essa.
 
@@ -57,7 +58,7 @@ Inoltre il tempo dedicato ad ogni singola fase del processo di esecuzione è def
 Questo tuttavia implica che anche le fasi con durata inferiore verranno eseguite in un tempo di \unit[200]{ps} ed anche che la durata dell'esecuzione di una singola istruzione nella nostra pipeline è di \((\textrm{tempo singola fase})*(\textrm{numero fasi})=200ps\cdot 5=1000ps\).
 
 Osserviamo quindi un diagramma temporale per sequenza istruzioni in cui si confronta lo svolgimento di operazioni con il metodo standard e attraverso l'implementazione della pipeline.
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{esecuzione-operazioni-confronto.png}
 	\caption{Il grafico in alto raffigura la normale esecuzione di un programma, il grafico sotto invece rappresenta lo svolgimento dello stesso con il meccanismo della pipeline; si noti che la fase reg è forzatamente fatta durare 200ps, ed inoltre si noti di quanto è ridotta la durata del programma.}
@@ -105,9 +106,10 @@ Esistono dei metodi per evitare queste tre intere fasi di attesa: il più sempli
 
 Quella appena descritta è una delle operazioni che compilatori come il \texttt{gcc} compiono nella fase di traduzione da linguaggio ad alto livello ad Assembly. Una soluzione ancora più efficiente è quella dell'\emph{operand forwarding} (detto anche propagazione o bypass): questa in casi come questo prevede di rendere il contenuto del registro \register{\$s0} disponibile per l'operazione successiva ancora prima che questo sia effettivamente salvato nel registro stesso, dato che quel valore sarà già noto dalla fase "execute".
 Si osservi lo schema riportato qui sotto per una maggiore comprensione del meccanismo di propagazione.
-\begin{figure}[!h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.8\textwidth,keepaspectratio]{propagazione.png}
+	\caption{Meccanismo dell'operand forwarding}
 \end{figure}
 
 \subsection{Hazard sul controllo}
@@ -117,7 +119,7 @@ Per il resto del capitolo consideriamo di avere un circuito molto sofisticato ch
 
 \begin{enumerate}
 	\item Il primo approccio prevede di risistemare l'ordine delle istruzioni (come si farebbe per risolvere un hazard sui dati) facendo eseguire subito dopo il branch delle istruzioni indipendenti dal salto stesso, che quindi dovrebbero essere eseguite indifferentemente; questo metodo è molto comodo, ma purtroppo non è sempre applicabile.
-	\item Il secondo approccio viene chiamato \emph{untaken branch} e consiste nel considerare sempre che il salto non si verifichi e far quindi proseguire la pipeline regolarmente nell'esecuzione delle operazioni. Quando invece la condizione di salto verificata ci sono due casi: se il salto non deve avvenire allora il problema si è risolto da solo e la pipeline può proseguire tranquillamente il suo lavoro, altrimenti si deve ripristinare lo stato del processore a quello precedente all'istruzione del salto, questa volta eseguendo il salto stesso. Questo implica la necessità di creare dei \emph{registri di backup} dove si va a salvare per l'appunto lo stato del processore ogni volta che si esegue il fetch di un'operazione di salto condizionale.
+	\item Il secondo approccio viene chiamato \emph{untaken branch} e consiste nel considerare sempre che il salto non si verifichi e far quindi proseguire la pipeline regolarmente nell'esecuzione delle operazioni. Quando invece la condizione di salto viene verificata ci sono due casi: se il salto non deve avvenire allora il problema si è risolto da solo e la pipeline può proseguire tranquillamente il suo lavoro, altrimenti si deve ripristinare lo stato del processore a quello precedente all'istruzione del salto, questa volta eseguendo il salto stesso. Questo implica la necessità di creare dei \emph{registri di backup} dove si va a salvare per l'appunto lo stato del processore ogni volta che si esegue il fetch di un'operazione di salto condizionale.
 	\item Il terzo approccio è una versione più raffinata del secondo, in cui è prevista l'implementazione di una circuiteria di \emph{branch prediction}, che serve appunto per dare una stima della probabilità con cui avverrà il salto; questo permette di avere dei miglioramenti sull'efficienza del meccanismo \emph{untaken branch}. Un circuito di \emph{branch prediction} calcola a runtime la probabilità con cui si verificherà un salto condizionale e può decidere se settare il comportamento standard come \emph{untaken branch} o come \emph{taken branch}. Se ad esempio un programma prevede che un ciclo venga eseguito 1000 volte il circuito di \emph{branch prediction} dopo qualche ripetizione setterà la risposta standard a \emph{taken branch} e quindi risparmierà molte fasi di ripristino dello stato della CPU dovute ad errori di predizione (che sarebbero avvenuti con certezza usando il meccanismo \emph{untaken branch}).
 \end{enumerate}
 
@@ -138,9 +140,9 @@ Per prima cosa si calcola il tempo totale di un'operazione senza pipeline:
 \begin{equation*}
 	\text{Tempo totale} = 600+600+500+400+700 = 2800ps
 \end{equation*}
-In seguito si ricorda che il tempo di clock una volta implementata la pipeline sarà uguale al tempo della fase con durata più lunga, ovvero nel nostro caso \unit[700]{ps}. Dunque il tempo di esecuzione di una singola operazione sarà ridotto (tramite il parallelismo, quindi virtualmente) a: \(\frac{\text{Tempo totale}}{\text{Istruzione pù lenta}}\). Ciò significa che l'incremento delle prestazioni si calcolerà come segue:
+In seguito si ricorda che il tempo di clock una volta implementata la pipeline sarà uguale al tempo della fase con durata più lunga, ovvero nel nostro caso \unit[700]{ps}. Dunque il tempo di esecuzione di una singola operazione sarà ridotto (tramite il parallelismo, quindi virtualmente) a: \(\frac{\text{Tempo totale}}{\text{Istruzione più lenta}}\). Ciò significa che l'incremento delle prestazioni si calcolerà come segue:
 \begin{equation*}
-	\text{Incremento} = \frac{\text{Tempo totale}}{\text{Istruzione pù lenta}} = \frac{2800}{700} = 4
+	\text{Incremento} = \frac{\text{Tempo totale}}{\text{Istruzione più lenta}} = \frac{2800}{700} = 4
 \end{equation*}
 ovvero l'incremento finale sarà di 4 volte.
 

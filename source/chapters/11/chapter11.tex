@@ -31,7 +31,7 @@ Il \emph{datapath} è quella parte del processore attraverso cui passano le istr
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{datap_1}
 	\caption{Schema base del datapath}
 \end{figure}
-Il datapath si compone essenzialmente di 5 parti.
+Il datapath si compone essenzialmente di 5 fasi.
 \begin{enumerate}
   \item Assumendo che il programma sia già stato caricato in memoria (secondo le modalità viste nel capitolo~\ref{ch:tool}), in questa fase viene prelevata l'istruzione da eseguire e viene spacchettata nei vari campi;
   \item I registri interessati all'esecuzione vengono caricati nel \emph{banco dei registri}; se l'istruzione è di tipo R, gli indirizzi dei registri sono contenuti nel corpo dell'istruzione;
@@ -46,7 +46,7 @@ La  figura però è incompleta; manca qualcosa che dica ai blocchi cosa fare in 
 Ed è qui che ci viene in soccorso il \emph{multiplexer} che, come già detto in~\ref{subsec:multi}, è un circuito combinatorio che prende in input due segnali e decide quale di essi debba andare in output sulla base di un terzo segnale di controllo (un po' come un vigile che decide quale macchina far passare).
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.8\textwidth,keepaspectratio]{muxx}
+	\includegraphics[width=0.6\textwidth,keepaspectratio]{muxx}
 	\caption{Schema di un multiplexer}
 \end{figure}
 \paragraph{Altri elementi}
@@ -60,9 +60,10 @@ La \emph{Control Unit} funge da vero e proprio "direttore d'orchestra" per il pr
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{datap_2}
 	\caption{Schema di datapath e control unit}
 \end{figure}
+
 La figura è molto complessa, andiamo ad analizzarla con ordine.
 \begin{itemize}
-	\item Innanzitutto notiamo il multiplexer prima del \emph{PC}: questo gestisce la scelta su come viene aggiornato il \emph{PC}, se secondo il valore del primo o del secondo addizionatore. Per settare il valore \(S\) viene utilizzata una porta AND, il cui primo input arriva direttamente dalla control unit, mentre il secondo viene fornito dalla ALU (\emph{zero}).
+	\item Innanzitutto notiamo il multiplexer prima del \emph{PC}: questo gestisce la scelta su come viene aggiornato il \emph{PC}, se secondo il valore del primo o del secondo addizionatore. Per settare il valore \(S\) viene utilizzata una porta AND, il cui primo input arriva direttamente dalla Control Unit, mentre il secondo viene fornito dalla ALU (\emph{zero}).
 	\item Vediamo un secondo multiplexer che indica se memorizzare nel registro di destinazione un dato da ALU o dalla memoria.
 	\item Abbiamo un  ultimo multiplexer che precede il caricamento del secondo operando nell'ALU: dalla control unit arriverà l'indicazione per scegliere di caricare un registro (nelle istruzioni R) o una costante (per quelle I).
 	\item Poi vediamo un segnale per la ALU: esso consiste di un bus di più bit per comunicare all'unità quale operazione eseguire.
@@ -128,7 +129,7 @@ Per effettuare questa operazione abbiamo bisogno di due blocchi funzionali che v
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{R_ex.png}
 \end{figure}
 \begin{itemize}
-	\item Il primo blocco è il \emph{banco dei registri}, una struttura con 3 bus da 5 bit ciascuno in cui vengono caricati i registri da operare; per decidere se si dovranno leggere o scrivere un determinato registro viene impiegato il controllo \emph{RegWrite}, gestito direttamente dalla Control Unit.
+	\item Il primo blocco è il \emph{banco dei registri}, una struttura con 3 bus da 5 bit ciascuno in cui vengono caricati i registri da operare; per decidere se si dovrà scrivere il risultatonel registro di destinazione viene impiegato il segnale di controllo \emph{RegWrite}, gestito direttamente dalla Control Unit.
 	\item Il secondo blocco di cui abbiamo bisogno è la ALU di cui prima abbiamo tanto parlato. Questa presenta due controlli: uno di questi è il bus che arriva dal corpo dell'istruzione e indica qual è l'operazione da svolgere, mentre il secondo è il settaggio \emph{zero} qualora il risultato dell'operazione fosse effettivamente 0; quest'ultimo valore viene poi mandato alla porta AND che decide il segnale di controllo per il multiplexer preposto alla scelta del blocco d'incremento del \emph{PC}.
 \end{itemize}
 
@@ -165,6 +166,7 @@ Ovviamente anche qui bisogna sommare l'offset, per cui di nuovo necessitiamo di 
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{jump.png}
 \end{figure}
+
 Dallo schema emergono:
 \begin{itemize}
 	\item una prima ALU, preposta al calcolo dell'indirizzo di salto da comunicare al \emph{PC};
@@ -194,7 +196,7 @@ Anche se ne parleremo più approfonditamente in futuro, da questa rappresentazio
 \subsection{Progettazione dell'unità di controllo della ALU}
 L'\emph{unità di controllo della ALU} è una rete logica combinatoria che ha lo scopo di informare la ALU riguardo al tipo di operazione da eseguire sui dati ricevuti come input. Questo è possibile solamente se viene assegnato ad ogni istruzione un codice univoco (che nella nostra CPU sarà a 4 bit), chiamato \emph{codice di controllo ALU}.
 
-\begin{table}[!h]
+\begin{table}[H]
 	\centering
 	\subimport{assets/tables/}{codice_controllo_ALU}
 	\caption{Istruzioni con il rispettivo codice di controllo ALU}
@@ -253,14 +255,13 @@ Lasciamo al lettore un ulteriore schema riassuntivo, in cui rimarchiamo ancora u
 \end{figure}
 
 \subsection{Esecuzione delle principali istruzioni}
-
 \subsubsection{Istruzione di ADD}
 Per eseguire un'istruzione di somma del tipo \mintinline{asm}{add $t1, $t2, $t3}, occorre:
 \begin{enumerate}
-	\item Prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
-	\item Leggere \register{\$t2} e \register{\$t3} dal register file;
-	\item Attivare la ALU passando in input i dati dal register file;
-	\item Memorizzare il risultato nel registro destinazione.
+	\item prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
+	\item leggere \register{\$t2} e \register{\$t3} dal register file;
+	\item attivare la ALU passando in input i dati dal register file;
+	\item memorizzare il risultato nel registro destinazione.
 \end{enumerate}
 Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico ciclo di clock.
 
@@ -273,11 +274,11 @@ Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico cicl
 \subsubsection{Istruzione di LW}
 Per eseguire un'istruzione di \opcode{lw} del tipo \mintinline{asm}{lw $t1, offset($t2)}, occorre:
 \begin{enumerate}
-	\item Prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
-	\item Prelevare \register{\$t2} dal register file;
-	\item Sommare \register{\$t2} ai campi offset dell’istruzione (i 16 bit meno significativi);
-	\item L'indirizzo calcolato viene inviato alla memoria dati;
-	\item Il dato all'indirizzo calcolato viene prelevato dalla memoria dati e memorizzato in \register{\$t1}.
+	\item prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
+	\item prelevare \register{\$t2} dal register file;
+	\item sommare \register{\$t2} ai campi offset dell’istruzione (i 16 bit meno significativi);
+	\item l'indirizzo calcolato viene inviato alla memoria dati;
+	\item il dato all'indirizzo calcolato viene prelevato dalla memoria dati e memorizzato in \register{\$t1}.
 \end{enumerate}
 Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico ciclo di clock.
 
@@ -290,10 +291,10 @@ Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico cicl
 \subsubsection{Istruzione di BEQ}
 Per eseguire un'istruzione di \opcode{beq} del tipo \mintinline{asm}{beq $t1, $t2, offset}, occorre:
 \begin{enumerate}
-	\item Prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
-	\item Prelevare \register{\$t1} e \register{\$t2} dal register file;
-	\item La ALU sottrae \register{\$t1} da \register{\$t2}. Il valore di \(\textrm{\emph{PC}}+4\) viene sommato all’offset (esteso a 32 bit) e shiftato di due volte (per indirizzare word e non in byte);
-	\item Il codice di controllo \CUflag{zero} della ALU viene usato per decidere a cosa settare il \emph{PC}.
+	\item prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
+	\item prelevare \register{\$t1} e \register{\$t2} dal register file;
+	\item la ALU sottrae \register{\$t1} da \register{\$t2}. Il valore di \(\textrm{\emph{PC}}+4\) viene sommato all’offset (esteso a 32 bit) e shiftato di due volte (per indirizzare word e non in byte);
+	\item il codice di controllo \CUflag{zero} della ALU viene usato per decidere a cosa settare il \emph{PC}.
 \end{enumerate}
 Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico ciclo di clock.
 

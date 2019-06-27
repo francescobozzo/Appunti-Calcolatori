@@ -33,7 +33,7 @@ Un computer memorizza (e manipola) solo sequenze di 0 e 1 (sequenze di bit); anc
 Nell’ambito dell’IT le codifiche sono fortemente caratterizzate dalla lunghezza (dal numero di bit) delle “parole” elementari della codifica. Ad esempio, per rappresentare tutti i caratteri (tabella ASCII estesa) utilizziamo  8 bit (256 caratteri). Si osservi che essendo i \emph{transistor} sistemi bistabili la base 2 (con cifre 0 e 1) è perfetta per rappresentare la codifica dei dati memorizzati/elaborati da essi.
 
 \section{I numeri}
-Limitiamoci al caso dei numeri per spiegare il concetto di \emph{codifica}. Ricordiamo che i metodi di rappresentazione numerica che studiamo sono posizionali, ovvero il peso di ogni cifra varia in base alla posizione che essa occupa. In generale se una base è composta da \(B\) elementi essa ha \(B\) cifre (da 0 a \(B\)) utilizzate per scrivere ogni numero. Questa formula ci restituisce il valore di ogni numero scritto in una qualsiasi base \(B\):
+Limitiamoci al caso dei numeri per spiegare il concetto di \emph{codifica}. Ricordiamo che i metodi di rappresentazione numerica che studiamo sono posizionali, ovvero il peso di ogni cifra varia in base alla posizione che essa occupa. In generale se una base è composta da \(B\) elementi essa ha \(B\) cifre (da 0 a \(B-1\)) utilizzate per scrivere ogni numero. Questa formula ci restituisce il valore di ogni numero scritto in una qualsiasi base \(B\):
 \begin{equation*}
 	c_{i} c_{i-1} c_{i-2}... c_{0}=c_{i}\cdot B^{i}+...+c_{0}\cdot B^{0}
 \end{equation*}

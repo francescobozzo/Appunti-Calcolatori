@@ -26,7 +26,7 @@ Quando si è ottenuto il file eseguibile, questo può essere caricato in memoria
 \subsection*{La toolchain GCC}
 Uno degli strumenti più diffusi per compiere queste operazioni è la toolchain Gnu Compiler Collection (\mintinline{batch}{gcc}), che può compilare diversi linguaggi e generare linguaggio macchina per varie architetture CPU, MIPS compreso.
 
-Il nostro \mintinline{batch}{gcc} lavora in svariate fasi, operate da diversi componenti: un compilatore per il C++ (\texttt{cpp}), un compilatore per il C (\texttt{cc}), un assembler (\texttt{as}) e un loader (\texttt{ld}).
+Il nostro \mintinline{batch}{gcc} lavora in svariate fasi, operate da diversi componenti: un compilatore per il C++ (\texttt{cpp}), un compilatore per il C (\texttt{cc}), un assembler (\texttt{as}) e un linker (\texttt{ld}).
 Quando si utilizza \mintinline{batch}{gcc} si può invocare la compilazione su un file con diversi parametri:
 \begin{itemize}
 	\item \mintinline{batch}{gcc -c <file>} si ferma dopo aver invocato \texttt{as} (genera quindi un file oggetto \extension{o});
@@ -103,7 +103,7 @@ Nel momento del linking \texttt{ld} inserisce all'interno dell'eseguibile dei ri
 
 Come conseguenza dell'implementazione di questa strategia si ha che l'eseguibile risulta di per sé molto più leggero ed inoltre si ottiene una modularizzazione del programma stesso: se le librerie vengono aggiornate (rimanendo retrocompatibili), il programma ne utilizzerà in automatico la versione più aggiornata. Lo svantaggio in cui si incorre però è una complicazione notevole del processo di caricamento.
 
-Esiste tuttavia una soluzione ancora più ottimale all'interno della categoria delle librerie dinamiche: questa è il processo di \emph{lazy linking}, che consiste, in una maniera squisitamente informatica, nel rimandare il più possibie le operazioni complesse di linking, così da effettuarle solo se estremamente necessarie. In questo modo, se una libreria non viene mai effettivamente invocata, si può addirittura evitare di linkarla. La strategia utilizzata è quella di inserire al posto dell'indirizzo effettivo della funzione l'indirizzo di uno \emph{stub} che solo se verrà invocato andrà a ricercare la funzione e a compiere il linking con la libreria in modo da poter utilizzare la funzione. Tutto questo lavoro viene svolto se e solo se la funzione è effettivamente utilizzata e quindi comporta potenzialmente un risparmio di spazio per il linking della libreria che la contiene. Inoltre, una volta che una funzione è stata effettivamente linkata, essa è già disponibile per tutto il resto del programma, così da non dover nemmeno ripetere più volte il lazy linking.
+Esiste tuttavia una soluzione ancora più ottimale all'interno della categoria delle librerie dinamiche: questa è il processo di \emph{lazy linking}, che consiste, in una maniera squisitamente informatica, nel rimandare il più possibile le operazioni complesse di linking, così da effettuarle solo se estremamente necessarie. In questo modo, se una libreria non viene mai effettivamente invocata, si può addirittura evitare di linkarla. La strategia utilizzata è quella di inserire al posto dell'indirizzo effettivo della funzione l'indirizzo di uno \emph{stub} che solo se verrà invocato andrà a ricercare la funzione e a compiere il linking con la libreria in modo da poter utilizzare la funzione. Tutto questo lavoro viene svolto se e solo se la funzione è effettivamente utilizzata e quindi comporta potenzialmente un risparmio di spazio per il linking della libreria che la contiene. Inoltre, una volta che una funzione è stata effettivamente linkata, essa è già disponibile per tutto il resto del programma, così da non dover nemmeno ripetere più volte il lazy linking.
 
 \section{Esempio finale}
 Procediamo ora illustrando un esempio di linking composto da due file assembly:
@@ -152,7 +152,7 @@ Ora è il turno della componente \texttt{ld}, che si occupa di unire i due file.
 Si deve sapere che in base all'architettura su cui si lavora esistono degli indirizzi di partenza prestabiliti per ogni sezione: nel nostro caso (architettura MIPS) la sezione \extension{text} inizia all'indirizzo \(0x00400000\); l'\texttt{ld} così inserirà il text del primo file da \(0x00400000\) a \(0x400100\) e quello del secondo da \(0x00400100\) a \(0x00400300\).
 Stessa cosa con la sezione \extension{data} (che in \emph{MIPS} inizia \(0x10000000\)), quella del primo file si troverà nel file di output finale tra \(0x10000000\) e \(0x10000020\) e quella del secondo tra \(0x10000020\) e \(0x10000050\).
 
-In secondo luogo il linker assegna un'indirizzo assoluto ai simboli, nel nostro esempio \(f=0x00400000\) e \(g=0x00400100\), mentre \(x=0x10000000\) e \(y=0x10000020\).
+In secondo luogo il linker assegna un indirizzo assoluto ai simboli, nel nostro esempio \(f=0x00400000\) e \(g=0x00400100\), mentre \(x=0x10000000\) e \(y=0x10000020\).
 
 Infine \texttt{ld} patcha tutti gli indirizzi dei simboli tenendo conto che il \register{\$gp} in MIPS punta alla posizione \(0x10008000\) (quindi, ad esempio, l'indirizzo di \(x\) diventa \(0x8000\) rispetto al \register{\$gp}). Il linker in questa fase risolve anche gli indirizzi legati alle operazioni di salto incondizionato; si può vedere facilmente questa operazione nell'esempio sottostante.
 

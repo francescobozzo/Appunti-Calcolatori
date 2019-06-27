@@ -48,7 +48,7 @@ Proprio grazie alla regola di De Morgan, si può affermare che la porta \emph{NA
 
 \subsection{La tavola di verità e i mintermini}
 \label{subsec:mintermini}
-\begin{table}[!h]
+\begin{table}[H]
 	\centering
 	\subimport{assets/tables/}{tabella_verita}
 	\caption{Esempio di tabella di verità}
@@ -102,7 +102,7 @@ L'ingresso del \emph{decoder} svolge il ruolo di selettore: ricevendo in input i
 	\subimport{assets/figures/}{decoder3bit.tex}
 	\caption{Decoder a 3 bit}
 \end{figure}
-\begin{table}[!h]
+\begin{table}[H]
 	\centering
 	\subimport{assets/tables/}{decoder.tex}
 	\caption{Tabella di verità per un decoder a 3 bit}
@@ -145,7 +145,7 @@ Successivamente seguono due diverse implementazioni della rete logica descritta 
 	\caption{Esempio di rete logica implementata attraverso PLA}
 \end{figure}
 
-\section{Il concetto di \emph{costo}}
+\section{Il concetto di costo}
 Come appena visto, le reti logiche possono essere implementate in maniera differente. Si definisce \emph{costo} di una rete logica la somma del numero di porte e del numero di ingressi della rete. Quando si analizza una rete, è importante saperne trovare l'implementazione con costo minimo. Principalmente si può procedere in due modalità:
 \begin{itemize}[noitemsep]
 	\item regole di semplificazione matematiche dovute all'algebra di Boole (vedi paragrafo~\ref{subsec:semplificazione}).
