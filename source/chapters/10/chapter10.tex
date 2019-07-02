@@ -58,7 +58,7 @@ Alla fine delle operazioni dell'\texttt{as} si ottiene quindi un file oggetto, c
 	\item \emph{header}: contiene le posizioni di altri dati all'interno del file (segmenti, tabelle, etc.);
 	\item \emph{segmenti}: principalmente testo (codice) e dati (variablili globali);
 	\item \emph{tabella di rilocazione}: comprende tutti i simboli\footnote{I simboli sono stringhe come etichette, nomi di funzioni e variabili che implicitamente rappresentano indirizzi.} con indirizzo relativo all'interno dell'area \texttt{.text} (ovvero l'indirizzo delle operazioni in cui compaiono tali simboli) e tipo di istruzione;
-	\item \emph{tabella dei simboli}: contiene tutti i simboli che non sono contenuti all'interno del file oggetto stesso (segnalati come undefined) ma saranno dedotti da file esterni e quindi saranno noti solo una volta che il linker avrà svolto il suo compito di collegamento tra file; contiene anche i simboli definiti nel file stesso ed il loro indirizzo globale (sempre nel file);
+		\item \emph{tabella dei simboli}: contiene tutti i simboli che non sono contenuti all'interno del file oggetto stesso (segnalati come undefined) ma saranno dedotti da file esterni e quindi saranno noti solo una volta che il linker avrà svolto il suo compito di collegamento tra file; contiene anche i simboli definiti nel file stesso ed il loro indirizzo globale (sempre relativo al file);
 	\item altre informazioni (ad esempio per il debugging).
 \end{itemize}
 
