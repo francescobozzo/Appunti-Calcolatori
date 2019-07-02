@@ -110,7 +110,7 @@ sw $t0, 48($s3)   # memorizzo il contenuto di $t0 in A[12]
 \end{minted}
 
 \paragraph{Register Spilling}
-Come già anticipato, i 32 registri non sono assolutamente sufficienti per contenere tutte le variabili usate da un programma complesso. Quello che succede a livello assembly, eseguito dal compilatore, è un continuo susseguirsi di load e store chiamato \emph{register spilling} (si dice che prepara il \emph{working set}, ossia una stima delle load e store appropriate).
+Come già anticipato, i 32 registri non sono assolutamente sufficienti per contenere tutte le variabili usate da un programma complesso. Quello che succede a livello assembly, eseguito dal compilatore, è un continuo susseguirsi di load e store, chiamato \emph{register spilling}. Il compilatore stesso stima il \emph{working set} ed inserisce nel codice assembly le operazioni di load/unload appropriate.
 
 \subsection*{Le costanti}
 Molto spesso ci si trova a lavorare con le costanti. Nonostante ogni costante possa essere salvata su un registro, questa soluzione è parecchio inefficiente, perché le costanti e le operazioni relative sono molto comuni.
@@ -144,7 +144,7 @@ Prendiamo come esempio l'istruzione di somma \mintinline{asm}{add $t0, $s1, $s2}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{istruzioni.png}
-	\caption{Esempio di somma}
+	\caption{Mappatura di un'istruzione R, l'operazione di somma}
 \end{figure}
 In generale questo sistema, detto R (da registro), ogni campo dell'istruzione ha un nome:
 \begin{itemize}[noitemsep]
@@ -328,7 +328,7 @@ Come si può osservare, in fase di scrittura del codice si utilizzano delle \emp
 \paragraph*{Blocco di base} Viene data la seguente definizione di \emph{blocco di base}: sequenza di istruzioni che non contiene né istruzioni di salto (con l’eccezione dell’ultima) né etichette di destinazione (con l’eccezione della prima); sostanzialmente, una porzione di codice compresa tra due salti. In fase di compilazione ricoprono un ruolo non indifferente, in quanto una delle prime analisi eseguite sul codice consiste nel cercare proprio queste porzioni di codice. Inoltre, tutti i cicli dei linguaggi di programmazione ad alto livello vengono implementati con l'ausilio di blocchi base.
 
 \subsection*{Confronti per minorazioni}
-Esistono inoltre delle istruzioni che permettono di settare dei bit in determinati registri di \register{flag} sulla base di una determinata condizione. In modo particolare osserviamo l'istruzione \mintinline{asm}{slt} e la sua controparte immediata, sia in versione signed che unsigned:
+Esistono inoltre delle istruzioni che permettono di settare dei bit nei registri, per utilizzarli come registri di \register{flag}, sulla base di una determinata condizione. In modo particolare osserviamo l'istruzione \mintinline{asm}{slt} e la sua controparte immediata, sia in versione signed che unsigned:
 \begin{minted}[linenos]{asm}
 slt $t0, $s3, $s4   # setta t0=1 se s3<s4
 slti $t0, $s3, 10   # setta t0=1 se s3<10
@@ -446,7 +446,7 @@ L'idea fondante del protocollo implementato da MIPS è di utilizzare ogniqualvol
 	\caption{Convenzioni sui registri in MIPS}
 \end{table}
 
-Oltre ai registri, il MIPS mette a disposizione dell'utente l'istruzione \emph{jump and link} (\mintinline{asm}{jal}) che effettua un salto all'indirizzo di inizio della procedura specificata e contemporaneamente memorizza in \register{\$ra} l'indirizzo di ritorno della procedura, dove si ritornerà una volta terminata la funzione. Questo significa che quando si chiama la \mintinline{asm}{jal} si salva automaticamente in \register{\$ra} il PC incrementato di 4 (l'istruzione successiva).\\
+L'assembly MIPS mette a disposizione dell'utente l'utilissima istruzione \emph{jump and link} (\mintinline{asm}{jal}) che effettua un salto all'indirizzo di inizio della procedura specificata e contemporaneamente memorizza in \register{\$ra} l'indirizzo di ritorno della procedura, dove si ritornerà una volta terminata la funzione. Questo significa che quando si chiama la \mintinline{asm}{jal} si salva automaticamente in \register{\$ra} il PC incrementato di 4 (l'istruzione successiva).\\
 Alla fine della procedura sarà così sufficiente compiere il salto \mintinline{asm}{jr $ra} per riprendere lo svolgimento del programma principale da dove lo si era interrotto.
 
 \subsection{Gestione della memoria in MIPS}
@@ -586,7 +586,7 @@ Le variabili in C sono in genere associate a locazioni di memoria e si caratteri
 
 Le variabili \emph{statiche} sono memorizzate in una zona di memoria specifica (nel MIPS accessibile attraverso il registro global pointer, \register{\$gp}).
 
-Le variabili \emph{automatiche} invece possono essere memorizzate nei registri, tuttavia quando questi non bastano, come già visto, le variabili vengono salvate all'interno dello stack; il segmento di stack che le contiene viene chiamato \emph{record di attivazione} (o \emph{stack frame}). Le variabili locali vengono individate tramite un offset a partire da un puntatore allo stack.\\
+Le variabili \emph{automatiche} invece possono essere memorizzate nei registri, tuttavia quando questi non bastano, come già visto, le variabili vengono salvate all'interno dello stack; il segmento di stack che le contiene viene chiamato \emph{record di attivazione} (o \emph{stack frame}). Le variabili locali vengono individuate tramite un offset a partire da un puntatore allo stack.\\
 Contrariamente a come si penserebbe, non si utilizza \register{\$sp} come puntatore, poiché esso può variare all'interno dello svolgimento di una funzione, di conseguenza si utilizza il puntatore dedicato \register{\$fp}.
 
 L'immagine qui sotto rappresenta l'evoluzione dei due puntatori \register{\$sp} e \register{\$fp} durante la chiamata di una funzione, per capire meglio i vantaggi dell'utilizo di \register{\$fp}.

@@ -14,7 +14,7 @@
  \end{fquote}
 
 \section{La necessità di comunicare}
-Un calcolatore sarebbe praticamente inutile se non avesse la possibilità di interfacciarsi e comunicare con l'esterno, ed è proprio di questo che si occupano le periferiche di input/output (da qui in avanti I/O); questi dispositivi possono essere estremamente \emph{eterogenei} tra loro e si diversificano a seconda del compito che sono chiamati a svolgere\footnote{Si pensi che nella categoria di dispositivi I/O compaiono mouse, penne grafiche, desktop, microfoni e tanti altri ancora.}. Tuttavia devono avere una caratteristica comune: devono essere \emph{espandibili}, ovvero ci deve essere la possibilità di aggiungere o rimuovere i dispositivi di I/O.
+Un calcolatore sarebbe praticamente inutile se non avesse la possibilità di interfacciarsi e comunicare con l'esterno, ed è proprio di questo che si occupano le periferiche di input/output (da qui in avanti I/O); questi dispositivi possono essere estremamente \emph{eterogenei} tra loro e si diversificano a seconda del compito che sono chiamati a svolgere\footnote{Si pensi che nella categoria di dispositivi I/O compaiono mouse, penne grafiche, desktop, microfoni e tanti altri ancora.}. Tuttavia devono avere una caratteristica comune: devono essere \emph{espandibili}, ovvero deve essere prevista la possibilità di aggiungere o rimuovere i dispositivi di I/O.
 
 \subsection*{Tre termini tecnici}
 Chiariamo ora questi termini tecnici definendone precisamente il significato poiché ci torneranno utili nel resto del capitolo.
@@ -132,7 +132,7 @@ Queste particolari locazioni di memoria sono inaccessibili ai programmi utente, 
 Esistono principalmente due meccanismi differenti per il trasferimento dei dati, il polling e le interruzioni di programma. Descriviamo in prima battuta il più semplice dei due: il polling.
 
 \section{Polling}
-Detta anche modalità di \emph{attesa attiva}, sostanzialmente consiste nell'inviare un comando di lettura/scrittura alla periferica e poi iniziare un ciclo di attesa monitorando il bit di stato per sapere quando il dato è pronto. Di seguito è riportata l'implementazione in assembly MIPS di un ciclo di lettura input da tastiera e in seguito di stampa del dato. È di seguito inserita un'immagine rappresentante il controllo del terminale nel simulatore SPIM.
+Detta anche modalità di \emph{attesa attiva}, sostanzialmente consiste nell'inviare un comando di lettura/scrittura alla periferica e poi iniziare un ciclo di attesa monitorando il bit di stato per sapere quando il dato è pronto. È di seguito inserita un'immagine rappresentante il controllo del terminale nel simulatore SPIM.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{SPIM1}
@@ -143,6 +143,8 @@ Le due parole di memoria \texttt{0xffff0000} ed \texttt{0xffff0004} sono riserva
 La prima è il \emph{receiver control}, ovvero viene utilizzata per contenere il bit che segnala la presenza di un nuovo dato in ingresso (ready) e quello per stabilire se l'interrupt è abilitato (vedremo in seguito cosa significa). La seconda è il \emph{receiver data} che conterrà gli effettivi dati forniti in input.
 
 Ora che abbiamo chiarito l'utilizzo di queste due parole in memoria, possiamo osservare anche degli esempi di implementazione in MIPS di polling.
+
+Di seguito è riportata l'implementazione in assembly MIPS di un ciclo di lettura input da tastiera e successivamente il ciclo di stampa di un dato.
 
 Esempio 1: Input, lettura dalla tastiera in \register{\$v0}.
 \begin{minted}{asm}
@@ -199,7 +201,7 @@ Osserviamo ora uno schema esemplificativo tratto dal simulatore SPIM per l'assem
 \end{figure}
 La parte più in alto in questa rappresentazione della memoria è quella che contiene il kernel code e le parole riservate.
 
-Il kernel code è la traduzione in linguaggio macchina del SO (che ricordiamo essere un programma esso stesso); all'interno di questa sezione si trovano inoltre le parole di memoria riservare all I/O. È quindi ora chiaro cosa si intendeva quando si è detto che il processore vede solo virtualmente le periferiche, che fisicamente dal suo punto di vista altro non sono che dati.
+Il kernel code è la traduzione in linguaggio macchina del SO (che ricordiamo essere un programma esso stesso); all'interno di questa sezione si trovano inoltre le parole di memoria riservate all'I/O. È quindi ora chiaro cosa si intendeva quando si è detto che il processore vede solo virtualmente le periferiche, che fisicamente dal suo punto di vista altro non sono che dati.
 
 Passiamo ora alla descrizione del secondo meccanismo di trasferimento dei dati: l'input ad interruzione di programma.
 

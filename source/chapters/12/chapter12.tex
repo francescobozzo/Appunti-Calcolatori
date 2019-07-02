@@ -17,12 +17,12 @@ Nel capitolo precedente è stato presentato lo schema base di un semplice proces
 Esistono, tuttavia, dei procedimenti che permettono di migliorare il rendimento della CPU.
 Uno dei metodi più semplici è quello di parallelizzare il lavoro, in una maniera molto simile a quella con cui Henry Ford migliorò la produzione delle fabbriche del primo Novecento.
 
-Il punto centrale di questa strategia sta nel comprendere che mentre una componente \(C\) della CPU sta lavorando sull'istruzione corrente, un'altra componente \(A\) può iniziare a svolgere l'istruzione successiva; in tal modo lo svolgimento delle operazioni non è più prettamente sequenziale ma diventa parallelo, in un certo senso, perché lo svolgimento di un'operazione avviene nello stesso momento dello svolgimento di un'altra, anche se le due operazioni si trovano in fasi di completamento diverse.
+Il punto centrale di questa strategia sta nel comprendere che mentre una componente della CPU sta lavorando sull'istruzione corrente, un'altra componente può iniziare a svolgere l'istruzione successiva; in tal modo lo svolgimento delle operazioni non è più prettamente sequenziale ma diventa parallelo, in un certo senso, perché lo svolgimento di un'operazione avviene nello stesso momento dello svolgimento di un'altra, anche se le due operazioni si trovano in fasi di completamento diverse.
 
 Una misura del miglioramento che si introduce con metodi come il lavoro in parallelo è data dal \emph{throughput}, il quale è definito come il numero di operazioni risolte per unità di tempo. In una catena di lavoro in parallelo composta da \(n\) stadi il \emph{throughput} massimo raggiungibile è \(\frac{1}{n}\); si intuisce che con un meccanismo di lavoro in parallelo ben funzionante a regime si possono fare \(n\) operazioni nello stesso tempo in cui normalmente se ne fa una sola, e questo è un miglioramento notevole.
 
 \subsection*{Pipeline}
-Il concetto di \emph{pipeline} in una CPU è esattamente simmetrico a quello di una catena di montaggio: viene detta pipeline un'implementazione della CPU che prevede lo svolgimento di più operazioni in parallelo.
+Il concetto di pipeline è esattamente simmetrico a quello di catena di montaggio: viene detta pipeline un'implementazione della CPU che prevede lo svolgimento di più operazioni in parallelo.
 
 Tornando al caro vecchio MIPS, ricordiamo brevemente quali sono le fasi per l'esecuzione di un'istruzione:
 \begin{enumerate}[noitemsep]
@@ -52,7 +52,7 @@ Naturalmente i tempi necessari per l'esecuzione di queste operazioni non sono ug
 	\includegraphics[width=\textwidth,keepaspectratio]{tabella-tempi-operazioni.png}
 	\caption{Tempi d'esecuzione per ciascuna fase (nel nostro esempio)}
 \end{figure}
-Si noti che l'istruzione più lenta di tutte è la \texttt{load word}\footnote{Si noti anche che questa è l'unica istruzione che esegue effettivamente tutte le 5 fasi descritte in precedenza.}; di conseguenza il tempo di clock viene definito in base ad essa.
+Si noti che l'istruzione più lenta di tutte è la \texttt{load word}\footnote{Si noti anche che questa è l'unica istruzione che esegue effettivamente tutte le 5 fasi descritte in precedenza.}; di conseguenza il tempo di clock viene stabilito in base ad essa.
 
 Inoltre il tempo dedicato ad ogni singola fase del processo di esecuzione è definito in base al tempo della fase con durata massima, ovvero nel nostro caso \unit[200]{ps}, per rendere possibile il partizionamento in fasi della stessa durata (altrimenti il parallelismo non sarebbe possibile).
 Questo tuttavia implica che anche le fasi con durata inferiore verranno eseguite in un tempo di \unit[200]{ps} ed anche che la durata dell'esecuzione di una singola istruzione nella nostra pipeline è di \((\textrm{tempo singola fase})*(\textrm{numero fasi})=200ps\cdot 5=1000ps\).
@@ -61,7 +61,7 @@ Osserviamo quindi un diagramma temporale per sequenza istruzioni in cui si confr
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{esecuzione-operazioni-confronto.png}
-	\caption{Il grafico in alto raffigura la normale esecuzione di un programma, il grafico sotto invece rappresenta lo svolgimento dello stesso con il meccanismo della pipeline; si noti che la fase reg è forzatamente fatta durare 200ps, ed inoltre si noti di quanto è ridotta la durata del programma.}
+	\caption{\label{esempioPipeline}Il grafico in alto raffigura la normale esecuzione di un programma, il grafico sotto invece rappresenta lo svolgimento dello stesso con il meccanismo della pipeline; si noti che la fase reg è forzatamente fatta durare 200ps, ed inoltre si noti di quanto è ridotta la durata del programma.}
 \end{figure}
 
 \subsection{Osservazioni}
@@ -69,7 +69,7 @@ La teoria prevede che per avere una stima delle prestazioni della CPU una volta 
 \begin{equation*}
 \text{Tempo tra due istruzioni con pipeline} = \frac{\text{Tempo tra due istruzioni senza pipeline}}{\text{Numero di stadi della pipeline}}
 \end{equation*}
-Quindi teoricamente, secondo questa formula, nel nostro caso ci si aspetta un miglioramento delle prestazioni di un fattore 5; tuttavia si può notare che il tempo per eseguire 3 istruzioni passa da \unit[2400]{ps} a \unit[1400]{ps}, generando quindi un miglioramento di un fattore \(1.7\).
+Quindi teoricamente, secondo questa formula, nel nostro caso ci si aspetta un miglioramento delle prestazioni di un fattore 5; tuttavia si può notare nell'esempio in figura \ref{esempioPipeline} che il tempo per eseguire 3 istruzioni passa da \unit[2400]{ps} a \unit[1400]{ps}, generando quindi un miglioramento di un fattore \(1.7\).
 
 Le cause di questa discrepanza sono principalmente due: in primis si deve sottolineare che per ottenere una prestazione 5 volte più alta il tempo di clock dovrebbe essere uguale a quelo di una singola fase del ciclo, ovvero \(\frac{800}{5}=\) \unit[160]{ps}, mentre nella realtà non possiamo scendere sotto ai \unit[200]{ps} poiché ci sono delle fasi che hanno tale durata e quindi impongono un limite minimo alla durata di una fase. In secondo luogo abbiamo considerato poche istruzioni e questo implica che non abbiamo fatto in tempo a distribuire il costo di "avvio" e di "terminazione" della pipeline (i due periodi in cui la pipeline non è completamente a regime); il miglioramento si osserva meglio quando il numero di istruzioni è ben più alto del numero delle fasi della pipeline.
 
@@ -104,7 +104,7 @@ Andando ad analizzare come la pipeline implementerebbe questo codice si nota che
 
 Esistono dei metodi per evitare queste tre intere fasi di attesa: il più semplice (e spesso anche il più funzionale) prevede un rimescolamento delle istruzioni. Esso consiste nell'allontanare tra loro le due istruzioni quanto basta per far sì che la prima termini in tempo per garantire la corretta esecuzione della seconda; tuttavia questa strada non è sempre percorribile.
 
-Quella appena descritta è una delle operazioni che compilatori come il \texttt{gcc} compiono nella fase di traduzione da linguaggio ad alto livello ad Assembly. Una soluzione ancora più efficiente è quella dell'\emph{operand forwarding} (detto anche propagazione o bypass): questa in casi come questo prevede di rendere il contenuto del registro \register{\$s0} disponibile per l'operazione successiva ancora prima che questo sia effettivamente salvato nel registro stesso, dato che quel valore sarà già noto dalla fase "execute".
+Quella appena descritta è una delle operazioni che compilatori come il \texttt{gcc} compiono nella fase di traduzione da linguaggio ad alto livello ad Assembly. Una soluzione ancora più efficiente è quella dell'\emph{operand forwarding} (detto anche propagazione o bypass): questa in casi come questo prevede di rendere il contenuto del registro \register{\$s0} disponibile per l'operazione successiva ancora prima che questo sia effettivamente salvato nel registro stesso, dato che quel valore sarà già noto dalla fase "execute" dell'istruzione \opcode{add}.
 Si osservi lo schema riportato qui sotto per una maggiore comprensione del meccanismo di propagazione.
 \begin{figure}[H]
 	\centering
@@ -115,7 +115,7 @@ Si osservi lo schema riportato qui sotto per una maggiore comprensione del mecca
 \subsection{Hazard sul controllo}
 Questo tipo di hazard riguarda nello specifico le operazioni di salto condizionato, che generano problemi in quanto prima dell'effettivo termine della loro esecuzione non si può sapere quale sarà l'istruzione sucessiva. Se la pipeline è composta da tante fasi il tempo che si aspetterebbe prima di sapere come procedere potrebbe diventare eccessivo.
 
-Per il resto del capitolo consideriamo di avere un circuito molto sofisticato che ci permette di calcolare l’indirizzo di salto già al secondo stadio (ID); tuttavia questo non basta poiché dobbiamo lasciare la pipeline in stallo per almeno una fase prima di sapere qual è l'istruzione successiva. Esistono \emph{tre tipi di soluzione} all'hazard sul controllo, e sono riportate in seguito in ordine di complessità.
+Per il resto del capitolo consideriamo di avere un circuito molto sofisticato che ci permette di calcolare l’indirizzo di salto già al secondo stadio (ID); tuttavia questo non basta poiché dobbiamo lasciare la pipeline in stallo per almeno una fase prima di sapere qual è l'istruzione successiva. Esistono tre tipi di soluzione all'hazard sul controllo, e sono riportate in seguito in ordine di complessità.
 
 \begin{enumerate}
 	\item Il primo approccio prevede di risistemare l'ordine delle istruzioni (come si farebbe per risolvere un hazard sui dati) facendo eseguire subito dopo il branch delle istruzioni indipendenti dal salto stesso, che quindi dovrebbero essere eseguite indifferentemente; questo metodo è molto comodo, ma purtroppo non è sempre applicabile.
@@ -140,9 +140,9 @@ Per prima cosa si calcola il tempo totale di un'operazione senza pipeline:
 \begin{equation*}
 	\text{Tempo totale} = 600+600+500+400+700 = 2800ps
 \end{equation*}
-In seguito si ricorda che il tempo di clock una volta implementata la pipeline sarà uguale al tempo della fase con durata più lunga, ovvero nel nostro caso \unit[700]{ps}. Dunque il tempo di esecuzione di una singola operazione sarà ridotto (tramite il parallelismo, quindi virtualmente) a: \(\frac{\text{Tempo totale}}{\text{Istruzione più lenta}}\). Ciò significa che l'incremento delle prestazioni si calcolerà come segue:
+In seguito si ricorda che il tempo di clock una volta implementata la pipeline sarà uguale al tempo della fase con durata più lunga, ovvero nel nostro caso \unit[700]{ps}. Dunque il tempo di esecuzione di una singola operazione sarà ridotto (tramite il parallelismo, quindi virtualmente) a: \(\frac{\text{Tempo totale}}{\text{Operazione più lenta}}\). Ciò significa che l'incremento delle prestazioni si calcolerà come segue:
 \begin{equation*}
-	\text{Incremento} = \frac{\text{Tempo totale}}{\text{Istruzione più lenta}} = \frac{2800}{700} = 4
+	\text{Incremento} = \frac{\text{Tempo totale}}{\text{Operazione più lenta}} = \frac{2800}{700} = 4
 \end{equation*}
 ovvero l'incremento finale sarà di 4 volte.
 

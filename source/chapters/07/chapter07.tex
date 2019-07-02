@@ -63,7 +63,7 @@ Esistono due modalità per richiamare una funzione attraverso l'istruzione \mint
 	\item \mintinline{gas}{call address}: invoca la subroutine presente all'indirizzo indicato;
 	\item \mintinline{gas}{call *register}: invoca la subroutine presente all'indirizzo contenuto nel registro indicato.
 \end{itemize}
-Una caratteristica di \emph{Intel} è quella di salvare automaticamente il \emph{link register} nello stack quando una funzione viene richiamata, facilitando di molto la scrittura di funzioni ricorsive. In maniera analoga, l'istruzione \mintinline{gas}{ret}, che viene utilizzata per terminare una funzione, preleva automaticamente dallo stack l'indirizzo da utilizzare nell'instruction pointer.
+Una caratteristica di \emph{Intel} è quella di salvare automaticamente l'\emph{instruction pointer} (che ha un funzionamento analogo al \emph{link register} di MIPS) nello stack quando una funzione viene richiamata, facilitando di molto la scrittura di funzioni ricorsive\footnote{Si ribadisce che in MIPS esiste un vero e proprio registro che si occupa di questo (\emph{link register} appunto). Nel caso di funzioni non foglia però si deve provvedere manualmente a salvarne e recuperarne il valore dallo stack}. In maniera analoga, l'istruzione \mintinline{gas}{ret}, che viene utilizzata per terminare una funzione, preleva automaticamente dallo stack l'indirizzo da utilizzare nell'instruction pointer.
 
 \section{Le modalità di indirizzamento}
 Esistono svariate modalità di indirizzamento in \emph{Intel}:

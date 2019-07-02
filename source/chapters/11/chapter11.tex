@@ -67,7 +67,7 @@ La figura è molto complessa, andiamo ad analizzarla con ordine.
 	\item Vediamo un secondo multiplexer che indica se memorizzare nel registro di destinazione un dato da ALU o dalla memoria.
 	\item Abbiamo un  ultimo multiplexer che precede il caricamento del secondo operando nell'ALU: dalla control unit arriverà l'indicazione per scegliere di caricare un registro (nelle istruzioni R) o una costante (per quelle I).
 	\item Poi vediamo un segnale per la ALU: esso consiste di un bus di più bit per comunicare all'unità quale operazione eseguire.
-	\item Alla memoria dati invece arrivano i segnali \emph{MemWrite} e \emph{MemRead}, che indicano alla memoria dati  la rispettiva operazione.
+	\item Alla memoria dati invece arrivano i segnali \emph{MemWrite} e \emph{MemRead}, che indicano la rispettiva operazione da svolgere.
 	\item In base al valore di \emph{RegWrite}, il risultato dell'operazione viene memorizzato nel registro di destinazione.
 \end{itemize}
 Questa è la rappresentazione di MIPS, che è una ISA RISC; inutile dire che gli schemi di funzionamento che stanno alla base di architetture CISC sono incredibilmente più complessi.
@@ -111,7 +111,7 @@ Prima di addentrarci nel dettaglio dell'esecuzione di alcuni tipi di istruzioni,
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{datap_3}
 \end{figure}
 Ricordiamo che il sommatore (o addizionatore) è una ALU specializzata alla sola operazione di incremento del \emph{PC}.\\
-A questo punto la fase di fetch, ricordiamolo, prevede il prelievo dell'istruzione dal \emph{PC}, il trasferimento della stessa agli elementi proposti all'esecuzione e l'incremento del \emph{PC}.
+A questo punto la fase di fetch, ricordiamolo, prevede il prelievo dell'istruzione dal \emph{PC}, il trasferimento della stessa agli elementi preposti all'esecuzione e l'incremento del \emph{PC}.
 
 \subsection{Istruzioni R}
 Iniziamo con un’istruzione di tipo R, come potrebbe essere:
@@ -129,7 +129,7 @@ Per effettuare questa operazione abbiamo bisogno di due blocchi funzionali che v
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{R_ex.png}
 \end{figure}
 \begin{itemize}
-	\item Il primo blocco è il \emph{banco dei registri}, una struttura con 3 bus da 5 bit ciascuno in cui vengono caricati i registri da operare; per decidere se si dovrà scrivere il risultatonel registro di destinazione viene impiegato il segnale di controllo \emph{RegWrite}, gestito direttamente dalla Control Unit.
+	\item Il primo blocco è il \emph{banco dei registri}, una struttura con 3 bus da 5 bit ciascuno in cui vengono caricati i registri da operare; per decidere se si dovrà scrivere il risultato nel registro di destinazione viene impiegato il segnale di controllo \emph{RegWrite}, gestito direttamente dalla Control Unit.
 	\item Il secondo blocco di cui abbiamo bisogno è la ALU di cui prima abbiamo tanto parlato. Questa presenta due controlli: uno di questi è il bus che arriva dal corpo dell'istruzione e indica qual è l'operazione da svolgere, mentre il secondo è il settaggio \emph{zero} qualora il risultato dell'operazione fosse effettivamente 0; quest'ultimo valore viene poi mandato alla porta AND che decide il segnale di controllo per il multiplexer preposto alla scelta del blocco d'incremento del \emph{PC}.
 \end{itemize}
 
@@ -311,7 +311,7 @@ Prima di tutto bisogna sottolineare il fatto che l'istruzione \opcode{j} viene i
 	\item Sostituire al \register{PC} il nuovo valore così ottenuto:
 	\begin{itemize}
 		\item i quattro bit più significativi del \register{PC} rimangono invariati;
-		\item i bit dal 27 al 2 (inclusi) del \register{PC} sono sostituiti con il campo indirizzo dell'istruzione \opcode{j};
+		\item i bit dal 27 all'1 (inclusi) del \register{PC} sono sostituiti con il campo indirizzo dell'istruzione \opcode{j};
 		\item i due bit meno significativi sono messi a 0 (ragioniamo in word e non in byte).
 	\end{itemize}
 \end{enumerate}

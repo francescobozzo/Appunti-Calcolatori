@@ -15,7 +15,7 @@
  \end{fquote}
 
 \section{Introduzione}
-L'architettura \emph{ARM} nasce negli anni Ottanta come architettura \emph{RISC} pragmatica, che tenta di migliorare la suddetta architettura implementando delle istruzioni e delle strategie appartenenti ad \emph{Intel}: è proprio questo il suo punto di forza.
+\emph{ARM} nasce negli anni Ottanta come architettura \emph{RISC} pragmatica, ovvero tenta di migliorare la strategia \emph{RISC} implementando delle istruzioni e delle tecniche appartenenti ad \emph{Intel}: è proprio questa ricerca di un compromesso tra prestazioni e complessità il suo punto di forza.
 
 Un'altra caratteristica peculiare dell'\emph{ARM} è la presenza di una modalità \emph{low power}, che limita di molto il consumo di energia restringendo le istruzioni utilizzabili solo a quelle più semplici (e quindi meno costose in termini di risorse). È proprio per questa ragione che l'\emph{ARM} ha avuto un'enorme diffusione come architettura per i dispositivi \emph{mobile} e \emph{wearable} oltre che per i sistemi \emph{embedded}.
 
@@ -35,7 +35,7 @@ Nonostante sia molto diffuso, questo standard non è assoluto: di fatto esistono
 Le convenzioni di chiamata, che vengono specificate appositamente dall'\emph{ABI}, servono per "mettere d'accordo" diversi compilatori/librerie e altre parti del sistema operativo: sono esse che determinano se passare i parametri solo tramite registri o anche via stack, quali registri preservare, quali registri utilizzare liberamente e come gestire l'indirizzo di ritorno. A seguire ecco cosa stabilisce l'ABI più diffusa del mondo ARM:
 \begin{itemize}
 	\item \register{r0}, \register{r1}, \register{r2}, \register{r3}, \register{r12} sono registri temporanei;
-	\item da \register{r4} a \register{r11} sono da preservare, con l'eccezione di \register{r9} che in alcune ABI non viene preservato.
+	\item da \register{r4} a \register{r11} sono da preservare, con l'eccezione di \register{r9} che in alcune implementazioni non viene preservato.
 \end{itemize}
 
 \section{Le istruzioni ARM}
@@ -59,14 +59,14 @@ Lo schema base di un'istruzione è il seguente:
 \end{center}
 dove \suffix{<-cond>} ed \suffix{<-s>} sono facoltativi, \register{<rd>} è il registro di destinazione, \register{<rl>} è il registro di sinistra e \register{<r*>} è il registro di destra. Si noti inoltre che \register{<r*>} può essere sia un registro che un valore immediato che un registro su cui si effettuano operazioni di modifica (si veda ~\ref{sec:modifiche}). Tuttavia, a differenza di MIPS, ARM non ha bisogno di due opcode distinti per definire l'operazione di somma: in ARM è possibile utilizzare \opcode{add} sia per sommare due registri che per sommare un valore immediato ad un registro.
 
-Se il secondo operando è un registro, si possono inserire al termine dell'operazione dei comandi ulteriori che permettono di eseguire operazioni di shifting o rotazione sul secondo operando (che avvengono prima dell'operazione), ad esempio \opcode{lsl}/\opcode{asl}, \opcode{lsr}, \opcode{asr}, \opcode{ror}, \opcode{rrx} (si veda sempre ~\ref{sec:modifiche}).
+Se il secondo operando è un registro, si possono inserire al termine dell'operazione dei comandi ulteriori che permettono di eseguire operazioni di shifting o rotazione su di esso (che avvengono prima dell'operazione), ad esempio \opcode{lsl}/\opcode{asl}, \opcode{lsr}, \opcode{asr}, \opcode{ror}, \opcode{rrx} (si veda sempre ~\ref{sec:modifiche}).
 
 \subsection*{Le istruzioni più comuni}
 Vediamo ora una lista delle operazioni più comuni:
 
 \begin{itemize}
-	\item \opcode{add}/\opcode{adc}: rispettivamente somma e somma con resto;
-	\item \opcode{sub}/\opcode{sbc}: rispettivamente sottrazione e sottrazione con riporto;
+	\item \opcode{add}/\opcode{adc}: rispettivamente somma e somma con carry;
+	\item \opcode{sub}/\opcode{sbc}: rispettivamente sottrazione e sottrazione con carry;
 	\item \opcode{rsb}/\opcode{rsc}: \emph{reverse sub/reverse sub with carry} che permettono una sottrazione invertendo il primo ed il secondo operando. In questo modo risulta possibile sottrarre un registro ad un numero;
 	\item \opcode{and}/\opcode{orr}/\opcode{eor}/\opcode{bic}: operazioni booleane bit a bit. Si noti che \mintinline{arm}{bic r0, r1, r} calcola \(\register{r0} = (\register{r1} \textrm{ and } (\textrm{not } \register{r}))\);
 	\item \opcode{mul}/\opcode{mla} e simili sono per varie forme di moltiplicazione\footnote{Non esistono comandi per la divisione in assembly ARM.};
@@ -90,9 +90,9 @@ addeqs r0, r1, r2, lsl r3
 Analizziamo le righe di codice una ad una:
 \begin{enumerate}
 	\item \register{r0} \(=\) \registerOp{r1}{+}{1};
-	\item \register{r0} \(=\) \registerOp{r1}{+}{r2} e setta dei flag se necessario;
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2} e setta dei flag eventualmente;
 	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: esegue la somma solo se il flag \mintinline{arm}{eq} è settato, prima dell'operazione esegue uno shift (temporaneo) a sinistra di 2 del registro \register{r2};
-	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: esegue la somma solo se il flag \mintinline{arm}{eq} è settato, setta flag se necessario, prima dell'operazione esegue uno shift (temporaneo) a sinistra di \register{r3} del registro \register{r2}.
+	\item \register{r0} \(=\) \registerOp{r1}{+}{r2}: esegue la somma solo se il flag \mintinline{arm}{eq} è settato, setta flag eventualmente, prima dell'operazione esegue uno shift (temporaneo) a sinistra di \register{r3} del registro \register{r2}.
 \end{enumerate}
 
 \subsection*{Istruzioni di load/store multiple}
