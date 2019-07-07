@@ -9,5 +9,6 @@
 *.fdb_latexmk
 *.sta
 *.pdf
+*.fmt
 
 _minted*
