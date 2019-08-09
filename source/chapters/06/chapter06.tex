@@ -1,4 +1,4 @@
-\documentclass[class=book, crop=false, oneside]{standalone}
+\acrshort{risc}\documentclass[class=book, crop=false, oneside]{standalone}
 \usepackage[subpreambles=true]{standalone}
 
 \usepackage{../../style}
@@ -16,16 +16,16 @@
 
 Dopo la breve introduzione del precedente capitolo, affronteremo ora lo studio dell'architettura \emph{MIPS}; iniziamo con questa perché, seppur non molto diffusa, è molto simile ad altre architetture che vedremo in seguito (soprattutto ARM), ed è quindi propedeutica.
 
-\section{Breve riepilogo su ISA}
-Come sappiamo già, ogni processore possiede un proprio linguaggio macchina, che non è altro che una sorta di "vocabolario di istruzioni" detto \emph{instruction set architecture} (o \emph{ISA} per gli amici); queste istruzioni sono solitamente le operazioni aritmetiche fondamentali (a parte quelle che lavorano su floating point) e quelle logiche.\\
-Nonostante ogni processore possieda un proprio ISA, le differenze non sono poi così grandi (motivo per cui conoscere MIPS ci agevolerà molto nell'apprendimento di altre ISA); una similitudine adeguata può essere fatta con i dialetti di una lingua maggiore (per esempio, veneziano, trevigiano e veronese sono tutte varianti locali mutualmente intelligibili della Grande Lingua Veneta).
+\section{Breve riepilogo su \acrshort{isa}}
+Come sappiamo già, ogni processore possiede un proprio linguaggio macchina, che non è altro che una sorta di "vocabolario di istruzioni" detto \emph{instruction set architecture} (o \acrshort{isa} per gli amici); queste istruzioni sono solitamente le operazioni aritmetiche fondamentali (a parte quelle che lavorano su floating point) e quelle logiche.\\
+Nonostante ogni processore possieda un proprio \acrshort{isa}, le differenze non sono poi così grandi (motivo per cui conoscere MIPS ci agevolerà molto nell'apprendimento di altre \acrshort{isa}); una similitudine adeguata può essere fatta con i dialetti di una lingua maggiore (per esempio, veneziano, trevigiano e veronese sono tutte varianti locali mutualmente intelligibili della Grande Lingua Veneta).
 
 Lo scopo di avere questi sistemi di istruzioni è poter controllare e sfruttare la potenza di calcolo fornita dai nostri calcolatori senza conoscerne i dettagli; inoltre, come già fatto notare da Von Neumann nel 1947, la progettazione di un'architettura influisce enormemente sull'efficienza dell'hardware, ed è quindi fondamentale che si ricerchino istruzioni \emph{semplici, chiare e veloci}.
 
 Un organico di istruzioni andrà a costruire un \emph{programma memorizzato} che, come approfondiremo, altro non è che un insieme di istruzioni mappato sotto forma di numero binario, non diversamente da numeri o qualsiasi altro dato.
 
 \subsubsection{Cos'è MIPS}
-Come già detto, nonostante non sia diffusissima, inizieremo a studiare l'architettura MIPS in quanto propedeutica. È una cosiddetta architettura \emph{RISC}. Per quanto semplice e vicino al linguaggio macchina un linguaggio potesse essere, era chiaro fin dai tempi di Von Neumann che non dovevano mancare le operazioni aritmetiche e logiche fondamentali; oltre a quelle, MIPS possiede inoltre alcuni comandi per il controllo di flusso e per l'accesso alla memoria.
+Come già detto, nonostante non sia diffusissima, inizieremo a studiare l'architettura MIPS in quanto propedeutica. È una cosiddetta architettura \acrshort{risc}. Per quanto semplice e vicino al linguaggio macchina un linguaggio potesse essere, era chiaro fin dai tempi di Von Neumann che non dovevano mancare le operazioni aritmetiche e logiche fondamentali; oltre a quelle, MIPS possiede inoltre alcuni comandi per il controllo di flusso e per l'accesso alla memoria.
 
 \section{Operazioni aritmetiche}
 Per dare una chiave di lettura al percorso che faremo su MIPS useremo alcuni principi di progettazione software e hardware che ogni informatico segue fin dagli albori, e naturalmente, introducendo le operazioni aritmetiche, inizieremo così:
@@ -44,7 +44,7 @@ Quest'istruzione, comune in C, Java, Python o altri linguaggi, in MIPS sarà scr
 add a, b, c
 \end{minted}
 
-Notiamo subito che l'operando "di destinazione" viene messo come primo elemento (in altre ISA non è sempre così, tuttavia).\\
+Notiamo subito che l'operando "di destinazione" viene messo come primo elemento (in altre \acrshort{isa} non è sempre così, tuttavia).\\
 Naturalmente, mentre nei linguaggi ad alto livello possiamo agevolmente scrivere espressioni matematiche complesse, in MIPS verranno tutte mappate in espressioni semplici, sicché una linea di codice come \mintinline{c}{f = (g + h) - (i + j)}, per quanto banale, può essere srotolata in diverse righe assembly:
 
 \begin{minted}[linenos]{asm}
@@ -62,7 +62,7 @@ Esistono però alcune eccezioni: ad esempio \mintinline{batch}{gcc}, l'assembler
 \subsection*{Cosa sono i registri}
 Fino ad ora abbiamo considerato gli operandi come fossero normali variabili, ma in realtà questi altro non sono che dei \emph{registri}, ossia delle particolari locazioni di memoria interne al processore che possono essere reperite molto rapidamente, in un solo colpo di clock.
 
-MIPS possiede 32 registri, ciascuno di 32 bit, per cui ogniqualvolta si debba eseguire delle operazioni è necessario caricare i dati dalla RAM con un'operazione di \emph{load}. Questo processo può apparire dispendioso ed è lecito domandarsi come mai non ci si possa dotare di più registri più capienti, e la risposta è espressa dal secondo principio di progettazione.
+MIPS possiede 32 registri, ciascuno di 32 bit, per cui ogniqualvolta si debba eseguire delle operazioni è necessario caricare i dati dalla \acrshort{ram} con un'operazione di \emph{load}. Questo processo può apparire dispendioso ed è lecito domandarsi come mai non ci si possa dotare di più registri più capienti, e la risposta è espressa dal secondo principio di progettazione.
 
 \vspace{8pt}
 \begin{tcolorbox}
@@ -86,9 +86,9 @@ sub $s0, $t0, $t1  # f = t0 - t1
 Come si evince, è sufficiente anteporre un \$ al nome del registro.
 
 \subsubsection{Movimenti}
-Naturalmente, i registri non sono minimamente sufficienti per contenere tutti i dati di un programma complesso (soprattutto perché alcuni vengono usati dal kernel e dal sistema operativo), ma le operazioni possono essere eseguite solo fra registri. Diventa quindi necessaria l'implementazione delle funzioni \emph{load} che, come anticipato, carica i dati dalla RAM a un registro, e \emph{store}, che passa il dato dal registro alla RAM.
+Naturalmente, i registri non sono minimamente sufficienti per contenere tutti i dati di un programma complesso (soprattutto perché alcuni vengono usati dal kernel e dal sistema operativo), ma le operazioni possono essere eseguite solo fra registri. Diventa quindi necessaria l'implementazione delle funzioni \emph{load} che, come anticipato, carica i dati dalla \acrshort{ram} a un registro, e \emph{store}, che passa il dato dal registro alla \acrshort{ram}.
 
-La memoria è solitamente organizzata in gruppi da 8 bit (ossia 1 byte) ciascuno associato ad  un indirizzo lineare progressivo, ma il prelievo e il salvataggio dei dati segue un cosiddetto \emph{vincolo di allineamento}: viene fissato un \emph{offset} (\emph{spiazzamento}) di 4 byte (quindi della stessa dimensione dei registri), dimodoché ogni informazione che passa abbia la medesima dimensione di un registro (anche il program counter viene incrementato di 4 byte ogni fetch) e sia possibile accedere solamente ad indirizzi multipli di 4 byte. In questo contesto, ogni informazione di 4 byte che viene spostata tra RAM e registri viene detta \emph{parola}.\\
+La memoria è solitamente organizzata in gruppi da 8 bit (ossia 1 byte) ciascuno associato ad  un indirizzo lineare progressivo, ma il prelievo e il salvataggio dei dati segue un cosiddetto \emph{vincolo di allineamento}: viene fissato un \emph{offset} (\emph{spiazzamento}) di 4 byte (quindi della stessa dimensione dei registri), dimodoché ogni informazione che passa abbia la medesima dimensione di un registro (anche il program counter viene incrementato di 4 byte ogni fetch) e sia possibile accedere solamente ad indirizzi multipli di 4 byte. In questo contesto, ogni informazione di 4 byte che viene spostata tra \acrshort{ram} e registri viene detta \emph{parola}.\\
 L'indirizzo di ogni parola viene quindi espresso con una \emph{base}, specifica per registro, e con lo \emph{spiazzamento} costante di cui abbiamo parlato prima.
 
 \paragraph{Load and store}
@@ -212,7 +212,7 @@ sll $t2, $s0, 4  # memorizza in t2 il contenuto del registro s0 shiftato a sinis
 \end{minted}
 
 Lo shift massimo che è possibile eseguire è di 32 bit (infatti, come precedentemente visto, vengono allocati 5 bit per il campo di \emph{shift amount}). Ciò non risulta un problema in quanto il vincolo di allineamento definito dall'implementazione MIPS che affronteremo è costituito da 32 bit.\\
-Eseguire uno shift a sinistra di \(k\) bit di un numero \(n\) positivo, consiste nel moltiplicare \(n\) per \(2^k\). Fanno eccezione solo alcuni casi in cui si lavora con numeri interi codificati in complemento a 2: in questo frangente, si potrebbe uscire dal \emph{range di rappresentazione} del CA2.
+Eseguire uno shift a sinistra di \(k\) bit di un numero \(n\) positivo, consiste nel moltiplicare \(n\) per \(2^k\). Fanno eccezione solo alcuni casi in cui si lavora con numeri interi codificati in complemento a 2: in questo frangente, si potrebbe uscire dal \emph{range di rappresentazione} del \acrshort{ca2}.
 
 \paragraph{Shift logico a destra}
 In maniera analoga, lo \emph{shift logico a destra} consiste nell'inserire degli zeri nella posizione più significativa, traslando tutto a destra. Come per lo shift logico a sinistra, anche qui è possibile effettuare uno shift di al massimo 32 bit.
@@ -221,16 +221,16 @@ In maniera analoga, lo \emph{shift logico a destra} consiste nell'inserire degli
 srl $t2, $s0, 1  # memorizza in t2 il contenuto del registro s0 shiftato logicamente a destra di 1
 \end{minted}
 
-Applicare uno shift logico a destra di \(k\) bit ad un numero \(n\) positivo è equivalente a dividere (divisione intera) \(n\) per \(2^k\). Lo shift logico a destra non è utilizzabile in nessun caso con un numero negativo codificato in CA2 (proprio per questo è stato introdotto lo shift aritmetico a destra).
+Applicare uno shift logico a destra di \(k\) bit ad un numero \(n\) positivo è equivalente a dividere (divisione intera) \(n\) per \(2^k\). Lo shift logico a destra non è utilizzabile in nessun caso con un numero negativo codificato in \acrshort{ca2} (proprio per questo è stato introdotto lo shift aritmetico a destra).
 
 \paragraph{Shift aritmetico a destra}
-Dunque, per trovare una soluzione all'implementazione della divisione intera anche per i numeri negativi codificati in CA2, è stato introdotto lo \emph{shift aritmetico a destra}.
+Dunque, per trovare una soluzione all'implementazione della divisione intera anche per i numeri negativi codificati in \acrshort{ca2}, è stato introdotto lo \emph{shift aritmetico a destra}.
 
 \begin{minted}[linenos, breaklines]{asm}
 sra $t2, $s0, 1  # memorizza in t2 il contenuto del registro s0 shiftato aritmeticamente a destra di 1
 \end{minted}
 
-Piuttosto che inserire 0 come bit più significativo, come avviene nello shift logico, lo shift aritmetico a destra inserisce bit uguali al bit di segno. Dunque risolve i problemi con CA2.\\
+Piuttosto che inserire 0 come bit più significativo, come avviene nello shift logico, lo shift aritmetico a destra inserisce bit uguali al bit di segno. Dunque risolve i problemi con \acrshort{ca2}.\\
 Si noti come non abbia senso parlare di shift aritmetico a sinistra, in quanto o il risultato è rappresentabile (attraverso lo shift logico) o non lo è (a causa di un overflow).
 
 \subsection{Operazioni bitwise}
@@ -300,7 +300,7 @@ xor $t0, $t1, $t2  # $t0 = $t1 xor $t2
 Curiosità: se si esegue lo \emph{XOR} di un numero con se stesso, il risultato è pari a \(0\) per ciascun bit.
 
 \section{Salti}
-Oltre alle istruzioni aritmetico-logiche e di lettura e scrittura in memoria, il linguaggio MIPS offre anche alcune istruzioni per effettuare dei "salti" all'interno del codice. In particolare, si dicono \emph{istruzioni di salto} quei comandi che possono modificare il valore del registro PC.\\
+Oltre alle istruzioni aritmetico-logiche e di lettura e scrittura in memoria, il linguaggio MIPS offre anche alcune istruzioni per effettuare dei "salti" all'interno del codice. In particolare, si dicono \emph{istruzioni di salto} quei comandi che possono modificare il valore del registro \acrfull{pc}.\\
 Esistono sostanzialmente due differenti tipi di salto:
 \begin{itemize}
 	\item \emph{jump}: salto non condizionato.
@@ -446,7 +446,7 @@ L'idea fondante del protocollo implementato da MIPS è di utilizzare ogniqualvol
 	\caption{Convenzioni sui registri in MIPS}
 \end{table}
 
-L'assembly MIPS mette a disposizione dell'utente l'utilissima istruzione \emph{jump and link} (\mintinline{asm}{jal}) che effettua un salto all'indirizzo di inizio della procedura specificata e contemporaneamente memorizza in \register{\$ra} l'indirizzo di ritorno della procedura, dove si ritornerà una volta terminata la funzione. Questo significa che quando si chiama la \mintinline{asm}{jal} si salva automaticamente in \register{\$ra} il PC incrementato di 4 (l'istruzione successiva).\\
+L'assembly MIPS mette a disposizione dell'utente l'utilissima istruzione \emph{jump and link} (\mintinline{asm}{jal}) che effettua un salto all'indirizzo di inizio della procedura specificata e contemporaneamente memorizza in \register{\$ra} l'indirizzo di ritorno della procedura, dove si ritornerà una volta terminata la funzione. Questo significa che quando si chiama la \mintinline{asm}{jal} si salva automaticamente in \register{\$ra} il \acrshort{pc} incrementato di 4 (l'istruzione successiva).\\
 Alla fine della procedura sarà così sufficiente compiere il salto \mintinline{asm}{jr $ra} per riprendere lo svolgimento del programma principale da dove lo si era interrotto.
 
 \subsection{Gestione della memoria in MIPS}
@@ -665,7 +665,7 @@ Alcuni compilatori sono in grado di ottimizzare automaticamente il programma in 
 
 \section{Le stringhe in MIPS}\label{sec:mipstring}
 Nel linguaggio C le stringhe erano degli array di caratteri che terminava in \mintinline{c}{'\0'} (\mintinline{c}{NULL} character)
-e, secondo la codifica ASCII, ogni carattere veniva codificato con un byte. Presentiamo qui una funzione che copia una stringa:
+e, secondo la codifica \acrshort{ascii}, ogni carattere veniva codificato con un byte. Presentiamo qui una funzione che copia una stringa:
 \begin{minted}[linenos, tabsize=4]{c}
 void copia_stringa(char *d , const char *s){
 	int i = 0;

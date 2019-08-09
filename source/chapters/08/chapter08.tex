@@ -15,11 +15,11 @@
  \end{fquote}
 
 \section{Introduzione}
-\emph{ARM} nasce negli anni Ottanta come architettura \emph{RISC} pragmatica, ovvero tenta di migliorare la strategia \emph{RISC} implementando delle istruzioni e delle tecniche appartenenti ad \emph{Intel}: è proprio questa ricerca di un compromesso tra prestazioni e complessità il suo punto di forza.
+\emph{ARM} nasce negli anni Ottanta come architettura \acrshort{risc} pragmatica, ovvero tenta di migliorare la strategia \acrshort{risc} implementando delle istruzioni e delle tecniche appartenenti ad \emph{Intel}: è proprio questa ricerca di un compromesso tra prestazioni e complessità il suo punto di forza.
 
 Un'altra caratteristica peculiare dell'\emph{ARM} è la presenza di una modalità \emph{low power}, che limita di molto il consumo di energia restringendo le istruzioni utilizzabili solo a quelle più semplici (e quindi meno costose in termini di risorse). È proprio per questa ragione che l'\emph{ARM} ha avuto un'enorme diffusione come architettura per i dispositivi \emph{mobile} e \emph{wearable} oltre che per i sistemi \emph{embedded}.
 
-Per amor di precisione ci teniamo a specificare che in realtà "architettura ARM" non è una dicitura univoca in quanto esistono più \emph{CPU} \emph{ARM} con \emph{ISA} differenti (per non parlare del numero spropositato di \emph{ABI} anche molto diverse tra loro che si possono trovare per questa architettura).
+Per amor di precisione ci teniamo a specificare che in realtà "architettura ARM" non è una dicitura univoca in quanto esistono più \acrshort{cpu} \emph{ARM} con \acrshort{isa} differenti (per non parlare del numero spropositato di \acrshort{abi}} anche molto diverse tra loro che si possono trovare per questa architettura).
 
 \section{Registri e relativo utilizzo}
 In ARM ci sono 16 registri a 32 bit e sono nominati da \register{r0} a \register{r15} (da notare che in ARM per indicare un registro non serve un prefisso). Alcuni di essi hanno generalmente funzioni specifiche, ovvero:
@@ -29,17 +29,17 @@ In ARM ci sono 16 registri a 32 bit e sono nominati da \register{r0} a \register
 	\item \register{r14}: \emph{link register}, che contiene l'indirizzo di ritorno delle subroutine (come \register{\$ra} in MIPS);
 	\item \register{r15}: \emph{program counter} (nei bit più significativi contiene anche dei flags).
 \end{itemize}
-Nonostante sia molto diffuso, questo standard non è assoluto: di fatto esistono \emph{ABI} che implementano l'utilizzo dei registri in modo diverso.
+Nonostante sia molto diffuso, questo standard non è assoluto: di fatto esistono \acrshort{abi}} che implementano l'utilizzo dei registri in modo diverso.
 
 \section{Le convenzioni di chiamata}
-Le convenzioni di chiamata, che vengono specificate appositamente dall'\emph{ABI}, servono per "mettere d'accordo" diversi compilatori/librerie e altre parti del sistema operativo: sono esse che determinano se passare i parametri solo tramite registri o anche via stack, quali registri preservare, quali registri utilizzare liberamente e come gestire l'indirizzo di ritorno. A seguire ecco cosa stabilisce l'ABI più diffusa del mondo ARM:
+Le convenzioni di chiamata, che vengono specificate appositamente dall'\acrshort{abi}}, servono per "mettere d'accordo" diversi compilatori/librerie e altre parti del sistema operativo: sono esse che determinano se passare i parametri solo tramite registri o anche via stack, quali registri preservare, quali registri utilizzare liberamente e come gestire l'indirizzo di ritorno. A seguire ecco cosa stabilisce l'\acrshort{abi} più diffusa del mondo ARM:
 \begin{itemize}
 	\item \register{r0}, \register{r1}, \register{r2}, \register{r3}, \register{r12} sono registri temporanei;
 	\item da \register{r4} a \register{r11} sono da preservare, con l'eccezione di \register{r9} che in alcune implementazioni non viene preservato.
 \end{itemize}
 
 \section{Le istruzioni ARM}
-Le istruzioni dell'Assembly ARM sono molto simili a quelle del buon vecchio MIPS, tuttavia sono meno regolari in quanto alcune di esse presentano solamente due argomenti; è inoltre notevole il fatto che, nonostante venga classificato come architettura RISC, ARM presenti una lista di istruzioni piuttosto corposa.
+Le istruzioni dell'Assembly ARM sono molto simili a quelle del buon vecchio MIPS, tuttavia sono meno regolari in quanto alcune di esse presentano solamente due argomenti; è inoltre notevole il fatto che, nonostante venga classificato come architettura \acrshort{risc}, ARM presenti una lista di istruzioni piuttosto corposa.
 
 Come nel MIPS, le istruzioni a tre argomenti prevedono il primo come destinazione e i successivi come operandi; inoltre l'operando di sinistra dev'essere un registro mentre quello di destra può essere sia un registro che un valore immediato. Da notare che i dati in memoria non possono essere usati direttamente come operandi: risolveremo questo problema in seguito, introducendo delle operazioni specifiche \emph{load/store register}.
 
@@ -71,7 +71,7 @@ Vediamo ora una lista delle operazioni più comuni:
 	\item \opcode{and}/\opcode{orr}/\opcode{eor}/\opcode{bic}: operazioni booleane bit a bit. Si noti che \mintinline{arm}{bic r0, r1, r} calcola \(\register{r0} = (\register{r1} \textrm{ and } (\textrm{not } \register{r}))\);
 	\item \opcode{mul}/\opcode{mla} e simili sono per varie forme di moltiplicazione\footnote{Non esistono comandi per la divisione in assembly ARM.};
 	\item \opcode{b}/\opcode{bl} rispettivamente \emph{branch} e \emph{branch and link} (da notare che è possibile aggiungere qualsiasi suffisso condizionale);
-	\item \opcode{bx} è implementato solo in alcune CPU, corrisponde a \mintinline{arm}{move r15, r};
+	\item \opcode{bx} è implementato solo in alcune \acrshort{cpu}, corrisponde a \mintinline{arm}{move r15, r};
 	\item \opcode{cmp} setta i flags comparando due operandi, ma senza risultato; da usarsi prima di salti condizionali. Funzionano similmente anche \opcode{tst} (attraverso un and) e \opcode{teq} (attraverso uno xor);
 	\item \opcode{ldr}/\opcode{str} sono rispettivamente \emph{load register} e \emph{store register}. Rispecchiano rispettivamente \texttt{lw} e \texttt{sw} dell'assembly MIPS;
 	\item \opcode{mov}/\opcode{mvn}:  equivalente agli omonimi move e move not in MIPS; move not sposta il complemento a 1 del registro sorgente (utilizzata per implementare il not).

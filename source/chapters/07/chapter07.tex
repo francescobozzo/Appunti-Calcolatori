@@ -10,15 +10,15 @@
 % arara: latexmk: { clean: partial }
 %! arara: clean: { extensions: [sta] }
 \begin{document}
-\chapter{L'architettura Intel x86}\begin{fquote}[Anonymous]"Do you program in Assembly?", she asked. "\mintinline{gas}{NOP}", he said.
+\chapter{L'architettura Intel x86}\begin{fquote}[Anonymous]"Do you prog     in Assembly?", she asked. "\mintinline{gas}{NOP}", he said.
  \end{fquote}
 
 \section{Introduzione}
-Le CPU \emph{Intel} della famiglia \emph{x86} si basano su un'architettura di tipo \emph{CISC}. Esse vengono utilizzate principalmente su laptop, desktop e server, a partire dagli anni Settanta. Un'importante complicazione dell'architettura \emph{Intel} è dettata dal mantenimento della retrocompatibilità: le moderne CPU a 64 bit di ultima generazione sono infatti in grado di eseguire il vecchio codice a 8 bit. A differenza del \emph{MIPS} infatti le istruzioni \emph{Intel} non sono codificate in una singola parola, bensì possono occupare da 8 a 64 bit.
+Le \acrshort{cpu} \emph{Intel} della famiglia \emph{x86} si basano su un'architettura di tipo \acrshort{cisc}. Esse vengono utilizzate principalmente su laptop, desktop e server, a partire dagli anni Settanta. Un'importante complicazione dell'architettura \emph{Intel} è dettata dal mantenimento della retrocompatibilità: le moderne \acrshort{cpu} a 64 bit di ultima generazione sono infatti in grado di eseguire il vecchio codice a 8 bit. A differenza del \emph{MIPS} infatti le istruzioni \emph{Intel} non sono codificate in una singola parola, bensì possono occupare da 8 a 64 bit.
 
-Come già ampiamente trattato nei precendenti capitoli, un'architettura di tipo \emph{CISC} è in grado di offrire un notevole set di istruzioni e un potente meccanismo di indirizzamento; ciò implica che load e store non sono più le uniche operazioni che permettono di accedere alla memoria.
+Come già ampiamente trattato nei precendenti capitoli, un'architettura di tipo \acrshort{cisc} è in grado di offrire un notevole set di istruzioni e un potente meccanismo di indirizzamento; ciò implica che load e store non sono più le uniche operazioni che permettono di accedere alla memoria.
 
-Per semplicità, in questa dispensa si tratterà l'\emph{ISA} più moderna, chiamata \emph{x86-64}, nota anche come \emph{amd64}. Essa è caratterizzata da parole a 64 bit e da 16 registri. Fra le varie \emph{ABI} verrà utilizzata quella di Linux, che differisce per qualche aspetto da quella dei sistemi Microsoft e Apple.
+Per semplicità, in questa dispensa si tratterà l'\acrshort{isa} più moderna, chiamata \emph{x86-64}, nota anche come \emph{amd64}. Essa è caratterizzata da parole a 64 bit e da 16 registri. Fra le varie \acrshort{abi} verrà utilizzata quella di Linux, che differisce per qualche aspetto da quella dei sistemi Microsoft e Apple.
 
 \section{La gestione dei registri}
 Per indicare i registri si antepone un \% al nome del registro, mentre per indicare le costanti si antepone un \$ al valore della costante stessa.
@@ -48,7 +48,7 @@ Oltre ai registri general purpose, si aggiungono i registri specializzati:
 Si noti che \register{\%rflags} estende \register{\%eflags}, il quale a sua volta estende \register{\%flags}. Alcuni flag contenuti nel registro di flag sono: \register{CF}, \register{ZF}, \register{SF}, \register{OF}, \register{IF}.
 
 \section{Le convenzioni di chiamata}
-Come già ripetuto in molteplici occasioni, le convenzioni di chiamata vengono specificate nell'\emph{ABI}. In particolare, noi utilizzeremo quella di Linux. Principalmente andremo a definire i meccanismi per il passaggio di argomenti, per la restituzione di valori e quali registri da preservare:
+Come già ripetuto in molteplici occasioni, le convenzioni di chiamata vengono specificate nell'\acrshort{abi}. In particolare, noi utilizzeremo quella di Linux. Principalmente andremo a definire i meccanismi per il passaggio di argomenti, per la restituzione di valori e quali registri da preservare:
 \begin{itemize}
 	\item il passaggio di argomenti si compone di:
 	\begin{itemize}
@@ -127,7 +127,7 @@ A seguire un elenco delle istruzioni aritmetico-logiche più frequenti:
 	\item eventuali istruzioni condizionali.
 \end{itemize}
 
-\subsection{Load Effective Address (LEA)}
+\subsection{\acrfull{lea}}
 Nonostante questa istruzione sia stata implementata per calcolare indirizzi (con indirizzamento indiretto) senza effettuare accessi, viene utilizzata principalmente per un secondo scopo. Essa infatti risulta molto utile per effettuare una somma di due registri, salvandone il risultato in un terzo (anche con eventuali shift). Ricordiamo che, mentre in MIPS lavorare con tre registri è la normalità, in Intel per ciascuna istruzione possono esserne specificati al massimo due.
 
 Ad esempio:
