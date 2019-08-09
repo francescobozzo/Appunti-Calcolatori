@@ -19,7 +19,7 @@
 
 Un'altra caratteristica peculiare dell'\emph{ARM} è la presenza di una modalità \emph{low power}, che limita di molto il consumo di energia restringendo le istruzioni utilizzabili solo a quelle più semplici (e quindi meno costose in termini di risorse). È proprio per questa ragione che l'\emph{ARM} ha avuto un'enorme diffusione come architettura per i dispositivi \emph{mobile} e \emph{wearable} oltre che per i sistemi \emph{embedded}.
 
-Per amor di precisione ci teniamo a specificare che in realtà "architettura ARM" non è una dicitura univoca in quanto esistono più \acrshort{cpu} \emph{ARM} con \acrshort{isa} differenti (per non parlare del numero spropositato di \acrshort{abi}} anche molto diverse tra loro che si possono trovare per questa architettura).
+Per amor di precisione ci teniamo a specificare che in realtà "architettura ARM" non è una dicitura univoca in quanto esistono più \acrshort{cpu} \emph{ARM} con \acrshort{isa} differenti (per non parlare del numero spropositato di \acrshort{abi} anche molto diverse tra loro che si possono trovare per questa architettura).
 
 \section{Registri e relativo utilizzo}
 In ARM ci sono 16 registri a 32 bit e sono nominati da \register{r0} a \register{r15} (da notare che in ARM per indicare un registro non serve un prefisso). Alcuni di essi hanno generalmente funzioni specifiche, ovvero:
@@ -29,10 +29,10 @@ In ARM ci sono 16 registri a 32 bit e sono nominati da \register{r0} a \register
 	\item \register{r14}: \emph{link register}, che contiene l'indirizzo di ritorno delle subroutine (come \register{\$ra} in MIPS);
 	\item \register{r15}: \emph{program counter} (nei bit più significativi contiene anche dei flags).
 \end{itemize}
-Nonostante sia molto diffuso, questo standard non è assoluto: di fatto esistono \acrshort{abi}} che implementano l'utilizzo dei registri in modo diverso.
+Nonostante sia molto diffuso, questo standard non è assoluto: di fatto esistono \acrshort{abi} che implementano l'utilizzo dei registri in modo diverso.
 
 \section{Le convenzioni di chiamata}
-Le convenzioni di chiamata, che vengono specificate appositamente dall'\acrshort{abi}}, servono per "mettere d'accordo" diversi compilatori/librerie e altre parti del sistema operativo: sono esse che determinano se passare i parametri solo tramite registri o anche via stack, quali registri preservare, quali registri utilizzare liberamente e come gestire l'indirizzo di ritorno. A seguire ecco cosa stabilisce l'\acrshort{abi} più diffusa del mondo ARM:
+Le convenzioni di chiamata, che vengono specificate appositamente dall'\acrshort{abi}, servono per "mettere d'accordo" diversi compilatori/librerie e altre parti del sistema operativo: sono esse che determinano se passare i parametri solo tramite registri o anche via stack, quali registri preservare, quali registri utilizzare liberamente e come gestire l'indirizzo di ritorno. A seguire ecco cosa stabilisce l'\acrshort{abi} più diffusa del mondo ARM:
 \begin{itemize}
 	\item \register{r0}, \register{r1}, \register{r2}, \register{r3}, \register{r12} sono registri temporanei;
 	\item da \register{r4} a \register{r11} sono da preservare, con l'eccezione di \register{r9} che in alcune implementazioni non viene preservato.

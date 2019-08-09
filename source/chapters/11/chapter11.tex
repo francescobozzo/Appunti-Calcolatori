@@ -37,7 +37,7 @@ Il datapath si compone essenzialmente di 5 fasi.
   \item I registri interessati all'esecuzione vengono caricati nel \emph{banco dei registri}; se l'istruzione è di tipo R, gli indirizzi dei registri sono contenuti nel corpo dell'istruzione;
   \item A questo punto la \acrshort{alu} esegue i calcoli opportuni, ottenendo il valore (o l'indirizzo) desiderato;
   \item I risultati \acrshort{alu} vengono utilizzati per salvare (o prelevare) in memoria dati un dato, o per memorizzare un registro;
-  \item Si incrementa il \acrshort{[c]} per mezzo di una \acrshort{alu} dedicata (di fatto, un addizionatore), e una successiva \acrshort{alu} calcola l’indirizzo verso cui ci si deve spostare in caso di salti incondizionati.
+  \item Si incrementa il \acrshort{pc} per mezzo di una \acrshort{alu} dedicata (di fatto, un addizionatore), e una successiva \acrshort{alu} calcola l’indirizzo verso cui ci si deve spostare in caso di salti incondizionati.
 \end{enumerate}
 
 \subsection{Il ruolo del multiplexer}
