@@ -11,7 +11,7 @@
 \begin{document}
 \chapter{Le reti logiche}
 \section{Introduzione}
-Come ben sappiamo, a differenza di \emph{ENIAC}, i computer moderni si compongono di un'enorme quantità di circuiti elettronici. Trattandosi di elettronica digitale, a livello hardware è possibile lavorare con due livelli fondamentali:
+Come ben sappiamo, a differenza di \acrshort{eniac}, i computer moderni si compongono di un'enorme quantità di circuiti elettronici. Trattandosi di elettronica digitale, a livello hardware è possibile lavorare con due livelli fondamentali:
 \begin{itemize}
 	\item \emph{alto} (asserito); viene solitamente associato alla tensione di alimentazione \emph{Vdd}. Si indica con \(1\).
 	\item \emph{basso} (negato); viene solitamente associato alla massa (tensione vicina a 0). Si indica con \(0\).
@@ -129,10 +129,10 @@ Molto spesso, per operare con dati complessi, si compongono degli array di eleme
 	\caption{Multiplexer a 32 bit}
 \end{figure}
 
-\subsection*{Programmable Logic Array (PLA)}
+\subsection*{\acrfull{pla}}
 \label{subsec:pla}
-Il \emph{programmable logic array} si compone di due strutture: una barriera di AND e una barriera di OR. La dimensione totale del \emph{PLA} è data dalla somma del piano AND (numero di mintermini) e del piano OR (numero di uscite).\\
-Inoltre, il PLA implementa porte logiche solamente per le configurazioni che producono 1 in uscita. In aggiunta, se un mintermine è condiviso tra varie uscite, lo si può riutilizzare.
+Il \acrfull{pla} si compone di due strutture: una barriera di AND e una barriera di OR. La dimensione totale del \acrshort{pla} è data dalla somma del piano AND (numero di mintermini) e del piano OR (numero di uscite).\\
+Inoltre, il \acrshort{pla} implementa porte logiche solamente per le configurazioni che producono 1 in uscita. In aggiunta, se un mintermine è condiviso tra varie uscite, lo si può riutilizzare.
 Successivamente seguono due diverse implementazioni della rete logica descritta nel paragrafo~\ref{subsec:mintermini}.
 \begin{figure}[H]
 	\centering
@@ -142,7 +142,7 @@ Successivamente seguono due diverse implementazioni della rete logica descritta 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.5\textwidth,keepaspectratio]{es_pla.png}
-	\caption{Esempio di rete logica implementata attraverso PLA}
+	\caption{Esempio di rete logica implementata attraverso \acrshort{pla}}
 \end{figure}
 
 \section{Il concetto di costo}
