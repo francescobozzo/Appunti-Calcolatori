@@ -37,8 +37,8 @@ Il funzionamento di una \acrshort{cpu} segue il seguente schema:
 \begin{itemize}
 	\item \emph{fetch}: in questa fase viene letta l'istruzione da eseguire.
 	\begin{enumerate}[noitemsep,nolistsep]
-		\item l'indirizzo dell'istruzione da eseguire, contenuto nel \acrfull{pc}, viene copiato nell'Address Register (indirizzo di accesso al bus di sistema);
-		\item i dati dell'istruzione vengono quindi trasferiti dalla RAM al Data Register (che tiene conto dei dati da leggere o scrivere);
+		\item l'indirizzo dell'istruzione da eseguire, contenuto nel \acrfull{pc}, viene copiato nel \acrfull{mar} (indirizzo di accesso al bus di sistema);
+		\item i dati dell'istruzione vengono quindi trasferiti dalla \acrshort{ram} al \acrfull{mdr} (c he tiene conto dei dati da leggere o scrivere);
 		\item i dati vengono salvati in un registro invisibile al programmatore;
 		\item viene incrementato il \acrshort{pc}, facendolo puntare all'istruzione successiva;
 	\end{enumerate}

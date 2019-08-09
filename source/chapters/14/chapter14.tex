@@ -14,16 +14,16 @@
  \end{fquote}
 
 \section{La necessità di comunicare}
-Un calcolatore sarebbe praticamente inutile se non avesse la possibilità di interfacciarsi e comunicare con l'esterno, ed è proprio di questo che si occupano le periferiche di input/output (da qui in avanti I/O); questi dispositivi possono essere estremamente \emph{eterogenei} tra loro e si diversificano a seconda del compito che sono chiamati a svolgere\footnote{Si pensi che nella categoria di dispositivi I/O compaiono mouse, penne grafiche, desktop, microfoni e tanti altri ancora.}. Tuttavia devono avere una caratteristica comune: devono essere \emph{espandibili}, ovvero deve essere prevista la possibilità di aggiungere o rimuovere i dispositivi di I/O.
+Un calcolatore sarebbe praticamente inutile se non avesse la possibilità di interfacciarsi e comunicare con l'esterno, ed è proprio di questo che si occupano le periferiche di input/output (da qui in avanti \acrshort{io}); questi dispositivi possono essere estremamente \emph{eterogenei} tra loro e si diversificano a seconda del compito che sono chiamati a svolgere\footnote{Si pensi che nella categoria di dispositivi \acrshort{io} compaiono mouse, penne grafiche, desktop, microfoni e tanti altri ancora.}. Tuttavia devono avere una caratteristica comune: devono essere \emph{espandibili}, ovvero deve essere prevista la possibilità di aggiungere o rimuovere i dispositivi di \acrshort{io}.
 
 \subsection*{Tre termini tecnici}
 Chiariamo ora questi termini tecnici definendone precisamente il significato poiché ci torneranno utili nel resto del capitolo.
 \begin{itemize}
-	\item \emph{Transizione di I/O}: invio indirizzo e spedizione o ricezione dei dati.
+	\item \emph{Transizione di \acrshort{io}}: invio indirizzo e spedizione o ricezione dei dati.
 	\item \emph{Input}: trasferimento di dati da una periferica verso la memoria dove il processore può leggerla.
 	\item \emph{Output}: trasferimento di dati dalla memoria ad un dispositivo.
 \end{itemize}
-Data l'enorme varietà di compiti che assolvono le periferiche di I/O a  seconda del tipo di applicazione, posso essere interessato a diverse prestazioni:
+Data l'enorme varietà di compiti che assolvono le periferiche di \acrshort{io} a  seconda del tipo di applicazione, posso essere interessato a diverse prestazioni:
 \begin{itemize}
 	\item in alcuni casi la cosa più importante è il tempo di accesso/risposta (latenza), ad esempio quando si tratta di tastiere o mouse;
 	\item in altri casi la caratteristica di spicco deve essere il throughput, vedi i sistemi di streaming;
@@ -44,17 +44,17 @@ Nonostante le differenze di cui si è parlato nella sezione precedente, tutte le
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{schema-periferiche}
 	\caption{Schema del collegamento delle periferiche}
 \end{figure}
-Si noti quindi come ogni periferica non è collegata direttamente con il processore, la loro comunicazione è intermediata dai controllori I/O e dal bus, che descriveremo in seguito.
-Ciò implica che i dispositivi di I/O "non esistono" per il processore ma vengano rappresentati "virtualmente" come normali locazioni di memoria.
+Si noti quindi come ogni periferica non è collegata direttamente con il processore, la loro comunicazione è intermediata dai controllori \acrshort{io} e dal bus, che descriveremo in seguito.
+Ciò implica che i dispositivi di \acrshort{io} "non esistono" per il processore ma vengano rappresentati "virtualmente" come normali locazioni di memoria.
 
 Tutte le connessioni avvengono attraverso strutture di comunicazione dette \emph{bus}. Ne esistono principalmente due tipologie:
 \begin{itemize}
 	\item \emph{bus processore/memoria}: sono specializzati, corti e molto veloci;
-	\item \emph{bus I/O}: sono utilizzati per la comunicazione con periferiche generiche, possono essere relativamente lunghi e comunque non si interfacciano direttamente con la memoria, ma richiedono come intermediario un bus processore/memoria o un bus di sistema\footnote{Il bus di sistema è un "bus di alto livello", ovvero un bus dedicato a  mettere in comunicazione tutti gli altri bus del sistema appunto.}.
+	\item \emph{bus \acrshort{io}}: sono utilizzati per la comunicazione con periferiche generiche, possono essere relativamente lunghi e comunque non si interfacciano direttamente con la memoria, ma richiedono come intermediario un bus processore/memoria o un bus di sistema\footnote{Il bus di sistema è un "bus di alto livello", ovvero un bus dedicato a  mettere in comunicazione tutti gli altri bus del sistema appunto.}.
 \end{itemize}
 Nelle prime semplici architetture avevamo un unico grosso bus parallelo (non seriale) che collegava tutte le componenti, ma per problemi di clock e frequenze ora si usano architetture di comunicazione più complesse fatte di più bus paralleli condivisi e di bus seriali punto/punto\footnote{I bus seriali punto a punto sono bus in cui ogni periferica è collegata direttamente al processore tramite un bus dedicato.}.
 
-Nel caso in cui il processore comunichi con delle periferiche esterne, come anticipato in precedenza, esso in realtà comunica attraverso i controllori I/O, che traducono sia i comandi che i dati da e verso il processore stesso.
+Nel caso in cui il processore comunichi con delle periferiche esterne, come anticipato in precedenza, esso in realtà comunica attraverso i controllori \acrshort{io}, che traducono sia i comandi che i dati da e verso il processore stesso.
 Saranno ora discusse due implementazioni diverse del bus che convivono nei nostri calcolatori: \emph{sincrona} ed \emph{asincrona}.
 
 \subsection{Bus sincrono}
@@ -89,7 +89,7 @@ Si nota quindi che esistono due linee di controllo dedicate (la master ready e l
 
 Riassumiamo ora i punti di forza del bus asincrono: è un meccanismo che permette di avere un sistema robusto relativamente agli eventuali ritardi di una periferica rispetto ad un'altra o al processore e che consente di comunicare con periferiche di tipo diverso.
 
-Viceversa, osservando i fattori negativi, si deve indicare che risulta più lento del bus sincrono data la necessità di inviare e ricevere diversi segnali di controllo ed inoltre, aumentando la complessità del trasferimento I/O, aumenta anche la complessità della circuiteria che sta alla base.
+Viceversa, osservando i fattori negativi, si deve indicare che risulta più lento del bus sincrono data la necessità di inviare e ricevere diversi segnali di controllo ed inoltre, aumentando la complessità del trasferimento \acrshort{io}, aumenta anche la complessità della circuiteria che sta alla base.
 
 In conclusione, dando uno sguardo alla realtà, si scopre che spesso si usano tecnologie ibride di bus, in cui c'è un segnale di clock ma che rimangono prevalentemente asincrone.
 
@@ -98,7 +98,7 @@ In conclusione, dando uno sguardo alla realtà, si scopre che spesso si usano te
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{tecnologie-asincrone}
 	\caption{Principali tecnologie asincrone}
 \end{figure}
-Qui è riportato un esempio di implementazione reale di questo schema. L'esempio riguarda l'ormai vetusta architettura dell'x86. Notiamo che esiste una componente dedicata alla comunicazione con tutte le periferiche, detto hub dell'I/O; questo hub comunica poi in seguito con l'hub della memoria che si occupa di gestire le comunicazioni tra processore e memoria centrale, oltre che interpretare le comunicazioni che arrivano appunto dall'hub dell'I/O.
+Qui è riportato un esempio di implementazione reale di questo schema. L'esempio riguarda l'ormai vetusta architettura dell'x86. Notiamo che esiste una componente dedicata alla comunicazione con tutte le periferiche, detto hub dell'\acrshort{io}; questo hub comunica poi in seguito con l'hub della memoria che si occupa di gestire le comunicazioni tra processore e memoria centrale, oltre che interpretare le comunicazioni che arrivano appunto dall'hub dell'\acrshort{io}.
 Nei calcolatori moderni tutte queste componenti tendono ad essere inglobate nel processore stesso.
 \begin{figure}[H]
 	\centering
@@ -107,11 +107,11 @@ Nei calcolatori moderni tutte queste componenti tendono ad essere inglobate nel 
 \end{figure}
 
 \section{Gestione delle periferiche da parte del SO}
-Ora che abbiamo chiarito qual è il tramite fisico attraverso cui i sistemi operativi comunicano con le periferiche, rimangono ancora aperti i seguenti interrogativi: come trasformare una richiesta di I/O in un comando per la periferica? E come trasferire i dati? Di questi problemi si fa carico il sistema operativo (da qui in avanti SO), dato che è la parte di software dedicata alla gestione diretta del processore e delle sue risorse, quindi anche dei sistemi di I/O. Il SO deve fornire queste funzionalità per la gestione dell'I/O:
+Ora che abbiamo chiarito qual è il tramite fisico attraverso cui i sistemi operativi comunicano con le periferiche, rimangono ancora aperti i seguenti interrogativi: come trasformare una richiesta di \acrshort{io} in un comando per la periferica? E come trasferire i dati? Di questi problemi si fa carico il sistema operativo (da qui in avanti SO), dato che è la parte di software dedicata alla gestione diretta del processore e delle sue risorse, quindi anche dei sistemi di \acrshort{io}. Il SO deve fornire queste funzionalità per la gestione dell'\acrshort{io}:
 \begin{itemize}
-	\item garantire che un dato utente abbia accesso ai dispositivi di I/O cui ha i permessi per accedere;
+	\item garantire che un dato utente abbia accesso ai dispositivi di \acrshort{io} cui ha i permessi per accedere;
 	\item fornire dei comandi di alto livello per gestire le operazioni di basso livello, trasferimento dati nello specifico;
-	\item gestire le interruzioni generate dai dispositivi di I/O (in maniera simile a quanto avviene con le eccezioni generate nei programmi);
+	\item gestire le interruzioni generate dai dispositivi di \acrshort{io} (in maniera simile a quanto avviene con le eccezioni generate nei programmi);
 	\item ripartire l'accesso a ciascun dispositivo in maniera equa tra i vari programmi che lo richiedono.
 \end{itemize}
 È chiaro quindi, guardando il terzo punto, che i trasferimenti dati hanno un impatto sulle funzionalità del SO e di conseguenza vengono eseguite in una particolare modalità del processore, la modalità kernel.
@@ -121,11 +121,11 @@ Questa modalità è utilizzata per garantire la sicurezza delle operazioni assic
 \subsection{Come impartire comandi ai dispositivi}
 Il sistema operativo impartisce comandi alle varie periferiche fornendo sulle relative linee di bus alcune "parole" di controllo attraverso due metodi possibili:
 \begin{itemize}
-	\item scrivendo/leggendo in particolari locazioni di memoria (memory mapped I/O);
-	\item tramite alcune istruzioni speciali dedicate all'I/O.
+	\item scrivendo/leggendo in particolari locazioni di memoria (memory mapped \acrshort{io});
+	\item tramite alcune istruzioni speciali dedicate all'\acrshort{io}.
 \end{itemize}
 Per chiarire questo meccanismo conviene procedere tramite un esempio:
-memorizzando una particolare parola in una locazione di memoria associata al dispositivo il sistema di memoria ignora la scrittura, mentre il controllore di I/O intercetta l'indirizzo \emph{particolare} e trasmette il dato al dispositivo sotto forma di comando.
+memorizzando una particolare parola in una locazione di memoria associata al dispositivo il sistema di memoria ignora la scrittura, mentre il controllore di \acrshort{io} intercetta l'indirizzo \emph{particolare} e trasmette il dato al dispositivo sotto forma di comando.
 
 Queste particolari locazioni di memoria sono inaccessibili ai programmi utente, solo il sistema operativo può operarvi: esso viene invocato tramite una chiamata di sistema, la quale fa commutare il processore in modalità kernel e rende quindi possibile la scrittura in tali locazioni. Inoltre la periferica stessa può usare queste locazioni per trasmettere dati o presegnalare il suo stato; ad esempio può richiedere la stampa di un carattere a terminale e, finita la stampa, un particolare bit di un registro di stato mappato in memoria verrà aggiornato.
 
@@ -189,9 +189,9 @@ Questo implica che il numero di cicli di clock al secondo dedicati al polling so
 In percentuale quindi il peso di questo meccanismo è di \(\frac{211763200}{500\cdot10^6}\approx 42\%\) il che è inaccettabile, anche perché, come nel primo esempio, questo prezzo in risorse viene pagato sempre.
 
 \subsection{Considerazioni finali sul polling}
-L'attesa attiva è un meccanismo che fa perdere tempo al processore dedicando cicli macchina a letture inutili, di conseguenza il polling può essere usato quando le operazioni di I/O avvengono con velocità di trasferimento predeterminata (ad esempio applicazioni di controllo) e comunque il processore ha poco altro da fare.
+L'attesa attiva è un meccanismo che fa perdere tempo al processore dedicando cicli macchina a letture inutili, di conseguenza il polling può essere usato quando le operazioni di \acrshort{io} avvengono con velocità di trasferimento predeterminata (ad esempio applicazioni di controllo) e comunque il processore ha poco altro da fare.
 
-Sicuramente se i dati vengono trasferiti con elevati \emph{bitrate}\footnote{Indica la quantità di dati che possono essere trasferiti su un canale di comunicazione in un dato intervallo di tempo.} il ciclo di attesa attiva dura poco, in altri casi lo spreco derivante dal polling è inaccettabile e per questo motivo è stato inventato il sistema di I/O a interruzione di programma.
+Sicuramente se i dati vengono trasferiti con elevati \emph{bitrate}\footnote{Indica la quantità di dati che possono essere trasferiti su un canale di comunicazione in un dato intervallo di tempo.} il ciclo di attesa attiva dura poco, in altri casi lo spreco derivante dal polling è inaccettabile e per questo motivo è stato inventato il sistema di \acrshort{io} a interruzione di programma.
 
 Osserviamo ora uno schema esemplificativo tratto dal simulatore SPIM per l'assembly MIPS.
 \begin{figure}[H]
@@ -201,28 +201,28 @@ Osserviamo ora uno schema esemplificativo tratto dal simulatore SPIM per l'assem
 \end{figure}
 La parte più in alto in questa rappresentazione della memoria è quella che contiene il kernel code e le parole riservate.
 
-Il kernel code è la traduzione in linguaggio macchina del SO (che ricordiamo essere un programma esso stesso); all'interno di questa sezione si trovano inoltre le parole di memoria riservate all'I/O. È quindi ora chiaro cosa si intendeva quando si è detto che il processore vede solo virtualmente le periferiche, che fisicamente dal suo punto di vista altro non sono che dati.
+Il kernel code è la traduzione in linguaggio macchina del SO (che ricordiamo essere un programma esso stesso); all'interno di questa sezione si trovano inoltre le parole di memoria riservate all'\acrshort{io}. È quindi ora chiaro cosa si intendeva quando si è detto che il processore vede solo virtualmente le periferiche, che fisicamente dal suo punto di vista altro non sono che dati.
 
 Passiamo ora alla descrizione del secondo meccanismo di trasferimento dei dati: l'input ad interruzione di programma.
 
 \section{Input ad interruzione di programma}
-L'input ad interruzione di programma (conosciuto anche con il nome di \emph{interrupt driven I/O}) funziona tramite il sollevamento di interruzioni.
+L'input ad interruzione di programma (conosciuto anche con il nome di \emph{interrupt driven \acrshort{io}}) funziona tramite il sollevamento di interruzioni.
 
-Un'interruzione I/O è un segnale usato per indicare al processore che la periferica è pronta ad eseguire il trasferimento richiesto;
-occorre tuttavia un modo per segnalare al processore quale periferica richiede l'interruzione e per gestire il fatto che le interruzioni I/O sono sempre asincrone rispetto all'esecuzione delle istruzioni.
+Un'interruzione \acrshort{io} è un segnale usato per indicare al processore che la periferica è pronta ad eseguire il trasferimento richiesto;
+occorre tuttavia un modo per segnalare al processore quale periferica richiede l'interruzione e per gestire il fatto che le interruzioni \acrshort{io} sono sempre asincrone rispetto all'esecuzione delle istruzioni.
 
 Non esistono particolari istruzioni Assembly per eseguire le interruzioni, queste possono presentarsi mentre una qualsiasi istruzione viene eseguita, ma si deve comunque dare modo di terminare l'esecuzione dell'istruzione corrente prima di passare alla gestione dell'interruzione. In tal senso il programmatore può decidere di posticipare l'esecuzione dell'interruzione a un momento più conveniente programmando sezioni non interrompibili nel codice del kernel; inoltre può classificare le interruzioni secondo grado di priorità.
 
 Il maggior vantaggio che deriva dall'utilizzo di questa strategia è che non occorre interrompere l'esecuzione del programma se non quando il dato può essere effettivamente riferito in memoria.
 
-Guardando invece il lato negativo, occorre un hardware speciale per permettere ai dispositivi di I/O di generare un'interruzione, rilevare l'interruzione, salvare lo stato del processore per eseguire una particolare routine di servizio (Interrupt Service Routine, ISR) e poi riprendere dal punto dove si era interrotto.
+Guardando invece il lato negativo, occorre un hardware speciale per permettere ai dispositivi di \acrshort{io} di generare un'interruzione, rilevare l'interruzione, salvare lo stato del processore per eseguire una particolare routine di servizio, \acrfull{isr}, e poi riprendere dal punto dove si era interrotto.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{input-a-interruzione}
 	\caption{Meccanismo di input ad interruzione}
 \end{figure}
-È ora presentato un esempio di implementazione di gestione dell'I/O tramite interrupt in SPIM.
+È ora presentato un esempio di implementazione di gestione dell'\acrshort{io} tramite interrupt in SPIM.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{SPIM2}
@@ -232,11 +232,11 @@ In questo esempio si nota come vi sia ancora, come nel polling, una parola dedic
 
 La periferica indica, con un'interruzione (lanciata da una circuiteria di controllo del bit ready), di avere un nuovo carattere dalla tastiera nell'opportuno registro di ricezione.
 
-Il processo utente viene interrotto trasferendo il controllo a una ISR che copia il dato in memoria utente; contemporaneamente alla lettura il bit ready viene resettato.
+Il processo utente viene interrotto trasferendo il controllo a una \acrshort{isr} che copia il dato in memoria utente; contemporaneamente alla lettura il bit ready viene resettato.
 
 Nel dettaglio il bit \emph{interrupt enable} serve per indicare se è abilitato il meccanismo di interrupt.
 
-\subsection{Considerazioni finali sull'interrupt driven I/O}
+\subsection{Considerazioni finali sull'interrupt driven \acrshort{io}}
 Nonostante la complessità di questo meccanismo è facile osservare che in caso di trasferimenti di grandi moli di dati esso risulti  molto più efficiente del polling, dimostriamolo riprendendo l'esempio dell'hard disk fatto in precedenza:
 
 \paragraph{Esempio 2: Hard disk} Supponiamo che un interrupt costi 500 cicli di clock, poiché è plausibile che costi di più del polling. Se le interruzioni venissero generate alla frequenza di polling avremmo che:
@@ -267,14 +267,14 @@ Per la gestione di questi eventi il sistema effettua delle azioni specifiche (co
 \end{figure}
 Esistono due tipi di eccezioni:
 \begin{itemize}
-	\item \emph{interrupts}: sono causate da eventi esterni (I/O) e quindi sono asincrone; possono essere gestite nello spazio tra due istruzioni semplicemente sospendendo il programma e riprendendo, dopo la gestione, dal punto in cui era stato interrotto.
+	\item \emph{interrupts}: sono causate da eventi esterni (\acrshort{io}) e quindi sono asincrone; possono essere gestite nello spazio tra due istruzioni semplicemente sospendendo il programma e riprendendo, dopo la gestione, dal punto in cui era stato interrotto.
 	\item \emph{traps}: sono causate da eventi \emph{interni} al programma come condizioni eccezionali (es. arithmetic overflow), errori (es. hardware malfunction) o fault (es. page fault). Esse sono sincrone all'esecuzione del programma. Vengono gestite da un \emph{traphandler}; da notare che spesso è possibile riprovare ad eseguire l'istruzione che ha causato l'eccezione o abortire il programma.
 \end{itemize}
 
 \subsection{Supporto del MIPS per la gestione di eccezioni}
 La componente che registra le informazioni necessarie alla gestione delle eccezioni in MIPS è il coprocessore 0, che utilizza dei registri a lui dedicati.
 
-Quando si presenta un'eccezione in MIPS il registro EPC (registro 14) punta all'indirizzo successivo all'istruzione in esecuzione quando l'eccezione è avvenuta, mentre il registro di stato (registro 12) fa da maschera di abilitazione trap/interrupt.
+Quando si presenta un'eccezione in MIPS il registro \acrfull{epc} (registro 14) punta all'indirizzo successivo all'istruzione in esecuzione quando l'eccezione è avvenuta, mentre il registro di stato (registro 12) fa da maschera di abilitazione trap/interrupt.
 
 \begin{figure}[H]
 	\centering
@@ -285,7 +285,7 @@ In seguito una breve spiegazione dei campi di questo registro.
 \begin{itemize}
 	\item \emph{IntrMask}:  1 bit per ognuno dei 6 livelli di eccezioni hardware e 2 livelli software abilitabili.
 	\item \emph{User mode}: 0 se quando l'eccezione è avvenuta il sistema era in modo supervisore, 1 se era in modo utente.
-	\item \emph{Excp level}: settato a 1 (eccezioni disabilitate) mentre si sta gestendo un'eccezione, tipicamente resettata dopo che l'ISR ha terminato.
+	\item \emph{Excp level}: settato a 1 (eccezioni disabilitate) mentre si sta gestendo un'eccezione, tipicamente resettata dopo che l'\acrshort{isr} ha terminato.
 	\item \emph{Intr enable}: 1 se si sta utilizzando il meccanismo delle interrupt, 0 altrimenti.
 \end{itemize}
 Il registro \emph{BadVAddr} (registro 8) contiene l'indirizzo di memoria che ha causato un errore di memoria. Infine il registro \emph{cause} (registro 13) contiene il tipo dell'eccezione ed i bit pendenti.
@@ -305,12 +305,12 @@ In particolare sono importanti i campi:
 \subsection{Modifiche al processore per gestire le eccezioni}
 Per implementare il complesso meccanismo di gestione delle eccezioni il processore deve essere munito di queste nuove componenti:
 \begin{itemize}
-	\item segnali di controllo per scrivere \emph{EPC} (\emph{EPCWrite}), \emph{Cause} (\emph{CauseWrite}) e \emph{Status};
+	\item segnali di controllo per scrivere \acrshort{epc} (\emph{EPCWrite}), \emph{Cause} (\emph{CauseWrite}) e \emph{Status};
 	\item hardware per registrare il tipo di interruzione in \emph{Cause};
 	\item modifiche alla macchina a stati in modo che:
 	\begin{itemize}
 		\item l'indirizzo del gestore dell'interruzione \texttt{0x80000180} possa essere caricato in PC (altro ramo nel multiplexer);
-		\item sia salvato l'indirizzo della prossima istruzione da eseguire a \emph{ISR} terminato in \emph{EPC}.
+		\item sia salvato l'indirizzo della prossima istruzione da eseguire a \acrshort{isr} terminato in \acrshort{epc}.
 	\end{itemize}
 \end{itemize}
 Ed ecco infine un'immagine del processore con datapath modificato per supportare la gestione delle eccezioni.

@@ -37,30 +37,30 @@ A seguire un elenco di definizioni che utilizzeremo in seguito.
 	\item \emph{Tempo di accesso}: è il tempo richiesto per \emph{una} operazione di lettura / scrittura nella memoria;
 	\item \emph{Tempo di ciclo}: è il tempo che intercorre fra l'inizio di due istruzioni consecutive; è composto dal tempo di accesso sommato al tempo di transito del dato con cui si lavora;
 	\item \emph{Latenza}: è il tempo di acceso ad una singola parola; indica quanto il processore dovrebbe poter aspettare un dato dalla memoria nel caso peggiore;
-	\item \emph{Velocità o "banda"}: velocità di trasferimento massima in FPM\footnote{Fast Page Mode, per la definizione si guardi la sezione~\ref{sec:FPM}.}; oltre ad essere importante per le operazioni FPM che sono legate all'utilizzo della memoria cache interne ai processori, è significativa per le operazioni in DMA (ossia quando un dispositivo periferico viene collegato alla memoria senza passare per il processore);
+	\item \emph{Velocità o "banda"}: velocità di trasferimento massima in \acrshort{fpm}\footnote{Fast Page Mode, per la definizione si guardi la sezione~\ref{sec:FPM}.}; oltre ad essere importante per le operazioni \acrshort{fpm} che sono legate all'utilizzo della memoria cache interne ai processori, è significativa per le operazioni in DMA (ossia quando un dispositivo periferico viene collegato alla memoria senza passare per il processore);
 	\item \emph{Accesso casuale}: è quella modalità di accesso in cui non vi è alcun ordine o relazione fra i dati memorizzati; è tipico delle memorie a semiconduttori;
 	\item \emph{Accesso sequenziale}: è quella modalità che presuppone lo scorrimento ordinato di un blocco di dati per accedere ad un suo dato; il tempo d'accesso dipende dalla posizione fisica del dato nel supporto (tipicamente nastri e dischi);
-	\item \emph{RAM} (\emph{Random Access Memory}): è una memoria dotata di accesso casuale che permette scrittura e lettura; viene implementata attraverso semiconduttori;
-	\item \emph{ROM} (\emph{Read Only Memory}): è una memoria a semiconduttori che prevede solo un accesso in lettura; esistono implementazioni sia attraverso accesso casuale che sequenziale
+	\item \emph{\acrfull{ram}}: è una memoria dotata di accesso casuale che permette scrittura e lettura; viene implementata attraverso semiconduttori;
+	\item \emph{\acrfull{rom}}: è una memoria a semiconduttori che prevede solo un accesso in lettura; esistono implementazioni sia attraverso accesso casuale che sequenziale
 \end{itemize}
 
 \section{La memoria principale}
-\subsection{Le RAM}
-Con la seguente immagine descriviamo come avviene la connessione logica fra memoria RAM e CPU:
+\subsection{Le \acrshort{ram}}
+Con la seguente immagine descriviamo come avviene la connessione logica fra memoria \acrshort{ram} e \acrshort{cpu}:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{relazione_cpu_ram.png}
-	\caption{Modello della relazioni logiche fra CPU e RAM}
+	\caption{Modello della relazioni logiche fra \acrshort{cpu} e \acrshort{ram}}
 \end{figure}
 Esistono principalmente 3 bus che permettono di far comunicare il processore con la memoria:
 \begin{itemize}
-	\item \emph{MAR} (\emph{Memory Address Register}): è un bus a \(k\) bit, dove \(2^k\) è il numero massimo di indirizzi accessibili direttamente in memoria. Dal punto di vista pratico contiene l'indirizzo del dato (o istruzione) che si vuole caricare o scrivere;
-	\item \emph{MDR} (\emph{Memory Data Register}): è un bus a \(n\) bit, dove \(n\) è la lunghezza delle word nella memoria. Dal punto di vista pratico contiene il dato (o l'istruzione) che si vuole caricare o scrivere;
-	\item \emph{bus di controllo:} è un bus che contiene vari codici di controllo che permettono di pilotare le relazioni fra memoria e CPU. Alcune linee di controllo sono: il bit \emph{MFC} (\emph{Memory Function Completed}) che permette di stabilire se l'operazione di lettura o scrittura è stata completata e il bit \emph{\(\textrm{R/}\overline{W}\)}, che distingue se si sta eseguendo un'operazione di lettura o scrittura.
+	\item \emph{\acrfull{mar}}: è un bus a \(k\) bit, dove \(2^k\) è il numero massimo di indirizzi accessibili direttamente in memoria. Dal punto di vista pratico contiene l'indirizzo del dato (o istruzione) che si vuole caricare o scrivere;
+	\item \emph{\acrfull{mdr}}: è un bus a \(n\) bit, dove \(n\) è la lunghezza delle word nella memoria. Dal punto di vista pratico contiene il dato (o l'istruzione) che si vuole caricare o scrivere;
+	\item \emph{bus di controllo:} è un bus che contiene vari codici di controllo che permettono di pilotare le relazioni fra memoria e \acrshort{cpu}. Alcune linee di controllo sono: il bit \emph{MFC} (\emph{Memory Function Completed}) che permette di stabilire se l'operazione di lettura o scrittura è stata completata e il bit \emph{\(\textrm{R/}\overline{W}\)}, che distingue se si sta eseguendo un'operazione di lettura o scrittura.
 \end{itemize}
-Si noti che il \emph{MAR} è stato rappresentato da una freccia unidirezionale: dopo aver definito l'indirizzo di memoria su cui lavorare, infatti, il processore non si aspetta il risultato. Vengono gestiti diversamente i bus di controllo e \emph{MDR}, i quali sono rappresentati con una freccia bidirezionale, in quanto sia la memoria che la CPU possono occupare il ruolo di mittente del messaggio.
+Si noti che il \acrshort{mar} è stato rappresentato da una freccia unidirezionale: dopo aver definito l'indirizzo di memoria su cui lavorare, infatti, il processore non si aspetta il risultato. Vengono gestiti diversamente i bus di controllo e \acrshort{mdr}, i quali sono rappresentati con una freccia bidirezionale, in quanto sia la memoria che la \acrshort{cpu} possono occupare il ruolo di mittente del messaggio.
 
-Una memoria \emph{RAM} a semiconduttori principalmente immagazzina singoli bit, memorizzati normalmente in gruppi di byte e/o word per motivi di efficienza. La memoria non necessariamente deve essere strutturata monoliticamente: è possibile che sia suddivisa in diversi blocchi, al fine di favorire il parallelismo; si noti comunque che la dimensione complessiva della memoria non varia se presa in un unico blocco o se separata. Si ricorda che l'organizzazione di una memoria influenza il numero di pin di I/O del circuito integrato: più saranno, più aumenterà il costo.
+Una memoria \acrshort{ram} a semiconduttori principalmente immagazzina singoli bit, memorizzati normalmente in gruppi di byte e/o word per motivi di efficienza. La memoria non necessariamente deve essere strutturata monoliticamente: è possibile che sia suddivisa in diversi blocchi, al fine di favorire il parallelismo; si noti comunque che la dimensione complessiva della memoria non varia se presa in un unico blocco o se separata. Si ricorda che l'organizzazione di una memoria influenza il numero di pin di I/O del circuito integrato: più saranno, più aumenterà il costo.
 
 \subsubsection{Organizzazione dei bit in un banco di memoria 16x8}
 \begin{figure}[H]
@@ -73,40 +73,40 @@ Il caso presentato descrive il funzionamento di un banco di memoria formato da 1
 	\item In base alla riga da selezionare, l'\emph{address decoder} genera un 1 nell'uscita della riga corrispondente;
 	\item Avviene un meccanismo simile anche per le colonne, attraverso il \emph{circuit select}, che decide se abilitare ciascuna colonna;
 	\item Ogni colonna è gestita da un \emph{Sense/Write circuit} che riceve in input due linee di controllo: una definisce se eseguire l'operazione di lettura o scrittura (\emph{\(\textrm{R/}\overline{W}\)}) mentre l'altra (\emph{CS}) definisce se attivare o meno la colonna. Nel caso di una read, legge il valore contenuto nel bus della colonna (1 byte nel nostro esempio), altrimenti, nel caso di write, fa circolare il valore che si vuole scrivere nel bus della colonna. Per avere certezza dell'integrità dei dati viene propagato sia il dato stesso che si vuole scrivere che il suo negato. Ad esempio, nella colonna 0, \(b_0\) contiene il dato asserito, mentre \(b'_0\) contiene il dato negato;
-	\item In base a com'è stata implementata la memoria (\emph{SRAM} o \emph{DRAM}), viene attivata la cella selezionata dalla colonna e dalla riga designata: su di essa verrà eseguita l'operazione di lettura/scrittura richiesta.
+	\item In base a com'è stata implementata la memoria (\acrshort{sram} o \acrshort{dram}), viene attivata la cella selezionata dalla colonna e dalla riga designata: su di essa verrà eseguita l'operazione di lettura/scrittura richiesta.
 \end{enumerate}
 
-Nelle prossime sezioni affronteremo le diverse implementazioni di cella di memoria: \emph{SRAM} e \emph{DRAM}.
+Nelle prossime sezioni affronteremo le diverse implementazioni di cella di memoria: \acrshort{sram} e \acrshort{dram}.
 
-\subsection{Le SRAM}
-Le \emph{SRAM}, ossia le RAM statiche, sono delle memorie in cui i bit possono essere mantenuti indefinitivamente (posto il fatto che non manchi l'alimentazione). Seppur abbiano tempi di accesso molto ridotti (nell'ordine di pochi nanosecondi) e consumino poca corrente, il loro costo è molto elevato: per ciascuna cella di memorizzazione vengono impiegati molteplici componenti.
-Il meccanismo che sta alla base di una cella di SRAM è quello del flip flop (in particolare ai latch tipo D).
+\subsection{Le \acrfull{sram}}
+Le \acrshort{sram}, ossia le \acrshort{ram} statiche, sono delle memorie in cui i bit possono essere mantenuti indefinitivamente (posto il fatto che non manchi l'alimentazione). Seppur abbiano tempi di accesso molto ridotti (nell'ordine di pochi nanosecondi) e consumino poca corrente, il loro costo è molto elevato: per ciascuna cella di memorizzazione vengono impiegati molteplici componenti.
+Il meccanismo che sta alla base di una cella di \acrshort{sram} è quello del flip flop (in particolare ai latch tipo D).
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{cella_SRAM.png}
-	\caption{SRAM: memorizzazione di un bit}
+	\caption{\acrshort{sram}: memorizzazione di un bit}
 \end{figure}
 
 Nell'immagine, \(\textrm{T}_1\) e \(\textrm{T}_2\) sono due transistor\footnote{Attraverso gli ultimi ritrovati dell'ingegneria, è possibile realizzare dei transistor nell'ordine di grandezza dei nanometri.}: in base al variare della tensione nel loro \emph{gate} (ossia il collegamento inferiore) permettono o meno il passaggio di corrente fra i rami laterali. Il funzionamento ricorda molto quello di un interruttore: se il gate ha ua tensione pari a Vdd, allora il circuito viene chiuso, altrimenti rimane aperto. Si noti che se la linea della word è bassa, allora gli interruttori \(\textrm{T}_1\) e \(\textrm{T}_2\) sono aperti e il consumo è praticamente nullo.
 
 Dunque, nel caso venga chiuso il circuito, è possibile effettuare delle operazioni di lettura e di scrittura (gestite dal \emph{Sense/Write circuit}). Invece, nel caso in cui il circuito venisse aperto, la corrente circolerebbe solamente all'interno del latch a doppio NOT. La presenza di due NOT permette di rinforzare il risultato e ridurre il tasso di errore, in quanto si vuole controllare la coerenza delle informazioni sia col segnale \emph{b} che col segnale \emph{b'} (si ricorda che \emph{b} contiene il segnale asserito, mentre \emph{b'} contiene il segnale negato: \emph{b}\(=\)\emph{\(\overline{b'}\)}).
 
-\subsection{Le DRAM}
-Le \emph{DRAM}, ossia le RAM dinamiche, sono le memorie più diffuse nei computer. Sono caratterizzate da costi molto contenuti e di un'elevatissima densità, dovuta al fatto di dover impiegare un solo componente per ogni singola cella di memoria. Il concetto che sta alla base della DRAM è un circuito RC (la resistenza è quella data dal filo): la capacità di memorizzazione viene ottenuta attraverso la carica di un condensatore. Presentano però un difetto che comporta consumi molto elevati: la cella di memoria necessita di un refresh continuo, altrimenti il proprio contenuto svanisce a causa delle correnti parassite e per la scarica del condensatore.
+\subsection{Le \acrfull{dram}}
+Le \acrshort{dram}, ossia le \acrshort{ram} dinamiche, sono le memorie più diffuse nei computer. Sono caratterizzate da costi molto contenuti e di un'elevatissima densità, dovuta al fatto di dover impiegare un solo componente per ogni singola cella di memoria. Il concetto che sta alla base della \acrshort{} è un circuito RC (la resistenza è quella data dal filo): la capacità di memorizzazione viene ottenuta attraverso la carica di un condensatore. Presentano però un difetto che comporta consumi molto elevati: la cella di memoria necessita di un refresh continuo, altrimenti il proprio contenuto svanisce a causa delle correnti parassite e per la scarica del condensatore.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{cella_DRAM.png}
-	\caption{DRAM: memorizzazione di un bit}
+	\caption{\acrshort{dram}: memorizzazione di un bit}
 \end{figure}
 
 Nell'immagine \(\textrm{T}\) è un transistor: svolge una funzione di interruttore, in quanto permette di collegare o meno il circuito RC alla bit line e alla word line. Se il circuito viene chiuso il condensatore viene caricato, altrimenti si scarica (ricordiamo che il processo di carica/scarica di un condensatore è esponenziale). Si ricorda che se non viene attivata la bit line o la word line, allora il circuito RC è scollegato, con la conseguente scarica del condensatore a causa della resistenza applicata. Dunque, se si vuole mantenere in memoria il dato 1, c'è la necessità di continuare a scrivere 1 nella cella di memoria ad ogni intervallo \(t_0\), altrimenti la scarica del condensatore annullerebbe il valore. Se il valore che si vuole memorizzare è 0, basta semplicemente lasciare disattivato il circuito (con attenzione ad avergli lasciato il tempo necessario affinché si scarichi prima di riutilizzarlo). Dunque per "refreshare" la memoria basta fare un ciclo di lettura: questo processo viene eseguito da un circuito di refresh, in maniera tale che l'utente non si debba preoccupare di questo meccanismo.\\
-Si noti che nelle memorie DRAM non è implementato il latch a doppio NOT.\\
+Si noti che nelle memorie \acrshort{dram} non è implementato il latch a doppio NOT.\\
 Solitamente si può considerare un condensatore scarico nel momento in cui la tensione ai suoi capi è inferiore a \(\frac{\textrm{Vdd}}{2}\). In particolare è proprio questo il compito del circuito \emph{sense amplifier}, il quale determina lo stato asserito o negato del dato memorizzato in base alla soglia \(\frac{\textrm{Vdd}}{2}\).
 
 \subsubsection{La multiplazione degli indirizzi}
-Facciamo un salto indietro di astrazione. L'immagine rappresenta l'organizzazione di una DRAM. \(A\) è l'indirizzo con cui si indicizza un dato in memoria: dalla posizione 20 a 9 definisce il valore da dare in input al decoder delle righe, dalla posizione 8 alla 0 definisce il valore da dare al decoder delle colonne. Questa DRAM è caratterizzata da 4096 (\(2^{12}\), dove 12 rappresenta il numeri di bit di A per indirizzare la riga) righe e 512 (\(2^9\), dove 9 rappresenta il numero di bit di A per indirizzare la colonna) colonne:
+Facciamo un salto indietro di astrazione. L'immagine rappresenta l'organizzazione di una \acrshort{dram}. \(A\) è l'indirizzo con cui si indicizza un dato in memoria: dalla posizione 20 a 9 definisce il valore da dare in input al decoder delle righe, dalla posizione 8 alla 0 definisce il valore da dare al decoder delle colonne. Questa \acrshort{dram} è caratterizzata da 4096 (\(2^{12}\), dove 12 rappresenta il numeri di bit di A per indirizzare la riga) righe e 512 (\(2^9\), dove 9 rappresenta il numero di bit di A per indirizzare la colonna) colonne:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{organizzazione_generale.png}
@@ -114,34 +114,34 @@ Facciamo un salto indietro di astrazione. L'immagine rappresenta l'organizzazion
 \end{figure}
 Si noti che sono stati inseriti due circuiti: \emph{row address latch} e \emph{column address latch}, che rispettivamente ricevono in input i codici di controllo \emph{\(\overline{RAS}\)} e \emph{\(\overline{CAS}\)}. Queste due linee di controllo permettono di decidere, in base al loro input, se è possibile accedere ad una riga/colonna.
 
-\subsubsection{Fast Page Mode (FPM)}\label{sec:FPM}
-Solitamente i trasferimenti da/per la memoria avvengono a blocchi piuttosto che per singole celle. Ciò comporta un notevole risparmio di tempo, in quanto sarebbe necessario solo un unico indirizzamento per le righe e colonne. Questo processo viene chiamato \emph{fast page mode} (\emph{FPM}). Si sottolinea che questa modalità è del tutto automatica: l'utente non deve preoccuparsi di gestire questo meccanismo.
+\subsubsection{\acrfull{fpm}}\label{sec:FPM}
+Solitamente i trasferimenti da/per la memoria avvengono a blocchi piuttosto che per singole celle. Ciò comporta un notevole risparmio di tempo, in quanto sarebbe necessario solo un unico indirizzamento per le righe e colonne. Questo processo viene chiamato \acrfull{fpm}. Si sottolinea che questa modalità è del tutto automatica: l'utente non deve preoccuparsi di gestire questo meccanismo.
 
-\subsubsection{Le DRAM sincrone}
-Le DRAM che sono state descritte fin'ora sono dette \emph{asincrone}, in quanto non esiste una precisa temporizzazione di accesso: la dinamica viene governata dai segnali \emph{\(\overline{RAS}\)} e \emph{\(\overline{CAS}\)}. Si noti che questa asincronicità può causare non pochi problemi, soprattutto mentre si esegue il refresh della memoria. Una soluzione consiste nell'aggiungere dei buffer di memorizzazione degli ingressi e delle uscite, in maniera tale da riuscire a disaccoppiare la lettura e scrittura dal refresh della memoria, ottenendo automaticamente un accesso FPM pilotato dal clock. Questa implementazione della DRAM viene detta \emph{sincrona}. A seguire un'immagine che contiene uno schema riassuntivo:
+\subsubsection{Le \acrshort{dram} sincrone}
+Le \acrshort{dram} che sono state descritte fin'ora sono dette \emph{asincrone}, in quanto non esiste una precisa temporizzazione di accesso: la dinamica viene governata dai segnali \emph{\(\overline{RAS}\)} e \emph{\(\overline{CAS}\)}. Si noti che questa asincronicità può causare non pochi problemi, soprattutto mentre si esegue il refresh della memoria. Una soluzione consiste nell'aggiungere dei buffer di memorizzazione degli ingressi e delle uscite, in maniera tale da riuscire a disaccoppiare la lettura e scrittura dal refresh della memoria, ottenendo automaticamente un accesso \acrshort{fpm} pilotato dal clock. Questa implementazione della \acrshort{dram} viene detta \emph{sincrona}. A seguire un'immagine che contiene uno schema riassuntivo:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{DRAM_sincrona.png}
-	\caption{Organizzazione generale di una DRAM sincrona}
+	\caption{Organizzazione generale di una \acrshort{dram} sincrona}
 \end{figure}
 
-Nella prossima immagine è possibile visualizzare un accesso sincrono in FPM:
+Nella prossima immagine è possibile visualizzare un accesso sincrono in \acrshort{fpm}:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{FPM.png}
 	\caption{Funzionamento fast page mode}
 \end{figure}
-dove il segnale di clock rappresentato è quello della memoria RAM: le operazioni di lettura e scrittura sono sincronizzate col fronte di salita; D0, D1, D2, D3 sono i byte che arrivano in serie; i valori rimanenti sono le linee di controllo.
+dove il segnale di clock rappresentato è quello della memoria \acrshort{ram}: le operazioni di lettura e scrittura sono sincronizzate col fronte di salita; D0, D1, D2, D3 sono i byte che arrivano in serie; i valori rimanenti sono le linee di controllo.
 
-\subsubsection{Double Data Rate SDRAM (DDR-SDRAM)}
-Un ulteriore miglioramento è effettuato dalla \emph{DDR-SDRAM} (\emph{Double Data Rate SDRAM}): essa permette il trasferimento dei dati sia sul fronte di salita che sul fronte di discesa del clock della memoria. In poche parole ciò permette di raddoppiare le prestazioni rispetto ad una normale SDRAM, e nonostante la latenza rimanga invariata, la banda viene raddoppiata.
+\subsubsection{Le \acrfull{ddrsdram}}
+Un ulteriore miglioramento è effettuato dalla \acrfull{ddrsdram}: essa permette il trasferimento dei dati sia sul fronte di salita che sul fronte di discesa del clock della memoria. In poche parole ciò permette di raddoppiare le prestazioni rispetto ad una normale \qcrshort{dram} sincrona, e nonostante la latenza rimanga invariata, la banda viene raddoppiata.
 
 Sono ottenute organizzando la memoria in due banchi separati: uno contiene le posizioni pari (a cui si accede durante il fronte di salita), l'altro contiene quelle dispari (a cui si accede durante il fronte di discesa). Locazioni contingue risultano divise fra i due banchi: grazie a questo è possibile effettuare un accesso in modo interlacciato.
 
 \section{Gestione della memoria}
-Andiamo adesso a domandarci quale possa essere il modo migliore di gestire la memoria che abbiamo a disposizione. È preferibile conservare i dati nella memoria RAM? Così facendo possiamo avere dei tempi di accesso ai dati estremamente ridotti, ma di contro la quantità di dati di cui possiamo disporre sarà limitata. Dobbiamo quindi affidare i nostri dati alle memorie periferiche? In questo modo possiamo avere moltissimo spazio dove riporre i nostri dati, ma il tempo necessario a raggiungere di volta in volta quelli che ci servono sarà decisamente maggiore.
+Andiamo adesso a domandarci quale possa essere il modo migliore di gestire la memoria che abbiamo a disposizione. È preferibile conservare i dati nella memoria \acrshort{ram}? Così facendo possiamo avere dei tempi di accesso ai dati estremamente ridotti, ma di contro la quantità di dati di cui possiamo disporre sarà limitata. Dobbiamo quindi affidare i nostri dati alle memorie periferiche? In questo modo possiamo avere moltissimo spazio dove riporre i nostri dati, ma il tempo necessario a raggiungere di volta in volta quelli che ci servono sarà decisamente maggiore.
 
-L'approccio vincente è quello di mantenere i dati archiviati nelle memorie periferiche (dove lo spazio abbonda), e ogniqualvolta siano necessari prelevarli e caricarli sulla RAM; quando questa sarà piena, i dati non più necessari verranno riarchiviati per far spazio a quelli nuovi. In questo modo possiamo avere botte piena e moglie ubriaca, perché possediamo una grande quantità di dati archiviati e possiamo accedere alla maggior parte di questi in modo veloce. Andiamo a formalizzare quanto appena detto nei due seguenti \emph{principî di località}.
+L'approccio vincente è quello di mantenere i dati archiviati nelle memorie periferiche (dove lo spazio abbonda), e ogniqualvolta siano necessari prelevarli e caricarli sulla \acrshort{ram}; quando questa sarà piena, i dati non più necessari verranno riarchiviati per far spazio a quelli nuovi. In questo modo possiamo avere botte piena e moglie ubriaca, perché possediamo una grande quantità di dati archiviati e possiamo accedere alla maggior parte di questi in modo veloce. Andiamo a formalizzare quanto appena detto nei due seguenti \emph{principî di località}.
 \begin{itemize}
 	\item \emph{Principio di località temporale}: questo principio dice che se faccio uso di un dato in memoria è molto probabile che nel breve periodo dovrò servirmene di nuovo. Ad esempio, se ci troviamo all'interno di un ciclo, dovrò accedere alle stesse zone di memoria ad ogni iterazione.
 	\item \emph{Principio di località spaziale}: questo principio dice invece che quando accedo a una locazione di memoria è molto probabile che io debba accedere anche a zone a lei adiacenti (o contigue); questo per esempio succede ogni volta che dobbiamo lavorare per gli array, che sono ordinati per word successive.
@@ -245,9 +245,9 @@ La figura sottostante mostra come varia la frequenza delle miss (asse \(y\)) in 
 \end{figure}
 
 \subsection{Gestione delle miss}
-Fintantoché non avviene una miss il funzionamento di una CPU con pipeline non viene influenzato dalla presenza della cache, ma quando una di queste viene riscontrata è necessario bloccare temporaneamente il flusso della pipeline e gestire il trasferimento dei dati dalla memoria principale alla cache. Vediamo come viene gestita una miss sulla memoria istruzioni.
+Fintantoché non avviene una miss il funzionamento di una \acrshort{cpu} con pipeline non viene influenzato dalla presenza della cache, ma quando una di queste viene riscontrata è necessario bloccare temporaneamente il flusso della pipeline e gestire il trasferimento dei dati dalla memoria principale alla cache. Vediamo come viene gestita una miss sulla memoria istruzioni.
 \begin{enumerate}
-	\item Inizialmente bisogna raddrizzare il program counter; ricordiamo che questo viene incrementato di \(4\) all'inizio di ogni istruzione, quindi l'eventuale miss sarà su \(PC-4\), e questo sarà infatti il valore che dobbiamo inviare alla memoria.
+	\item Inizialmente bisogna raddrizzare il \acrshort{pc}; ricordiamo che questo viene incrementato di \(4\) all'inizio di ogni istruzione, quindi l'eventuale miss sarà su \(PC-4\), e questo sarà infatti il valore che dobbiamo inviare alla memoria.
 	\item Dobbiamo inviare alla memoria il comando di eseguire una lettura ed attenderne il completamento.
 	\item A questo punto dobbiamo scrivere il dato proveniente dalla memoria in cache e aggiornarne i tag.
 	\item Infine possiamo rieseguire il fetch e trovare adesso l'istruzione in cache al posto giusto.

@@ -45,10 +45,10 @@ Fino a qualche tempo fa, le prestazioni di qualsiasi calcolatore erano in balia 
 Al giorno d'oggi invece risulta un problema risolto, tranne per qualche criticità per le applicazioni embedded.
 Ecco una lista degli elementi che influenzano le prestazioni del calcolatore e il loro ruolo:
 \begin{itemize}
-	\item \emph{algoritmi}: determinano il numero di istruzioni di alto livello e di operazioni di I/O;
+	\item \emph{algoritmi}: determinano il numero di istruzioni di alto livello e di operazioni di \acrfull{io};
 	\item \emph{linguaggi di programmazione, compilatori e architetture}: determinano il numero di istruzioni macchina per ogni istruzione di basso livello;
 	\item \emph{processore e sistema di memoria}: determina quanto velocemente è possibile eseguire ciascuna istruzione;
-	\item \emph{sistema di I/O} (\emph{hardware e sistema operativo}): determina quanto velocemente possono essere eseguite le istruzioni.
+	\item \emph{sistema di \acrshort{io}} (\emph{hardware e sistema operativo}): determina quanto velocemente possono essere eseguite le istruzioni.
 \end{itemize}
 
 \subsection{La memoria e il processore}
@@ -56,7 +56,7 @@ Ecco una lista degli elementi che influenzano le prestazioni del calcolatore e i
 \paragraph*{La memoria}
 \`{E} possibile classificare la memoria in:
 \begin{itemize}
-	\item \emph{volatile}: è costituita da vari banchi di (tipicamente) \(8\) chip di \acrshort{ram} dinamica. Il tipo più diffuso è appunto la \emph{DRAM};
+	\item \emph{volatile}: è costituita da vari banchi di (tipicamente) \(8\) chip di \acrshort{ram} dinamica. Il tipo più diffuso è appunto la \acrshort{dram};
 	\item \emph{permanente}: è costituita da memorie flash (es. \emph{SSD}), dischi rigidi e CD/DVD.
 \end{itemize}
 La prima viene utilizzata per memorizzare dati e programmi mentre vengono eseguiti (per questo motivo viene chiamata anche \emph{memoria principale}): allo spegnimento i dati vengono persi.
@@ -78,7 +78,7 @@ Nei dischi riscrivibili è inoltre presente un particolare substrato che, se ris
 La acrfull{cpu} è l'unità centrale di ogni calcolatore. Si compone principalmente di:
 \begin{itemize}
 	\item \emph{datapath}: esegue operazioni aritmetiche sui dati;
-	\item \emph{control unit}: impartisce ordini al datapath, alla memoria e alle componenti I/O, sulla base di quanto stabilito dal programma.
+	\item \emph{control unit}: impartisce ordini al datapath, alla memoria e alle componenti \acrshort{io}, sulla base di quanto stabilito dal programma.
 \end{itemize}
 Ciascun processore dispone di un'\acrfull{isa}, ossia un'interfaccia che permette di utilizzarlo senza conoscerne i dettagli.
 Questa, assieme all'ulteriore interfaccia del sistema operativo, forma l'interfaccia binaria delle applicazioni \acrfull{abi}.
@@ -91,7 +91,7 @@ Ciò permette allo sviluppatore di svincolarsi dal livello hardware sottostante,
 \subsection{Software di sistema}
 Le principali funzioni che deve svolgere un \emph{sistema operativo}:
 \begin{itemize}
-	\item gestione delle operazioni di I/O;
+	\item gestione delle operazioni di \acrshort{io};
 	\item allocazione della memoria;
 	\item consentire e regolare il multitasking.
 \end{itemize}
@@ -106,7 +106,7 @@ Il software che traduce l'assembly in codice binario si chiama \emph{Assembler}.
 \end{enumerate}
 Spesso fanno eccezione alcuni compilatori che trasformano direttamente il linguaggio ad alto livello in codice macchina.
 
-\subsection{Periferiche di I/O}
+\subsection{Periferiche di \acrshort{io}}
 
 \paragraph{Il mouse}
 Il \emph{mouse} è stato inventato nel 1967 da \emph{Doug Engelbart} nei laboratori della \emph{Xerox}.
