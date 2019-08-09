@@ -11,13 +11,13 @@
 \begin{document}
 \chapter{Codifica del testo}
 \section{La codifica ASCII}
-Oltre alle codifiche per numeri naturali, interi e reali viste nel capitolo precedente, sono state introdotte delle codifiche per rappresentare sequenze di caratteri. Una delle più note è la codifica \emph{ASCII} (\emph{American Standard Code for Information Interchange}), che utilizza \(7\) bit per rappresentare ciascun carattere (quindi \(2^7=128\) caratteri disponibili in totale).
-Attraverso la codifica \emph{ASCII} è possibile rappresentare tutte le lettere dell'alfabeto anglosassone (lettere maiuscole, minuscole, numeri, punteggiatura, ecc.).
+Oltre alle codifiche per numeri naturali, interi e reali viste nel capitolo precedente, sono state introdotte delle codifiche per rappresentare sequenze di caratteri. Una delle più note è la codifica \acrfull{ascii}, che utilizza \(7\) bit per rappresentare ciascun carattere (quindi \(2^7=128\) caratteri disponibili in totale).
+Attraverso la codifica \acrshoty{ascii} è possibile rappresentare tutte le lettere dell'alfabeto anglosassone (lettere maiuscole, minuscole, numeri, punteggiatura, ecc.).
 
 Questa codifica presenta uno svantaggio: seppur utilizzi solamente 7 bit, un byte è formato da 8 bit. Ciò implica che il primo bit di ciascun carattere viene impostato a 0 per default.
 
 \section{La codifica ASCII estesa}
-A differenza dell'\emph{ASCII} tradizionale, l'\emph{extended ASCII} sfrutta anche l'ottavo bit per codificare caratteri addizionali (quindi \(2^8=256\) caratteri disponibili in totale).
+A differenza dell'\acrshort{ascii} tradizionale, l'\emph{extended ASCII} sfrutta anche l'ottavo bit per codificare caratteri addizionali (quindi \(2^8=256\) caratteri disponibili in totale).
 
 Non esiste un unico standard esteso: sono state implementate diverse versioni, ciascuna in grado di supportare diversi alfabeti specifici. In particolare, i byte con valore minore di \(128\) sono comuni a tutte le implementazioni della codifica ASCII estesa al fine di garantire la compatibilità.
 
