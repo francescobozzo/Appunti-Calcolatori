@@ -13,14 +13,14 @@
  \end{fquote}
 
 \section{Introduzione}
-In questo capitolo andremo ad analizzare come il nostro processore elabora ed esegue le istruzioni che gli arrivano dai programmi Assembly; in particolare ci baseremo ancora su MIPS, in quanto super regolare e particolarmente utile a scopo didattico. Per come è stato progettato MIPS le istruzioni presentano dei tratti comuni, in particolare le prime due fasi del ciclo della CPU (vedi~\ref{subsec:cpu}): il prelievo dell'istruzione e la lettura dei valori dei registri operandi sono comuni a ogni istruzione.
+In questo capitolo andremo ad analizzare come il nostro processore elabora ed esegue le istruzioni che gli arrivano dai programmi Assembly; in particolare ci baseremo ancora su MIPS, in quanto super regolare e particolarmente utile a scopo didattico. Per come è stato progettato MIPS le istruzioni presentano dei tratti comuni, in particolare le prime due fasi del ciclo della \acrshort{cpu} (vedi~\ref{subsec:cpu}): il prelievo dell'istruzione e la lettura dei valori dei registri operandi sono comuni a ogni istruzione.
 
 Noi in particolare, dopo aver spiegato i vari elementi che concorrono a far funzionare tutta la baracca, andremo ad analizzare le istruzioni aritmetico-logiche, quelle di accesso alla memoria e quelle di salto, dal momento che tutte le altre si implementano con tecniche simili.
 
 \section{Arithmetic-Logic Unit}
-A eccezione di \opcode{j}, tutte le istruzioni MIPS fanno uso di \emph{arithmetic-logic unit} (ALU per gli amici), una rete logica combinatoria abbastanza complessa preposta all'esecuzione di tutti calcoli di cui abbiamo bisogno; sostanzialmente, è un’unione di blocchi fondamentali che fanno operazioni su singoli bit.
+A eccezione di \opcode{j}, tutte le istruzioni MIPS fanno uso di \acrfull{alu}, una rete logica combinatoria abbastanza complessa preposta all'esecuzione di tutti calcoli di cui abbiamo bisogno; sostanzialmente, è un’unione di blocchi fondamentali che fanno operazioni su singoli bit.
 
-Al di là delle operazioni puramente aritmetiche (per le quali lo scopo di ALU è ovvio), viene usata nelle operazioni di accesso alla memoria (\opcode{sw} e \opcode{lw}) per il calcolo degli indirizzi e dalle operazioni di salto condizionato per effettuare i confronti; successivamente al passaggio per ALU, ognuna di queste tre categorie d'istruzione differisce.
+Al di là delle operazioni puramente aritmetiche (per le quali lo scopo di \acrshort{alu} è ovvio), viene usata nelle operazioni di accesso alla memoria (\opcode{sw} e \opcode{lw}) per il calcolo degli indirizzi e dalle operazioni di salto condizionato per effettuare i confronti; successivamente al passaggio per \acrshort{alu}, ognuna di queste tre categorie d'istruzione differisce.
 
 \section{Il datapath}
 Il \emph{datapath} è quella parte del processore attraverso cui passano le istruzioni; è letteralmente un percorso da seguire ogniqualvolta si debba eseguire una qualsiasi istruzione.
@@ -35,13 +35,13 @@ Il datapath si compone essenzialmente di 5 fasi.
 \begin{enumerate}
   \item Assumendo che il programma sia già stato caricato in memoria (secondo le modalità viste nel capitolo~\ref{ch:tool}), in questa fase viene prelevata l'istruzione da eseguire e viene spacchettata nei vari campi;
   \item I registri interessati all'esecuzione vengono caricati nel \emph{banco dei registri}; se l'istruzione è di tipo R, gli indirizzi dei registri sono contenuti nel corpo dell'istruzione;
-  \item A questo punto la ALU esegue i calcoli opportuni, ottenendo il valore (o l'indirizzo) desiderato;
-  \item I risultati ALU vengono utilizzati per salvare (o prelevare) in memoria dati un dato, o per memorizzare un registro;
-  \item Si incrementa il \emph{PC} per mezzo di una ALU dedicata (di fatto, un addizionatore), e una successiva ALU calcola l’indirizzo verso cui ci si deve spostare in caso di salti incondizionati.
+  \item A questo punto la \acrshort{alu} esegue i calcoli opportuni, ottenendo il valore (o l'indirizzo) desiderato;
+  \item I risultati \acrshort{alu} vengono utilizzati per salvare (o prelevare) in memoria dati un dato, o per memorizzare un registro;
+  \item Si incrementa il \acrshort{[c]} per mezzo di una \acrshort{alu} dedicata (di fatto, un addizionatore), e una successiva \acrshort{alu} calcola l’indirizzo verso cui ci si deve spostare in caso di salti incondizionati.
 \end{enumerate}
 
 \subsection{Il ruolo del multiplexer}
-La  figura però è incompleta; manca qualcosa che dica ai blocchi cosa fare in caso di punti di decisione (momenti in cui i segnali arrivano da due diverse sorgenti e bisogna sceglierne una), come ad esempio l'incremento del program counter: normalmente, il suo valore proviene dall'addizionatore (e punta quindi alla word successiva a quella appena letta), ma in caso di salto l'indirizzo viene calcolato dallo spiazzamento contenuto nell'istruzione\footnote{Si ricordi che MIPS offre solo 16 bit per immagazzinare costanti all'interno di istruzioni immediate. Dunque, attraverso \opcode{beq} risulta necessario utilizzare riferimenti relativi (al \(\textrm{\emph{PC}}+4\)) e non assoluti per poter accedere ad una vasta gamma di indirizzi.}. Altro esempio: a seconda della tipologia di istruzione il secondo operando della ALU potrà provenire o dal banco dei registri (per le istruzioni R) o dal codice dell'istruzione stessa (per le istruzioni I).
+La  figura però è incompleta; manca qualcosa che dica ai blocchi cosa fare in caso di punti di decisione (momenti in cui i segnali arrivano da due diverse sorgenti e bisogna sceglierne una), come ad esempio l'incremento del program counter: normalmente, il suo valore proviene dall'addizionatore (e punta quindi alla word successiva a quella appena letta), ma in caso di salto l'indirizzo viene calcolato dallo spiazzamento contenuto nell'istruzione\footnote{Si ricordi che MIPS offre solo 16 bit per immagazzinare costanti all'interno di istruzioni immediate. Dunque, attraverso \opcode{beq} risulta necessario utilizzare riferimenti relativi (al \(\textrm{\acrshort{pc}}+4\)) e non assoluti per poter accedere ad una vasta gamma di indirizzi.}. Altro esempio: a seconda della tipologia di istruzione il secondo operando della \acrshort{alu} potrà provenire o dal banco dei registri (per le istruzioni R) o dal codice dell'istruzione stessa (per le istruzioni I).
 
 Ed è qui che ci viene in soccorso il \emph{multiplexer} che, come già detto in~\ref{subsec:multi}, è un circuito combinatorio che prende in input due segnali e decide quale di essi debba andare in output sulla base di un terzo segnale di controllo (un po' come un vigile che decide quale macchina far passare).
 \begin{figure}[H]
@@ -50,7 +50,7 @@ Ed è qui che ci viene in soccorso il \emph{multiplexer} che, come già detto in
 	\caption{Schema di un multiplexer}
 \end{figure}
 \paragraph{Altri elementi}
-Oltre ai multiplexer, ci sono altri elementi che concorrono alla soluzione dei punti di decisione. Ad esempio, alla ALU viene notificato un segnale di controllo (nel nostro caso di \(4\) bit) per decidere quale operazione effettuare, il banco dei registri riceve dei flag per decidere se scrivere o meno un registro, la memoria dati ha degli espedienti per decidere se effettuare lettura o scrittura, e simili.\\
+Oltre ai multiplexer, ci sono altri elementi che concorrono alla soluzione dei punti di decisione. Ad esempio, alla \acrshort{alu} viene notificato un segnale di controllo (nel nostro caso di \(4\) bit) per decidere quale operazione effettuare, il banco dei registri riceve dei flag per decidere se scrivere o meno un registro, la memoria dati ha degli espedienti per decidere se effettuare lettura o scrittura, e simili.\\
 Chi stabilisce queste cose, oltre a settare il segnale del selettore dei vari multiplexer? È presto detto, l’unità di controllo!
 
 \section{La Control Unit}
@@ -63,14 +63,14 @@ La \emph{Control Unit} funge da vero e proprio "direttore d'orchestra" per il pr
 
 La figura è molto complessa, andiamo ad analizzarla con ordine.
 \begin{itemize}
-	\item Innanzitutto notiamo il multiplexer prima del \emph{PC}: questo gestisce la scelta su come viene aggiornato il \emph{PC}, se secondo il valore del primo o del secondo addizionatore. Per settare il valore \(S\) viene utilizzata una porta AND, il cui primo input arriva direttamente dalla Control Unit, mentre il secondo viene fornito dalla ALU (\emph{zero}).
-	\item Vediamo un secondo multiplexer che indica se memorizzare nel registro di destinazione un dato da ALU o dalla memoria.
-	\item Abbiamo un  ultimo multiplexer che precede il caricamento del secondo operando nell'ALU: dalla control unit arriverà l'indicazione per scegliere di caricare un registro (nelle istruzioni R) o una costante (per quelle I).
-	\item Poi vediamo un segnale per la ALU: esso consiste di un bus di più bit per comunicare all'unità quale operazione eseguire.
+	\item Innanzitutto notiamo il multiplexer prima del \acrshort{pc}: questo gestisce la scelta su come viene aggiornato il \acrshort{pc}, se secondo il valore del primo o del secondo addizionatore. Per settare il valore \(S\) viene utilizzata una porta AND, il cui primo input arriva direttamente dalla Control Unit, mentre il secondo viene fornito dalla \acrshort{alu} (\emph{zero}).
+	\item Vediamo un secondo multiplexer che indica se memorizzare nel registro di destinazione un dato da \acrshort{alu} o dalla memoria.
+	\item Abbiamo un  ultimo multiplexer che precede il caricamento del secondo operando nell'\acrshort{alu}: dalla control unit arriverà l'indicazione per scegliere di caricare un registro (nelle istruzioni R) o una costante (per quelle I).
+	\item Poi vediamo un segnale per la \acrshort{alu}: esso consiste di un bus di più bit per comunicare all'unità quale operazione eseguire.
 	\item Alla memoria dati invece arrivano i segnali \emph{MemWrite} e \emph{MemRead}, che indicano la rispettiva operazione da svolgere.
 	\item In base al valore di \emph{RegWrite}, il risultato dell'operazione viene memorizzato nel registro di destinazione.
 \end{itemize}
-Questa è la rappresentazione di MIPS, che è una ISA RISC; inutile dire che gli schemi di funzionamento che stanno alla base di architetture CISC sono incredibilmente più complessi.
+Questa è la rappresentazione di MIPS, che è una \acrshort{isa} \acrshort{risc}; inutile dire che gli schemi di funzionamento che stanno alla base di architetture \acrshort{cisc} sono incredibilmente più complessi.
 
 \section{La temporizzazione}
 A questo punto abbiamo moltissimi segnali che viaggiano nel processore, sincronizzati dal clock. Per semplicità assumiamo che ciascuna istruzione venga eseguita durante un ipotetico singolo ciclo di clock, lungo abbastanza.
@@ -110,8 +110,8 @@ Prima di addentrarci nel dettaglio dell'esecuzione di alcuni tipi di istruzioni,
 	\centering
 	\includegraphics[width=0.9\textwidth,keepaspectratio]{datap_3}
 \end{figure}
-Ricordiamo che il sommatore (o addizionatore) è una ALU specializzata alla sola operazione di incremento del \emph{PC}.\\
-A questo punto la fase di fetch, ricordiamolo, prevede il prelievo dell'istruzione dal \emph{PC}, il trasferimento della stessa agli elementi preposti all'esecuzione e l'incremento del \emph{PC}.
+Ricordiamo che il sommatore (o addizionatore) è una \acrshort{alu} specializzata alla sola operazione di incremento del \acrshort{pc}.\\
+A questo punto la fase di fetch, ricordiamolo, prevede il prelievo dell'istruzione dal \acrshort{pc}, il trasferimento della stessa agli elementi preposti all'esecuzione e l'incremento del \acrshort{pc}.
 
 \subsection{Istruzioni R}
 Iniziamo con un’istruzione di tipo R, come potrebbe essere:
@@ -130,7 +130,7 @@ Per effettuare questa operazione abbiamo bisogno di due blocchi funzionali che v
 \end{figure}
 \begin{itemize}
 	\item Il primo blocco è il \emph{banco dei registri}, una struttura con 3 bus da 5 bit ciascuno in cui vengono caricati i registri da operare; per decidere se si dovrà scrivere il risultato nel registro di destinazione viene impiegato il segnale di controllo \emph{RegWrite}, gestito direttamente dalla Control Unit.
-	\item Il secondo blocco di cui abbiamo bisogno è la ALU di cui prima abbiamo tanto parlato. Questa presenta due controlli: uno di questi è il bus che arriva dal corpo dell'istruzione e indica qual è l'operazione da svolgere, mentre il secondo è il settaggio \emph{zero} qualora il risultato dell'operazione fosse effettivamente 0; quest'ultimo valore viene poi mandato alla porta AND che decide il segnale di controllo per il multiplexer preposto alla scelta del blocco d'incremento del \emph{PC}.
+	\item Il secondo blocco di cui abbiamo bisogno è la \acrshort{alu} di cui prima abbiamo tanto parlato. Questa presenta due controlli: uno di questi è il bus che arriva dal corpo dell'istruzione e indica qual è l'operazione da svolgere, mentre il secondo è il settaggio \emph{zero} qualora il risultato dell'operazione fosse effettivamente 0; quest'ultimo valore viene poi mandato alla porta AND che decide il segnale di controllo per il multiplexer preposto alla scelta del blocco d'incremento del \acrshort{pc}.
 \end{itemize}
 
 \subsection{Istruzioni di accesso alla memoria}
@@ -144,7 +144,7 @@ Ricordiamo che presentano la seguente mappatura:
 	\centering
 	\includegraphics[width=0.5\textwidth,keepaspectratio]{I.png}
 \end{figure}
-In entrambi i casi avremo bisogno di calcolare l'indirizzo in memoria dato da \register{\$t2} e dallo spiazzamento, per cui ci servirà nuovamente una ALU.
+In entrambi i casi avremo bisogno di calcolare l'indirizzo in memoria dato da \register{\$t2} e dallo spiazzamento, per cui ci servirà nuovamente una \acrshort{alu}.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.65\textwidth,keepaspectratio]{MemAccess.png}
@@ -161,7 +161,7 @@ Andiamo ora a vedere la seguente istruzione:
 \begin{minted}[linenos]{asm}
 beq $t1, $t2, offset
 \end{minted}
-Ovviamente anche qui bisogna sommare l'offset, per cui di nuovo necessitiamo di una ALU. Osserviamo inoltre che il \emph{PC} viene incrementato di 4 byte ogni ciclo, per cui quando effettuiamo un salto andiamo a riferire l'offset al \emph{PC} già incrementato; inoltre MIPS shifta automaticamente gli indirizzi di istruzioni a sinistra di 2 bit, in modo da ragionare sempre in words ed espandere in numero di indirizzi raggiungibili.
+Ovviamente anche qui bisogna sommare l'offset, per cui di nuovo necessitiamo di una \acrshort{alu}. Osserviamo inoltre che il \acrshort{pc} viene incrementato di 4 byte ogni ciclo, per cui quando effettuiamo un salto andiamo a riferire l'offset al \acrshort{pc} già incrementato; inoltre MIPS shifta automaticamente gli indirizzi di istruzioni a sinistra di 2 bit, in modo da ragionare sempre in words ed espandere in numero di indirizzi raggiungibili.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{jump.png}
@@ -169,18 +169,18 @@ Ovviamente anche qui bisogna sommare l'offset, per cui di nuovo necessitiamo di 
 
 Dallo schema emergono:
 \begin{itemize}
-	\item una prima ALU, preposta al calcolo dell'indirizzo di salto da comunicare al \emph{PC};
-	\item una seconda ALU, che effettua una sottrazione fra i due valori in ingresso. Se il risultato è 0 (e quindi i due sono uguali) lo comunica, insieme ad un segnale che indica l'avvenimento di una istruzione di branch, alla porta AND. Il risultato di quest'operazione logica verrà infine inviata al multiplexer che si occupa di selezionare correttamente il valore del nuovo \emph{PC}. In particolare:
+	\item una prima \acrshort{alu}, preposta al calcolo dell'indirizzo di salto da comunicare al \acrshort{pc};
+	\item una seconda \acrshort{alu}, che effettua una sottrazione fra i due valori in ingresso. Se il risultato è 0 (e quindi i due sono uguali) lo comunica, insieme ad un segnale che indica l'avvenimento di una istruzione di branch, alla porta AND. Il risultato di quest'operazione logica verrà infine inviata al multiplexer che si occupa di selezionare correttamente il valore del nuovo \acrshort{pc}. In particolare:
 	\begin{itemize}
-		\item se l'AND risulta 0, \(\textrm{\emph{PC}}=\textrm{\emph{PC}}+4\);
-		\item se l'AND risulta 1, \(\textrm{\emph{PC}}=\textrm{\emph{PC}}+4+\textrm{\emph{ind\_relativo}}\), dove \emph{ind\_relativo} è l'indirizzo relativo all'istruzione a cui effettuare il \opcode{beq}.
+		\item se l'AND risulta 0, \(\textrm{\acrshort{pc}}=\textrm{\acrshort{pc}}+4\);
+		\item se l'AND risulta 1, \(\textrm{\acrshort{pc}}=\textrm{\acrshort{pc}}+4+\textrm{\emph{ind\_relativo}}\), dove \emph{ind\_relativo} è l'indirizzo relativo all'istruzione a cui effettuare il \opcode{beq}.
 	\end{itemize}
 \end{itemize}
 
-\section{Prima progettazione completa di una CPU}
-Dopo aver visto in generale quali sono le principali componenti di una CPU e il loro funzionamento di base, possiamo cimentarci nella progettazione di una CPU completa.\\
-Uno dei prerequisiti fondamentali per la nostra CPU è quello di essere in grado di eseguire ciascuna operazione in un singolo ciclo di clock: risulta perciò impossibile utilizzare una singola unità funzionale più di una volta all'interno di uno stesso ciclo. Proprio per questo motivo, come abbiamo visto, la memoria viene divisa in due: una zona viene dedicata alle istruzioni, l'altra ai dati.\\
-In aggiunta, la nostra CPU dovrà implementare alcune semplici istruzioni aritmetico/logiche (\opcode{add}, \opcode{sub}, \opcode{and}, \opcode{or} e \opcode{slt}), istruzioni di lettura e scrittura in memoria (\opcode{lw} e \opcode{sw}) e istruzioni di salto (condizionato nel caso di \opcode{beq} e non condizionato nel caso di \opcode{j}).
+\section{Prima progettazione completa di una \acrshort{cpu}}
+Dopo aver visto in generale quali sono le principali componenti di una \acrshort{cpu} e il loro funzionamento di base, possiamo cimentarci nella progettazione di una \acrshort{cpu} completa.\\
+Uno dei prerequisiti fondamentali per la nostra \acrshort{cpu} è quello di essere in grado di eseguire ciascuna operazione in un singolo ciclo di clock: risulta perciò impossibile utilizzare una singola unità funzionale più di una volta all'interno di uno stesso ciclo. Proprio per questo motivo, come abbiamo visto, la memoria viene divisa in due: una zona viene dedicata alle istruzioni, l'altra ai dati.\\
+In aggiunta, la nostra \acrshort{cpu} dovrà implementare alcune semplici istruzioni aritmetico/logiche (\opcode{add}, \opcode{sub}, \opcode{and}, \opcode{or} e \opcode{slt}), istruzioni di lettura e scrittura in memoria (\opcode{lw} e \opcode{sw}) e istruzioni di salto (condizionato nel caso di \opcode{beq} e non condizionato nel caso di \opcode{j}).
 
 \begin{figure}[H]
 	\centering
@@ -193,15 +193,15 @@ Anche se ne parleremo più approfonditamente in futuro, da questa rappresentazio
 	\item con istruzioni \opcode{lw}: \(\textrm{\CUflag{ALUSrc}}=1\), \(\textrm{\CUflag{REGwrite}}= 1\), \(\textrm{\CUflag{MemtoReg}}=1\).
 \end{itemize}
 
-\subsection{Progettazione dell'unità di controllo della ALU}
-L'\emph{unità di controllo della ALU} è una rete logica combinatoria che ha lo scopo di informare la ALU riguardo al tipo di operazione da eseguire sui dati ricevuti come input. Questo è possibile solamente se viene assegnato ad ogni istruzione un codice univoco (che nella nostra CPU sarà a 4 bit), chiamato \emph{codice di controllo ALU}.
+\subsection{Progettazione dell'unità di controllo della \acrshort{alu}}
+L'\emph{unità di controllo della \acrshort{alu}} è una rete logica combinatoria che ha lo scopo di informare la \acrshort{alu} riguardo al tipo di operazione da eseguire sui dati ricevuti come input. Questo è possibile solamente se viene assegnato ad ogni istruzione un codice univoco (che nella nostra \acrshort{cpu} sarà a 4 bit), chiamato \emph{codice di controllo \acrshort{alu}}.
 
 \begin{table}[H]
 	\centering
 	\subimport{assets/tables/}{codice_controllo_ALU}
-	\caption{Istruzioni con il rispettivo codice di controllo ALU}
+	\caption{Istruzioni con il rispettivo codice di controllo \acrshort{alu}}
 \end{table}
-Definiamo più chiaramente il codice di controllo ALU: esso viene calcolato dall'unità di controllo della ALU attraverso il campo \emph{funct} (vedi~\ref{subsec:campiIstruzione}) e il codice \CUflag{ALUOp} dell'istruzione considerata. Brevemente:
+Definiamo più chiaramente il codice di controllo \acrshort{alu}: esso viene calcolato dall'unità di controllo della \acrshort{alu} attraverso il campo \emph{funct} (vedi~\ref{subsec:campiIstruzione}) e il codice \CUflag{ALUOp} dell'istruzione considerata. Brevemente:
 \begin{itemize}
 	\item \emph{funct}: corrisponde ai 6 bit meno significativi della rappresentazione in binario di un'istruzione MIPS;
 	\item \emph{ALUOp}: consiste in 2 bit che permettono di categorizzare l'istruzione in base al suo tipo. Essa viene generata dall'unità di controllo centrale e assume i seguenti valori:
@@ -211,25 +211,25 @@ Definiamo più chiaramente il codice di controllo ALU: esso viene calcolato dall
 		\item 10: operazione di tipo R.
 	\end{itemize}
 \end{itemize}
-Questo processo non è da considerarsi indifferente: in questo modo è possibile utilizzare solo 4 bit per indicare all'ALU quale operazione eseguire, piuttosto che degli 8 bit inzialmente necessari (rispettivamente 6 per il campo \emph{funct} e 2 per il codice di controllo \CUflag{ALUOp}).
+Questo processo non è da considerarsi indifferente: in questo modo è possibile utilizzare solo 4 bit per indicare all'\acrshort{alu} quale operazione eseguire, piuttosto che degli 8 bit inzialmente necessari (rispettivamente 6 per il campo \emph{funct} e 2 per il codice di controllo \CUflag{ALUOp}).
 
 A seguire vengono presentate delle tabelle che esplicitano la rappresentazione delle istruzioni considerate sia nella rappresentazioni a 4 bit che a 8\footnote{I valori dove sono presenti le 'X' non vengono considerati.}.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.95\textwidth,keepaspectratio]{riassunto_controllo_ALU.png}
-	\caption{Generazione del codice di controllo ALU}
+	\caption{Generazione del codice di controllo \acrshort{alu}}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.80\textwidth,keepaspectratio]{tabella_verita_controllo_ALU.png}
-	\caption{Tabella verità dell'unità di controllo ALU}
+	\caption{Tabella verità dell'unità di controllo \acrshort{alu}}
 \end{figure}
 Tirando le somme, quello che abbiamo appena visto è un sistema di decodifica e generazione dei comandi detto \emph{a due livelli}:
 \begin{itemize}
-	\item \emph{livello 1}: l'unità di controllo genera i segnali di controllo \CUflag{ALUOp} per l'unità di controllo della ALU;
-	\item \emph{livello 2}: l'unità di controllo ALU genera i segnali di controllo per la ALU.
+	\item \emph{livello 1}: l'unità di controllo genera i segnali di controllo \CUflag{ALUOp} per l'unità di controllo della \acrshort{alu};
+	\item \emph{livello 2}: l'unità di controllo \acrshort{alu} genera i segnali di controllo per la \acrshort{alu}.
 \end{itemize}
 
 \subsection{Progettazione dell'unità di controllo principale}
@@ -260,7 +260,7 @@ Per eseguire un'istruzione di somma del tipo \mintinline{asm}{add $t1, $t2, $t3}
 \begin{enumerate}
 	\item prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
 	\item leggere \register{\$t2} e \register{\$t3} dal register file;
-	\item attivare la ALU passando in input i dati dal register file;
+	\item attivare la \acrshort{alu} passando in input i dati dal register file;
 	\item memorizzare il risultato nel registro destinazione.
 \end{enumerate}
 Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico ciclo di clock.
@@ -268,7 +268,7 @@ Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico cicl
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.95\textwidth,keepaspectratio]{es_add.png}
-	\caption{Esecuzione di ADD sulla CPU}
+	\caption{Esecuzione di ADD sulla \acrshort{cpu}}
 \end{figure}
 
 \subsubsection{Istruzione di LW}
@@ -285,7 +285,7 @@ Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico cicl
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.95\textwidth,keepaspectratio]{es_lw.png}
-	\caption{Esecuzione di LW sulla CPU}
+	\caption{Esecuzione di LW sulla \acrshort{cpu}}
 \end{figure}
 
 \subsubsection{Istruzione di BEQ}
@@ -293,15 +293,15 @@ Per eseguire un'istruzione di \opcode{beq} del tipo \mintinline{asm}{beq $t1, $t
 \begin{enumerate}
 	\item prelevare l’istruzione dalla memoria e incrementare il \register{PC} di 4;
 	\item prelevare \register{\$t1} e \register{\$t2} dal register file;
-	\item la ALU sottrae \register{\$t1} da \register{\$t2}. Il valore di \(\textrm{\emph{PC}}+4\) viene sommato all’offset (esteso a 32 bit) e shiftato di due volte (per indirizzare word e non in byte);
-	\item il codice di controllo \CUflag{zero} della ALU viene usato per decidere a cosa settare il \emph{PC}.
+	\item la \acrshort{alu} sottrae \register{\$t1} da \register{\$t2}. Il valore di \(\textrm{\acrshort{pc}}+4\) viene sommato all’offset (esteso a 32 bit) e shiftato di due volte (per indirizzare word e non in byte);
+	\item il codice di controllo \CUflag{zero} della \acrshort{alu} viene usato per decidere a cosa settare il \acrshort{pc}.
 \end{enumerate}
 Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico ciclo di clock.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.95\textwidth,keepaspectratio]{es_beq.png}
-	\caption{Esecuzione di BEQ sulla CPU}
+	\caption{Esecuzione di BEQ sulla \acrshort{cpu}}
 \end{figure}
 
 \subsubsection{Istruzione di J}
@@ -320,7 +320,7 @@ Si ricordi che l'insieme di tutte queste operazioni va eseguito in un unico cicl
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.95\textwidth,keepaspectratio]{es_j.png}
-	\caption{Esecuzione di J sulla CPU}
+	\caption{Esecuzione di J sulla \acrshort{cpu}}
 \end{figure}
 
 \subsection*{Conclusione}

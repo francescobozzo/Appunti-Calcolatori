@@ -23,8 +23,8 @@ Come ben sappiamo, non è possibile per il calcolatore comprendere né i linguag
 \end{enumerate}
 Quando si è ottenuto il file eseguibile, questo può essere caricato in memoria con una system call ed essere eseguito. Si noti che normalmente un driver gestisce tutto questo processo in maniera automatica.
 
-\subsection*{La toolchain GCC}
-Uno degli strumenti più diffusi per compiere queste operazioni è la toolchain Gnu Compiler Collection (\mintinline{batch}{gcc}), che può compilare diversi linguaggi e generare linguaggio macchina per varie architetture CPU, MIPS compreso.
+\subsection*{La toolchain \acrshort{gcc}}
+Uno degli strumenti più diffusi per compiere queste operazioni è la toolchain \acrfull{gcc}, che può compilare diversi linguaggi e generare linguaggio macchina per varie architetture CPU, MIPS compreso.
 
 Il nostro \mintinline{batch}{gcc} lavora in svariate fasi, operate da diversi componenti: un compilatore per il C++ (\texttt{cpp}), un compilatore per il C (\texttt{cc}), un assembler (\texttt{as}) e un linker (\texttt{ld}).
 Quando si utilizza \mintinline{batch}{gcc} si può invocare la compilazione su un file con diversi parametri:
