@@ -364,11 +364,11 @@ Esiste inoltre un ulteriore problema che non abbiamo trattato: nelle cache a map
 	\item \emph{LeastRecentlyUsed}, un metodo più sofisticato che però richiede una serie di bit in più per calcolare quando è avvenuto l'ultimo accesso.
 \end{itemize}
 Per concludere proponiamo al lettore anche un esempio pratico in cui si nota l'importanza della scelta di un buon meccanismo di cache mapping.
-\begin{wrapfigure}{l}{0.55\textwidth}
+\begin{figure}
 	\centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{grafici}
+	\includegraphics[width=\linewidth,keepaspectratio]{grafici-trittico}
 	\caption{Grafici prestazioni dei due algoritmi radix e quick sort}
-\end{wrapfigure}
+\end{figure}
 Si noti come nel primo grafico sembrerebbe che il radix sort sia asintoticamente più efficiente del quick sort, in quanto il suo rapporto
 \begin{equation*}
 	\frac{\textrm{numero di istruzioni}}{\textrm{elemento}}
