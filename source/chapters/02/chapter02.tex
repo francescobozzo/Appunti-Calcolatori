@@ -256,7 +256,8 @@ Ecco una breve tabella riassuntiva dell'interpretazione delle stringhe nella rap
 
 \subsubsection{Esempio di decodifica di un numero in virgola mobile}
 Si traduca in IEEE 754 il numero \((01000010 10011011 10000000 00000000)_2\). Spacchettiamolo nei vari campi:
-\begin{table}[h!]
+\FloatBarrier
+\begin{table}[!h]
 	\centering
 	\begin{tabular}{|l|l|l|}
 		\hline
@@ -264,6 +265,7 @@ Si traduca in IEEE 754 il numero \((01000010 10011011 10000000 00000000)_2\). Sp
 		0 & 10000101 & 00110111000000000000000\\\hline
 	\end{tabular}
 \end{table}
+\FloatBarrier
 Procediamo ora alla traduzione.
 \begin{enumerate}
 	\item Osserviamo che il numero è positivo, poiché il bit di segno è 0.
