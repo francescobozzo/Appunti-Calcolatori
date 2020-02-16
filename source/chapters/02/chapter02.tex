@@ -26,14 +26,14 @@
 
 Tutti i computer moderni sono composti da \emph{transistor} (detti anche triodi), delle strutture bistabili: possono assumere due stati come un interruttore, 0 (spento) e 1 (acceso). Molti \emph{transistor} collegati tra loro in una sorta di matrice possono rappresentare delle serie di porte logiche, ed è questa la struttura che sta alla base dell'architettura dei moderni calcolatori.
 
-Un computer memorizza (e manipola) solo sequenze di 0 e 1 (sequenze di bit); anche l’ENIAC funzionava allo stesso modo, solo che al posto dei \emph{transistor} era composto da \emph{valvole termoioniche}, che non erano differenti nel funzionamento (assumono sempre i due stati descritti in precedenza, solo più lentamente).
+Un computer memorizza (e manipola) solo sequenze di 0 e 1 (sequenze di bit); anche \acrshort{eniac} funzionava allo stesso modo, solo che al posto dei \emph{transistor} era composto da \emph{valvole termoioniche}, che non erano differenti nel funzionamento (assumono sempre i due stati descritti in precedenza, solo più lentamente).
 
 \subsection{Interpretazione delle informazioni} In seguito le sequenze di bit che i computer elaborano/memorizzano possono essere interpretate in tantissimi modi diversi, tra cui numeri, caratteri, suoni, immagini, istruzioni e molti altri. Alla base di tutte le interpretazioni che si possono dare alle stringhe di simboli (che nel caso del computer sono proprio i due stati del bit) sta il concetto di codifica. La \emph{codifica} è appunto uno schema, una legge, un \emph{mapping} che permette prima di tradurre, poi di interpretare stringhe di simboli.
 
-Nell’ambito dell’IT le codifiche sono fortemente caratterizzate dalla lunghezza (dal numero di bit) delle “parole” elementari della codifica. Ad esempio, per rappresentare tutti i caratteri (tabella ASCII estesa) utilizziamo  8 bit (256 caratteri). Si osservi che essendo i \emph{transistor} sistemi bistabili la base 2 (con cifre 0 e 1) è perfetta per rappresentare la codifica dei dati memorizzati/elaborati da essi.
+Nell’ambito dell’IT le codifiche sono fortemente caratterizzate dalla lunghezza (dal numero di bit) delle “parole” elementari della codifica. Ad esempio, per rappresentare tutti i caratteri (tabella \acrshort{ascii} estesa) utilizziamo  8 bit (256 caratteri). Si osservi che essendo i \emph{transistor} sistemi bistabili la base 2 (con cifre 0 e 1) è perfetta per rappresentare la codifica dei dati memorizzati/elaborati da essi.
 
 \section{I numeri}
-Limitiamoci al caso dei numeri per spiegare il concetto di \emph{codifica}. Ricordiamo che i metodi di rappresentazione numerica che studiamo sono posizionali, ovvero il peso di ogni cifra varia in base alla posizione che essa occupa. In generale se una base è composta da \(B\) elementi essa ha \(B\) cifre (da 0 a \(B\)) utilizzate per scrivere ogni numero. Questa formula ci restituisce il valore di ogni numero scritto in una qualsiasi base \(B\):
+Limitiamoci al caso dei numeri per spiegare il concetto di \emph{codifica}. Ricordiamo che i metodi di rappresentazione numerica che studiamo sono posizionali, ovvero il peso di ogni cifra varia in base alla posizione che essa occupa. In generale se una base è composta da \(B\) elementi essa ha \(B\) cifre (da 0 a \(B-1\)) utilizzate per scrivere ogni numero. Questa formula ci restituisce il valore di ogni numero scritto in una qualsiasi base \(B\):
 \begin{equation*}
 	c_{i} c_{i-1} c_{i-2}... c_{0}=c_{i}\cdot B^{i}+...+c_{0}\cdot B^{0}
 \end{equation*}
@@ -54,11 +54,45 @@ Vediamo ora come operare la conversione tra le principali basi:
 		\item si torni al punto 2 e si ripeta finché \(x\neq0\).
 	\end{enumerate}
 \end{itemize}
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.5\textwidth,keepaspectratio]{esempi_conversioni.png}
-	\caption{Alcuni esempi di conversione}
-\end{figure}
+\paragraph*{Alcuni esempi di conversione}
+
+\begin{center}
+\begin{minipage}{0.3\textwidth}
+\(1000_{10}=?_2\)\\
+
+	\begin{tabular}{ c|c|c }
+		\(X\) & \(X/2\) & \(X\%2\)\\\hline
+		1000 & 500 & 0 \\
+		500 & 250 & 0 \\
+		250 & 125 & 0 \\
+		125 & 62 & 1 \\
+		62 & 31 & 0 \\
+		31 & 15 & 1 \\
+		15 & 7 & 1 \\
+		7 & 3 & 1 \\
+		3 & 1 & 1 \\
+		1 & 0 & 1 \\
+	\end{tabular}\\
+
+\(1000_{10}=1111101000_2\)
+\end{minipage}%
+\begin{minipage}{0.2\textwidth}
+~
+\end{minipage}%
+\begin{minipage}{0.3\textwidth}
+\(1000_{10}=?_{16}\)\\
+
+	\begin{tabular}{ c|c|c }
+		\(X\) & \(X/16\) & \(X\%16\)\\\hline
+		1000 & 62 & 8 \\
+		62 & 3 & 14(E) \\
+		3 & 0 & 3 \\
+	\end{tabular}\\
+
+\(1000_{10}=3E8_{16}\)
+\end{minipage}
+\end{center}
+
 
 \subsection{I naturali}
 Nella codifica binaria un numero naturale è rappresentato su \emph{k} cifre binarie, dove con \emph{k} cifre si possono rappresentare i numeri tra 0 e \(2^{k}-1\). La codifica più comune per gli interi spesso usa i byte, sequenze di 8 bit, che tuttavia richiedono molte cifre per rappresentare un numero e quindi spesso, per semplificare la lettura, si usa scrivere i numeri in esadecimale (quindi scrivendo un quarto delle cifre rispetto alla binaria).
@@ -88,7 +122,7 @@ La moltiplicazione in base binaria si può semplificare con il metodo dello shif
 Si noti che quando è presente un 1 si riscrive il numero (nella posizione corrispondente) mentre  quando è presente uno 0 semplicemente non si scrive nulla (e si va solo avanti con le posizioni).
 
 \subsection{Gli interi}
-Finora abbiamo visto come si codificano solo i numeri naturali, ma esistono metodi di codifica che permettono di rappresentare anche i numeri negativi (quindi l’insieme degli interi). Le tecniche più comuni sono: modulo e segno, complemento a 1 (\emph{CA1}) e complemento a 2 (\emph{CA2}).
+Finora abbiamo visto come si codificano solo i numeri naturali, ma esistono metodi di codifica che permettono di rappresentare anche i numeri negativi (quindi l’insieme degli interi). Le tecniche più comuni sono: modulo e segno, \acrfull{ca1} e \acrfull{ca2}.
 
 \paragraph*{Codifica con Modulo e Segno}
 Si usano \(k-1\) bit per rappresentare il valore assoluto (modulo) del numero  ed un bit per codificare il segno (0 per i positivi, 1 per i negativi). In questo modo con k bit si possono codificare valori tra \(-2^{k-1}+1\) e \(+2^{k-1}-1\).\\
@@ -96,28 +130,37 @@ Si usano \(k-1\) bit per rappresentare il valore assoluto (modulo) del numero  e
 
 \paragraph*{Codifica in Complemento a 1}
 Il primo bit indica sempre il segno e per ottenere l'opposto di un numero positivo si invertono tutti gli 0 in 1 e gli 1 in 0 (e lo stesso si fa per ottenere l’opposto di un numero negativo). Si hanno ancora due rappresentazioni per \(+0\) e \(-0\) (rispettivamente, utilizzando 4 bit, \(0000\) e \(1111\)). È più facile da sommare rispetto al modulo e segno ma solo se il bit significativo non dà riporto.\\
-Quando si sommano due numeri in \emph{CA1}:
+Quando si sommano due numeri in \acrshort{ca1}:
 \begin{itemize}[noitemsep]
-	\item si deve verificare che i riporti delle prime due cifre significative siano uguali, altrimenti il numero che si ottiene non è rappresentabile in CA1 su k bit.
+	\item si deve verificare che i riporti delle prime due cifre significative siano uguali, altrimenti il numero che si ottiene non è rappresentabile in \acrshort{ca1} su k bit.
 	\item alla fine si deve sommare il riporto della prima cifra al risultato ottenuto (ultima riga).
 \end{itemize}
+\paragraph*{Esempio di somma in \acrshort{ca1}}
+\(6+-3\) (codifica su $5$ bit)
 
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.7\textwidth,keepaspectratio]{Somma-CA1.png}
-	\caption{Esempio di somma in CA1}
-\end{figure}
+\( 6 = 00110; \)
 
-\paragraph*{Codifica in Complemento a 2}
-Per tradurre un numero da intero con segno a complemento a 2 (\emph{CA2}) basta invertire tutti i bit e poi sommare 1. Viceversa, per convertire da \emph{CA2} a binario, si sottrae 1 e poi si invertono tutti i bit. Ancora una volta il bit più significativo indica il segno, ma in questo caso la codifica dello 0 è unica, quindi con \(k\) bit si possono rappresentare i numeri da \(-2^{k-1}\) a \(2^{k-1}-1\).
+\( -3 = \overline{00011} = 11100; \)\\
 
-\subsubsection{Somma algebrica in Complemento a 2}
+\begin{tabular}{ ccccccc }
+	(Riporti) & 1 & 1 & 1 & & & \\
+	 & & 0 & 0 & 1 & 1 & 0 \\
+	 & & 1 & 1 & 1 & 0 & 0 \\\hline
+	(Risultato)& & 0 & 0 & 0 & 1 & 0 \\
+\end{tabular}\\
+
+\( 00010 + 1 = 00011 (=3); \)
+
+\paragraph*{Codifica in \acrfull{ca2}}
+Per tradurre un numero da intero con segno a complemento a 2 (\acrshort{ca2}) basta invertire tutti i bit e poi sommare 1. Viceversa, per convertire da \acrshort{ca2} a binario, si sottrae 1 e poi si invertono tutti i bit. Ancora una volta il bit più significativo indica il segno, ma in questo caso la codifica dello 0 è unica, quindi con \(k\) bit si possono rappresentare i numeri da \(-2^{k-1}\) a \(2^{k-1}-1\).
+
+\subsubsection{Somma algebrica in \acrfull{ca2}}
 L'utilizzo della codifica \emph{CA2} permette di eseguire somme algebriche senza alcuna differenza operativa, ma rende necessario prestare attenzione all'\emph{overflow}. Con il termine \emph{overflow} si intende la situazione in cui, date in input delle informazioni codificate in un numero \(k\) di bit arbitrariamente scelto, lo stesso numero \(k\) di bit non è sufficiente a codificare le informazioni in output.
 
-Diamo subito un esempio: supponiamo di voler eseguire \(-64-8\) utilizzando il \emph{CA2} e \(k=7\) bit. Ricordiamo che:
+Diamo subito un esempio: supponiamo di voler eseguire \(-64-8\) utilizzando il \acrshort{ca2} e \(k=7\) bit. Ricordiamo che:
 \begin{align*}
--64=1000000_{2}=\overline{1000000}+1=0111111+1=1000000 \text{ in \emph{CA2}}\\
--8=0001000_{2}=\overline{0001000}+1=1110111+1=1111000 \text{ in \emph{CA2}}
+-64=1000000_{2}=\overline{1000000}+1=0111111+1=1000000 \text{ in \acrshort{ca2}}\\
+-8=0001000_{2}=\overline{0001000}+1=1110111+1=1111000 \text{ in \acrshort{ca2}}
 \end{align*}
 A questo punto eseguiamo la somma algebrica:
 \begin{table}[H]
@@ -142,7 +185,7 @@ Diamone una descrizione intuitiva: fissato un numero \(n\) finito di valori, arr
 	a\equiv b \Longleftrightarrow a\%n=b\%n
 \end{equation*}
 
-Quando eseguiamo delle operazioni sui numeri in base 2 su \(k\) bit, stiamo lavorando in un ambiente in modulo \(2^{k}\), e calcolando \(a+b\) stiamo in realtà trovando \((a+b)\%2^{k}\), e i due valori saranno uguali se e solo se \(a+b<2^{k}\), perché altrimenti ogni valore successivo ricomincerebbe da 0: questo è l'\emph{overflow}. In particolare, quando lavoriamo su numeri interi in \emph{CA2}, dobbiamo ricordare che, se \(-2^{k-1}\le a+b\le 2^{k-1}-1\) non avremo \emph{overflow}, altrimenti:
+Quando eseguiamo delle operazioni sui numeri in base 2 su \(k\) bit, stiamo lavorando in un ambiente in modulo \(2^{k}\), e calcolando \(a+b\) stiamo in realtà trovando \((a+b)\%2^{k}\), e i due valori saranno uguali se e solo se \(a+b<2^{k}\), perché altrimenti ogni valore successivo ricomincerebbe da 0: questo è l'\emph{overflow}. In particolare, quando lavoriamo su numeri interi in \acrshort{ca2}, dobbiamo ricordare che, se \(-2^{k-1}\le a+b\le 2^{k-1}-1\) non avremo \emph{overflow}, altrimenti:
 \begin{itemize}
 	\item se \(a+b>2^{k-1}-1\), otterremo \(a+b+2^{k}\) \(\longrightarrow\) \emph{overflow};
 	\item se \(a+b<-2^{k-1}\), otterremo \(a+b-2^{k}\) \(\longrightarrow\) \emph{overflow}.
@@ -187,9 +230,9 @@ Il bit di segno ha la funzione che già conosciamo, mentre il campo \(E\) può c
 \begin{equation*}
 	exp=E-(2^{e-1}-1)
 \end{equation*}
-Il numero \(2^{e-1}-1\) viene detto \emph{bias} e nel nostro caso è \(127\), per cui \(\textrm{exp}=E-127\). L'ultimo campo, la \emph{mantissa}, codifica un numero intero.
+Il numero \(2^{e-1}-1\) è un \emph{bias} e nel nostro caso vale \(127\), per cui \(\textrm{exp}=E-127\). L'ultimo campo, la \emph{mantissa}, codifica un numero intero.
 
-\paragraph{Come calcolare il valore di un float} Il primo bit è utilizzato per indicare il segno, i successivi 8 per $E$ e i restanti 23 per la mantissa. La decodifica in decimale assume due forme in base al valore di \(E\):
+\paragraph{Come calcolare il valore di un float} Il primo bit è utilizzato per indicare il segno, i successivi 8 per \(E\) e i restanti 23 per la mantissa. La decodifica in decimale assume due forme in base al valore di \(E\):
 \begin{itemize}
 	\item se \(E=0\), allora il numero in base 10 è \(x_{10}=0.M \cdot 2^{(exp+1=-126)}\);
 	\item se \(E>0\), allora il numero in base 10 è \(x_{10}=1.M \cdot 2^{exp}\), dove \emph{exp} è definito come qui sopra descritto.
@@ -213,7 +256,8 @@ Ecco una breve tabella riassuntiva dell'interpretazione delle stringhe nella rap
 
 \subsubsection{Esempio di decodifica di un numero in virgola mobile}
 Si traduca in IEEE 754 il numero \((01000010 10011011 10000000 00000000)_2\). Spacchettiamolo nei vari campi:
-\begin{table}[h!]
+\FloatBarrier
+\begin{table}[!h]
 	\centering
 	\begin{tabular}{|l|l|l|}
 		\hline
@@ -221,6 +265,7 @@ Si traduca in IEEE 754 il numero \((01000010 10011011 10000000 00000000)_2\). Sp
 		0 & 10000101 & 00110111000000000000000\\\hline
 	\end{tabular}
 \end{table}
+\FloatBarrier
 Procediamo ora alla traduzione.
 \begin{enumerate}
 	\item Osserviamo che il numero è positivo, poiché il bit di segno è 0.

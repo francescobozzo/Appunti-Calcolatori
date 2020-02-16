@@ -12,17 +12,17 @@
 \section{Prerequisiti}
 Il sistema operativo che utilizzeremo è una qualsiasi distribuzione Linux. A seguire i software che andremo a utilizzare:
 \begin{itemize}
-	\item \emph{gcc}: il compilatore C GNU;
+	\item \emph{\acrfull{gcc}}: il compilatore C GNU;
 	\item \emph{ld}: il linker GNU;
 	\item \emph{nasm}: un assemblatore Intel x86.
 \end{itemize}
 
-\subsection{Come utilizzare gcc}
-Per compilare il file C "main.c" attraverso gcc nell'eseguibile "main":
+\subsection{Come utilizzare \acrshort{gcc}}
+Per compilare il file C "main.c" attraverso \acrshort{gcc} nell'eseguibile "main":
 \begin{minted}{batch}
 	gcc main.c -o main
 \end{minted}
-mentre per compilare un file C in assembly AT\&T attraverso gcc:
+mentre per compilare un file C in assembly AT\&T attraverso \acrshort{gcc}:
 \begin{minted}{batch}
 	gcc -S main.c -o main.s
 \end{minted}

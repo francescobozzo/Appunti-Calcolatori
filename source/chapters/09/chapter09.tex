@@ -17,7 +17,7 @@ Ora andiamo a riprendere alcuni esempi già portati nel capitolo dedicato all'As
 Per completezza, specifichiamo che il codice che mostreremo è stato ottenuto con il compilatore \mintinline{batch}{gcc}, lievemente modificato affinché risulti più leggibile (principalmente sull'ordine logico delle istruzioni e sulla nomenclatura dei registri).
 
 \section{Semplici espressioni aritmetico-logiche}
-Cominciamo con delle semplici operazioni aritmetiche, che evidenzieranno come le architetture RISC (MIPS e ARM) permettono di eseguire questo tipo di istruzioni in modo molto naturale, al contrario dell'implementazione leggermente più macchinosa di x86. L'espressione è la seguente:
+Cominciamo con delle semplici operazioni aritmetiche, che evidenzieranno come le architetture \acrshort{risc} (MIPS e ARM) permettono di eseguire questo tipo di istruzioni in modo molto naturale, al contrario dell'implementazione leggermente più macchinosa di x86. L'espressione è la seguente:
 \begin{equation*}
 	f = (g + h) - (i + j)
 \end{equation*}
@@ -50,7 +50,7 @@ subs r0, r1, r3  ; r0 = (g + h) - (i + j)
 \end{minted}
 
 \section{Array e accesso alla memoria}
-Ora invece prenderemo come esempio una semplice istruzione che agisce su un array per mostrare diverse modalità di accesso alla memoria: questa volta, x86 permetterà di ridurre notevolmente il numero di righe di codice, mentre le due ISA RISC richiederanno molte più istruzioni.
+Ora invece prenderemo come esempio una semplice istruzione che agisce su un array per mostrare diverse modalità di accesso alla memoria: questa volta, x86 permetterà di ridurre notevolmente il numero di righe di codice, mentre le due \acrshort{isa} \acrshort{risc} richiederanno molte più istruzioni.
 \begin{minted}{c}
 a[12] = h + a[8];
 \end{minted}
@@ -64,7 +64,7 @@ sw $a0, 48($a1)    # ripone il contenuto di $a0 nell'indirizzo di a incrementato
 \end{minted}
 
 \subsubsection{Implementazione x86}
-La capacità di accedere direttamente alla memoria grazie a istruzioni come \mintinline{gas}{addl} e \mintinline{gas}{movl} semplifica di molto questa operazione per l'ISA Intel.\\
+La capacità di accedere direttamente alla memoria grazie a istruzioni come \mintinline{gas}{addl} e \mintinline{gas}{movl} semplifica di molto questa operazione per l'\acrshort{isa} Intel.\\
 Assumendo che  \mintinline{c}{h} stia \register{\%edi} e l'indirizzo di \mintinline{c}{a} in \register{\%rsi}, otteniamo:
 \begin{minted}[linenos, breaklines, tabsize = 4]{gas}
 addl 32(%rsi), %edi  # %edi = a[8] + h
@@ -81,9 +81,9 @@ str r0, [r1, #48]  ; riponi r0 in a[12]
 \end{minted}
 
 \section{Blocchi condizionali}
-Vediamo ora la gestione di istruzioni condizionali. Solitamente queste vengono gestite da istruzioni di salti condizionati, ma alcune ISA hanno modalità di gestione decisamente peculiari.
+Vediamo ora la gestione di istruzioni condizionali. Solitamente queste vengono gestite da istruzioni di salti condizionati, ma alcune \acrshort{isa} hanno modalità di gestione decisamente peculiari.
 \subsection*{Condizioni di uguaglianza}
-Andiamo ad analizzare le traduzioni del segente codice C:
+Andiamo ad analizzare le traduzioni del seguente codice C:
 \begin{minted}[linenos, breaklines, tabsize = 4]{c}
 if (i == j){
 	f = g + h;
@@ -265,7 +265,7 @@ L3:
 
 
 \section{Invocazione di subroutine}
-I prossimi esempi serviranno ad esaminare le ABI e le convenzioni di chiamata delle tre architetture che stiamo analizzando.
+I prossimi esempi serviranno ad esaminare le \acrshort{abi} e le convenzioni di chiamata delle tre architetture che stiamo analizzando.
 \subsection*{Funzioni foglia}
 Iniziamo con una funzione foglia, ossia una funzione che non chiama alcuna subroutine, che conseguentemente non rende necessario salvare il \texttt{return address register}. Di seguito il codice C.
 \begin{minted}[linenos,tabsize = 4]{c}
@@ -335,7 +335,7 @@ f:
 	jr $ra              # ritorna
 \end{minted}
 
-L'implementazione di \mintinline{batch}{gcc} è ancora diversa, perché l'ABI da noi usata prevede che il record di attivazione sia un multiplo di 8, per cui \register{\$sp} verrà decrementato di 8 bytes; altre ABI avrebbero lavorato ancora diversamente, dal momento che la gestione dello stack è appunto demandata alla \emph{Application Binary Interface} utilizzata.
+L'implementazione di \mintinline{batch}{gcc} è ancora diversa, perché l'\acrshort{abi} da noi usata prevede che il record di attivazione sia un multiplo di 8, per cui \register{\$sp} verrà decrementato di 8 bytes; altre \acrshort{abi} avrebbero lavorato ancora diversamente, dal momento che la gestione dello stack è appunto demandata alla \emph{Application Binary Interface} utilizzata.
 \begin{minted}[linenos, breaklines, tabsize = 4]{asm}
 inc:
 	addiu $v0, $a0, 1
@@ -365,7 +365,7 @@ f:
 \end{minted}
 
 \subsubsection{Implementazione ARM}
-ARM si rivela molto interessante: le sue possibilità di indirizzament \emph{pre indexing} ci consentono di effettuare il decremento dello stack pointer e il salvataggio del link register in una sola riga di codice; inoltre, dal momento che in ARM \register{PC} è un registro referenziabilie come fosse un general purpose, possiamo direttamente prelevare il link register dallo stack e caricarlo direttamente nel program counter e, sempre nella stessa riga, reincrementare \register{SP} di 4 grazie all'indirizzamento \emph{post indexing}.
+ARM si rivela molto interessante: le sue possibilità di indirizzament \emph{pre indexing} ci consentono di effettuare il decremento dello stack pointer e il salvataggio del link register in una sola riga di codice; inoltre, dal momento che in ARM \register{pc} è un registro referenziabilie come fosse un general purpose, possiamo direttamente prelevare il link register dallo stack e caricarlo direttamente nel \acrfull{pc} e, sempre nella stessa riga, reincrementare \register{sp} di 4 grazie all'indirizzamento \emph{post indexing}.
 \begin{minted}[linenos, breaklines, tabsize = 4]{arm}
 inc:
 	add r0, r0, #1
