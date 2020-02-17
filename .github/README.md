@@ -1,5 +1,5 @@
 # Appunti-Calcolatori
-Calcolatori Elettronici - UniTn - prof. Iacca
+Calcolatori Elettronici - UniTn 2018/2019
 
 L'elaborato finale non conterrà tutti gli argomenti trattati nel corso, specialmente i più intuitivi.
 
